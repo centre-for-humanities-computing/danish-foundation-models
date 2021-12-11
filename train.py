@@ -1,3 +1,7 @@
+"""Train file for training language models with sweeps
+Inspiration: https://colab.research.google.com/github/wandb/examples/blob/master/colabs/pytorch/Organizing_Hyperparameter_Sweeps_in_PyTorch_with_W%26B.ipynb#scrollTo=r4VjKui20N3j
+"""
+
 from utils import read_json
 import wandb
 
@@ -7,8 +11,6 @@ sweeps = read_json("sweep_config.json")
 def train(config=None):
     with wandb.init(config=config):
 
-        # If called by wandb.agent, as below,
-        # this config will be set by Sweep Controller
         config = wandb.config
 
         loader = build_dataset(config.batch_size)
