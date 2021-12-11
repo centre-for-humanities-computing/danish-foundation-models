@@ -1,0 +1,29 @@
+{
+    "method": "random",
+    "metric": {
+        "name": "loss",
+        "goal": "minimize"
+    },
+    "parameters": {
+        "optimizer": {
+            "values": [
+                "adam",
+                "sgd"
+            ]
+        },
+        "fc_layer_size": {
+            "values": [
+                128,
+                256,
+                512
+            ]
+        },
+        "dropout": {
+            "values": [
+                0.3,
+                0.4,
+                0.5
+            ]
+        }
+    }
+}
