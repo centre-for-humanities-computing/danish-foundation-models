@@ -9,6 +9,8 @@ channels:
 
 dependencies:
 - python=3.9
+- flake8
+- black
 - pip
 - pip:
   - -r requirements.txt
