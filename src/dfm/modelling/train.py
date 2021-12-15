@@ -10,27 +10,35 @@ from transformers import AutoConfig, AutoModelForPreTraining, Trainer, TrainingA
 from pathlib import Path
 from typing import List
 
-SWEEP_CONFIG_PATH = Path.cwd() / "sweep_config.json"
-SWEEPS = read_json(SWEEP_CONFIG_PATH)
-
-HF_CONFIG_PATH = Path.cwd() / "model_config.json"
-HF_CONFIG = read_json(HF_CONFIG_PATH)
+from dfm.data.load import load_dataset
+from dfm.data.preprocess import preprocess_dataset
 
 
-def train(config=None):
+def train(
+    model_path: str, model_config_path: str = None, sweeps_config_path: str = None
+):
 
-    with wandb.init(config=config):
+    # Configuration
+    if model_config_path is None:
+        model_config_path = Path() / model_path / "config.json"
+    if sweeps_config_path is None:
+        sweeps_config_path = Path() / model_path / "sweep_config.json"
+    model_config = read_json(model_config_path)
+    sweeps_config = read_json(sweeps_config_path)
+
+    with wandb.init(config=sweeps_config):
 
         config = wandb.config
 
-        HF_config = AutoConfig.from_pretrained(HF_CONFIG)
+        HF_config = AutoConfig.from_pretrained(model_config)
 
         dataset = load_dataset(config.datasets)
+        dataset = preprocess_dataset(dataset)
 
         mdl = AutoModelForPreTraining(config.model_name, HF_config)
 
         training_args = TrainingArguments(
-            f"{model_checkpoint}-wikitext2",
+            output_dir=f"{model_checkpoint}-dfm",
             evaluation_strategy="epoch",
             learning_rate=2e-5,
             weight_decay=0.01,
@@ -46,12 +54,3 @@ def train(config=None):
 
         trainer.train()
         trainer.push_to_hub()
-
-
-def load_dataset(datasets: List[str]):
-    # parse dataset names
-    # load required dataset
-    # apply relevant filters
-    # train test validation split
-    # (dont to shuffling, tokenization etc. here)
-    pass
