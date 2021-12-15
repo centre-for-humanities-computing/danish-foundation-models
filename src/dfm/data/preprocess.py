@@ -1,31 +1,35 @@
 """Data preprocessing script for Danish Foundation Models """
 from typing import List
+from functools import partial
 
 
-def preprocess_dataset(datasets: List[str], tokenizer, num_proc: int = 4):
-    def tokenize_func(examples):
-        return tokenizer(examples["text"])
+def preprocess_dataset(
+    datasets: List[str], tokenizer, num_proc: int = 4, block_size: int = 512
+):
+
+    tokenize_func_ = partial(tokenize_func, tokenizer=tokenizer)
+    datasets = datasets.map(
+        tokenize_func_, batched=True, num_proc=num_proc, remove_columns=["text"]
+    )
+    group_texts_ = partial(group_texts, block_size=block_size)
 
     datasets = datasets.map(
-        tokenize_func, batched=True, num_proc=num_proc, remove_columns=["text"]
+        group_texts_,
+        batched=True,
+        batch_size=1000,
+        num_proc=num_proc,
+        remove_columns=["text"],
     )
-
-    block_size = 128
-
-    datasets = datasets.map(
-        group_texts, batched=True, num_proc=num_proc, remove_columns=["text"]
-    )
-
     datasets.shuffle()
 
-    pass
+    return datasets
 
 
-def tokenize_func(examples):
+def tokenize_func(examples, tokenizer):
     return tokenizer(examples["text"])
 
 
-def group_texts(examples):
+def group_texts(examples, block_size: int):
     # Concatenate all texts.
     concatenated_examples = {k: sum(examples[k], []) for k in examples.keys()}
     total_length = len(concatenated_examples[list(examples.keys())[0]])
