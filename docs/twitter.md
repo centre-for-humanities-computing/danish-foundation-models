@@ -1,0 +1,8 @@
+# Twitter
+
+Tweets are streamed continuously using queried a set of the highest frequency scandinavian-specific words from da/no/sv and then using Twitter’s language classifier to separate them into lang-specific lists. 
+
+Here is the list:
+```
+aften,aldrig,alltid,altid,andet,arbejde,bedste,behöver,behøver,beklager,berätta,betyr,blev,blevet,blir,blitt,blive,bliver,bruge,burde,bättre,båe,bør,deim,deires,ditt,drar,drepe,dykk,dykkar,där,död,döda,død,døde,efter,elsker,endnu,faen,fandt,feil,fikk,finner,flere,forstår,fortelle,fortfarande,fortsatt,fortælle,från,få,fået,får,fått,förlåt,första,försöker,før,først,første,gick,gikk,gillar,gjennom,gjerne,gjorde,gjort,gjør,gjøre,godt,gå,gång,går,göra,gør,gøre,hadde,hallå,havde,hedder,helt,helvete,hende,hendes,hennes,herregud,hjelp,hjelpe,hjem,hjälp,hjå,hjælp,hjælpe,honom,hossen,hvem,hvis,hvordan,hvorfor,händer,här,håll,håller,hør,høre,hører,igjen,ikkje,ingenting,inkje,inte,intet,jeres,jävla,kanske,kanskje,kender,kjenner,korleis,kvarhelst,kveld,kven,kvifor,känner,ledsen,lenger,lidt,livet,längre,låt,låter,længe,meget,menar,mycket,mykje,må,måde,många,mår,måske,måste,måtte,navn,nogen,noget,nogle,noko,nokon,nokor,nokre,någon,något,några,nån,når,nåt,nødt,också,også,pengar,penger,pratar,prøver,på,redan,rundt,rätt,sagde,saker,samma,sammen,selv,selvfølgelig,sidan,sidste,siger,sikker,sikkert,själv,skete,skjedde,skjer,skulle,sluta,slutt,snakke,snakker,snill,snälla,somt,stadig,stanna,sted,står,synes,säger,sätt,så,sådan,såg,sånn,tager,tiden,tilbage,tilbake,tillbaka,titta,trenger,trodde,troede,tror,två,tycker,tänker,uden,undskyld,unnskyld,ursäkta,uten,varför,varit,varte,veldig,venner,verkligen,vidste,vilken,virkelig,visste,väg,väl,väldigt,vän,vår,våra,våre,væk,vær,være,været,älskar,åh,år,åt,över
+```
