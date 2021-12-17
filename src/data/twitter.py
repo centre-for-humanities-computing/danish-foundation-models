@@ -4,6 +4,7 @@
 import os
 from typing import Dict, List
 import datasets
+import ndjson
 
 
 _CITATION = """\
@@ -57,7 +58,9 @@ class HopeTweet(datasets.GeneratorBasedBuilder):
             features=datasets.Features(
                 {
                     "text": datasets.Value("string"),
-                    "id": datasets.Value("string")
+                    "id": datasets.Value("string"),
+                    "lang": datasets.Value("string"),
+                    "meta": datasets.Value("dict"),
                     # TODO add more metadata here
                     # These are the features of your dataset like images, labels ...
                 }
@@ -71,43 +74,33 @@ class HopeTweet(datasets.GeneratorBasedBuilder):
             citation=_CITATION,
         )
 
-    def _get_filepaths(self, path: str) -> Dict[str, List[str]]:
-        """
-        Gets the path to all text files in HopeTweet
-
-        Returns:
-            Dict[str, List[str]] -- Dictionary with sektion as key, and list of filepaths as stringshu
-        """
-        pass
-    
-
-        return filepaths
-
-
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
         # dl_manager is a datasets.download.DownloadManager that can be used to
         # download and extract URLs
         if self.config.name == "HopeTweet-v1":
-            data_file = dl_manager.download_and_extract(self.config.data_url)
+            data_path = os.path.join("data", "twitter")
 
             return [
                 datasets.SplitGenerator(
                     name=datasets.Split.TRAIN,
                     gen_kwargs={
-                        "data_file": os.path.join(data_file, "dagw", "sektioner"),
+                        "data_file": data_path,
                         "split": "train",
                     },
                 )
             ]
 
-    def _generate_examples(self, data_file, split):
+    def _generate_examples(self, data_path, split):
         """Yields examples."""
-        filepaths = self._get_filepaths(data_file)
+        filepaths = [os.path.join(data_path, p) for p in os.listdir(data_path)]
         row_n = 0
-        for origin in filepaths.keys():
-            for path in filepaths[origin]:
-                with open(path) as f:
-                    text = f.read()
-                yield row_n, {"text": text, "origin": origin}
-                row_n += 1
+        for fp in filepaths:
+            with open(fp) as f:
+                reader = ndjson.reader(f)
+
+                for row in reader:
+                    row_ = {k: row.pop(k) for k in ["text", "lang", "id"]}
+                    row_["meta"] = row
+                    yield row_n, row_
+                    row_n += 1

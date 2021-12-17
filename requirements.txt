@@ -1,0 +1,8 @@
+
+# models
+torch
+transformers
+
+# data
+datasets
+ndjson==0.3.1
