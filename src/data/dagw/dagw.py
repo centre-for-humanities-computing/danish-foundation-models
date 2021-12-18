@@ -80,10 +80,9 @@ class DAGW(datasets.GeneratorBasedBuilder):
     """The Danish Gigaword Corpus contains raw text spanning several different domains and forms. The dataset is available under the Creative Commons Attribution-ShareAlike
     License."""
 
-    VERSION = datasets.Version("0.1.0")
     BUILDER_CONFIGS = [
         DAGWConfig(
-            name="DAGW-v1",
+            name="dagw",
             data_url=_DATA_URL,
             description="Document level dataset. Each row contains one document (of greatly varying length)",
         )
