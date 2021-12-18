@@ -91,14 +91,24 @@ class HopeTweet(datasets.GeneratorBasedBuilder):
         """Yields examples."""
         filepaths = [os.path.join(data_path, p) for p in os.listdir(data_path)]
         row_n = 0
+        id = set()
         for fp in filepaths:
+            texts_dedup = set()
             with open(fp) as f:
                 reader = ndjson.reader(f)
 
                 for row in reader:
+                    if row["id"] in id:
+                        continue
+                    if row["text"] in texts_dedup:
+                        continue
+                    id.add(row["id"])
+                    texts_dedup.add(row["text"])
                     row_ = {
                         k: row.pop(k)
                         for k in ["text", "lang", "id", "possibly_sensitive"]
                     }
                     yield row_n, row_
                     row_n += 1
+
+
