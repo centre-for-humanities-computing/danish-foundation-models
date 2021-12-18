@@ -10,8 +10,12 @@ _CITATION = """\
 None yet
 """
 
+data_path = os.path.join("/work", "data", "hpv-infomedia")
+
 _DESCRIPTION = """\
-# Jan will you add this
+# Jan will you add this potentially read from a readme at path using
+with open(os.path.join(data_path, "readme.md")) as f:
+    _DESCRIPTION = f.read()
 """
 
 _HOMEPAGE = "https://hope-project.dk/#/"
@@ -35,7 +39,6 @@ class DaNewsConfig(datasets.BuilderConfig):
             ),
             **kwargs,
         )
-
 
 
 class DaNews(datasets.GeneratorBasedBuilder):
@@ -81,9 +84,6 @@ class DaNews(datasets.GeneratorBasedBuilder):
         """Returns SplitGenerators."""
         # dl_manager is a datasets.download.DownloadManager that can be used to
         if self.config.name == "DaNews":
-            data_path = os.path.join("/work", "data", "infomedia")
-            print(f"path: {data_path}")
-
             return [
                 datasets.SplitGenerator(
                     name=datasets.Split.TRAIN,
@@ -99,19 +99,20 @@ class DaNews(datasets.GeneratorBasedBuilder):
         filepaths = [os.path.join(data_path, p) for p in os.listdir(data_path)]
         row_n = 0
         mapping = {
-        "url": "ArticleUrl",
-        "heading": "Heading",
-        "subheading": "SubHeading",
-        "lead": "Lead",
-        "paragraph": "Paragraph",
-        "publishdate": "PublishDate",
-        "body": "BodyText",
-        "captions": "Captions",
-        "authors": "Authors",
-        "source": "Source",
-        "wordcount": "WouldCount",
-        "articleid": "ArticleId",
-        "pageids": "PageIds"}
+            "url": "ArticleUrl",
+            "heading": "Heading",
+            "subheading": "SubHeading",
+            "lead": "Lead",
+            "paragraph": "Paragraph",
+            "publishdate": "PublishDate",
+            "body": "BodyText",
+            "captions": "Captions",
+            "authors": "Authors",
+            "source": "Source",
+            "wordcount": "WouldCount",
+            "articleid": "ArticleId",
+            "pageids": "PageIds",
+        }
 
         for fp in filepaths:
             with open(fp) as f:

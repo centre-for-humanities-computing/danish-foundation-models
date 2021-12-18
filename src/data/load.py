@@ -10,6 +10,7 @@ from datasets import load_dataset
 dataset = load_dataset('HopeTweet', streaming=True)
 train = dataset["train"]
 
+print(train.info)
 
 for i in train:
     print(i)
