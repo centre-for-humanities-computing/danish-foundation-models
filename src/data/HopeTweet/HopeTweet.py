@@ -42,7 +42,6 @@ class HopeTweetConfig(datasets.BuilderConfig):
 class HopeTweet(datasets.GeneratorBasedBuilder):
     """The HopeTweet is a Corpus contains tweets spanning from 2019-2021 collected as a part of the HOPE project"""
 
-    VERSION = datasets.Version("1.0.0")
     BUILDER_CONFIGS = [
         HopeTweetConfig(
             name="HopeTweet",
