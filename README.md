@@ -6,9 +6,10 @@ This is an outline of the current status of the project and the responsibilities
 
 ## Datasets:
 - :books: DAGW: @Lasse Hansen has converted DAGW to HF format, and will perform some dedup on the dataset. We are messaging with Leon to publish both the cleaned and current version on HF datasets
-- :bird: Twitter: @Kenneth Enevoldsen have a script for cleaning tweets, I am now waiting for a datadump on UCloud of all of our tweets. Which is will then also convert to a HF dataset
+- :bird: HopeTwitter: A dataset of tweets collected as a part of the HOPE project.
 - :newspaper: Infomedia: @Kostkan Jan have cleaned the Infomedia corpus and is working on creating a HF version of the dataset.
 - :link: Netarkivet:@Kenneth Enevoldsen will get a datadumb on UCloud. Me, Rokas (joining us mid Jan.) and @Kasper Junge will work on developing script for cleaning this data.
+- 🗯 Reddit: The [reddit dataset](https://huggingface.co/datasets/DDSC/reddit-da) available on Huggingface supplied by @saatrupdan.
 
 
 ## Models:
@@ -34,17 +35,13 @@ This is an outline of the current status of the project and the responsibilities
 - This project uses compute resources supplied by [Ucloud](https://docs.cloud.sdu.dk/index.html).
 
 ## Current collaborators:
-Kenneth Enevoldsen
-Lasse Hansen
-Jan Kostkan
-Malte Højmark-Bertelsen
-Dan Saattrup Nielsen
-Kasper Junge
-Rokas Maksevičius (junior developer on cleaning the netarkiv)
-Peter Bjerregaard Vahlstrup (The guy who makes sure data collections works)
-Kristoffer Nielbo (PhD Supervisor of Kenneth and Lasse)
+- Kenneth Enevoldsen
+- Lasse Hansen
+- Jan Kostkan
+- Dan Saattrup Nielsen
+- Malte Højmark-Bertelsen
+- Kasper Junge
+- Rokas Maksevičius - Junior developer cleaning the netarkiv
+- Peter Bjerregaard Vahlstrup - the guy who makes sure data collections works
+- Kristoffer Nielbo - Supervisor
 
-
-
-
-I imagine people have a lot to add to this: I will keep it updated with suggestions until I create a GitHub version where it is easier to suggest edits.
