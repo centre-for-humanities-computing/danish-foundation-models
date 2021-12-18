@@ -31,7 +31,7 @@ This is an outline of the current status of the project and the responsibilities
 
 
 # Info
-- This project is trained using [Ucloud](https://docs.cloud.sdu.dk/index.html)
+- This project uses compute resources supplied by [Ucloud](https://docs.cloud.sdu.dk/index.html).
 
 ## Current collaborators:
 Kenneth Enevoldsen
