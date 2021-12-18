@@ -6,24 +6,49 @@ from typing import Dict, List
 import datasets
 import ndjson
 
-
 _CITATION = """\
 None yet
 """
 
 _DESCRIPTION = """\
 A scrape of Danish Twitter collected as a part of the HOPE project.
+
+# Twitter
+
+Tweets are streamed continuously using queried a set of the highest frequency scandinavian-specific words from da/no/sv and then using 
+witter’s language classifier to separate them into lang-specific lists. 
+
+In our case filtering out Danish only tweet as well and 
+["possibly_sensitive"](https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/tweet) tweets.
+
+
+Here is the list:
+```
+aften, aldrig, alltid, altid, andet, arbejde, bedste, behöver, behøver, beklager, berätta, betyr, blev, blevet, blir, blitt, blive, bliver, bruge, burde,
+bättre, båe, bør, deim, deires, ditt, drar, drepe, dykk, dykkar, där, död, döda, død, døde, efter, elsker, endnu, faen, fandt, feil, fikk, finner, flere,
+forstår, fortelle, fortfarande, fortsatt, fortælle, från, få, fået, får, fått, förlåt, första, försöker, før, først, første, gick, gikk, gillar, gjennom,
+gjerne, gjorde, gjort, gjør, gjøre, godt, gå, gång, går, göra, gør, gøre, hadde, hallå, havde, hedder, helt, helvete, hende, hendes, hennes, herregud,
+hjelp, hjelpe, hjem, hjälp, hjå, hjælp, hjælpe, honom, hossen, hvem, hvis, hvordan, hvorfor, händer, här, håll, håller, hør, høre, hører, igjen, ikkje,
+ingenting, inkje, inte, intet, jeres, jävla, kanske, kanskje, kender, kjenner, korleis, kvarhelst, kveld, kven, kvifor, känner, ledsen, lenger, lidt,
+livet, längre, låt, låter, længe, meget, menar, mycket, mykje, må, måde, många, mår, måske, måste, måtte, navn, nogen, noget, nogle, noko, nokon, nokor,
+nokre, någon, något, några, nån, når, nåt, nødt, också, også, pengar, penger, pratar, prøver, på, redan, rundt, rätt, sagde, saker, samma, sammen, selv,
+selvfølgelig, sidan, sidste, siger, sikker, sikkert, själv, skete, skjedde, skjer, skulle, sluta, slutt, snakke, snakker, snill, snälla, somt, stadig,
+stanna, sted, står, synes, säger, sätt, så, sådan, såg, sånn, tager, tiden, tilbage, tilbake, tillbaka, titta, trenger, trodde, troede, tror, två, tycker,
+tänker, uden, undskyld, unnskyld, ursäkta, uten, varför, varit, varte, veldig, venner, verkligen, vidste, vilken, virkelig, visste, väg, väl, väldigt, vän,
+vår, våra, våre, væk, vær, være, været, älskar, åh, år, åt, över
+```
+
 """
 
 _HOMEPAGE = "https://hope-project.dk/#/"
 _LICENSE = "Not public"
-_DATA_URL = "Not public"
+
 
 
 class HopeTweetConfig(datasets.BuilderConfig):
-    """BuilderConfig for DAGW."""
+    """BuilderConfig for HopeTweet."""
 
-    def __init__(self, data_url, **kwargs):
+    def __init__(self, **kwargs):
         """BuilderConfig for HopeTweet
 
         Args:
@@ -36,7 +61,7 @@ class HopeTweetConfig(datasets.BuilderConfig):
             ),
             **kwargs,
         )
-        self.data_url = data_url
+
 
 
 class HopeTweet(datasets.GeneratorBasedBuilder):
@@ -45,7 +70,6 @@ class HopeTweet(datasets.GeneratorBasedBuilder):
     BUILDER_CONFIGS = [
         HopeTweetConfig(
             name="HopeTweet",
-            data_url=_DATA_URL,
             description="Document level dataset. Each row contains one tweet along with its metadata",
         )
     ]
@@ -59,7 +83,7 @@ class HopeTweet(datasets.GeneratorBasedBuilder):
                     "text": datasets.Value("string"),
                     "id": datasets.Value("string"),
                     "lang": datasets.Value("string"),
-                    "meta": datasets.Value("dict"),
+                    "possibly_sensitive": datasets.Value("bool"),
                     # TODO add more metadata here
                     # These are the features of your dataset like images, labels ...
                 }
@@ -77,14 +101,15 @@ class HopeTweet(datasets.GeneratorBasedBuilder):
         """Returns SplitGenerators."""
         # dl_manager is a datasets.download.DownloadManager that can be used to
         # download and extract URLs
-        if self.config.name == "HopeTweet-v1":
-            data_path = os.path.join("data", "twitter")
+        if self.config.name == "HopeTweet":
+            data_path = os.path.join("/work", "data", "twitter")
+            print(f"path: {data_path}")
 
             return [
                 datasets.SplitGenerator(
                     name=datasets.Split.TRAIN,
                     gen_kwargs={
-                        "data_file": data_path,
+                        "data_path": data_path,
                         "split": "train",
                     },
                 )
@@ -99,7 +124,6 @@ class HopeTweet(datasets.GeneratorBasedBuilder):
                 reader = ndjson.reader(f)
 
                 for row in reader:
-                    row_ = {k: row.pop(k) for k in ["text", "lang", "id"]}
-                    row_["meta"] = row
+                    row_ = {k: row.pop(k) for k in ["text", "lang", "id", "possibly_sensitive"]}
                     yield row_n, row_
                     row_n += 1
