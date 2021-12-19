@@ -6,6 +6,8 @@ from typing import Dict, List
 import datasets
 import ndjson
 
+from wasabi import msg
+
 _CITATION = """\
 None yet
 """
@@ -59,6 +61,9 @@ class HopeTweet(datasets.GeneratorBasedBuilder):
                     "id": datasets.Value("string"),
                     "lang": datasets.Value("string"),
                     "possibly_sensitive": datasets.Value("bool"),
+                    "created_at": datasets.Value("string"),
+                    "conversation_id": datasets.Value("string"),
+                    "author_id": datasets.Value("string"),
                     # TODO add more metadata here
                     # These are the features of your dataset like images, labels ...
                 }
@@ -93,6 +98,7 @@ class HopeTweet(datasets.GeneratorBasedBuilder):
         row_n = 0
         id = set()
         for fp in filepaths:
+            msg.info("HopeTweet: Started reading from file:", fp)
             texts_dedup = set()
             with open(fp) as f:
                 reader = ndjson.reader(f)
@@ -106,9 +112,8 @@ class HopeTweet(datasets.GeneratorBasedBuilder):
                     texts_dedup.add(row["text"])
                     row_ = {
                         k: row.pop(k)
-                        for k in ["text", "lang", "id", "possibly_sensitive"]
+                        for k in ["text", "lang", "id", "possibly_sensitive", "created_at", "conversation_id", "author_id"]
                     }
                     yield row_n, row_
                     row_n += 1
-
 
