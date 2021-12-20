@@ -83,13 +83,14 @@ def train_tokeniser(dataset: Dataset,
     tokeniser.pre_tokenizer = pre_tokeniser
 
     # Initialise the post-processor
-    proc_list = list()
-    if config.byte_level:
-        proc_list.append(processors.ByteLevel(trim_offsets=True))
     if config.add_sep_and_cls_tokens:
-        params = dict(cls=(config.bos_token, 1), sep=(config.eos_token, 2))
-        proc_list.append(processors.BertProcessing(**params))
-    tokeniser.post_processor = processors.Sequence(proc_list)  # noqa
+        params = dict(cls=(config.bos_token, 1),
+                      sep=(config.eos_token, 2),
+                      trim_offsets=True,
+                      add_prefix_space=pre_ws)
+        tokeniser.post_processor = processors.RobertaProcessing(**params)
+    elif config.byte_level:
+        tokeniser.post_processor = processors.ByteLevel(trim_offsets=True)
 
     # Initialise the decoder
     dec_list = list()
