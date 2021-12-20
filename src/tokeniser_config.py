@@ -30,8 +30,14 @@ class TokeniserConfig:
         add_sep_and_cls_tokens (bool, optional):
             Whether to add the special tokens to the beginning and end of the
             document, as is used by many BERT models. Defaults to True.
+        padding (bool, optional):
+            Whether to pad the documents to a fixed length. Defaults to True.
+        truncation (bool, optional):
+            Whether to truncate the documents to a fixed length. Defaults to
+            True.
         max_length (int, optional):
-            Maximum number of tokens in a document. Defaults to 512.
+            Maximum number of tokens in a document. Only relevant if either
+            `padding` or `truncation` is True. Defaults to 512.
         nfkc_normalisation (bool, optional):
             Whether to normalise the text using NFKC. Defaults to True.
         pad_token (str, optional):
@@ -53,6 +59,8 @@ class TokeniserConfig:
                  add_prefix_space: bool,
                  byte_level: bool,
                  add_sep_and_cls_tokens: bool = True,
+                 padding: bool = True,
+                 truncation: bool = True,
                  max_length: int = 512,
                  nfkc_normalisation: bool = True,
                  pad_token: str = '<pad>',
@@ -67,6 +75,8 @@ class TokeniserConfig:
         self.add_prefix_space = add_prefix_space
         self.byte_level = byte_level
         self.add_sep_and_cls_tokens = add_sep_and_cls_tokens
+        self.padding = padding
+        self.truncation = truncation
         self.max_length = max_length
         self.nfkc_normalisation = nfkc_normalisation
         self.pad_token = pad_token
@@ -119,6 +129,14 @@ class TokeniserConfig:
             raise ValueError(f'Invalid add sep and cls tokens: '
                              f'{self.add_sep_and_cls_tokens}')
 
+        # Check that the padding is valid
+        if not isinstance(self.padding, bool):
+            raise ValueError(f'Invalid padding: {self.padding}')
+
+        # Check that the truncation is valid
+        if not isinstance(self.truncation, bool):
+            raise ValueError(f'Invalid truncation: {self.truncation}')
+
         # Check that the max length is valid
         if not isinstance(self.max_length, int) or self.max_length < 1:
             raise ValueError(f'Invalid max length: {self.max_length}')
@@ -163,6 +181,8 @@ class TokeniserConfig:
                 f'add_prefix_space={self.add_prefix_space}, '
                 f'byte_level={self.byte_level}, '
                 f'add_sep_and_cls_tokens={self.add_sep_and_cls_tokens}, '
+                f'padding={self.padding}, '
+                f'truncation={self.truncation}, '
                 f'max_length={self.max_length}, '
                 f'nfkc_normalisation={self.nfkc_normalisation}, '
                 f'pad_token={self.pad_token}, '
@@ -184,6 +204,8 @@ class TokeniserConfig:
                     add_prefix_space=self.add_prefix_space,
                     byte_level=self.byte_level,
                     add_sep_and_cls_tokens=self.add_sep_and_cls_tokens,
+                    padding=self.padding,
+                    truncation=self.truncation,
                     max_length=self.max_length,
                     nfkc_normalisation=self.nfkc_normalisation,
                     pad_token=self.pad_token,
