@@ -115,6 +115,10 @@ def train_tokeniser(config: Union[TokeniserConfig, dict],
     tokeniser.train_from_iterator(iterator=dataset['text'],
                                   trainer=trainer)
 
+    # If the output directory does not exist, create it
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
     # Save the tokeniser and configuration
     tokeniser.save(str(output_dir / 'tokenizer.json'))
     config.save(str(output_dir / 'tokenizer_config.json'))
