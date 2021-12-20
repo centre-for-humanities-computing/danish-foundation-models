@@ -39,8 +39,7 @@ def train_tokeniser(dataset: Dataset,
 
     # Instantiate the tokeniser model
     if config.tokeniser_type == 'bpe':
-        model = models.BPE(unk_token=config.unk_token,
-                           continuing_subword_prefix='##')
+        model = models.BPE(unk_token=config.unk_token)
     elif config.tokeniser_type == 'wordpiece':
         model = models.WordPiece(unk_token=config.unk_token)  # noqa
     elif config.tokeniser_type == 'unigram':
