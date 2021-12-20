@@ -242,3 +242,19 @@ class TokeniserConfig:
         '''
         with Path(filename).open('w') as f:
             json.dump(dict(self), f, indent=4)
+
+    @classmethod
+    def load(cls, filename: Union[str, Path]):
+        '''Load tokeniser configuration from file.
+
+        Args:
+            filename (str or Path):
+                File to load tokeniser configuration from.
+
+        Returns:
+            TokeniserConfig:
+                Tokeniser configuration.
+        '''
+        with Path(filename).open('r') as f:
+            config = json.load(f)
+        return TokeniserConfig(**config)

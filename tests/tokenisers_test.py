@@ -29,6 +29,10 @@ def valid_config_dict():
 class TestTokeniserConfig:
     '''Unit tests for the TokeniserConfig class'''
 
+    @pytest.fixture(scope='class')
+    def config_path(self):
+        yield Path('test_config.json')
+
     def test_tokeniser_config_init(self, valid_config_dict):
         TokeniserConfig(**valid_config_dict)
 
@@ -149,13 +153,17 @@ class TestTokeniserConfig:
         assert isinstance(config_dct, dict)
         assert valid_config_dict == config_dct
 
-    def test_save(self, valid_config_dict):
+    def test_save(self, valid_config_dict, config_path):
         tokeniser_config = TokeniserConfig(**valid_config_dict)
-        config_path = Path('test_config.json')
         config_path.unlink(missing_ok=True)
         tokeniser_config.save(config_path)
-        config_path.unlink(missing_ok=True)
         assert config_path.exists
+
+    def test_load(self, valid_config_dict, config_path):
+        config = TokeniserConfig(**valid_config_dict)
+        loaded_config = TokeniserConfig.load(config_path)
+        assert dict(config) == dict(loaded_config)
+        config_path.unlink(missing_ok=True)
 
 
 class TestTrainTokeniser:
