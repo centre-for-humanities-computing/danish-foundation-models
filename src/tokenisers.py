@@ -93,16 +93,15 @@ def train_tokeniser(dataset: Dataset,
         tokeniser.post_processor = processors.ByteLevel(trim_offsets=True)
 
     # Initialise the decoder
-    dec_list = list()
     if config.tokeniser_type == 'bpe':
-        dec_list.append(decoders.BPEDecoder(suffix='</w>'))
+        tokeniser.decoder = decoders.BPEDecoder()
     elif config.tokeniser_type == 'wordpiece':
-        dec_list.append(decoders.WordPiece(prefix='##', cleanup=True))
-    if config.sentence_piece:
-        dec_list.append(decoders.Metaspace(add_prefix_space=pre_ws))
-    if config.byte_level:
-        dec_list.append(decoders.ByteLevel())
-    tokeniser.decoder = decoders.Sequence(dec_list)  # noqa
+        tokeniser.decoder = decoders.WordPiece(prefix='##', cleanup=True)
+    elif config.sentence_piece:
+        tokeniser.decoder = decoders.Metaspace(add_prefix_space=pre_ws)
+    elif config.byte_level:
+        tokeniser.decoder = decoders.ByteLevel()
+
 
     # Enable truncation and padding
     tokeniser.enable_truncation(max_length=config.max_length)
