@@ -68,7 +68,8 @@ class TokeniserConfig:
                  eos_token: str = '</s>',
                  unk_token: str = '<unk>',
                  mask_token: str = '<mask>'):
-        self.tokeniser_type = tokeniser_type.lower()
+        # Set the configuration
+        self.tokeniser_type = tokeniser_type
         self.vocab_size = vocab_size
         self.lower_case = lower_case
         self.sentence_piece = sentence_piece
@@ -84,6 +85,12 @@ class TokeniserConfig:
         self.eos_token = eos_token
         self.unk_token = unk_token
         self.mask_token = mask_token
+
+        # Lower case `tokeniser_type` if possible
+        try:
+            self.tokeniser_type = self.tokeniser_type.lower()
+        except AttributeError:
+            pass
 
         # Check whether the configuration is valid
         self.check_config()
