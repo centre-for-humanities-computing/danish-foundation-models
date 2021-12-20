@@ -198,6 +198,18 @@ class TokeniserConfig:
                 f'unk_token={self.unk_token}, '
                 f'mask_token={self.mask_token})')
 
+    def __iter__(self):
+        '''Return an iterator over the configuration.
+
+        Returns:
+            iterator:
+                Iterator over the configuration, yielding (key, value) tuples.
+        '''
+        def iterable_fn():
+            for key, val in self.__dict__().items():
+                yield key, val
+        return iterable_fn()
+
     def __dict__(self):
         '''Get dictionary representation of tokeniser configuration.
 
@@ -229,4 +241,4 @@ class TokeniserConfig:
                 File to save tokeniser configuration to.
         '''
         with Path(filename).open('w') as f:
-            json.dump(self.__dict__, f, indent=4)
+            json.dump(dict(self), f, indent=4)
