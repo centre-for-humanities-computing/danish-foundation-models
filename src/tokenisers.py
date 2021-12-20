@@ -10,7 +10,7 @@ from tokeniser_config import TokeniserConfig
 
 def train_tokeniser(config: Union[TokeniserConfig, dict],
                     dataset: Dataset,
-                    output_path: Union[str, Path] = 'tokeniser.json'):
+                    output_dir: Union[str, Path] = '.'):
     '''Train a tokeniser on a dataset.
 
     Args:
@@ -20,7 +20,8 @@ def train_tokeniser(config: Union[TokeniserConfig, dict],
             Dataset to train the tokeniser on. Must have a feature named
             'text'.
         output_dir (str or Path, optional):
-            Path to save the tokeniser to. Defaults to './tokeniser.json'.
+            Directory to save the tokeniser to. Defaults to the current
+            directory.
     '''
     # Convert config to `TokeniserConfig` instance if a dict is given
     if isinstance(config, dict):
@@ -114,7 +115,8 @@ def train_tokeniser(config: Union[TokeniserConfig, dict],
     tokeniser.train_from_iterator(iterator=dataset['text'],
                                   trainer=trainer)
 
-    # Save the tokeniser
-    tokeniser.save(str(output_path))
+    # Save the tokeniser and configuration
+    tokeniser.save(str(output_dir / 'tokenizer.json'))
+    config.save(str(output_dir / 'tokenizer_config.json'))
 
     return tokeniser
