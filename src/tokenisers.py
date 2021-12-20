@@ -8,20 +8,30 @@ from typing import Union
 from .tokeniser_config import TokeniserConfig
 
 
-def train_tokeniser(config: Union[TokeniserConfig, dict],
-                    dataset: Dataset,
-                    output_dir: Union[str, Path] = '.'):
+def train_tokeniser(dataset: Dataset,
+                    config: Union[TokeniserConfig, dict],
+                    save_tokeniser: bool = True,
+                    output_dir: Union[str, Path] = '.',
+                    show_progress: bool = True):
     '''Train a tokeniser on a dataset.
 
     Args:
-        config (TokeniserConfig or dict):
-            Configuration for the tokeniser.
         dataset (Dataset):
             Dataset to train the tokeniser on. Must have a feature named
             'text'.
+        config (TokeniserConfig or dict):
+            Configuration for the tokeniser.
+        save_tokeniser (bool, optional):
+            Whether to save the tokeniser to disk. Defaults to True.
         output_dir (str or Path, optional):
-            Directory to save the tokeniser to. Defaults to the current
-            directory.
+            Directory to save the tokeniser to. Only relevant if
+            `save_tokeniser` is True. Defaults to the current directory.
+        show_progress (bool, optional):
+            Whether to show progress bars. Defaults to True.
+
+    Returns:
+        Tokenizer:
+            Trained tokenizer.
     '''
     # Convert config to `TokeniserConfig` instance if a dict is given
     if isinstance(config, dict):
@@ -102,13 +112,16 @@ def train_tokeniser(config: Union[TokeniserConfig, dict],
     # Initialise the trainer
     if config.tokeniser_type == 'bpe':
         trainer = trainers.BpeTrainer(vocab_size=config.vocab_size,
+                                      show_progress=show_progress,
                                       special_tokens=special_tokens)
     elif config.tokeniser_type == 'wordpiece':
         trainer = trainers.WordPieceTrainer(vocab_size=config.vocab_size,
+                                            show_progress=show_progress,
                                             special_tokens=special_tokens)
     elif config.tokeniser_type == 'unigram':
         trainer = trainers.UnigramTrainer(vocab_size=config.vocab_size,
                                           special_tokens=special_tokens,
+                                          show_progress=show_progress,
                                           unk_token='<unk>')
 
     # Train the tokeniser
@@ -120,7 +133,8 @@ def train_tokeniser(config: Union[TokeniserConfig, dict],
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Save the tokeniser and configuration
-    tokeniser.save(str(output_dir / 'tokenizer.json'))
-    config.save(str(output_dir / 'tokenizer_config.json'))
+    if save_tokeniser:
+        tokeniser.save(str(output_dir / 'tokenizer.json'))
+        config.save(str(output_dir / 'tokenizer_config.json'))
 
     return tokeniser
