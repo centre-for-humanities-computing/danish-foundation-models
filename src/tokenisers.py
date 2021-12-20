@@ -5,7 +5,7 @@ from tokenizers import (trainers, pre_tokenizers, tokenizers, normalizers,
 from datasets.arrow_dataset import Dataset
 from pathlib import Path
 from typing import Union
-from tokeniser_config import TokeniserConfig
+from .tokeniser_config import TokeniserConfig
 
 
 def train_tokeniser(config: Union[TokeniserConfig, dict],
