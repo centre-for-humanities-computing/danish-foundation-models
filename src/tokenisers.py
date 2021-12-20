@@ -102,12 +102,15 @@ def train_tokeniser(dataset: Dataset,
     elif config.byte_level:
         tokeniser.decoder = decoders.ByteLevel()
 
+    # Enable truncation
+    if config.truncation:
+        tokeniser.enable_truncation(max_length=config.max_length)
 
-    # Enable truncation and padding
-    tokeniser.enable_truncation(max_length=config.max_length)
-    tokeniser.enable_padding(pad_id=0,
-                             pad_type_id=0,
-                             pad_token=config.pad_token)
+    # Enable padding
+    if config.padding:
+        tokeniser.enable_padding(pad_id=0,
+                                 pad_type_id=0,
+                                 pad_token=config.pad_token)
 
     # Initialise the trainer
     if config.tokeniser_type == 'bpe':
