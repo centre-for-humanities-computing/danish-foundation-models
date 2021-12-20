@@ -1,8 +1,9 @@
-"""script for converting the HopeTweet corpus into HF format"""
+"""script for converting the InfoMedia corpus into HF format"""
 
 
 import os
 from typing import Dict, List
+from wasabi import msg
 import datasets
 import ndjson
 
@@ -10,13 +11,12 @@ _CITATION = """\
 None yet
 """
 
-data_path = os.path.join("/work", "data", "hpv-infomedia")
+data_base_dir = os.path.join("/work", "data", "hope-infomedia")
+data_path = os.path.join(data_base_dir, "yearly")
 
-_DESCRIPTION = """\
-# Jan will you add this potentially read from a readme at path using
-with open(os.path.join(data_path, "readme.md")) as f:
+# description
+with open(os.path.join(data_base_dir, "readme_infomedia.md")) as f:
     _DESCRIPTION = f.read()
-"""
 
 _HOMEPAGE = "https://hope-project.dk/#/"
 _LICENSE = "Not public"
@@ -42,12 +42,12 @@ class DaNewsConfig(datasets.BuilderConfig):
 
 
 class DaNews(datasets.GeneratorBasedBuilder):
-    """The DaNews is a Corpus contains news from 2000+"""
+    """The DaNews is a corpus containing danish news from 2000-12"""
 
     BUILDER_CONFIGS = [
         DaNewsConfig(
-            name="HopeNews",
-            description="Document level dataset. Each row contains one tweet along with its metadata",
+            name="DaNews",
+            description="Document level dataset. Each row contains one news article along with its metadata",
         )
     ]
 
@@ -61,7 +61,7 @@ class DaNews(datasets.GeneratorBasedBuilder):
                     "subheading": datasets.Value("string"),
                     "lead": datasets.Value("string"),
                     "paragraph": datasets.Value("string"),
-                    "publishdate": datasets.Value("timestamp"),
+                    "publishdate": datasets.Value("string"),
                     "body": datasets.Value("string"),
                     "captions": datasets.Value("string"),
                     "authors": datasets.Value("string"),
@@ -109,13 +109,14 @@ class DaNews(datasets.GeneratorBasedBuilder):
             "captions": "Captions",
             "authors": "Authors",
             "source": "Source",
-            "wordcount": "WouldCount",
+            "wordcount": "WordCount",
             "articleid": "ArticleId",
             "pageids": "PageIds",
         }
 
         for fp in filepaths:
             with open(fp) as f:
+                msg.info(f'Starting on {os.path.basename(fp)}')
                 reader = ndjson.reader(f)
 
                 for row in reader:
