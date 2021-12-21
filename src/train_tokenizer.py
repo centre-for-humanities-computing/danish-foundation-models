@@ -3,12 +3,13 @@
 from tokenizers import (trainers, pre_tokenizers, tokenizers, normalizers,
                         models, AddedToken, processors, decoders)
 from datasets.arrow_dataset import Dataset
+from datasets.iterable_dataset import IterableDataset
 from pathlib import Path
-from typing import Union
+from typing import Union, Iterable
 from .tokenizer_config import TokenizerConfig
 
 
-def train_tokenizer(dataset: Dataset,
+def train_tokenizer(corpus: Union[Dataset, IterableDataset, Iterable[str]],
                     config: Union[TokenizerConfig, dict],
                     save_tokenizer: bool = True,
                     output_dir: Union[str, Path] = '.',
@@ -16,9 +17,10 @@ def train_tokenizer(dataset: Dataset,
     '''Train a tokenizer on a dataset.
 
     Args:
-        dataset (Dataset):
-            Dataset to train the tokenizer on. Must have a feature named
-            'text'.
+        corpus (Dataset, IterableDataset or iterable of strings):
+            Corpus to train the tokenizer on. Can either be a Hugging Face
+            `Dataset` or `IterableDataset` object with a feature named 'text',
+            or simply an iterable of strings.
         config (TokenizerConfig or dict):
             Configuration for the tokenizer.
         save_tokenizer (bool, optional):
@@ -36,6 +38,10 @@ def train_tokenizer(dataset: Dataset,
     # Convert config to `TokenizerConfig` instance if a dict is given
     if isinstance(config, dict):
         config = TokenizerConfig(**config)
+
+    # Convert corpus to an iterable of strings if a Dataset is given
+    if isinstance(corpus, Dataset) or isinstance(corpus, IterableDataset):
+        corpus = (sample['text'] for sample in corpus)
 
     # Instantiate the tokenizer model
     if config.tokenizer_type == 'bpe':
@@ -127,8 +133,7 @@ def train_tokenizer(dataset: Dataset,
                                           unk_token='<unk>')
 
     # Train the tokenizer
-    dataset_iter = (sample['text'] for sample in dataset)
-    tokenizer.train_from_iterator(iterator=dataset_iter, trainer=trainer)
+    tokenizer.train_from_iterator(iterator=corpus, trainer=trainer)
 
     # If the output directory does not exist, create it
     output_dir = Path(output_dir)
