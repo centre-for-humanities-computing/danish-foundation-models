@@ -174,12 +174,25 @@ class TestTrainTokeniser:
         yield load_dataset('DDSC/lcc', split='test')
 
     @pytest.fixture(scope='class')
+    def streamed_dataset(self):
+        yield load_dataset('DDSC/lcc', split='test', streaming=True)
+
+    @pytest.fixture(scope='class')
     def train_params(self):
         yield dict(save_tokeniser=False, show_progress=False)
 
     @pytest.fixture(scope='class')
     def test_docs(self):
         yield ['Dette er en dårlig <mask>.', 'Test…']
+
+    def test_streaming(self, streamed_dataset, valid_config_dict, train_params,
+                       test_docs):
+        config = TokeniserConfig(**valid_config_dict)
+        tok = train_tokeniser(dataset=streamed_dataset,
+                              config=config,
+                              **train_params)
+        tokens = ['Det', 'te', 'er', 'en', 'dår', 'lig', '<mask>', '.']
+        assert tok.encode(test_docs[0]).tokens == tokens
 
     def test_bpe(self, dataset, valid_config_dict, train_params, test_docs):
         config_dict = valid_config_dict.copy()

@@ -127,8 +127,8 @@ def train_tokeniser(dataset: Dataset,
                                           unk_token='<unk>')
 
     # Train the tokeniser
-    tokeniser.train_from_iterator(iterator=dataset['text'],
-                                  trainer=trainer)
+    dataset_iter = (sample['text'] for sample in dataset)
+    tokeniser.train_from_iterator(iterator=dataset_iter, trainer=trainer)
 
     # If the output directory does not exist, create it
     output_dir = Path(output_dir)
