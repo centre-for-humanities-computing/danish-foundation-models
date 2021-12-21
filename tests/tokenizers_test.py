@@ -4,7 +4,12 @@ import pytest
 from pathlib import Path
 from datasets import load_dataset
 from pydantic import ValidationError
+import os
 from src import TokenizerConfig, train_tokenizer
+
+
+# Disable tokenizer parallelization
+os.environ['TOKENIZERS_PARALLELISM'] = 'false'
 
 
 @pytest.fixture(scope='module')
