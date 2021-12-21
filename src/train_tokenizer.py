@@ -1,4 +1,4 @@
-'''Script to train tokenizers from a Hugging Face dataset'''
+'''Script to train tokenizers'''
 
 from tokenizers import (trainers, pre_tokenizers, tokenizers, normalizers,
                         models, AddedToken, processors, decoders)
