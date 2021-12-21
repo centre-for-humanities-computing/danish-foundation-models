@@ -2,6 +2,7 @@
 
 import pytest
 from pathlib import Path
+import pandas as pd
 from datasets import load_dataset
 from pydantic import ValidationError
 import os
@@ -190,6 +191,32 @@ class TestTrainTokenizer:
     @pytest.fixture(scope='class')
     def test_docs(self):
         yield ['Dette er en dårlig <mask>.', 'Test…']
+
+    def test_iterable_of_texts(self, dataset, valid_config_dict, train_params,
+                               test_docs):
+        config = TokenizerConfig(**valid_config_dict)
+        tok = train_tokenizer(corpus=(s['text'] for s in dataset),
+                              config=config,
+                              **train_params)
+        tokens = ['Det', 'te', 'er', 'en', 'dår', 'lig', '<mask>', '.']
+        assert tok.encode(test_docs[0]).tokens == tokens
+
+    def test_list_of_texts(self, dataset, valid_config_dict, train_params,
+                               test_docs):
+        config = TokenizerConfig(**valid_config_dict)
+        tok = train_tokenizer(corpus=[s['text'] for s in dataset],
+                              config=config,
+                              **train_params)
+        tokens = ['Det', 'te', 'er', 'en', 'dår', 'lig', '<mask>', '.']
+        assert tok.encode(test_docs[0]).tokens == tokens
+
+    def test_series_of_texts(self, dataset, valid_config_dict, train_params,
+                               test_docs):
+        config = TokenizerConfig(**valid_config_dict)
+        series = pd.Series([s['text'] for s in dataset])
+        tok = train_tokenizer(corpus=series, config=config, **train_params)
+        tokens = ['Det', 'te', 'er', 'en', 'dår', 'lig', '<mask>', '.']
+        assert tok.encode(test_docs[0]).tokens == tokens
 
     def test_streaming(self, streamed_dataset, valid_config_dict, train_params,
                        test_docs):
