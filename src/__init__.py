@@ -1,2 +1,2 @@
-from .tokeniser_config import TokeniserConfig  # noqa
-from .train_tokeniser import train_tokeniser  # noqa
+from .tokenizer_config import TokenizerConfig  # noqa
+from .train_tokenizer import train_tokenizer  # noqa

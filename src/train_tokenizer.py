@@ -5,27 +5,27 @@ from tokenizers import (trainers, pre_tokenizers, tokenizers, normalizers,
 from datasets.arrow_dataset import Dataset
 from pathlib import Path
 from typing import Union
-from .tokeniser_config import TokeniserConfig
+from .tokenizer_config import TokenizerConfig
 
 
-def train_tokeniser(dataset: Dataset,
-                    config: Union[TokeniserConfig, dict],
-                    save_tokeniser: bool = True,
+def train_tokenizer(dataset: Dataset,
+                    config: Union[TokenizerConfig, dict],
+                    save_tokenizer: bool = True,
                     output_dir: Union[str, Path] = '.',
                     show_progress: bool = True):
-    '''Train a tokeniser on a dataset.
+    '''Train a tokenizer on a dataset.
 
     Args:
         dataset (Dataset):
-            Dataset to train the tokeniser on. Must have a feature named
+            Dataset to train the tokenizer on. Must have a feature named
             'text'.
-        config (TokeniserConfig or dict):
-            Configuration for the tokeniser.
-        save_tokeniser (bool, optional):
-            Whether to save the tokeniser to disk. Defaults to True.
+        config (TokenizerConfig or dict):
+            Configuration for the tokenizer.
+        save_tokenizer (bool, optional):
+            Whether to save the tokenizer to disk. Defaults to True.
         output_dir (str or Path, optional):
-            Directory to save the tokeniser to. Only relevant if
-            `save_tokeniser` is True. Defaults to the current directory.
+            Directory to save the tokenizer to. Only relevant if
+            `save_tokenizer` is True. Defaults to the current directory.
         show_progress (bool, optional):
             Whether to show progress bars. Defaults to True.
 
@@ -33,22 +33,22 @@ def train_tokeniser(dataset: Dataset,
         Tokenizer:
             Trained tokenizer.
     '''
-    # Convert config to `TokeniserConfig` instance if a dict is given
+    # Convert config to `TokenizerConfig` instance if a dict is given
     if isinstance(config, dict):
-        config = TokeniserConfig(**config)
+        config = TokenizerConfig(**config)
 
-    # Instantiate the tokeniser model
-    if config.tokeniser_type == 'bpe':
+    # Instantiate the tokenizer model
+    if config.tokenizer_type == 'bpe':
         model = models.BPE(unk_token=config.unk_token)
-    elif config.tokeniser_type == 'wordpiece':
+    elif config.tokenizer_type == 'wordpiece':
         model = models.WordPiece(unk_token=config.unk_token)  # noqa
-    elif config.tokeniser_type == 'unigram':
+    elif config.tokenizer_type == 'unigram':
         model = models.Unigram()  # noqa
 
-    # Instantiate the tokeniser
-    tokeniser = tokenizers.Tokenizer(model)
+    # Instantiate the tokenizer
+    tokenizer = tokenizers.Tokenizer(model)
 
-    # Initialise the special tokens and add them to the tokeniser
+    # Initialise the special tokens and add them to the tokenizer
     special_tokens = [
         AddedToken(config.pad_token, single_word=True, normalized=False),
         AddedToken(config.bos_token, single_word=True, normalized=False),
@@ -56,21 +56,21 @@ def train_tokeniser(dataset: Dataset,
         AddedToken(config.unk_token, single_word=True, normalized=False),
         AddedToken(config.mask_token, single_word=True, normalized=False)
     ]
-    tokeniser.add_special_tokens(special_tokens)
+    tokenizer.add_special_tokens(special_tokens)
 
-    # Initialise the normaliser and add it to the tokeniser
-    normaliser_list = list()
-    if config.nfkc_normalisation:
-        normaliser_list.append(normalizers.NFKC())
+    # Initialise the normalizer and add it to the tokenizer
+    normalizer_list = list()
+    if config.nfkc_normalization:
+        normalizer_list.append(normalizers.NFKC())
     if config.lower_case:
-        normaliser_list.append(normalizers.Lowercase())
-    normaliser = normalizers.Sequence(normaliser_list)  # noqa
-    tokeniser.normalizer = normaliser
+        normalizer_list.append(normalizers.Lowercase())
+    normalizer = normalizers.Sequence(normalizer_list)  # noqa
+    tokenizer.normalizer = normalizer
 
     # Shorthand for whether a prefix whitespace should be added to words
     pre_ws = config.add_prefix_space
 
-    # Initialise the pre-tokeniser and add it to the tokeniser
+    # Initialise the pre-tokenizer and add it to the tokenizer
     pre_tok_list = list()
     if config.byte_level:
         pre_tok_list.append(pre_tokenizers.ByteLevel(add_prefix_space=pre_ws))
@@ -78,8 +78,8 @@ def train_tokeniser(dataset: Dataset,
         pre_tok_list.append(pre_tokenizers.Metaspace(add_prefix_space=pre_ws))
     if not config.byte_level and not config.sentence_piece:
         pre_tok_list.append(pre_tokenizers.Whitespace())
-    pre_tokeniser = pre_tokenizers.Sequence(pre_tok_list)
-    tokeniser.pre_tokenizer = pre_tokeniser
+    pre_tokenizer = pre_tokenizers.Sequence(pre_tok_list)
+    tokenizer.pre_tokenizer = pre_tokenizer
 
     # Initialise the post-processor
     if config.add_sep_and_cls_tokens:
@@ -87,56 +87,56 @@ def train_tokeniser(dataset: Dataset,
                       sep=(config.eos_token, 2),
                       trim_offsets=True,
                       add_prefix_space=pre_ws)
-        tokeniser.post_processor = processors.RobertaProcessing(**params)
+        tokenizer.post_processor = processors.RobertaProcessing(**params)
     elif config.byte_level:
-        tokeniser.post_processor = processors.ByteLevel(trim_offsets=True)
+        tokenizer.post_processor = processors.ByteLevel(trim_offsets=True)
 
     # Initialise the decoder
-    if config.tokeniser_type == 'bpe':
-        tokeniser.decoder = decoders.BPEDecoder()
-    elif config.tokeniser_type == 'wordpiece':
-        tokeniser.decoder = decoders.WordPiece(prefix='##', cleanup=True)
+    if config.tokenizer_type == 'bpe':
+        tokenizer.decoder = decoders.BPEDecoder()
+    elif config.tokenizer_type == 'wordpiece':
+        tokenizer.decoder = decoders.WordPiece(prefix='##', cleanup=True)
     elif config.sentence_piece:
-        tokeniser.decoder = decoders.Metaspace(add_prefix_space=pre_ws)
+        tokenizer.decoder = decoders.Metaspace(add_prefix_space=pre_ws)
     elif config.byte_level:
-        tokeniser.decoder = decoders.ByteLevel()
+        tokenizer.decoder = decoders.ByteLevel()
 
     # Enable truncation
     if config.truncation:
-        tokeniser.enable_truncation(max_length=config.max_length)
+        tokenizer.enable_truncation(max_length=config.max_length)
 
     # Enable padding
     if config.padding:
-        tokeniser.enable_padding(pad_id=0,
+        tokenizer.enable_padding(pad_id=0,
                                  pad_type_id=0,
                                  pad_token=config.pad_token)
 
     # Initialise the trainer
-    if config.tokeniser_type == 'bpe':
+    if config.tokenizer_type == 'bpe':
         trainer = trainers.BpeTrainer(vocab_size=config.vocab_size,
                                       show_progress=show_progress,
                                       special_tokens=special_tokens)
-    elif config.tokeniser_type == 'wordpiece':
+    elif config.tokenizer_type == 'wordpiece':
         trainer = trainers.WordPieceTrainer(vocab_size=config.vocab_size,
                                             show_progress=show_progress,
                                             special_tokens=special_tokens)
-    elif config.tokeniser_type == 'unigram':
+    elif config.tokenizer_type == 'unigram':
         trainer = trainers.UnigramTrainer(vocab_size=config.vocab_size,
                                           special_tokens=special_tokens,
                                           show_progress=show_progress,
                                           unk_token='<unk>')
 
-    # Train the tokeniser
+    # Train the tokenizer
     dataset_iter = (sample['text'] for sample in dataset)
-    tokeniser.train_from_iterator(iterator=dataset_iter, trainer=trainer)
+    tokenizer.train_from_iterator(iterator=dataset_iter, trainer=trainer)
 
     # If the output directory does not exist, create it
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # Save the tokeniser and configuration
-    if save_tokeniser:
-        tokeniser.save(str(output_dir / 'tokenizer.json'))
+    # Save the tokenizer and configuration
+    if save_tokenizer:
+        tokenizer.save(str(output_dir / 'tokenizer.json'))
         config.save(str(output_dir / 'tokenizer_config.json'))
 
-    return tokeniser
+    return tokenizer
