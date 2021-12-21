@@ -1,0 +1,15 @@
+
+# models
+torch
+transformers
+
+# data
+datasets
+ndjson==0.3.1
+
+## data cleaning
+git+https://github.com/KennethEnevoldsen/text-dedup
+
+
+# prints
+wasabi
