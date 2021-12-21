@@ -221,7 +221,7 @@ class TestTrainTokenizer:
     def test_streaming(self, streamed_dataset, valid_config_dict, train_params,
                        test_docs):
         config = TokenizerConfig(**valid_config_dict)
-        tok = train_tokenizer(dataset=streamed_dataset,
+        tok = train_tokenizer(corpus=streamed_dataset,
                               config=config,
                               **train_params)
         tokens = ['Det', 'te', 'er', 'en', 'dår', 'lig', '<mask>', '.']
@@ -231,7 +231,7 @@ class TestTrainTokenizer:
         config_dict = valid_config_dict.copy()
         config_dict['tokenizer_type'] = 'bpe'
         config = TokenizerConfig(**config_dict)
-        tok = train_tokenizer(dataset=dataset, config=config, **train_params)
+        tok = train_tokenizer(corpus=dataset, config=config, **train_params)
         tokens = ['Det', 'te', 'er', 'en', 'dår', 'lig', '<mask>', '.']
         assert tok.encode(test_docs[0]).tokens == tokens
 
@@ -240,7 +240,7 @@ class TestTrainTokenizer:
         config_dict = valid_config_dict.copy()
         config_dict['tokenizer_type'] = 'wordpiece'
         config = TokenizerConfig(**config_dict)
-        tok = train_tokenizer(dataset=dataset, config=config, **train_params)
+        tok = train_tokenizer(corpus=dataset, config=config, **train_params)
         tokens = ['Det', '##te', 'er', 'en', 'dår', '##lig', '<mask>', '.']
         assert tok.encode(test_docs[0]).tokens == tokens
 
@@ -248,7 +248,7 @@ class TestTrainTokenizer:
         config_dict = valid_config_dict.copy()
         config_dict['tokenizer_type'] = 'unigram'
         config = TokenizerConfig(**config_dict)
-        tok = train_tokenizer(dataset=dataset, config=config, **train_params)
+        tok = train_tokenizer(corpus=dataset, config=config, **train_params)
         tokens = ['Det', 'te', 'er', 'en', 'dårlig', '<mask>', '.']
         assert tok.encode(test_docs[0]).tokens == tokens
 
@@ -257,7 +257,7 @@ class TestTrainTokenizer:
         config_dict = valid_config_dict.copy()
         config_dict['lower_case'] = True
         config = TokenizerConfig(**config_dict)
-        tok = train_tokenizer(dataset=dataset, config=config, **train_params)
+        tok = train_tokenizer(corpus=dataset, config=config, **train_params)
         tokens = ['dette', 'er', 'en', 'dår', 'lig', '<mask>', '.']
         assert tok.encode(test_docs[0]).tokens == tokens
 
@@ -266,7 +266,7 @@ class TestTrainTokenizer:
         config_dict = valid_config_dict.copy()
         config_dict['sentence_piece'] = True
         config = TokenizerConfig(**config_dict)
-        tok = train_tokenizer(dataset=dataset, config=config, **train_params)
+        tok = train_tokenizer(corpus=dataset, config=config, **train_params)
         tokens = ['Det', 'te', '▁er', '▁en', '▁dår', 'lig', '▁', '<mask>', '.']
         assert tok.encode(test_docs[0]).tokens == tokens
 
@@ -275,7 +275,7 @@ class TestTrainTokenizer:
         config_dict = valid_config_dict.copy()
         config_dict['add_prefix_space'] = True
         config = TokenizerConfig(**config_dict)
-        tok = train_tokenizer(dataset=dataset, config=config, **train_params)
+        tok = train_tokenizer(corpus=dataset, config=config, **train_params)
         tokens = ['Det', 'te', 'er', 'en', 'dår', 'lig', '<mask>', '.']
         assert tok.encode(test_docs[0]).tokens == tokens
 
@@ -284,7 +284,7 @@ class TestTrainTokenizer:
         config_dict = valid_config_dict.copy()
         config_dict['byte_level'] = True
         config = TokenizerConfig(**config_dict)
-        tok = train_tokenizer(dataset=dataset, config=config, **train_params)
+        tok = train_tokenizer(corpus=dataset, config=config, **train_params)
         tokens =['Det', 'te', 'Ġer', 'Ġen', 'ĠdÃ¥r', 'lig', 'Ġ', '<mask>', '.']
         assert tok.encode(test_docs[0]).tokens == tokens
 
@@ -293,7 +293,7 @@ class TestTrainTokenizer:
         config_dict = valid_config_dict.copy()
         config_dict['add_sep_and_cls_tokens'] = True
         config = TokenizerConfig(**config_dict)
-        tok = train_tokenizer(dataset=dataset, config=config, **train_params)
+        tok = train_tokenizer(corpus=dataset, config=config, **train_params)
         tokens = ['<bos>', 'Det', 'te', 'er', 'en', 'dår', 'lig', '<mask>',
                   '.', '<eos>']
         assert tok.encode(test_docs[0]).tokens == tokens
@@ -302,7 +302,7 @@ class TestTrainTokenizer:
         config_dict = valid_config_dict.copy()
         config_dict['padding'] = True
         config = TokenizerConfig(**config_dict)
-        tok = train_tokenizer(dataset=dataset, config=config, **train_params)
+        tok = train_tokenizer(corpus=dataset, config=config, **train_params)
         tokens = ['T', 'est', '…', '<pad>', '<pad>', '<pad>', '<pad>', '<pad>']
         assert tok.encode_batch(test_docs)[1].tokens == tokens
 
@@ -312,7 +312,7 @@ class TestTrainTokenizer:
         config_dict['truncation'] = True
         config_dict['max_length'] = 3
         config = TokenizerConfig(**config_dict)
-        tok = train_tokenizer(dataset=dataset, config=config, **train_params)
+        tok = train_tokenizer(corpus=dataset, config=config, **train_params)
         tokens = ['Det', 'te', 'er']
         assert tok.encode(test_docs[0]).tokens == tokens
 
@@ -321,7 +321,7 @@ class TestTrainTokenizer:
         config_dict = valid_config_dict.copy()
         config_dict['nfkc_normalization'] = True
         config = TokenizerConfig(**config_dict)
-        tok = train_tokenizer(dataset=dataset, config=config, **train_params)
+        tok = train_tokenizer(corpus=dataset, config=config, **train_params)
         tokens = ['T', 'est', '..', '.']
         assert tok.encode(test_docs[1]).tokens == tokens
 
@@ -331,7 +331,7 @@ class TestTrainTokenizer:
         config_dict['padding'] = True
         config_dict['pad_token'] = '[PAD]'
         config = TokenizerConfig(**config_dict)
-        tok = train_tokenizer(dataset=dataset, config=config, **train_params)
+        tok = train_tokenizer(corpus=dataset, config=config, **train_params)
         tokens =['T', 'est', '…', '[PAD]', '[PAD]', '[PAD]', '[PAD]', '[PAD]']
         assert tok.encode_batch(test_docs)[1].tokens == tokens
 
@@ -341,7 +341,7 @@ class TestTrainTokenizer:
         config_dict['add_sep_and_cls_tokens'] = True
         config_dict['bos_token'] = '[CLS]'
         config = TokenizerConfig(**config_dict)
-        tok = train_tokenizer(dataset=dataset, config=config, **train_params)
+        tok = train_tokenizer(corpus=dataset, config=config, **train_params)
         tokens = ['[CLS]', 'Det', 'te', 'er', 'en', 'dår', 'lig', '<mask>',
                   '.', '<eos>']
         assert tok.encode(test_docs[0]).tokens == tokens
@@ -352,7 +352,7 @@ class TestTrainTokenizer:
         config_dict['add_sep_and_cls_tokens'] = True
         config_dict['eos_token'] = '[SEP]'
         config = TokenizerConfig(**config_dict)
-        tok = train_tokenizer(dataset=dataset, config=config, **train_params)
+        tok = train_tokenizer(corpus=dataset, config=config, **train_params)
         tokens = ['<bos>', 'Det', 'te', 'er', 'en', 'dår', 'lig', '<mask>',
                   '.', '[SEP]']
         assert tok.encode(test_docs[0]).tokens == tokens
@@ -362,7 +362,7 @@ class TestTrainTokenizer:
         config_dict = valid_config_dict.copy()
         config_dict['unk_token'] = '[UNK]'
         config = TokenizerConfig(**config_dict)
-        tok = train_tokenizer(dataset=dataset, config=config, **train_params)
+        tok = train_tokenizer(corpus=dataset, config=config, **train_params)
         new_test_doc = str(test_docs[0]) + '<>'
         tokens = ['Det', 'te', 'er', 'en', 'dår', 'lig', '<mask>', '.',
                   '[UNK]', '[UNK]']
@@ -373,7 +373,7 @@ class TestTrainTokenizer:
         config_dict = valid_config_dict.copy()
         config_dict['mask_token'] = '[MASK]'
         config = TokenizerConfig(**config_dict)
-        tok = train_tokenizer(dataset=dataset, config=config, **train_params)
+        tok = train_tokenizer(corpus=dataset, config=config, **train_params)
         tokens = ['Det', 'te', 'er', 'en', 'dår', 'lig', '[MASK]', '.',]
         new_test_doc = str(test_docs[0]).replace('<mask>', '[MASK]')
         assert tok.encode(new_test_doc).tokens == tokens
