@@ -34,7 +34,7 @@ This is an outline of the current status of the project and the responsibilities
 # Info
 - This project uses compute resources supplied by [Ucloud](https://docs.cloud.sdu.dk/index.html).
 
-## Current collaborators:
+## Current Contributors:
 - Kenneth Enevoldsen
 - Lasse Hansen
 - Jan Kostkan
