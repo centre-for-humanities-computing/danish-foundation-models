@@ -1,4 +1,4 @@
-# Litererature
+# Littererature
 This is a working document for literature. This is much for sharing and organizing meterial as opposed to the Zotero which is for citation management.
 
 ## Model suggestions
