@@ -1,41 +1,59 @@
-# danish-foundation-models
-A project for training foundational Danish language model.
-
-# Status:
-This is an outline of the current status of the project and the responsibilities of each person. There is likely things you wish to change do let me know.
+# DFM: Danish Foundation Models
+A collaborative project for training foundational Danish language model.
 
 ## Datasets:
-- :books: DAGW: @Lasse Hansen has converted DAGW to HF format, and will perform some dedup on the dataset. We are messaging with Leon to publish both the cleaned and current version on HF datasets
-- :bird: HopeTwitter: A dataset of tweets collected as a part of the HOPE project.
-- :newspaper: Infomedia: @Kostkan Jan have cleaned the Infomedia corpus and is working on creating a HF version of the dataset.
-- :link: Netarkivet:@Kenneth Enevoldsen will get a datadumb on UCloud. Me, Rokas (joining us mid Jan.) and @Kasper Junge will work on developing script for cleaning this data.
-- 🗯 Reddit: The [reddit dataset](https://huggingface.co/datasets/DDSC/reddit-da) available on Huggingface supplied by @saatrupdan.
+The dataset currently available to the project for training: 
+
+
+| Dataset | Description | Size in million tokens |
+| ------- | ------- | ------- |
+| :books: DAGW    | Danish Gigaword. A wide coverage dataset of Danish text. | ~1 000 |
+| :bird: HopeTwitter    | A dataset of tweets collected as a part of the HOPE project. | |
+| :newspaper: DaNews | A dataset consisting of Danish newspapers | |
+| 🗯 Reddit-da | A Danish subsection of reddit  | ~86 | 
+| :link: Netarkivet | A subsection of the "Danish" internet collected the royal Danish library | | 
+| :link: mC4 | A cleaned part of the common crawl | | 
 
 
 ## Models:
-- Tokenizers: @Dan my idea was simply to train all three and test which was was best using a small bert on DAGW, seems like you are already doing that. Do you need any help with this?
-- Training scripts: @Malte Højmark-Bertelsen can you make an (rough) initial outline for a HF trainer using wandb sweeps?
-- Model configs: (None responsible) Thinking of the categories small, medium large. With the models ELECTRA, T5 og GPT. Potentially with a few tweaks (e.g. this paper indicates potential benefits of changing activation functions).
-  - @Malte Højmark-Bertelsen suggested [DeBERTa v3](https://arxiv.org/abs/2111.09543?context=cs)instead of ELECTRA
+Currently the plan is to train:
 
+- An encoder model (e.g. BERT), probably DeBERTa v3
+- A decoder model (like GPT3), probably GPT
+- A encoder-decoder model (e.g. T5), probably T5 v1.1 
+
+Potentially other models, which might be included include:
+- long-range transformers
+- distilled versions of the models
+
+### Tokenizers
+Tokenizers is trained on a subset of the dataset which is chosen to be a balanced set. Currently this include
+- DAGW (~1000 million tokens)
+- Reddit (~85 million tokens)
+- HopeTwitter (~300 million tokens)
+- DaNews (~300 million tokens)
+
+It is currently noticably missing webdata.
 
 ## Timeline:
-- Dec.: start training of a candidate model of dataset excluding Netarkivet
-- Dec.: first meeting if possible, @Kenneth Enevoldsen will send out an invite
-- Jan.-feb.: Finalize on a collaborate method for training the models
-- Jan.: start cleaning netarkivet
-- Feb.: training of candidate model in each model category
-- 1st Mar.: Data cleaning done
-- Mar.: start training largest encoder model
-- 1st Apr.: Larger call for project will language models
-- (undated): Fine-tune model on news and twitter
+- [x] Dec.: first meeting
+- [ ] Dec.-Feb: start training of a candidate model of dataset excluding Netarkivet
+- [ ] Jan.-Feb.: Finalize on a collaborate method for training the models
+- [ ] Jan.: start cleaning netarkivet
+- [ ] Feb.: training of candidate model in each model category
+- [ ] 1st Mar.: Data cleaning done
+- [ ] Mar.: start training largest encoder model
+- [ ] 1st Apr.: Larger call for project will language models
+- [ ] (undated): Fine-tune model on news and twitter
 
+# Wish to contribute
+DFM is considered a collaborate project for training and improving Danish Language models. If you wish to contribute don't hesitate to reach out using the discussion section or directly to the authors.
 
-# Info
+# Acknowledgements
 - This project uses compute resources supplied by [Ucloud](https://docs.cloud.sdu.dk/index.html).
 
 ## Current Contributors:
-- Kenneth Enevoldsen
+- Kenneth Enevoldsen, Kenneth.enevoldsen@cas.au.dk
 - Lasse Hansen
 - Jan Kostkan
 - Dan Saattrup Nielsen
@@ -44,4 +62,5 @@ This is an outline of the current status of the project and the responsibilities
 - Rokas Maksevičius - Junior developer cleaning the netarkiv
 - Peter Bjerregaard Vahlstrup - the guy who makes sure data collections works
 - Kristoffer Nielbo - Supervisor
+
 
