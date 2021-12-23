@@ -6,7 +6,7 @@ import pandas as pd
 from datasets import load_dataset
 from pydantic import ValidationError
 import os
-from src import TokenizerConfig, train_tokenizer
+from dfm.tokenizers import TokenizerConfig, train_tokenizer
 
 
 # Disable tokenizer parallelization

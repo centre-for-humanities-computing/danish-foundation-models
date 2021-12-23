@@ -116,7 +116,7 @@ class DaNews(datasets.GeneratorBasedBuilder):
 
         for fp in filepaths:
             with open(fp) as f:
-                msg.info(f'Starting on {os.path.basename(fp)}')
+                msg.info(f'DaNews: Starting reading from:\n {os.path.basename(fp)}')
                 reader = ndjson.reader(f)
 
                 for row in reader:

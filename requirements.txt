@@ -1,15 +1,18 @@
 
 # models
-torch
-transformers
+torch~=1.10.1
+transformers~=4.15.0
 
 # data
-datasets
+datasets~=1.17.0
 ndjson==0.3.1
 
 ## data cleaning
 git+https://github.com/KennethEnevoldsen/text-dedup
 
+# utility
+wasabi~=0.9.0
+pydantic~=1.8.2
 
-# prints
-wasabi
+# testing
+pytest~=6.2.5
