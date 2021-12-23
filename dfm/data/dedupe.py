@@ -23,7 +23,14 @@ def min_hash_deduper(examples: Dict[str, list], text_column = "text", threshold=
         groups_.add(group)
     return examples
 
-def duplicate_filter(examples: Dict[str, list], dupe_indicator_columns = "is_min_hash_duplicate"):
-    """duplicate filter for streaming datasets
-    """
-    return [e for e in examples in e[dupe_indicator_columns] is False]
+
+def duplicate_filter(examples: Dict[str, list], duplicate_column: str = "is_min_hash_duplicate"):
+    i = 0
+    while i < len(examples["duplicate_column"]):
+        duplicate = examples["duplicate_column"][i]
+        if duplicate:
+            for k in examples:
+                examples[k].pop(i)
+        else:
+            i += 1
+    return examples
