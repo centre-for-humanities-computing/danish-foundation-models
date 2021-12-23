@@ -50,7 +50,7 @@ It is currently noticably missing webdata.
 DFM is considered a collaborate project for training and improving Danish Language models. If you wish to contribute don't hesitate to reach out using the discussion section or directly to the authors.
 
 # Acknowledgements
-- This project uses compute resources supplied by [Ucloud](https://docs.cloud.sdu.dk/index.html).
+This project uses compute resources supplied by [Ucloud](https://docs.cloud.sdu.dk/index.html).
 
 ## Current Contributors:
 - Kenneth Enevoldsen, Kenneth.enevoldsen@cas.au.dk
