@@ -127,6 +127,7 @@ def load_tokenizer_ds():
     prob = arr / sum(arr)
 
     ds = interleave_datasets([tweets, news, dagw, reddit], probabilities=prob.tolist())
+    ds.take(n_reddit + n_dagw + n_tweets, n_news)
     return ds
 
 def load_dfm_dataset(dataset: str, **kwargs) -> Dataset:
