@@ -38,12 +38,12 @@ It is currently noticably missing webdata.
 
 ## Timeline:
 - [x] Dec.: first meeting
-- [ ] Dec.-Feb: start training of a candidate model of dataset excluding Netarkivet
+- [ ] Jan.-Feb: start training of a candidate model of dataset excluding Netarkivet
 - [ ] Jan.-Feb.: Finalize on a collaborate method for training the models
 - [ ] Jan.: start cleaning netarkivet
 - [ ] Feb.: training of candidate model in each model category
 - [ ] 1st Mar.: Data cleaning done
-- [ ] Mar.: start training largest encoder model
+- [ ] Mar-Apr.: start training largest model
 - [ ] 1st Apr.: Larger call for project will language models
 - [ ] (undated): Fine-tune model on news and twitter
 
