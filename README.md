@@ -13,6 +13,7 @@ The dataset currently available to the project for training:
 | 🗯 Reddit-da | A Danish subsection of reddit  | ~86 | 
 | :link: Netarkivet | A subsection of the "Danish" internet collected the royal Danish library | | 
 | :link: mC4 | A cleaned part of the common crawl | | 
+| lex | A danish curated wikipedia | | 
 
 
 ## Models:
