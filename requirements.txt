@@ -16,3 +16,6 @@ pydantic~=1.8.2
 
 # testing
 pytest~=6.2.5
+
+# format
+black
