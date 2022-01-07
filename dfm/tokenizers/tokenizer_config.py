@@ -1,4 +1,4 @@
-'''Class to hold the configuration for the tokenizer'''
+"""Class to hold the configuration for the tokenizer"""
 
 from pathlib import Path
 import json
@@ -8,14 +8,15 @@ from enum import Enum
 
 
 class TokenizerType(str, Enum):
-    '''Class that holds the different tokenizer types'''
-    bpe = 'bpe'
-    wordpiece = 'wordpiece'
-    unigram = 'unigram'
+    """Class that holds the different tokenizer types"""
+
+    bpe = "bpe"
+    wordpiece = "wordpiece"
+    unigram = "unigram"
 
 
 class TokenizerConfig(BaseModel):
-    '''Class to hold tokenizer configuration.
+    """Class to hold tokenizer configuration.
 
     Args:
         tokenizer_type (str):
@@ -60,7 +61,8 @@ class TokenizerConfig(BaseModel):
             Token to use for unknown tokens. Defaults to '<unk>'.
         mask_token (str, optional):
             Token to use for masking. Defaults to '<mask>'.
-    '''
+    """
+
     tokenizer_type: TokenizerType
     vocab_size: PositiveInt
     lower_case: bool
@@ -72,25 +74,25 @@ class TokenizerConfig(BaseModel):
     truncation: bool = True
     max_length: PositiveInt = 512
     nfkc_normalization: bool = True
-    pad_token: StrictStr = '<pad>'
-    bos_token: StrictStr = '<s>'
-    eos_token: StrictStr = '</s>'
-    unk_token: StrictStr = '<unk>'
-    mask_token: StrictStr = '<mask>'
+    pad_token: StrictStr = "<pad>"
+    bos_token: StrictStr = "<s>"
+    eos_token: StrictStr = "</s>"
+    unk_token: StrictStr = "<unk>"
+    mask_token: StrictStr = "<mask>"
 
     def save(self, filename: Union[str, Path]):
-        '''Save tokenizer configuration to file.
+        """Save tokenizer configuration to file.
 
         Args:
             filename (str or Path):
                 File to save tokenizer configuration to.
-        '''
-        with Path(filename).open('w') as f:
+        """
+        with Path(filename).open("w") as f:
             json.dump(dict(self), f, indent=4)
 
     @classmethod
     def load(cls, filename: Union[str, Path]):
-        '''Load tokenizer configuration from file.
+        """Load tokenizer configuration from file.
 
         Args:
             filename (str or Path):
@@ -99,7 +101,7 @@ class TokenizerConfig(BaseModel):
         Returns:
             TokenizerConfig:
                 Tokenizer configuration.
-        '''
-        with Path(filename).open('r') as f:
+        """
+        with Path(filename).open("r") as f:
             config = json.load(f)
         return cls(**config)

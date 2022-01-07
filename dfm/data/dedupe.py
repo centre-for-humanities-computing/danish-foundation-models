@@ -2,12 +2,15 @@ from typing import Dict
 
 from text_dedup import MinHashDeduper
 
-def min_hash_deduper(examples: Dict[str, list], text_column = "text", threshold=0.9, n_gram_size=5):
+
+def min_hash_deduper(
+    examples: Dict[str, list], text_column="text", threshold=0.9, n_gram_size=5
+):
     """created a new feature "is_min_hash_duplicate" which indicate on the whether
     the example is a duplicate. Intended for batched inputs
 
     Args:
-        threshold (float, optional): Threshold for what is a duplicate. Defaults to 0.9. 
+        threshold (float, optional): Threshold for what is a duplicate. Defaults to 0.9.
         Values between 0.8 to 0.9 is probably reasonable.
         n_gram_size (int, optional): [description]. Defaults to 5.
     """
@@ -24,7 +27,9 @@ def min_hash_deduper(examples: Dict[str, list], text_column = "text", threshold=
     return examples
 
 
-def duplicate_filter(examples: Dict[str, list], duplicate_column: str = "is_min_hash_duplicate"):
+def duplicate_filter(
+    examples: Dict[str, list], duplicate_column: str = "is_min_hash_duplicate"
+):
     i = 0
     while i < len(examples["duplicate_column"]):
         duplicate = examples["duplicate_column"][i]

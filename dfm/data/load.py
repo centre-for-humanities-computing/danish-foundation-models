@@ -63,6 +63,7 @@ def load_dagw(filter_danavis: bool = True, streaming: bool = False):
     )
     ds = dataset["train"]
     if filter_danavis:
+
         def filter_(examples):
             i = 0
             while i < len(examples["source"]):
@@ -90,8 +91,9 @@ def load_reddit(streaming=False):
 
 def load_tokenizer_ds():
     """
-    script used for training the tokenizer. Load a balances set of data to train the tokenizer on. 
+    script used for training the tokenizer. Load a balances set of data to train the tokenizer on.
     """
+
     def word_count(example):
         example["n_words"] = len(list(filter(lambda x: x, example["text"].split(" "))))
         return example
@@ -115,12 +117,13 @@ def load_tokenizer_ds():
 
     reddit = load_reddit(streaming=False)
     dagw = load_dagw(streaming=False)
-    n_reddit = len(reddit) # 1 908 887
-    n_dagw = len(dagw) # 666 437
+    n_reddit = len(reddit)  # 1 908 887
+    n_dagw = len(dagw)  # 666 437
 
     reddit = load_reddit(streaming=True)  # use all tokens ~86M
-    dagw = load_dagw(streaming=True)  # use all tokens (-danavis, -twitter) ~1 000M tokens
-
+    dagw = load_dagw(
+        streaming=True
+    )  # use all tokens (-danavis, -twitter) ~1 000M tokens
 
     # calculate proportion of each dataset
     arr = np.array([n_tweets, n_news, n_dagw, n_reddit])
@@ -129,22 +132,27 @@ def load_tokenizer_ds():
     ds = interleave_datasets([tweets, news, dagw, reddit], probabilities=prob.tolist())
     return ds
 
+
 def load_dfm_dataset(dataset: str, **kwargs) -> Dataset:
     """load a predefined dfm dataset
 
     Args:
         dataset (str): A predefined dataset
-    
+
     Returns:
         Dataset: a Huggingface dataset
     """
-    dataset_loaders = {"tokenization": load_tokenizer_ds,
-                       "hopetweets": load_tweets,
-                       "reddit": load_reddit,
-                       "danews": load_news,
-                       "dagw": load_dagw}
+    dataset_loaders = {
+        "tokenization": load_tokenizer_ds,
+        "hopetweets": load_tweets,
+        "reddit": load_reddit,
+        "danews": load_news,
+        "dagw": load_dagw,
+    }
 
     if dataset in dataset_loaders:
         return dataset_loaders[dataset.lower()](**kwargs)
     else:
-        raise ValueError(f"invalid dataset. Valid datasets include {dataset_loaders.keys()}")
+        raise ValueError(
+            f"invalid dataset. Valid datasets include {dataset_loaders.keys()}"
+        )
