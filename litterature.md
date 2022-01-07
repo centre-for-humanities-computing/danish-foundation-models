@@ -1,5 +1,5 @@
-# Littererature
-This is a working document for literature. This is much for sharing and organizing meterial as opposed to the Zotero which is for citation management.
+# Litererature
+This is a working document for literature. This is much for sharing and organizing material as opposed to the Zotero which is for citation management.
 
 ## Model suggestions
 - [DeBERTa v3](https://arxiv.org/abs/2111.09543?context=cs)
