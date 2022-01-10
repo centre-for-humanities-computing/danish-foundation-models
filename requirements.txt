@@ -1,2 +1,4 @@
 wandb
 transformers
+datasets
+black
