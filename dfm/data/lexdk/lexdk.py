@@ -20,7 +20,7 @@ def load_lexdk(path: Union[Path, str]) -> Dataset:
         title=Value('string'),
         clarification=Value('string'),
         authors=[Value('string')],
-        date=Value('timestamp[s, tz=CET]'),
+        date=Value('string'),
         text=Value('string')
     ))
     return Dataset.from_json(path, features=features)
