@@ -164,15 +164,17 @@ class TestTokenizerConfig:
 
     def test_save(self, valid_config_dict, config_path):
         tokenizer_config = TokenizerConfig(**valid_config_dict)
-        config_path.unlink(missing_ok=True)
+        if config_path.exists():
+            config_path.unlink()
         tokenizer_config.save(config_path)
-        assert config_path.exists
+        assert config_path.exists()
 
     def test_load(self, valid_config_dict, config_path):
         config = TokenizerConfig(**valid_config_dict)
         loaded_config = TokenizerConfig.load(config_path)
         assert dict(config) == dict(loaded_config)
-        config_path.unlink(missing_ok=True)
+        if config_path.exists():
+            config_path.unlink()
 
 
 class TestTrainTokenizer:
