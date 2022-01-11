@@ -7,7 +7,7 @@
 A collaborative project for training foundational Danish language model.
 
 ## Datasets:
-The dataset currently available to the project for training: 
+The dataset currently available to the project for training:
 
 
 | Dataset | Description | Size in million tokens |
@@ -18,7 +18,7 @@ The dataset currently available to the project for training:
 | 🗯 Reddit-da | A Danish subsection of reddit  | ~86 | 
 | :link: Netarkivet | A subsection of the "Danish" internet collected the royal Danish library | | 
 | :link: mC4 | A cleaned part of the common crawl | | 
-| lex | A danish curated wikipedia | | 
+| Lex.dk | A Danish curated wikipedia, written by experts | ~26 |
 
 
 ## Models:
@@ -26,7 +26,7 @@ Currently the plan is to train:
 
 - An encoder model (e.g. BERT), probably DeBERTa v3
 - A decoder model (like GPT3), probably GPT
-- A encoder-decoder model (e.g. T5), probably T5 v1.1 
+- A encoder-decoder model (e.g. T5), probably T5 v1.1
 
 Potentially other models, which might be included include:
 - long-range transformers
