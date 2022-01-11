@@ -5,12 +5,14 @@ import os
 import sys
 
 from typing import Union
-from datasets import (load_dataset,
-                      interleave_datasets,
-                      Dataset,
-                      IterableDataset,
-                      Features,
-                      Value)
+from datasets import (
+    load_dataset,
+    interleave_datasets,
+    Dataset,
+    IterableDataset,
+    Features,
+    Value,
+)
 
 
 def load_tweets(dedupe=False):
@@ -95,7 +97,7 @@ def load_reddit(streaming=False):
 
 
 def load_lexdk(streaming: bool = False) -> Union[Dataset, IterableDataset]:
-    '''Load the Lex.dk dataset as a Hugging Face Dataset object.
+    """Load the Lex.dk dataset as a Hugging Face Dataset object.
 
     Args:
         streaming (bool, optional):
@@ -103,19 +105,20 @@ def load_lexdk(streaming: bool = False) -> Union[Dataset, IterableDataset]:
 
     Returns:
         Dataset or IterableDataset: The loaded Hugging Face dataset.
-    '''
-    features = Features(dict(
-        url=Value('string'),
-        title=Value('string'),
-        clarification=Value('string'),
-        authors=[Value('string')],
-        date=Value('string'),
-        text=Value('string')
-    ))
-    return load_dataset(path='dfm/data/lexdk',
-                        features=features,
-                        streaming=streaming,
-                        split='train')
+    """
+    features = Features(
+        dict(
+            url=Value("string"),
+            title=Value("string"),
+            clarification=Value("string"),
+            authors=[Value("string")],
+            date=Value("string"),
+            text=Value("string"),
+        )
+    )
+    return load_dataset(
+        path="dfm/data/lexdk", features=features, streaming=streaming, split="train"
+    )
 
 
 def load_tokenizer_ds():
