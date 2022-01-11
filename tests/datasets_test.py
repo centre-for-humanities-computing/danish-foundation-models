@@ -6,6 +6,7 @@ from dfm.data.load import (
     load_news,
     load_dagw,
     load_reddit,
+    load_lexdk,
     load_tokenizer_ds,
 )
 from datasets import IterableDataset, Dataset
@@ -45,6 +46,16 @@ def test_load_reddit():
     ds = load_reddit(streaming=True)
     assert isinstance(ds, IterableDataset)
     ds = load_reddit(streaming=False)
+    assert isinstance(ds, Dataset)
+    assert isinstance(ds[0], dict)
+    assert "text" in ds[0]
+
+
+@pytest.mark.skip(reason="Dataset not publicly available")
+def test_load_lexdk():
+    ds = load_lexdk(streaming=True)
+    assert isinstance(ds, IterableDataset)
+    ds = load_lexdk(streaming=False)
     assert isinstance(ds, Dataset)
     assert isinstance(ds[0], dict)
     assert "text" in ds[0]
