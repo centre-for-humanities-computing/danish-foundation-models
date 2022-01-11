@@ -4,8 +4,13 @@ Loading scripts for HF type datasets
 import os
 import sys
 
-from typing import Optional
-from datasets import load_dataset, interleave_datasets, Dataset
+from typing import Union
+from datasets import (load_dataset,
+                      interleave_datasets,
+                      Dataset,
+                      IterableDataset,
+                      Features,
+                      Value)
 
 
 def load_tweets(dedupe=False):
@@ -89,6 +94,30 @@ def load_reddit(streaming=False):
     return ds
 
 
+def load_lexdk(streaming: bool = False) -> Union[Dataset, IterableDataset]:
+    '''Load the Lex.dk dataset as a Hugging Face Dataset object.
+
+    Args:
+        streaming (bool, optional):
+            Whether to stream the dataset. Defaults to False.
+
+    Returns:
+        Dataset or IterableDataset: The loaded Hugging Face dataset.
+    '''
+    features = Features(dict(
+        url=Value('string'),
+        title=Value('string'),
+        clarification=Value('string'),
+        authors=[Value('string')],
+        date=Value('string'),
+        text=Value('string')
+    ))
+    return load_dataset(path='lexdk',
+                        features=features,
+                        streaming=streaming,
+                        split='train')
+
+
 def load_tokenizer_ds():
     """
     script used for training the tokenizer. Load a balances set of data to train the tokenizer on.
@@ -148,6 +177,7 @@ def load_dfm_dataset(dataset: str, **kwargs) -> Dataset:
         "reddit": load_reddit,
         "danews": load_news,
         "dagw": load_dagw,
+        "lexdk": load_lexdk,
     }
 
     if dataset in dataset_loaders:
