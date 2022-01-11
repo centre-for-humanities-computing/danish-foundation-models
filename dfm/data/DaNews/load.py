@@ -1,6 +1,6 @@
-'''
+"""
 Loading newspaper dataset
-'''
+"""
 # %%
 import os
 import sys
@@ -22,11 +22,11 @@ ds = dataset["train"]
 # ds = ds.map({to_datetime, 'publishdate'})
 # ds = ds.map(
 #     min_hash_deduper, batched=True, batch_size=50_000
-# ) 
+# )
 
 sources = set()
-for i, example in enumerate(dataset['train']):
-    sources.add(example['source'])
+for i, example in enumerate(dataset["train"]):
+    sources.add(example["source"])
 
     if i % 100_000 == 0:
         print(i)

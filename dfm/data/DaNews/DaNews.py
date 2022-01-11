@@ -22,7 +22,6 @@ _HOMEPAGE = "https://hope-project.dk/#/"
 _LICENSE = "Not public"
 
 
-
 class DaNewsConfig(datasets.BuilderConfig):
     """BuilderConfig for DaNews."""
 
@@ -116,7 +115,7 @@ class DaNews(datasets.GeneratorBasedBuilder):
 
         for fp in filepaths:
             with open(fp) as f:
-                msg.info(f'DaNews: Starting reading from:\n {os.path.basename(fp)}')
+                msg.info(f"DaNews: Starting reading from:\n {os.path.basename(fp)}")
                 reader = ndjson.reader(f)
 
                 for row in reader:

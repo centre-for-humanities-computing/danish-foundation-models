@@ -1,4 +1,9 @@
+
 # DFM: Danish Foundation Models
+
+[![Code style: black](https://img.shields.io/badge/Code%20Style-Black-black)](https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html)
+[![github actions pytest](https://github.com/centre-for-humanities-computing/danish-foundation-models/actions/workflows/pytest.yml/badge.svg)](https://github.com/kennethenevoldsen/asent/actions)
+
 A collaborative project for training foundational Danish language model.
 
 ## Datasets:

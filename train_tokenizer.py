@@ -1,13 +1,16 @@
 from dfm.data import load_dfm_dataset
 from dfm.tokenizers import train_tokenizer, TokenizerConfig
 from wasabi import msg
+
 ds = load_dfm_dataset("tokenization")
-t_config = TokenizerConfig(tokenizer_type = "unigram",
-    vocab_size = 32000,
-    lower_case = False,
-    sentence_piece = True,
-    add_prefix_space = True,
-    byte_level =  False)
+t_config = TokenizerConfig(
+    tokenizer_type="unigram",
+    vocab_size=32000,
+    lower_case=False,
+    sentence_piece=True,
+    add_prefix_space=True,
+    byte_level=False,
+)
 
 msg.info("Started training tokenizer")
-train_tokenizer(corpus = ds, config=t_config)
+train_tokenizer(corpus=ds, config=t_config)
