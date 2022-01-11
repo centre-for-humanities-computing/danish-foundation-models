@@ -112,7 +112,7 @@ def load_lexdk(streaming: bool = False) -> Union[Dataset, IterableDataset]:
         date=Value('string'),
         text=Value('string')
     ))
-    return load_dataset(path='lexdk',
+    return load_dataset(path='dfm/data/lexdk',
                         features=features,
                         streaming=streaming,
                         split='train')
