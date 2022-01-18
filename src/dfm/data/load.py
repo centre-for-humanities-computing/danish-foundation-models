@@ -20,7 +20,7 @@ def dfm_load_dataset(dataset: str):
         DatasetDict: Dataset with train, test and validation split.
     """
 
-    ds = load_dataset(dataset)
+    ds = load_dataset(dataset, streaming=True)
 
     if "validation" and "test" not in ds:
         train_test = ds["train"].train_test_split(test_size=0.1)
