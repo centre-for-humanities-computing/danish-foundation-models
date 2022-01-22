@@ -14,10 +14,11 @@ from dfm.utils.utils import read_json
 import wandb
 from transformers import (
     AutoConfig,
-    AutoModelForPreTraining,
+    T5ForConditionalGeneration,
+    T5TokenizerFast,
     Trainer,
     TrainingArguments,
-    AutoTokenizer,
+    T5Tokenizer,
     DataCollatorForLanguageModeling,
 )
 from pathlib import Path
@@ -31,7 +32,7 @@ from dfm.data.preprocess import preprocess_dataset
 
 def main():
     train(
-        model_name="bert-base-uncased",
+        model_name="t5-small",
         pretraining_config_path="tests/test_configs/pretrain_config.json",
         dataset_names=["DDSC/reddit-da", "DDSC/angry-tweets"],
         interleave_probabilities=[0.5, 0.5],
@@ -65,7 +66,7 @@ def train(
     pretrain_config = read_json(pretraining_config_path)
 
     HF_config = AutoConfig.from_pretrained(model_name)
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    tokenizer = T5TokenizerFast.from_pretrained(model_name)
 
     # Load and preprocess datasets
     datasets = [dfm_load_dataset(d) for d in dataset_names]
@@ -86,7 +87,7 @@ def train(
     )
 
     # Load model
-    mdl = AutoModelForPreTraining(model_name, HF_config)
+    mdl = T5ForConditionalGeneration(model_name, HF_config)
 
     training_args = TrainingArguments(**pretrain_config)
 
