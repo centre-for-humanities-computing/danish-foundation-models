@@ -181,6 +181,7 @@ def load_dfm_dataset(dataset: str, **kwargs) -> Dataset:
         "danews": load_news,
         "dagw": load_dagw,
         "lexdk": load_lexdk,
+        # "all": load_concatenated_datasets
     }
 
     if dataset in dataset_loaders:
@@ -189,3 +190,8 @@ def load_dfm_dataset(dataset: str, **kwargs) -> Dataset:
         raise ValueError(
             f"invalid dataset. Valid datasets include {dataset_loaders.keys()}"
         )
+
+
+def load_multiple_dfm_datasets(datasets: List[str], **kwargs) -> Dataset:
+    datasets = [load_dfm_dataset(dataset, **kwargs) for dataset in datasets]
+    return datasets.concatenate_datasets(datasets)
