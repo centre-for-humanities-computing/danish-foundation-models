@@ -1,4 +1,4 @@
-"""Training script for training masked language models with sweeps
+   """Training script for training masked language models with sweeps
 Inspiration: https://colab.research.google.com/github/wandb/examples/blob/master/colabs/pytorch/Organizing_Hyperparameter_Sweeps_in_PyTorch_with_W%26B.ipynb#scrollTo=r4VjKui20N3j
 
 https://colab.research.google.com/github/huggingface/notebooks/blob/master/examples/language_modeling_from_scratch.ipynb
@@ -6,7 +6,6 @@ https://colab.research.google.com/github/huggingface/notebooks/blob/master/examp
 
 train.py --arg1 arg2 ...
 """
-
 from dfm.utils import read_json
 import wandb
 from transformers import (

@@ -1,0 +1,9 @@
+{
+    "model_name": "deberta-v2",
+    "output_dir": "models_test/deberta",
+    "config_name": "microsoft/deberta-v2-xxlarge",
+    "tokenizer_name": "microsoft/deberta-v2-xxlarge",
+    "dataset_name": "DDSC/twitter-sent",
+    "do_train": "True",
+    "do_eval": "False"
+}
