@@ -10,7 +10,7 @@ train.py --arg1 arg2 ...
 ##### NOT CONVERTED TO SEQ2SEQ MODELLING YET - JUST A COPY OF MLM
 
 
-from dfm.utils.utils import read_json
+from dfm.utils import read_json
 import wandb
 from transformers import (
     AutoConfig,

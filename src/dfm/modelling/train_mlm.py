@@ -7,7 +7,7 @@ https://colab.research.google.com/github/huggingface/notebooks/blob/master/examp
 train.py --arg1 arg2 ...
 """
 
-from dfm.utils.utils import read_json
+from dfm.utils import read_json
 import wandb
 from transformers import (
     AutoConfig,
