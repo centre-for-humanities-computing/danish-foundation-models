@@ -1,5 +1,19 @@
+"""
+Danish implementation of quality filter described in the paper:
+"Scaling Language Models: Methods, Analysis & Insights from Training Gopher"
+link: https://arxiv.org/abs/2112.11446
+
+Author:
+    Kenneth C. Enevoldsen
+    Kasper Junge
+
+References:
+    [1] Rae, J. W., Borgeaud, S., Cai, T., Millican, K., Hoffmann, J., Song, F., Aslanides, J., Henderson, S., Ring, R., Young, S., Rutherford, E.,
+    Hennigan, T., Menick, J., Cassirer, A., Powell, R., Driessche, G. van den, Hendricks, L. A., Rauh, M., Huang, P.-S., … Irving, G. (2021).
+    Scaling Language Models: Methods, Analysis & Insights from Training Gopher. https://arxiv.org/abs/2112.11446v2
+"""
+
 from collections import Counter
-from ctypes import Union
 from email.generator import Generator
 from functools import partial
 from typing import Iterable, Optional, Set, Tuple
@@ -9,12 +23,6 @@ from spacy.tokens import Doc
 
 
 class QualityFilter:
-    """
-    Danish implementation of quality filter described in the paper:
-    "Scaling Language Models: Methods, Analysis & Insights from Training Gopher"
-    link: https://arxiv.org/abs/2112.11446
-    """
-
     def __init__(
         self,
         stop_words: Optional[Set[str]] = None,
