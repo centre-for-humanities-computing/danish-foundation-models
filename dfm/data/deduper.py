@@ -212,5 +212,5 @@ if __name__ == '__main__':
     corpus = load_dataset('DDSC/partial-danish-gigaword-no-twitter',
                           streaming=True,
                           split='train')
-    deduper = Deduper(split_method='char_ngram', ngram_size=13)
+    deduper = Deduper(split_method='paragraph')
     deduper.deduplicate(corpus, output_fname='deduplicated.jsonl')
