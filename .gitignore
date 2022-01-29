@@ -133,3 +133,6 @@ dmypy.json
 .vscode/
 # JSONL data files
 **/*.jsonl
+
+#wandb
+wandb/*
