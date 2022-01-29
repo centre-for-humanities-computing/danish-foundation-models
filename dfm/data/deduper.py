@@ -30,15 +30,16 @@ class Deduper:
     Args:
         split_method (str or None, optional):
             The method to split the documents into shingles. Can be either
-            'ngram', 'paragraph', 'none' or None. Here 'ngram' splits on word
-            ngrams, 'paragraph' splits on newlines and where 'none' or None
-            means that a document is not split up at all. Defaults to 'ngram'.
+            'char_ngram', 'word_ngram', 'paragraph', 'none' or None. Here
+            'none' or None means that a document is not split up at all.
+            Defaults to 'char_ngram'.
         ngram_size (int, optional):
             The size of the ngram shingles. Only relevant if `split_method` is
-            'ngram'. Defaults to 13.
+            'char_ngram' or 'word_ngram'. Defaults to 13.
         ngram_stride (int, optional):
             The stride of the ngram shingles. Only relevant if `split_method`
-            is 'ngram'. Defaults to 10.
+            is 'char_ngram' or 'word_ngram'. Defaults to 1, corresponding to no
+            stride.
         similarity_threshold (float, optional):
             The similarity threshold to use for the MinHash functions.
             Defaults to 0.8.
@@ -62,9 +63,9 @@ class Deduper:
             (Cat. No. 97TB100171). IEEE, 1997.
     '''
     def __init__(self,
-                 split_method: Optional[str] = 'ngram',
+                 split_method: Optional[str] = 'char_ngram',
                  ngram_size: int = 13,
-                 ngram_stride: int = 10,
+                 ngram_stride: int = 1,
                  similarity_threshold: float = 0.8,
                  num_minhashes: int = 128,
                  random_seed: int = 42):
@@ -86,7 +87,8 @@ class Deduper:
 
         Raises:
             ValueError:
-                If `self.split_method` is not 'ngram', 'paragraph' or 'none'.
+                If `self.split_method` is not 'char_ngram', 'word_ngram',
+                'paragraph' or 'none'.
         '''
         # NFKC normalise document and remove punctuation
         doc = normalize('NFKC', doc)
@@ -97,10 +99,14 @@ class Deduper:
         minhash = MinHash(num_perm=self.num_minhashes, seed=self.random_seed)
 
         # Extract shingles from the document, depending on the `split_method`
-        if self.split_method == 'ngram':
+        if self.split_method == 'char_ngram':
+            max_char_idx = len(doc) - self.ngram_size
+            shingles = [doc[i : i + self.ngram_size]
+                        for i in range(0, max_char_idx, self.ngram_stride)]
+        elif self.split_method == 'word_ngram':
             words = doc.split(' ')
             max_word_idx = len(words) - self.ngram_size
-            shingles = [words[i : i + self.ngram_size]
+            shingles = [' '.join(words[i : i + self.ngram_size]).strip()
                         for i in range(0, max_word_idx, self.ngram_stride)]
         elif self.split_method == 'paragraph':
             shingles = [p for p in doc.split('\n') if len(p) > 0]
@@ -206,5 +212,5 @@ if __name__ == '__main__':
     corpus = load_dataset('DDSC/partial-danish-gigaword-no-twitter',
                           streaming=True,
                           split='train')
-    deduper = Deduper(split_method='ngram', ngram_size=13, ngram_stride=10)
+    deduper = Deduper(split_method='char_ngram', ngram_size=13)
     deduper.deduplicate(corpus, output_fname='deduplicated.jsonl')
