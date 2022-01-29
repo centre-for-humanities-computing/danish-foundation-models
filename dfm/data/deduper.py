@@ -172,7 +172,8 @@ class Deduper:
                 Defaults to False.
 
         Raises:
-            FileExistsError: If the output file already exists.
+            FileExistsError:
+                If the output file already exists and `overwrite` is False.
         """
         # Convert corpus to an iterable of strings if a Dataset is given
         if isinstance(corpus, Dataset) or isinstance(corpus, IterableDataset):
