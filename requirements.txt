@@ -9,6 +9,7 @@ ndjson==0.3.1
 
 ## data cleaning
 git+https://github.com/KennethEnevoldsen/text-dedup
+spacy>=3.1.4,<=3.3.0
 
 # utility
 wasabi~=0.9.0
