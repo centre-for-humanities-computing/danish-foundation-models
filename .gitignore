@@ -130,3 +130,6 @@ dmypy.json
 
 # JSONL data files
 **/*.jsonl
+
+# vs code
+.vscode/*
