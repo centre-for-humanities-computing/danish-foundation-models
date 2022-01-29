@@ -1,4 +1,22 @@
 wandb~0.12.9
-transformers
-datasets
-black
+
+# models
+torch~=1.10.1
+transformers~=4.15.0
+
+# data
+datasets~=1.17.0
+ndjson==0.3.1
+
+## data cleaning
+git+https://github.com/KennethEnevoldsen/text-dedup
+
+# utility
+wasabi~=0.9.0
+pydantic~=1.8.2
+
+# testing
+pytest~=6.2.5
+
+# format
+black==20.8b1
