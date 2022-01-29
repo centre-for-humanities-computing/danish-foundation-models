@@ -143,15 +143,15 @@ class Deduper:
             doc (str): The document to append to the JSONL file.
             fname (str or Path): The name of the JSONL file to append to.
         """
-        # Ensure that `doc_id` is a string
-        doc_id = str(doc_idx)
+        # Ensure that `doc_idx` is a string
+        doc_idx = str(doc_idx)
 
         # Ensure that `fname` is a Path object
         fname = Path(fname)
 
         # Append the document to the JSONL file
         with fname.open("a") as f:
-            jsonned = json.dumps(dict(id=doc_id, text=doc))
+            jsonned = json.dumps(dict(id=doc_idx, text=doc))
             f.write(jsonned + "\n")
 
     def deduplicate(
@@ -220,5 +220,5 @@ if __name__ == "__main__":
     corpus = load_dataset(
         "DDSC/partial-danish-gigaword-no-twitter", streaming=True, split="train"
     )
-    deduper = Deduper(split_method="paragraph")
+    deduper = Deduper(split_method="none")
     deduper.deduplicate(corpus, output_fname="deduplicated.jsonl")
