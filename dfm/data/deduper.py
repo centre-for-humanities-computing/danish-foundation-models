@@ -158,6 +158,7 @@ class Deduper:
         self,
         corpus: Union[Dataset, IterableDataset, Iterable[str]],
         output_fname: Union[str, Path] = "deduplicated.jsonl",
+        overwrite: bool = False
     ):
         """Removes duplicate documents from the corpus and stores it to disk.
 
@@ -166,6 +167,9 @@ class Deduper:
                 The corpus to deduplicate.
             output_fname (str or Path, optional):
                 The name of the output file.
+            overwrite (bool, optional):
+                Whether to overwrite the output file if it already exists.
+                Defaults to False.
 
         Raises:
             FileExistsError: If the output file already exists.
@@ -177,9 +181,13 @@ class Deduper:
         # Ensure that `output_fname` is a Path object
         output_fname = Path(output_fname)
 
-        # If the output file already exists then raise an error
+        # If the output file already exists then raise an error if `overwrite`
+        # is False and otherwise delete the file
         if output_fname.exists():
-            raise FileExistsError(f"Output file {output_fname} " f"already exists.")
+            if overwrite:
+                output_fname.unlink()
+            else:
+                raise FileExistsError(f"Output file {output_fname} " f"already exists.")
 
         # Initialise the LSH cache
         cache = MinHashLSH(
