@@ -158,7 +158,7 @@ class Deduper:
         self,
         corpus: Union[Dataset, IterableDataset, Iterable[str]],
         output_fname: Union[str, Path] = "deduplicated.jsonl",
-        overwrite: bool = False
+        overwrite: bool = False,
     ):
         """Removes duplicate documents from the corpus and stores it to disk.
 
