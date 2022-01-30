@@ -55,7 +55,6 @@ class Deduper:
         similarity_threshold (float): The Jaccard similarity threshold.
         num_minhashes (int): The number of MinHash functions to use.
         random_seed (int): The random seed to use for the MinHash functions.
-        cache (MinHashLSH object): The LSH cache for storing the fingerprints.
 
     References:
         [1] Broder, Andrei Z. "On the resemblance and containment of documents."
