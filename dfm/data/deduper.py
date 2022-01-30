@@ -109,7 +109,7 @@ class Deduper:
                 for i in range(0, max_char_idx, self.ngram_stride)
             ]
         elif self.split_method == "word_ngram":
-            words = doc.split(" ")
+            words = [word for word in doc.split(" ") if len(word) > 0]
             max_word_idx = len(words) - self.ngram_size
             shingles = [
                 " ".join(words[i : i + self.ngram_size]).strip()
