@@ -132,8 +132,8 @@ def test_line_bullets_or_ellipsis():
 
 def test_alphanum():
     qfilter = QualityFilter()
-    assert qfilter.alphanum(qfilter.nlp(texts[4]), alphanum_ratio=0.8) is False
-    assert qfilter.alphanum(qfilter.nlp(texts[0]), alphanum_ratio=0.8) is True
+    assert qfilter.alpha(qfilter.nlp(texts[4]), ratio=0.8) is False
+    assert qfilter.alpha(qfilter.nlp(texts[0]), ratio=0.8) is True
 
 
 def test_mean_word_length():
