@@ -206,9 +206,7 @@ class QualityFilter:
         )
         len_doc = len(doc)
         ratio_ = contains_alpha / len_doc
-        if ratio_ >= ratio:
-            return True
-        return False
+        return ratio_ < ratio
 
     @staticmethod
     def symbol_2_word(doc: Doc, ratio: float, symbol: str) -> bool:
