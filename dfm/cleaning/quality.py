@@ -171,7 +171,7 @@ class QualityFilter:
     @staticmethod
     def mean_word_length(doc: Doc, mean_word_length: Tuple[int, int]) -> bool:
         """
-        Filter document whose mean word length is outside the range of 3 to 10
+        Filter document whose mean word length is outside the range of {mean_word_length[0]} to {mean_word_length[1]}
         characters
 
         Args:
