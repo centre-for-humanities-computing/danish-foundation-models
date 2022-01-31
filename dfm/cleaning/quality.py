@@ -153,26 +153,54 @@ class QualityFilter:
 
     @staticmethod
     def doc_length(doc: Doc, doc_length: Tuple[int, int]) -> bool:
-        """We remove any document that does not contain between {doc_length[0]} and
-        {doc_length[1]} words"""
+        """
+        A filter that remove any document that does not contain between {doc_length[0]} and
+        {doc_length[1]} words
+
+        Args:
+            doc (Doc): SpaCy document
+            doc_length (Tuple[int, int]): Tuple indicate minimum and maximum length of
+                document
+
+        Returns:
+            bool: A boolean indicator of whether the text passed the filter.
+        """
 
         return doc_length[0] <= len(doc) <= doc_length[1]
 
     @staticmethod
     def mean_word_length(doc: Doc, mean_word_length: Tuple[int, int]) -> bool:
-        """Whose mean word length is outside the range of 3 to 10 characters"""
+        """
+        Filter document whose mean word length is outside the range of 3 to 10
+        characters
+
+        Args:
+            doc (Doc): SpaCy document
+            mean_word_length (Tuple[int, int]): Tuple indicate minimum and maximum
+                mean word length of document
+
+        Returns:
+            bool: A boolean indicator of whether the text passed the filter.
+        """
+
         w_len = [len(t) for t in doc]
         mwl = sum(w_len) / len(doc)
-        if mean_word_length[0] <= mwl <= mean_word_length[1]:
-            return True
-        return False
+        return mean_word_length[0] <= mwl <= mean_word_length[1]
 
     @staticmethod
     def alpha(doc: Doc, ratio: float) -> bool:
         """
-        We require that {ratio}% of words in a document contain at least one alphabetic
+        Filter that requires the {ratio}% of words in a document contain at least one alphabetic
         character
+
+        Args:
+            doc (Doc): SpaCy document
+            ratio (float): The ratio of alphabetic characters
+
+        Returns:
+            bool: A boolean indicator of whether the text passed the filter.
         """
+        # checks if a non-space token contains a alphabetic character 
         contains_alpha = sum(
             any(c.isalpha() for c in t.text) for t in doc if not t.is_space
         )
@@ -185,22 +213,38 @@ class QualityFilter:
     @staticmethod
     def symbol_2_word(doc: Doc, ratio: float, symbol: str) -> bool:
         """
-        We remove any document with a symbol-to-word ratio greater than {ratio} for
+        A filter that remove any document with a symbol-to-word ratio greater than {ratio} for
         either the {symbol}
+
+        Args:
+            doc (Doc): SpaCy document
+            ratio (float): The symbol to word ratio
+            symbol (str): A symbol to check the ratio of.
+
+        Returns:
+            bool: A boolean indicator of whether the text passed the filter.
         """
         n_symbol = doc.text.count(symbol)
         ratio_ = n_symbol / len(doc)
-        if ratio_ >= ratio:
-            return False
-        return True
+        return ratio_ < ratio
 
     @staticmethod
     def line_bullets_or_ellipsis(
         doc: Doc, max_p_bullets: float, max_p_ellipsis: float
     ) -> bool:
         """
-        We remove any document with more than {max_p_bullets}% of lines starting with a
-        bullet point, or more than {max_p_ellipsis}% ending with an ellipsis
+        A filter that remove any document with more than {max_p_bullets}% of lines
+        starting with a bullet point, or more than {max_p_ellipsis}% ending with an
+        ellipsis
+
+        Args:
+            doc (Doc): SpaCy document
+            max_p_bullets (float): Maximum percentage of lines starting with a bullet
+                point
+            max_p_ellipsis (float): Maximum percentage of lines ending with an ellipsis
+
+        Returns:
+            bool: A boolean indicator of whether the text passed the filter.
         """
         lines = doc.text.split("\n")
         if lines:
@@ -213,9 +257,7 @@ class QualityFilter:
             n_ellipsis = sum(
                 1 for line in lines if line.strip(" ").endswith(("…", "..."))
             )
-            if (n_ellipsis / n_lines) > max_p_ellipsis:
-                return False
-            return True
+            return (n_ellipsis / n_lines) < max_p_ellipsis
         return False
 
     @staticmethod
@@ -224,6 +266,14 @@ class QualityFilter:
         A "stop word" filter, to remove documents that do not contain at least {n} of
         the {stop_words}. This adequately deals with documents that contain no
         coherent text.
+
+        Args:
+            doc (Doc): SpaCy document
+            n (int): Number of stop words the text should contain
+            stop_words (set): A set of stop words
+
+        Returns:
+            bool: A boolean indicator of whether the text passed the filter.
         """
         n_stopwords = sum(1 for t in doc if t.text in stop_words)
         return n_stopwords >= n
