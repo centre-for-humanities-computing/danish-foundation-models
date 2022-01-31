@@ -30,7 +30,7 @@ class QualityFilter:
     Args:
         stop_words (Optional[Set[str]], optional): A set of stop words to use.
             Defaults to None.
-        min_stop_words (int, optional): The least ammount of stop words a text
+        min_stop_words (int, optional): The least amount of stop words a text
             should have before it is kept. Defaults to 2.
         mean_word_length (Tuple[int, int], optional): Upper and lower bound on the
             mean word length. Defaults to (3, 10).
