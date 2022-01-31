@@ -153,13 +153,14 @@ class QualityFilter:
 
     @staticmethod
     def doc_length(doc: Doc, doc_length: Tuple[int, int]) -> bool:
-        """we remove any document that does not contain between {doc_length[0]} and
+        """We remove any document that does not contain between {doc_length[0]} and
         {doc_length[1]} words"""
+
         return doc_length[0] <= len(doc) <= doc_length[1]
 
     @staticmethod
     def mean_word_length(doc: Doc, mean_word_length: Tuple[int, int]) -> bool:
-        """whose mean word length is outside the range of 3 to 10 characters"""
+        """Whose mean word length is outside the range of 3 to 10 characters"""
         w_len = [len(t) for t in doc]
         mwl = sum(w_len) / len(doc)
         if mean_word_length[0] <= mwl <= mean_word_length[1]:
@@ -184,7 +185,7 @@ class QualityFilter:
     @staticmethod
     def symbol_2_word(doc: Doc, ratio: float, symbol: str) -> bool:
         """
-        we remove any document with a symbol-to-word ratio greater than {ratio} for
+        We remove any document with a symbol-to-word ratio greater than {ratio} for
         either the {symbol}
         """
         n_symbol = doc.text.count(symbol)
@@ -198,7 +199,7 @@ class QualityFilter:
         doc: Doc, max_p_bullets: float, max_p_ellipsis: float
     ) -> bool:
         """
-        we remove any document with more than {max_p_bullets}% of lines starting with a
+        We remove any document with more than {max_p_bullets}% of lines starting with a
         bullet point, or more than {max_p_ellipsis}% ending with an ellipsis
         """
         lines = doc.text.split("\n")
