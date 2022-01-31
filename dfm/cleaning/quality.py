@@ -213,7 +213,7 @@ class QualityFilter:
     @staticmethod
     def symbol_2_word(doc: Doc, ratio: float, symbol: str) -> bool:
         """
-        A filter that remove any document with a symbol-to-word ratio greater than
+        A filter that removes any document with a symbol-to-word ratio greater than
         {ratio} for either the {symbol}
 
         Args:
