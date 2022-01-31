@@ -154,7 +154,7 @@ class QualityFilter:
     @staticmethod
     def doc_length(doc: Doc, doc_length: Tuple[int, int]) -> bool:
         """
-        A filter that remove any document that does not contain between {doc_length[0]}
+        A filter that removes any document that does not contain between {doc_length[0]}
         and {doc_length[1]} words
 
         Args:
