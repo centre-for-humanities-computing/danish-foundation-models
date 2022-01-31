@@ -30,7 +30,7 @@ class QualityFilter:
     Args:
         stop_words (Optional[Set[str]], optional): A set of stop words to use.
             Defaults to None.
-        min_stop_words (int, optional): The least ammount of stop words a text
+        min_stop_words (int, optional): The least amount of stop words a text
             should have before it is kept. Defaults to 2.
         mean_word_length (Tuple[int, int], optional): Upper and lower bound on the
             mean word length. Defaults to (3, 10).
@@ -121,7 +121,7 @@ class QualityFilter:
 
         Args:
             docs (Iterable[str]): An iterable of strings of the text you wish to filter.
-            as_tuples (bool, optional): If True doc is expected to be a tuple og size
+            as_tuples (bool, optional): If True doc is expected to be a tuple of size
                 two with the first element being the text. The output of this function
                     will then also be a generator of tuples filtered based on the text.
                     Defaults to False.
@@ -154,7 +154,7 @@ class QualityFilter:
     @staticmethod
     def doc_length(doc: Doc, doc_length: Tuple[int, int]) -> bool:
         """
-        A filter that remove any document that does not contain between {doc_length[0]}
+        A filter that removes any document that does not contain between {doc_length[0]}
         and {doc_length[1]} words
 
         Args:
@@ -171,7 +171,7 @@ class QualityFilter:
     @staticmethod
     def mean_word_length(doc: Doc, mean_word_length: Tuple[int, int]) -> bool:
         """
-        Filter document whose mean word length is outside the range of 3 to 10
+        Filter document whose mean word length is outside the range of {mean_word_length[0]} to {mean_word_length[1]}
         characters
 
         Args:
@@ -211,7 +211,7 @@ class QualityFilter:
     @staticmethod
     def symbol_2_word(doc: Doc, ratio: float, symbol: str) -> bool:
         """
-        A filter that remove any document with a symbol-to-word ratio greater than
+        A filter that removes any document with a symbol-to-word ratio greater than
         {ratio} for either the {symbol}
 
         Args:
