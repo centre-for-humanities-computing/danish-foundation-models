@@ -154,8 +154,8 @@ class QualityFilter:
     @staticmethod
     def doc_length(doc: Doc, doc_length: Tuple[int, int]) -> bool:
         """
-        A filter that remove any document that does not contain between {doc_length[0]} and
-        {doc_length[1]} words
+        A filter that remove any document that does not contain between {doc_length[0]}
+        and {doc_length[1]} words
 
         Args:
             doc (Doc): SpaCy document
@@ -190,8 +190,8 @@ class QualityFilter:
     @staticmethod
     def alpha(doc: Doc, ratio: float) -> bool:
         """
-        Filter that requires the {ratio}% of words in a document contain at least one alphabetic
-        character
+        Filter that requires the {ratio}% of words in a document contain at least one
+        alphabetic character
 
         Args:
             doc (Doc): SpaCy document
@@ -200,7 +200,7 @@ class QualityFilter:
         Returns:
             bool: A boolean indicator of whether the text passed the filter.
         """
-        # checks if a non-space token contains a alphabetic character 
+        # checks if a non-space token contains a alphabetic character
         contains_alpha = sum(
             any(c.isalpha() for c in t.text) for t in doc if not t.is_space
         )
@@ -213,8 +213,8 @@ class QualityFilter:
     @staticmethod
     def symbol_2_word(doc: Doc, ratio: float, symbol: str) -> bool:
         """
-        A filter that remove any document with a symbol-to-word ratio greater than {ratio} for
-        either the {symbol}
+        A filter that remove any document with a symbol-to-word ratio greater than
+        {ratio} for either the {symbol}
 
         Args:
             doc (Doc): SpaCy document
