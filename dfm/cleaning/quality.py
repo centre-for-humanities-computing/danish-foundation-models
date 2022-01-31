@@ -121,7 +121,7 @@ class QualityFilter:
 
         Args:
             docs (Iterable[str]): An iterable of strings of the text you wish to filter.
-            as_tuples (bool, optional): If True doc is expected to be a tuple og size
+            as_tuples (bool, optional): If True doc is expected to be a tuple of size
                 two with the first element being the text. The output of this function
                     will then also be a generator of tuples filtered based on the text.
                     Defaults to False.
