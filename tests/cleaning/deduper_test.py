@@ -4,6 +4,7 @@ import pytest
 import tempfile
 from pathlib import Path
 import json
+import re
 
 class TestDeduper:
     def dedup(self, corpus, **kwargs):
@@ -94,7 +95,22 @@ class TestDeduper:
         pass
 
     def test_no_normalization(self):
-        pass
+        identity = lambda doc: doc
+        assert (
+            self.dedup([
+                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
+                "Der kom en soldat marcherende hen ad landevejen!\n én. to? én; to?",
+            ], normalization_func=identity) == [
+                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
+                "Der kom en soldat marcherende hen ad landevejen!\n én. to? én; to?",
+                ]
+        )
 
     def test_aggresive_normalization(self):
-        pass
+        word_shape = lambda doc: re.sub('[A-Z]', 'X', re.sub('[^A-Z ]', 'x', doc))
+        assert (
+            self.dedup([
+                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
+                "Den var jo typisk påtrængende pæn og overrasket:\n et, tu! et, tu!"
+            ], normalization_func=word_shape) == ["Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"]
+        )
