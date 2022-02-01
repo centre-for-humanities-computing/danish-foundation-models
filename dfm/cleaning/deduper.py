@@ -20,7 +20,17 @@ import json
 from unicodedata import normalize
 import re
 from tqdm.auto import tqdm
+from collections.abc import Callable
 
+def _default_normalization(doc: str):
+    """NFKC normalise document and remove punctuation
+
+    Args:
+        doc (str): The document to normalize
+    """
+    doc = normalize("NFKC", doc)
+    doc = re.sub(r"[\.\,\:\;\!\?\(\)\[\]\{\}]", " ", doc)
+    return re.sub(" +", " ", doc)
 
 class Deduper:
     """Class that deduplicates an iterable corpus.
@@ -47,6 +57,9 @@ class Deduper:
             The number of MinHash functions to use. Defaults to 128.
         random_seed (int, optional):
             The random seed to use for the MinHash functions. Defaults to 42.
+        normalization_func: (Callable[[str], str], optional):
+            The function used to normalize documents before their are compared to
+            ignore insignificant differences.
 
     Attributes:
         split_method (str): The splitting method for extracting shingles.
@@ -55,6 +68,7 @@ class Deduper:
         similarity_threshold (float): The Jaccard similarity threshold.
         num_minhashes (int): The number of MinHash functions to use.
         random_seed (int): The random seed to use for the MinHash functions.
+        normalization_func (Callable): The function used for normalization.
 
     References:
         [1] Broder, Andrei Z. "On the resemblance and containment of documents."
@@ -70,6 +84,7 @@ class Deduper:
         similarity_threshold: float = 0.8,
         num_minhashes: int = 128,
         random_seed: int = 42,
+        normalization_func: Callable[[str], str] = _default_normalization,
     ):
         self.split_method = "none" if split_method is None else split_method
         self.ngram_size = ngram_size
@@ -77,6 +92,7 @@ class Deduper:
         self.similarity_threshold = similarity_threshold
         self.num_minhashes = num_minhashes
         self.random_seed = random_seed
+        self.normalization_func = normalization_func
 
     def deduplicate(
         self,
@@ -160,10 +176,8 @@ class Deduper:
                 If `self.split_method` is not 'char_ngram', 'word_ngram',
                 'paragraph' or 'none'.
         """
-        # NFKC normalise document and remove punctuation
-        doc = normalize("NFKC", doc)
-        doc = re.sub(r"[\.\,\:\;\!\?\(\)\[\]\{\}]", " ", doc)
-        doc = re.sub(" +", " ", doc)
+        # Normalize the document to ignore insignificant differences
+        doc = self.normalization_func(doc)
 
         # Initialise the fingerprint
         minhash = MinHash(num_perm=self.num_minhashes, seed=self.random_seed)
