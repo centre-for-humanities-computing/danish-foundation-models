@@ -213,14 +213,14 @@ class Deduper:
             return [
                 doc[i : i + self.ngram_size]
                 for i in range(0, max_char_idx, self.ngram_stride)
-            ]
+            ] or [doc]
         elif self.split_method == "word_ngram":
             words = [word for word in doc.split(" ") if len(word) > 0]
             max_word_idx = len(words) - self.ngram_size
             return [
                 " ".join(words[i : i + self.ngram_size]).strip()
                 for i in range(0, max_word_idx, self.ngram_stride)
-            ]
+            ] or [doc]
         elif self.split_method == "paragraph":
             return [p for p in doc.split("\n") if len(p) > 0]
         elif self.split_method == "none":

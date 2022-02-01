@@ -34,14 +34,21 @@ class TestDeduper:
             ]) == ["Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"]
         )
 
+    def test_document_shorter_than_shingles(self):
+        assert (
+            self.dedup([
+                "Hej med dig",
+                "Hej med dig",
+                "Gå din vej"
+            ], ngram_size=13) == ["Hej med dig", "Gå din vej"]
+        )
+
     def test_split_by_5_char_ngram(self):
         pass
 
     def test_split_by_13_char_ngram(self):
         pass
 
-    def test_split_by_13_char_ngram_short_document(self):
-        pass
 
     def test_split_by_5_word_ngram(self):
         pass
