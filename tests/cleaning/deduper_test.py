@@ -98,7 +98,9 @@ class TestDeduper:
             self.dedup([
                 "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
                 "Den var jo typisk påtrængende pæn og overrasket:\n et, tu! et, tu!"
-            ], normalization_func=word_shape) == ["Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"]
+            ], normalization_func=word_shape) == [
+                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"
+            ]
         )
 
     def test_2_minhashes(self):
