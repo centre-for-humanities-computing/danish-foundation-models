@@ -141,7 +141,7 @@ class TestQualityFilter:
             is False
         )
 
-    def test_alphanum(self, texts, qfilter):
+    def test_alpha(self, texts, qfilter):
         assert qfilter.alpha(qfilter.nlp(texts[4]), ratio=0.8) is False
         assert qfilter.alpha(qfilter.nlp(texts[0]), ratio=0.8) is True
 
