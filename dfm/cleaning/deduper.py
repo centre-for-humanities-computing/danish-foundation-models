@@ -60,6 +60,9 @@ class Deduper:
         normalization_func: (Callable[[str], str], optional):
             The function used to normalize documents before their are compared to
             ignore insignificant differences.
+        silent (bool, optional):
+            Silence the progress bar that otherwise prints to stdout. Defaults
+            to False.
 
     Attributes:
         split_method (str): The splitting method for extracting shingles.
@@ -69,6 +72,7 @@ class Deduper:
         num_minhashes (int): The number of MinHash functions to use.
         random_seed (int): The random seed to use for the MinHash functions.
         normalization_func (Callable): The function used for normalization.
+        silent (bool): Do not print progress to stdout.
 
     References:
         [1] Broder, Andrei Z. "On the resemblance and containment of documents."
@@ -85,6 +89,7 @@ class Deduper:
         num_minhashes: int = 128,
         random_seed: int = 42,
         normalization_func: Callable[[str], str] = _default_normalization,
+        silent: bool = False
     ):
         self.split_method = "none" if split_method is None else split_method
         self.ngram_size = ngram_size
@@ -93,6 +98,7 @@ class Deduper:
         self.num_minhashes = num_minhashes
         self.random_seed = random_seed
         self.normalization_func = normalization_func
+        self.silent = silent
 
     def deduplicate(
         self,
@@ -137,7 +143,7 @@ class Deduper:
 
         # Iterate over the corpus and store documents that are not duplicates
         duplicates = 0
-        with tqdm(corpus, desc="Deduplicating") as pbar:
+        with tqdm(corpus, desc="Deduplicating", disable=self.silent) as pbar:
             for doc_idx, doc in enumerate(pbar):
 
                 # Compute the fingerprint for the document
