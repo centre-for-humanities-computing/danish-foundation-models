@@ -111,7 +111,6 @@ class TestDeduper:
     def test_13_char_shingles(self):
         shingles = self.deduper()._extract_shingles("Hej med dig Kim")
         assert shingles == ["Hej med dig K", "ej med dig Ki", "j med dig Kim"]
-        pass
 
     def test_5_char_shingles(self):
         shingles = self.deduper(ngram_size=5)._extract_shingles("Hej med dig Kim")
