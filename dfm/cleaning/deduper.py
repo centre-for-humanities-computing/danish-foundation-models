@@ -176,11 +176,6 @@ class Deduper:
 
         Returns:
             LeanMinHash: The minhash fingerprint for the given document.
-
-        Raises:
-            ValueError:
-                If `self.split_method` is not 'char_ngram', 'word_ngram',
-                'paragraph' or 'none'.
         """
         # Normalize the document to ignore insignificant differences
         doc = self.normalization_func(doc)
@@ -188,29 +183,8 @@ class Deduper:
         # Initialise the fingerprint
         minhash = MinHash(num_perm=self.num_minhashes, seed=self.random_seed)
 
-        # Extract shingles from the document, depending on the `split_method`
-        if self.split_method == "char_ngram":
-            max_char_idx = len(doc) - self.ngram_size
-            shingles = [
-                doc[i : i + self.ngram_size]
-                for i in range(0, max_char_idx, self.ngram_stride)
-            ]
-        elif self.split_method == "word_ngram":
-            words = [word for word in doc.split(" ") if len(word) > 0]
-            max_word_idx = len(words) - self.ngram_size
-            shingles = [
-                " ".join(words[i : i + self.ngram_size]).strip()
-                for i in range(0, max_word_idx, self.ngram_stride)
-            ]
-        elif self.split_method == "paragraph":
-            shingles = [p for p in doc.split("\n") if len(p) > 0]
-        elif self.split_method == "none":
-            shingles = [doc]
-        else:
-            raise ValueError(f"Invalid split method: {self.split_method}")
-
-        # Add all the shingles to the fingerprint
-        for shingle in shingles:
+        # Add all shingles of the document to the fingerprint
+        for shingle in self._extract_shingles(doc):
             minhash.update(shingle.encode("utf-8"))
 
         # Convert the fingerprint to a LeanMinHash fingerprint, to save memory
@@ -219,6 +193,41 @@ class Deduper:
 
         # Return the fingerprint
         return minhash
+
+    def _extract_shingles(self, doc: str):
+        """Extract shingles from the document, depending on the `split_method`
+
+        Args:
+            doc (str): The document to extract shingles from.
+
+        Returns:
+            shingles (list): A list of shingles the document has been split into.
+
+        Raises:
+            ValueError:
+                If `self.split_method` is not 'char_ngram', 'word_ngram',
+                'paragraph' or 'none'.
+        """
+        if self.split_method == "char_ngram":
+            max_char_idx = len(doc) - self.ngram_size
+            return [
+                doc[i : i + self.ngram_size]
+                for i in range(0, max_char_idx, self.ngram_stride)
+            ]
+        elif self.split_method == "word_ngram":
+            words = [word for word in doc.split(" ") if len(word) > 0]
+            max_word_idx = len(words) - self.ngram_size
+            return [
+                " ".join(words[i : i + self.ngram_size]).strip()
+                for i in range(0, max_word_idx, self.ngram_stride)
+            ]
+        elif self.split_method == "paragraph":
+            return [p for p in doc.split("\n") if len(p) > 0]
+        elif self.split_method == "none":
+            return [doc]
+        else:
+            raise ValueError(f"Invalid split method: {self.split_method}")
+
 
     def _store_document(
         self, doc_idx: Union[str, int], doc: str, fname: Union[str, Path]
