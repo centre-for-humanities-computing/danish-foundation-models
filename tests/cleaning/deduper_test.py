@@ -19,6 +19,18 @@ class TestDeduper:
         deduper.deduplicate(corpus, output_fname=temp.name, overwrite=True)
         return [json.loads(line)['text'] for line in Path(temp.name).open("r")]
 
+    def miss_percentage(self, corpus=None, iterations=100, **kwargs):
+        corpus = corpus or [
+                    "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
+                    "Da kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"
+                 ]
+        misses = 0
+        for i in range(0, iterations):
+            if len(self.dedup(corpus, random_seed=i, **kwargs)) == 2:
+                misses += 1
+        return (100.0 * misses)/iterations
+
+
     def test_removes_exact_duplicates(self):
         assert (
             self.dedup([
@@ -45,19 +57,6 @@ class TestDeduper:
             ], ngram_size=13) == ["Hej med dig", "Gå din vej"]
         )
 
-    def test_split_by_5_char_ngram(self):
-        pass
-
-    def test_split_by_13_char_ngram(self):
-        pass
-
-
-    def test_split_by_5_word_ngram(self):
-        pass
-
-    def test_split_by_13_word_ngram(self):
-        pass
-
     def test_split_by_paragraph(self):
         assert (
             self.dedup([
@@ -80,21 +79,6 @@ class TestDeduper:
             ]
         )
 
-    def test_split_with_double_stride(self):
-        pass
-
-    def test_2_minhashes(self):
-        pass
-
-    def test_128_minhashes(self):
-        pass
-
-    def test_2048_minhashes(self):
-        pass
-
-    def test_seed_stability(self):
-        pass
-
     def test_no_normalization(self):
         identity = lambda doc: doc
         assert (
@@ -115,3 +99,38 @@ class TestDeduper:
                 "Den var jo typisk påtrængende pæn og overrasket:\n et, tu! et, tu!"
             ], normalization_func=word_shape) == ["Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"]
         )
+
+    def test_2_minhashes(self):
+        miss = self.miss_percentage(num_minhashes=2)
+        assert (miss > 10)
+        assert (miss < 20)
+
+    def test_128_minhashes(self):
+        miss = self.miss_percentage()
+        assert (miss > 5)
+        assert (miss < 10)
+
+    def test_256_minhashes(self):
+        miss = self.miss_percentage(num_minhashes=256)
+        assert (miss > 0)
+        assert (miss < 2)
+
+    @pytest.mark.skip(reason="Not implemented yet")
+    def test_split_with_double_stride(self):
+        pass
+
+    @pytest.mark.skip(reason="Not implemented yet")
+    def test_split_by_5_char_ngram(self):
+        pass
+
+    @pytest.mark.skip(reason="Not implemented yet")
+    def test_split_by_13_char_ngram(self):
+        pass
+
+    @pytest.mark.skip(reason="Not implemented yet")
+    def test_split_by_5_word_ngram(self):
+        pass
+
+    @pytest.mark.skip(reason="Not implemented yet")
+    def test_split_by_13_word_ngram(self):
+        pass
