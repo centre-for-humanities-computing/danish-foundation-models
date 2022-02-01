@@ -30,7 +30,10 @@ def valid_config_dict():
         mask_token="<mask>",
     )
 
+<<<<<<< HEAD:tests/tokenizers/train_tokenizer_test.py
 
+=======
+>>>>>>> rearrange tests to follow library structure:tests/tokenizers/train_tokenizer_test.py
 class TestTrainTokenizer:
     """Unit tests for the tok = train_tokenizer function"""
 
