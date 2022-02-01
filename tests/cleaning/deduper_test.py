@@ -12,6 +12,7 @@ class TestDeduper:
         default_args = {
             'random_seed': 42,
             'split_method': "char_ngram",
+            'silent': True
         }
         args = dict(default_args, **kwargs)
         deduper = Deduper(**args)
