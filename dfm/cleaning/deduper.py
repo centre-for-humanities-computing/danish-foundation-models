@@ -78,6 +78,74 @@ class Deduper:
         self.num_minhashes = num_minhashes
         self.random_seed = random_seed
 
+    def deduplicate(
+        self,
+        corpus: Union[Dataset, IterableDataset, Iterable[str]],
+        output_fname: Union[str, Path] = "deduplicated.jsonl",
+        overwrite: bool = False,
+    ):
+        """Removes duplicate documents from the corpus and stores it to disk.
+
+        Args:
+            corpus (Dataset, IterableDataset or iterable of strings):
+                The corpus to deduplicate.
+            output_fname (str or Path, optional):
+                The name of the output file.
+            overwrite (bool, optional):
+                Whether to overwrite the output file if it already exists.
+                Defaults to False.
+
+        Raises:
+            FileExistsError:
+                If the output file already exists and `overwrite` is False.
+        """
+        # Convert corpus to an iterable of strings if a Dataset is given
+        if isinstance(corpus, Dataset) or isinstance(corpus, IterableDataset):
+            corpus = (sample["text"] for sample in corpus)
+
+        # Ensure that `output_fname` is a Path object
+        output_fname = Path(output_fname)
+
+        # If the output file already exists then raise an error if `overwrite`
+        # is False and otherwise delete the file
+        if output_fname.exists():
+            if overwrite:
+                output_fname.unlink()
+            else:
+                raise FileExistsError(f"Output file {output_fname} " f"already exists.")
+
+        # Initialise the LSH cache
+        cache = MinHashLSH(
+            threshold=self.similarity_threshold, num_perm=self.num_minhashes
+        )
+
+        # Iterate over the corpus and store documents that are not duplicates
+        duplicates = 0
+        with tqdm(corpus, desc="Deduplicating") as pbar:
+            for doc_idx, doc in enumerate(pbar):
+
+                # Compute the fingerprint for the document
+                minhash = self._get_minhash(doc)
+
+                # If the document is not a near-duplicate then store in the LSH
+                # cache and append it to the JSONL output file
+                if len(cache.query(minhash)) == 0:
+                    cache.insert(doc_idx, minhash)
+                    self._store_document(doc_idx=doc_idx, doc=doc, fname=output_fname)
+
+                # Otherwise, increment the number of duplicate documents
+                else:
+                    duplicates += 1
+
+                #  Update the progress bar description with the number of
+                # duplicates found so far
+                pct_duplicated = 100 * duplicates / (1 + doc_idx)
+                desc = (
+                    f"Deduplicating - {pct_duplicated:.2f}% "
+                    f"duplicates or near-duplicates found"
+                )
+                pbar.set_description(desc)
+
     def _get_minhash(self, doc: str) -> LeanMinHash:
         """Returns a minhash fingerprint for the given document.
 
@@ -153,73 +221,6 @@ class Deduper:
             jsonned = json.dumps(dict(id=doc_idx, text=doc))
             f.write(jsonned + "\n")
 
-    def deduplicate(
-        self,
-        corpus: Union[Dataset, IterableDataset, Iterable[str]],
-        output_fname: Union[str, Path] = "deduplicated.jsonl",
-        overwrite: bool = False,
-    ):
-        """Removes duplicate documents from the corpus and stores it to disk.
-
-        Args:
-            corpus (Dataset, IterableDataset or iterable of strings):
-                The corpus to deduplicate.
-            output_fname (str or Path, optional):
-                The name of the output file.
-            overwrite (bool, optional):
-                Whether to overwrite the output file if it already exists.
-                Defaults to False.
-
-        Raises:
-            FileExistsError:
-                If the output file already exists and `overwrite` is False.
-        """
-        # Convert corpus to an iterable of strings if a Dataset is given
-        if isinstance(corpus, Dataset) or isinstance(corpus, IterableDataset):
-            corpus = (sample["text"] for sample in corpus)
-
-        # Ensure that `output_fname` is a Path object
-        output_fname = Path(output_fname)
-
-        # If the output file already exists then raise an error if `overwrite`
-        # is False and otherwise delete the file
-        if output_fname.exists():
-            if overwrite:
-                output_fname.unlink()
-            else:
-                raise FileExistsError(f"Output file {output_fname} " f"already exists.")
-
-        # Initialise the LSH cache
-        cache = MinHashLSH(
-            threshold=self.similarity_threshold, num_perm=self.num_minhashes
-        )
-
-        # Iterate over the corpus and store documents that are not duplicates
-        duplicates = 0
-        with tqdm(corpus, desc="Deduplicating") as pbar:
-            for doc_idx, doc in enumerate(pbar):
-
-                # Compute the fingerprint for the document
-                minhash = self._get_minhash(doc)
-
-                # If the document is not a near-duplicate then store in the LSH
-                # cache and append it to the JSONL output file
-                if len(cache.query(minhash)) == 0:
-                    cache.insert(doc_idx, minhash)
-                    self._store_document(doc_idx=doc_idx, doc=doc, fname=output_fname)
-
-                # Otherwise, increment the number of duplicate documents
-                else:
-                    duplicates += 1
-
-                #  Update the progress bar description with the number of
-                # duplicates found so far
-                pct_duplicated = 100 * duplicates / (1 + doc_idx)
-                desc = (
-                    f"Deduplicating - {pct_duplicated:.2f}% "
-                    f"duplicates or near-duplicates found"
-                )
-                pbar.set_description(desc)
 
 
 if __name__ == "__main__":
