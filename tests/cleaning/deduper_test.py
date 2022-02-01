@@ -6,22 +6,72 @@ from pathlib import Path
 import json
 
 class TestDeduper:
-    def dedup(self, corpus):
+    def dedup(self, corpus, **kwargs):
         temp = tempfile.NamedTemporaryFile()
-        deduper = Deduper(split_method="none", random_seed=42, similarity_threshold=0.001, num_minhashes=2)
+        default_args = {
+            'random_seed': 42,
+            'split_method': "char_ngram",
+        }
+        args = dict(default_args, **kwargs)
+        deduper = Deduper(**args)
         deduper.deduplicate(corpus, output_fname=temp.name, overwrite=True)
         return [json.loads(line)['text'] for line in Path(temp.name).open("r")]
 
     def test_removes_exact_duplicates(self):
         assert (
-            self.dedup(["hej", "hej", "farvel"]) == ["hej", "farvel"]
+            self.dedup([
+                "hej med dig min ven",
+                "hej med dig min ven",
+                "farvel du gamle"
+            ]) == ["hej med dig min ven", "farvel du gamle"]
         )
 
-    @pytest.mark.skip(reason="Not implemented")
     def test_removes_near_duplicates(self):
         assert (
             self.dedup([
-                "Der kom en soldat marcherende hen ad landevejen: én, to! én, to! Han havde sit tornyster på ryggen og en sabel ved siden, for han havde været i krigen, og nu skulle han hjem. Så mødte han en gammel heks på landevejen; hun var så ækel, hendes underlæbe hang hende lige ned på brystet. Hun sagde: 'God aften, soldat! Hvor du har en pæn sabel og et stort tornyster, du er en rigtig soldat! Nu skal du få så mange penge, du vil eje!'",
-                "er kom en soldat marcherende hen ad landevejen: én, to! én, to! Han havde sit tornyster på ryggen og en sabel ved siden, for han havde været i krigen, og nu skulle han hjem. Så mødte han en gammel heks på landevejen; hun var så ækel, hendes underlæbe hang hende lige ned på brystet. Hun sagde: 'God aften, soldat! Hvor du har en pæn sabel og et stort tornyster, du er en rigtig soldat! Nu skal du få så mange penge, du vil eje!'"
-            ]) == ["Der kom en soldat marcherende hen ad landevejen: én, to! én, to! Han havde sit tornyster på ryggen og en sabel ved siden, for han havde været i krigen, og nu skulle han hjem. Så mødte han en gammel heks på landevejen; hun var så ækel, hendes underlæbe hang hende lige ned på brystet. Hun sagde: 'God aften, soldat! Hvor du har en pæn sabel og et stort tornyster, du er en rigtig soldat! Nu skal du få så mange penge, du vil eje!'"]
+                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
+                "Er kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"
+            ]) == ["Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"]
         )
+
+    def test_split_by_5_char_ngram(self):
+        pass
+
+    def test_split_by_13_char_ngram(self):
+        pass
+
+    def test_split_by_13_char_ngram_short_document(self):
+        pass
+
+    def test_split_by_5_word_ngram(self):
+        pass
+
+    def test_split_by_13_word_ngram(self):
+        pass
+
+    def test_split_by_paragraph(self):
+        pass
+
+    def test_do_not_split(self):
+        pass
+
+    def test_split_with_double_stride(self):
+        pass
+
+    def test_2_minhashes(self):
+        pass
+
+    def test_128_minhashes(self):
+        pass
+
+    def test_2048_minhashes(self):
+        pass
+
+    def test_seed_stability(self):
+        pass
+
+    def test_no_normalization(self):
+        pass
+
+    def test_aggresive_normalization(self):
+        pass
