@@ -155,7 +155,7 @@ class Deduper:
                 # cache and append it to the JSONL output file
                 if len(cache.query(minhash)) == 0:
                     cache.insert(doc_idx, minhash)
-                    self._store_document(doc_idx=doc_idx, doc=doc, fname=output_fname)
+                    self._store_document(doc_idx=doc_idx, doc=doc, output_fname=output_fname)
 
                 # Otherwise, increment the number of duplicate documents
                 else:
@@ -231,23 +231,23 @@ class Deduper:
             raise ValueError(f"Invalid split method: {self.split_method}")
 
     def _store_document(
-        self, doc_idx: Union[str, int], doc: str, fname: Union[str, Path]
+        self, doc_idx: Union[str, int], doc: str, output_fname: Union[str, Path]
     ):
         """Appends the document to a JSONL file.
 
         Args:
             doc_idx (str or int): The document index.
             doc (str): The document to append to the JSONL file.
-            fname (str or Path): The name of the JSONL file to append to.
+            output_fname (str or Path): The name of the JSONL file to append to.
         """
         # Ensure that `doc_idx` is a string
         doc_idx = str(doc_idx)
 
-        # Ensure that `fname` is a Path object
-        fname = Path(fname)
+        # Ensure that `output_fname` is a Path object
+        output_fname = Path(output_fname)
 
         # Append the document to the JSONL file
-        with fname.open("a") as f:
+        with output_fname.open("a") as f:
             jsonned = json.dumps(dict(id=doc_idx, text=doc))
             f.write(jsonned + "\n")
 
