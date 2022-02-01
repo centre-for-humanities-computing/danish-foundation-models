@@ -22,6 +22,7 @@ import re
 from tqdm.auto import tqdm
 from collections.abc import Callable
 
+
 def _default_normalization(doc: str):
     """NFKC normalise document and remove punctuation
 
@@ -31,6 +32,7 @@ def _default_normalization(doc: str):
     doc = normalize("NFKC", doc)
     doc = re.sub(r"[\.\,\:\;\!\?\(\)\[\]\{\}]", " ", doc)
     return re.sub(" +", " ", doc)
+
 
 class Deduper:
     """Class that deduplicates an iterable corpus.
@@ -89,7 +91,7 @@ class Deduper:
         num_minhashes: int = 128,
         random_seed: int = 42,
         normalization_func: Callable[[str], str] = _default_normalization,
-        silent: bool = False
+        silent: bool = False,
     ):
         self.split_method = "none" if split_method is None else split_method
         self.ngram_size = ngram_size
@@ -228,7 +230,6 @@ class Deduper:
         else:
             raise ValueError(f"Invalid split method: {self.split_method}")
 
-
     def _store_document(
         self, doc_idx: Union[str, int], doc: str, fname: Union[str, Path]
     ):
@@ -249,7 +250,6 @@ class Deduper:
         with fname.open("a") as f:
             jsonned = json.dumps(dict(id=doc_idx, text=doc))
             f.write(jsonned + "\n")
-
 
 
 if __name__ == "__main__":

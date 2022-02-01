@@ -1,6 +1,7 @@
 from dfm.cleaning import QualityFilter
 import pytest
 
+
 class TestQualityFilter:
     """Unit tests for the QualityFilter class"""
 
