@@ -107,12 +107,11 @@ class TestDeduper:
 
     def test_128_minhashes(self):
         miss = self.miss_percentage()
-        assert (miss > 5)
+        assert (miss > 2)
         assert (miss < 10)
 
     def test_256_minhashes(self):
         miss = self.miss_percentage(num_minhashes=256)
-        assert (miss > 0)
         assert (miss < 2)
 
     @pytest.mark.skip(reason="Not implemented yet")
