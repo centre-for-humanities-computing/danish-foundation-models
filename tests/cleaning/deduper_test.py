@@ -117,22 +117,46 @@ class TestDeduper:
         miss = self.miss_percentage(num_minhashes=256)
         assert (miss < 2)
 
-    @pytest.mark.skip(reason="Not implemented yet")
-    def test_split_with_double_stride(self):
+    def test_13_char_shingles(self):
+        shingles = self.deduper()._extract_shingles("Hej med dig Kim")
+        assert(
+            shingles == [
+                "Hej med dig K",
+                "ej med dig Ki",
+                "j med dig Kim"
+            ])
         pass
 
-    @pytest.mark.skip(reason="Not implemented yet")
-    def test_split_by_5_char_ngram(self):
-        pass
+    def test_5_char_shingles(self):
+        shingles = self.deduper(ngram_size=5)._extract_shingles("Hej med dig Kim")
+        assert(
+            shingles == [
+                'Hej m',
+                'ej me',
+                'j med',
+                ' med ',
+                'med d',
+                'ed di',
+                'd dig',
+                ' dig ',
+                'dig K',
+                'ig Ki',
+                'g Kim',
+            ])
 
-    @pytest.mark.skip(reason="Not implemented yet")
-    def test_split_by_13_char_ngram(self):
-        pass
+    def test_double_stride_shingles(self):
+        shingles = self.deduper(ngram_stride=2)._extract_shingles("Hej med dig Kim")
+        assert(
+            shingles == [
+                "Hej med dig K",
+                "j med dig Kim"
+            ])
 
-    @pytest.mark.skip(reason="Not implemented yet")
-    def test_split_by_5_word_ngram(self):
-        pass
-
-    @pytest.mark.skip(reason="Not implemented yet")
-    def test_split_by_13_word_ngram(self):
-        pass
+    def test_5_word_shingles(self):
+        deduper = self.deduper(ngram_size=5, split_method='word_ngram')
+        shingles = deduper._extract_shingles("Hej med dig,\n hvordan går det?")
+        assert(
+            shingles == [
+                "Hej med dig,\n hvordan går",
+                "med dig,\n hvordan går det?"
+            ])
