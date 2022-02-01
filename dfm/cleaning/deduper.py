@@ -21,6 +21,7 @@ from unicodedata import normalize
 import re
 from tqdm.auto import tqdm
 from collections.abc import Callable
+from sklearn.feature_extraction import FeatureHasher
 
 
 def _default_normalization(doc: str):
@@ -92,15 +93,22 @@ class Deduper:
         random_seed: int = 42,
         normalization_func: Callable[[str], str] = _default_normalization,
         silent: bool = False,
+        hash_calculation_method: Optional[str] = "shingles",
+        feature_hasher_n_features: int = 1_048_576,
     ):
-        self.split_method = "none" if split_method is None else split_method
-        self.ngram_size = ngram_size
-        self.ngram_stride = ngram_stride
         self.similarity_threshold = similarity_threshold
         self.num_minhashes = num_minhashes
         self.random_seed = random_seed
         self.normalization_func = normalization_func
         self.silent = silent
+        self.hash_calculation_method = hash_calculation_method
+        self.split_method = "none" if split_method is None else split_method
+        self.ngram_size = ngram_size
+        self.ngram_stride = ngram_stride
+        if self.hash_calculation_method == "feature_hasher":
+            self.feature_hasher = FeatureHasher(
+                n_features=feature_hasher_n_features, input_type="string"
+            )
 
     def deduplicate(
         self,
@@ -155,7 +163,9 @@ class Deduper:
                 # cache and append it to the JSONL output file
                 if len(cache.query(minhash)) == 0:
                     cache.insert(doc_idx, minhash)
-                    self._store_document(doc_idx=doc_idx, doc=doc, output_fname=output_fname)
+                    self._store_document(
+                        doc_idx=doc_idx, doc=doc, output_fname=output_fname
+                    )
 
                 # Otherwise, increment the number of duplicate documents
                 else:
@@ -185,9 +195,17 @@ class Deduper:
         # Initialise the fingerprint
         minhash = MinHash(num_perm=self.num_minhashes, seed=self.random_seed)
 
-        # Add all shingles of the document to the fingerprint
-        for shingle in self._extract_shingles(doc):
-            minhash.update(shingle.encode("utf-8"))
+        # Calculate minhash, either using shingles or feature_hasher
+        if self.hash_calculation_method == "shingles":
+            for shingle in self._extract_shingles(doc):
+                minhash.update(shingle.encode("utf-8"))
+        elif self.hash_calculation_method == "feature_hasher":
+            sparse_vector = self.feature_hasher.transform(doc)
+            minhash.update(sparse_vector.toarray())
+        else:
+            raise ValueError(
+                f"Invalid hash calculation method: {self.hash_calculation_method}"
+            )
 
         # Convert the fingerprint to a LeanMinHash fingerprint, to save memory
         # and increase performance

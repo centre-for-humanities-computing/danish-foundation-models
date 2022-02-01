@@ -137,3 +137,16 @@ class TestDeduper:
         deduper = self.deduper(ngram_size=5, split_method="word_ngram")
         shingles = deduper._extract_shingles("Hej med dig,\n hvordan går det?")
         assert shingles == ["Hej med dig,\n hvordan går", "med dig,\n hvordan går det?"]
+
+    def test_feature_hasher(self):
+        assert self.dedup(
+            [
+                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
+                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
+                "Er kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
+            ],
+            hash_calculation_method="feature_hasher",
+        ) == [
+            "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
+            "Er kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
+        ]
