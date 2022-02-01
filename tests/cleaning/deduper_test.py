@@ -57,10 +57,26 @@ class TestDeduper:
         pass
 
     def test_split_by_paragraph(self):
-        pass
+        assert (
+            self.dedup([
+                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
+                "Er kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"
+            ], split_method='paragraph') == [
+                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
+                "Er kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"
+            ]
+        )
 
     def test_do_not_split(self):
-        pass
+        assert (
+            self.dedup([
+                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
+                "Er kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"
+            ], split_method='paragraph') == [
+                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
+                "Er kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"
+            ]
+        )
 
     def test_split_with_double_stride(self):
         pass
