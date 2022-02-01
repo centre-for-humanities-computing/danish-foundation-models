@@ -7,15 +7,16 @@ import json
 import re
 
 class TestDeduper:
-    def dedup(self, corpus, **kwargs):
-        temp = tempfile.NamedTemporaryFile()
-        default_args = {
+    def deduper(self, **kwargs):
+        default_test_args = {
             'random_seed': 42,
-            'split_method': "char_ngram",
             'silent': True
         }
-        args = dict(default_args, **kwargs)
-        deduper = Deduper(**args)
+        return Deduper(**dict(default_test_args, **kwargs))
+
+    def dedup(self, corpus, **kwargs):
+        temp = tempfile.NamedTemporaryFile()
+        deduper = self.deduper(**kwargs)
         deduper.deduplicate(corpus, output_fname=temp.name, overwrite=True)
         return [json.loads(line)['text'] for line in Path(temp.name).open("r")]
 
