@@ -23,7 +23,7 @@ from tqdm.auto import tqdm
 from collections.abc import Callable
 
 
-def _default_normalization(doc: str):
+def _default_normalization(doc: str) -> str:
     """NFKC normalise document and remove punctuation
 
     Args:
