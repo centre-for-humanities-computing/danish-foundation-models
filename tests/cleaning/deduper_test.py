@@ -65,7 +65,7 @@ class TestDeduper:
                 "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
                 "Er kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
             ],
-            split_method="paragraph",
+            split_method="none",
         ) == [
             "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
             "Er kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
