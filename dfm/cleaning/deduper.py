@@ -60,7 +60,7 @@ class Deduper:
         random_seed (int, optional):
             The random seed to use for the MinHash functions. Defaults to 42.
         normalization_func: (Callable[[str], str], optional):
-            The function used to normalize documents before their are compared to
+            The function used to normalize documents before they are compared to
             ignore insignificant differences.
         silent (bool, optional):
             Silence the progress bar that otherwise prints to stdout. Defaults
