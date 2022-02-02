@@ -125,7 +125,7 @@ class TestQualityFilter:
             is True
         )
 
-    def test_bad_bullets(self, quality_filter, ellipsis_text):
+    def test_bad_bullets_on_ellipsis(self, quality_filter, ellipsis_text):
         assert (
             quality_filter.line_bullets_or_ellipsis(
                 quality_filter.nlp(ellipsis_text), max_p_bullets=0.5, max_p_ellipsis=1
@@ -133,7 +133,7 @@ class TestQualityFilter:
             is False
         )
 
-    def test_bad_bullets2(self, quality_filter, bullets_text):
+    def test_bad_bullets_on_bullets(self, quality_filter, bullets_text):
         assert (
             quality_filter.line_bullets_or_ellipsis(
                 quality_filter.nlp(bullets_text), max_p_bullets=0.5, max_p_ellipsis=1
@@ -149,7 +149,7 @@ class TestQualityFilter:
             is True
         )
 
-    def test_bad_ellipsis(self, quality_filter):
+    def test_bad_ellipsis_dots(self, quality_filter):
         assert (
             quality_filter.line_bullets_or_ellipsis(
                 quality_filter.nlp("jeg er glad..."),
@@ -159,7 +159,7 @@ class TestQualityFilter:
             is False
         )
 
-    def test_bad_ellipsis2(self, quality_filter):
+    def test_bad_ellipsis_character(self, quality_filter):
         assert (
             quality_filter.line_bullets_or_ellipsis(
                 quality_filter.nlp("jeg er glad…"),
