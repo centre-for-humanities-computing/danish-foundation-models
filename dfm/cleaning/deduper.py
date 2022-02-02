@@ -27,7 +27,9 @@ def _default_normalization(doc: str):
     """NFKC normalise document and remove punctuation
 
     Args:
-        doc (str): The document to normalize
+        doc (str): The document to normalize.
+    Returns:
+        doc (str): The normalized document.
     """
     doc = normalize("NFKC", doc)
     doc = re.sub(r"[\.\,\:\;\!\?\(\)\[\]\{\}]", " ", doc)
