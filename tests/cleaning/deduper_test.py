@@ -47,6 +47,28 @@ class TestDeduper:
             ["Hej med dig", "Hej med dig", "Gå din vej"], ngram_size=13
         ) == ["Hej med dig", "Gå din vej"]
 
+    def test_split_by_char_ngram(self):
+        assert self.dedup(
+            [
+                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
+                "Er kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
+            ],
+            split_method="char_ngram", ngram_size=5,
+        ) == [
+            "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"
+        ]
+
+    def test_split_by_word_ngram(self):
+        assert self.dedup(
+            [
+                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
+                "Er kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
+            ],
+            split_method="word_ngram", ngram_size=5,
+        ) == [
+            "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"
+        ]
+
     def test_split_by_paragraph(self):
         assert self.dedup(
             [
