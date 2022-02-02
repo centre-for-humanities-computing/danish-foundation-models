@@ -9,7 +9,7 @@ import re
 
 class TestDeduper:
     def deduper(self, **kwargs):
-        default_test_args = {"random_seed": 42, "silent": True}
+        default_test_args = {"random_seed": 42, "verbose": False}
         return Deduper(**dict(default_test_args, **kwargs))
 
     def dedup(self, corpus, **kwargs):
