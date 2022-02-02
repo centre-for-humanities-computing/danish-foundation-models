@@ -62,10 +62,10 @@ class TestQualityFilter:
     def all_texts(self, tweet_texts, long_text, bullets_text, ellipsis_text):
         return tweet_texts + [long_text] + [bullets_text] + [ellipsis_text]
 
-
     @pytest.fixture(scope="class")
     def stop_words(self):
-        return set([
+        return set(
+            [
                 "er",
                 "jeg",
                 "det",
@@ -90,7 +90,8 @@ class TestQualityFilter:
                 "han",
                 "kan",
                 "af",
-            ])
+            ]
+        )
 
     @pytest.fixture(scope="class")
     def quality_filter(self):
@@ -98,18 +99,28 @@ class TestQualityFilter:
 
     def test_good_stop_words(self, quality_filter, stop_words):
         assert (
-            quality_filter.stop_word(quality_filter.nlp("jeg er glad"), n=2, stop_words=stop_words) is True
+            quality_filter.stop_word(
+                quality_filter.nlp("jeg er glad"), n=2, stop_words=stop_words
+            )
+            is True
         )
 
     def test_bad_stop_words(self, quality_filter, stop_words):
         assert (
-            quality_filter.stop_word(quality_filter.nlp("56789okd23456789098765sds"), n=1, stop_words=stop_words) is False
+            quality_filter.stop_word(
+                quality_filter.nlp("56789okd23456789098765sds"),
+                n=1,
+                stop_words=stop_words,
+            )
+            is False
         )
 
     def test_good_bullets(self, quality_filter):
         assert (
             quality_filter.line_bullets_or_ellipsis(
-                quality_filter.nlp("56789okd23456789098765sds"), max_p_bullets=0.5, max_p_ellipsis=1
+                quality_filter.nlp("56789okd23456789098765sds"),
+                max_p_bullets=0.5,
+                max_p_ellipsis=1,
             )
             is True
         )
@@ -141,7 +152,9 @@ class TestQualityFilter:
     def test_bad_ellipsis(self, quality_filter):
         assert (
             quality_filter.line_bullets_or_ellipsis(
-                quality_filter.nlp("jeg er glad..."), max_p_bullets=1.0, max_p_ellipsis=0.5
+                quality_filter.nlp("jeg er glad..."),
+                max_p_bullets=1.0,
+                max_p_ellipsis=0.5,
             )
             is False
         )
@@ -149,34 +162,55 @@ class TestQualityFilter:
     def test_bad_ellipsis2(self, quality_filter):
         assert (
             quality_filter.line_bullets_or_ellipsis(
-                quality_filter.nlp("jeg er glad…"), max_p_bullets=1.0, max_p_ellipsis=0.5
+                quality_filter.nlp("jeg er glad…"),
+                max_p_bullets=1.0,
+                max_p_ellipsis=0.5,
             )
             is False
         )
 
     def test_good_find_alpha(self, quality_filter):
-        assert quality_filter.alpha(quality_filter.nlp("jeg er glad"), ratio=0.8) is True
+        assert (
+            quality_filter.alpha(quality_filter.nlp("jeg er glad"), ratio=0.8) is True
+        )
 
     def test_bad_alpha(self, quality_filter):
-        assert quality_filter.alpha(quality_filter.nlp("67 54 13 B7"), ratio=0.8) is False
+        assert (
+            quality_filter.alpha(quality_filter.nlp("67 54 13 B7"), ratio=0.8) is False
+        )
 
     def test_good_mean_word_length(self, quality_filter):
         assert (
-            quality_filter.mean_word_length(quality_filter.nlp("jeg er glad"), mean_word_length=(3, 10))
+            quality_filter.mean_word_length(
+                quality_filter.nlp("jeg er glad"), mean_word_length=(3, 10)
+            )
             is True
         )
 
     def test_bad_mean_word_length(self, quality_filter):
         assert (
-            quality_filter.mean_word_length(quality_filter.nlp("56789okd23456789098765sds"), mean_word_length=(3, 10))
+            quality_filter.mean_word_length(
+                quality_filter.nlp("56789okd23456789098765sds"),
+                mean_word_length=(3, 10),
+            )
             is False
         )
 
     def test_good_doc_length(self, quality_filter, ellipsis_text):
-        assert quality_filter.doc_length(quality_filter.nlp(ellipsis_text), doc_length=(5, 100)) is True
+        assert (
+            quality_filter.doc_length(
+                quality_filter.nlp(ellipsis_text), doc_length=(5, 100)
+            )
+            is True
+        )
 
     def test_bad_doc_length(self, quality_filter):
-        assert quality_filter.doc_length(quality_filter.nlp("jeg er glad"), doc_length=(5, 100)) is False
+        assert (
+            quality_filter.doc_length(
+                quality_filter.nlp("jeg er glad"), doc_length=(5, 100)
+            )
+            is False
+        )
 
     def test_quality_filter(self, quality_filter, all_texts):
         filtered = list(quality_filter(all_texts))
