@@ -7,154 +7,146 @@ import json
 import re
 
 
+def _aggresive_normalisation(doc: str) -> str:
+    doc = re.sub("[^A-Z ]", "x", doc)
+    doc = re.sub("[A-Z]", "X", doc)
+    return doc
+
+
 class TestDeduper:
-    def deduper(self, **kwargs):
-        default_test_args = {"random_seed": 42, "verbose": False}
-        return Deduper(**dict(default_test_args, **kwargs))
 
-    def dedup(self, corpus, **kwargs):
-        temp = tempfile.NamedTemporaryFile()
-        deduper = self.deduper(**kwargs)
-        deduper.deduplicate(corpus, output_fname=temp.name, overwrite=True)
-        return [json.loads(line)["text"] for line in Path(temp.name).open("r")]
+    @pytest.fixture(scope='class')
+    def basic_params(self):
+        yield dict(random_seed=42, verbose=False)
 
-    def miss_percentage(self, corpus=None, iterations=100, **kwargs):
-        corpus = corpus or [
-            "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-            "Da kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-        ]
+    @pytest.fixture(scope='class')
+    def duplicated_corpus(self):
+        yield ["hej med dig min ven\n godt at se dig!",
+               "hej med dig min ven, godt at se dig!",
+               "Hej med dig min ven, godt at se dig!",
+               "Hej med dig min ven!",
+               "Hej med dig min ven?",
+               "hej med dig min ven",
+               "dav med dig min ven",
+               "farvel du gamle"]
+
+    @pytest.fixture(scope='class')
+    def temp_file(self):
+        yield tempfile.NamedTemporaryFile()
+
+    @pytest.mark.parametrize('params,deduplicated_idxs', [
+        (dict(),
+            [0, 1, 3, 5, 6, 7]),
+        (dict(similarity_threshold=0.1),
+            [0, 7]),
+        (dict(ngram_size=20),
+            [0, 1, 3, 5, 6, 7]),
+        (dict(split_method='char_ngram', ngram_size=2),
+            [0, 3, 6, 7]),
+        (dict(split_method='word_ngram'),
+            [0, 1, 2, 3, 5, 6, 7]),
+        (dict(split_method='word_ngram', ngram_size=2),
+            [0, 2, 3, 5, 6, 7]),
+        (dict(split_method='word_ngram', ngram_size=50),
+            [0, 1, 2, 3, 5, 6, 7]),
+        (dict(split_method='paragraph'),
+            [0, 1, 2, 3, 5, 6, 7]),
+        (dict(split_method='paragraph', similarity_threshold=0.1),
+            [0, 1, 2, 3, 6, 7]),
+        (dict(split_method='none'),
+            [0, 1, 2, 3, 5, 6, 7]),
+        (dict(split_method=None),
+            [0, 1, 2, 3, 5, 6, 7]),
+        (dict(normalization_func=lambda x: x),
+            [0, 1, 3, 4, 5, 6, 7]),
+        (dict(normalization_func=_aggresive_normalisation),
+            [0, 3, 5, 7]),
+    ])
+    def test_deduplication(self,
+                           params,
+                           deduplicated_idxs,
+                           duplicated_corpus,
+                           basic_params,
+                           temp_file):
+        # Build the Deduper
+        deduper = Deduper(**params, **basic_params)
+
+        # Deduplicate the corpus
+        deduper.deduplicate(duplicated_corpus,
+                            output_fname=temp_file.name,
+                            overwrite=True)
+
+        # Open the deduplicated corpus
+        with Path(temp_file.name).open("r") as f:
+            deduplicated = [json.loads(line)["text"] for line in f]
+
+        # Check that the deduplicated corpus is the same as the expected corpus
+        assert deduplicated_idxs == [duplicated_corpus.index(doc)
+                                     for doc in deduplicated]
+
+    @pytest.mark.parametrize('num_minhashes,miss_lower,miss_upper', [
+        (2, 70, 75),
+        (16, 40, 45),
+        (32, 20, 25),
+        (64, 15, 20),
+        (128, 5, 10),
+        (256, 0, 5)
+    ])
+    def test_miss_percentage(self,
+                             basic_params,
+                             duplicated_corpus,
+                             temp_file,
+                             num_minhashes,
+                             miss_lower,
+                             miss_upper):
+        # Build the Deduper
+        deduper = Deduper(num_minhashes=num_minhashes, **basic_params)
+
         misses = 0
-        for i in range(0, iterations):
-            if len(self.dedup(corpus, random_seed=i, **kwargs)) == 2:
+        for _ in range(100):
+            deduper.random_seed += 1
+
+            # Deduplicate the corpus
+            deduper.deduplicate(duplicated_corpus,
+                                output_fname=temp_file.name,
+                                overwrite=True)
+
+            # Open the deduplicated corpus
+            with Path(temp_file.name).open("r") as f:
+                deduplicated = [json.loads(line)["text"] for line in f]
+
+            # Check if there were any misses
+            if len(deduplicated) != 6:
                 misses += 1
-        return (100.0 * misses) / iterations
 
-    def test_removes_exact_duplicates(self):
-        assert self.dedup(
-            ["hej med dig min ven", "hej med dig min ven", "farvel du gamle"]
-        ) == ["hej med dig min ven", "farvel du gamle"]
+        assert miss_lower <= misses
+        assert misses <= miss_upper
 
-    def test_removes_near_duplicates(self):
-        assert self.dedup(
-            [
-                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-                "Er kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-            ]
-        ) == ["Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"]
-
-    def test_document_shorter_than_shingles(self):
-        assert self.dedup(
-            ["Hej med dig", "Hej med dig", "Gå din vej"], ngram_size=13
-        ) == ["Hej med dig", "Gå din vej"]
-
-    def test_split_by_char_ngram(self):
-        assert self.dedup(
-            [
-                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-                "Er kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-            ],
-            split_method="char_ngram", ngram_size=5,
-        ) == [
-            "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"
-        ]
-
-    def test_split_by_word_ngram(self):
-        assert self.dedup(
-            [
-                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-                "Er kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-            ],
-            split_method="word_ngram", ngram_size=5,
-        ) == [
-            "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"
-        ]
-
-    def test_split_by_paragraph(self):
-        assert self.dedup(
-            [
-                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-                "Er kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-            ],
-            split_method="paragraph",
-        ) == [
-            "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-            "Er kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-        ]
-
-    def test_do_not_split(self):
-        assert self.dedup(
-            [
-                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-                "Er kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-            ],
-            split_method="none",
-        ) == [
-            "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-            "Er kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-        ]
-
-    def test_no_normalization(self):
-        identity = lambda doc: doc
-        assert self.dedup(
-            [
-                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-                "Der kom en soldat marcherende hen ad landevejen!\n én. to? én; to?",
-            ],
-            normalization_func=identity,
-        ) == [
-            "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-            "Der kom en soldat marcherende hen ad landevejen!\n én. to? én; to?",
-        ]
-
-    def test_aggresive_normalization(self):
-        word_shape = lambda doc: re.sub("[A-Z]", "X", re.sub("[^A-Z ]", "x", doc))
-        assert self.dedup(
-            [
-                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-                "Den var jo typisk påtrængende pæn og overrasket:\n et, tu! et, tu!",
-            ],
-            normalization_func=word_shape,
-        ) == ["Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"]
-
-    def test_2_minhashes(self):
-        miss = self.miss_percentage(num_minhashes=2)
-        assert miss > 10
-        assert miss < 20
-
-    def test_128_minhashes(self):
-        miss = self.miss_percentage()
-        assert miss > 2
-        assert miss < 10
-
-    def test_256_minhashes(self):
-        miss = self.miss_percentage(num_minhashes=256)
-        assert miss < 2
-
-    def test_13_char_shingles(self):
-        shingles = self.deduper()._extract_shingles("Hej med dig Kim")
-        assert shingles == ["Hej med dig K", "ej med dig Ki", "j med dig Kim"]
-
-    def test_5_char_shingles(self):
-        shingles = self.deduper(ngram_size=5)._extract_shingles("Hej med dig Kim")
-        assert shingles == [
-            "Hej m",
-            "ej me",
-            "j med",
-            " med ",
-            "med d",
-            "ed di",
-            "d dig",
-            " dig ",
-            "dig K",
-            "ig Ki",
-            "g Kim",
-        ]
-
-    def test_double_stride_shingles(self):
-        shingles = self.deduper(ngram_stride=2)._extract_shingles("Hej med dig Kim")
-        assert shingles == ["Hej med dig K", "j med dig Kim"]
-
-    def test_5_word_shingles(self):
-        deduper = self.deduper(ngram_size=5, split_method="word_ngram")
-        shingles = deduper._extract_shingles("Hej med dig,\n hvordan går det?")
-        assert shingles == ["Hej med dig,\n hvordan går", "med dig,\n hvordan går det?"]
+    @pytest.mark.parametrize('params,correct_shingles', [
+        (dict(),
+            ["Hej med dig K",
+             "ej med dig Ki",
+             "j med dig Kim"]),
+        (dict(ngram_size=5),
+            ["Hej m",
+             "ej me",
+             "j med",
+             " med ",
+             "med d",
+             "ed di",
+             "d dig",
+             " dig ",
+             "dig K",
+             "ig Ki",
+             "g Kim"]),
+        (dict(ngram_stride=2),
+            ["Hej med dig K",
+             "j med dig Kim"]),
+        (dict(ngram_size=3, split_method='word_ngram'),
+            ["Hej med dig",
+             "med dig Kim"])
+    ])
+    def test_shingles(self, basic_params, params, correct_shingles):
+        deduper = Deduper(**params, **basic_params)
+        shingles = deduper._extract_shingles("Hej med dig Kim")
+        assert shingles == correct_shingles
