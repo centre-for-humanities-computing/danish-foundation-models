@@ -10,7 +10,7 @@ from typing import List, Optional
 import wandb
 from transformers import (
     AutoConfig,
-    AutoModelForPreTraining,
+    AutoModelForMaskedLM,
     Trainer,
     TrainingArguments,
     AutoTokenizer,
@@ -59,7 +59,9 @@ def train(
     pretrain_config = read_json(pretraining_config_path)
 
     HF_config = AutoConfig.from_pretrained(model_name)
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_name, return_special_tokens_mask=True
+    )
 
     # Load and preprocess datasets
     datasets = [dfm_load_dataset(d) for d in dataset_names]
@@ -80,7 +82,7 @@ def train(
     )
 
     # Load model
-    mdl = AutoModelForPreTraining.from_config(HF_config)
+    mdl = AutoModelForMaskedLM.from_config(HF_config)
 
     training_args = TrainingArguments(f"models/{mdl.name_or_path}", **pretrain_config)
 
