@@ -31,10 +31,6 @@ def preprocess_dataset(
         cols = dataset[key].column_names
         cols.remove("text")
         dataset[key] = dataset[key].remove_columns(cols)
-        # select the text column
-        ##dataset[key] = dataset[key].map(
-        #    select_column_, input_columns="text", remove_columns=dataset[key].column_names
-        # )
 
     tokenize_func_ = partial(tokenize_func, tokenizer=tokenizer)
     dataset = dataset.map(
