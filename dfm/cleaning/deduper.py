@@ -14,13 +14,12 @@ References:
 from datasketch import MinHash, LeanMinHash, MinHashLSH
 from datasets.arrow_dataset import Dataset
 from datasets.iterable_dataset import IterableDataset
-from typing import Union, Iterable, Optional
+from typing import Union, Iterable, Optional, Callable
 from pathlib import Path
 import json
 from unicodedata import normalize
 import re
 from tqdm.auto import tqdm
-from collections.abc import Callable
 
 
 def _default_normalization(doc: str) -> str:
