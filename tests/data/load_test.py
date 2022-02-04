@@ -8,6 +8,7 @@ from dfm.data.load import (
     load_reddit,
     load_lexdk,
     load_tokenizer_ds,
+    load_mc4
 )
 from datasets import IterableDataset, Dataset
 
@@ -51,6 +52,14 @@ def test_load_reddit():
     assert "text" in ds[0]
 
 
+def test_load_mc4():
+    ds = load_mc4(streaming=True)
+    samples = list(ds['train'].take(10))
+    assert isinstance(ds['train'], IterableDataset)
+    assert isinstance(samples, list)
+    assert isinstance(samples[0], dict)
+
+
 @pytest.mark.skip(reason="Dataset not publicly available")
 def test_load_lexdk():
     ds = load_lexdk(streaming=True)
@@ -68,3 +77,4 @@ def test_load_tokenizer_ds():
     assert isinstance(ds, IterableDataset)
     assert isinstance(samples, list)
     assert isinstance(samples[0], dict)
+

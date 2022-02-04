@@ -165,6 +165,18 @@ def load_tokenizer_ds():
     return ds
 
 
+def load_mc4(streaming: bool = False, **kwargs) -> Dataset:
+    features = Features(
+        dict(
+            text=Value("string"),
+            timestamp=Value("string"),
+            url=Value("string"),
+        )
+    )
+
+    return load_dataset("mc4", "da", features=features, streaming=streaming)
+
+
 def load_dfm_dataset(dataset: str, **kwargs) -> Dataset:
     """load a predefined dfm dataset
 
