@@ -1,5 +1,22 @@
 {
-    "learning_rate": 0.003,
-    "do_train": "True",
-    "do_eval": "True"
+    "data_arguments": {
+        "dataset_names": [
+            "DDSC/reddit-da",
+            "DDSC/angry-tweets"
+        ],
+        "interleave": "True",
+        "interleave_probabilities": [
+            0.5,
+            0.5
+        ]
+    },
+    "model_arguments": {
+        "model_type": "autoencoding",
+        "model_name": "microsoft/deberta-v3-base"
+    },
+    "training_arguments": {
+        "learning_rate": 0.003,
+        "do_train": "True",
+        "do_eval": "True"
+    }
 }
