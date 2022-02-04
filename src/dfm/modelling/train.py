@@ -118,6 +118,8 @@ class DFMTrainer:
         if self.model_type not in MODEL_TYPES:
             raise ValueError(f"Invalid model type. Choose one from: {MODEL_TYPES}")
 
+        self.mlm_probability = mlm_probability
+
     def train(
         self,
     ):
@@ -144,7 +146,7 @@ class DFMTrainer:
         )
 
         # Data collator
-        if self.model_type == "autoenconding":
+        if self.model_type == "autoencoding":
             # Data Collator
             data_collator = DataCollatorForLanguageModeling(
                 tokenizer=tokenizer, mlm_probability=self.mlm_probability
