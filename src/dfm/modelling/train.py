@@ -164,7 +164,7 @@ class DFMTrainer:
 
         # Training args
         training_args = TrainingArguments(
-            f"models/{model.name_or_path}", **pretrain_config
+            f"models/{model.name_or_path}", **self.training_args
         )
 
         trainer = Trainer(
