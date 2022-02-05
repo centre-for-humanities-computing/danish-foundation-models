@@ -133,3 +133,5 @@ dmypy.json
 
 # vs code
 .vscode/*
+csv/output.csv
+.DS_Store
