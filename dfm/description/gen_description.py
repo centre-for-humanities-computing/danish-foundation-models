@@ -1,4 +1,5 @@
 import os
+import sys
 from typing import Optional
 from datasets import load_dataset
 
@@ -9,6 +10,7 @@ from spacy.matcher import Matcher
 from spacy.tokens import Doc
 import spacy
 
+sys.path.append(".")
 from dfm.description.description_pattern_lists import (
     female_gendered_terms,
     male_gendered_terms,
@@ -53,7 +55,7 @@ def gen_gender_name_patterns() -> list:
 
     female_names_list = [name.lower() for name in female_names()["first_name"]]
     female_names_patterns = terms_to_lowercase_match_patterns(
-        female_names_list, label="male_names"
+        female_names_list, label="female_names"
     )
 
     male_names_list = [name.lower() for name in male_names()["first_name"]]
@@ -203,16 +205,16 @@ if __name__ == "__main__":
 
     ds = load_dataset("DDSC/partial-danish-gigaword-no-twitter")
 
-    ds_sharded = ds["train"].shard(num_shards=1000, index=0)  # Work on 1/1000th of DGW
+    ds_sharded = ds.shuffle()["train"].shard(num_shards=100, index=0)  # Work on 1/10th of DGW
 
     dgw_processed = ds_sharded.map(
         lambda batch: get_match_counts_from_batch(batch, matcher_objects, nlp),
         batched=True,
-        batch_size=5,
+        batch_size=50,
         num_proc=16,
     )
 
     if not os.path.exists("csv"):
         os.makedirs("csv")
 
-    remove_irrelevant_columns(dgw_processed).to_csv("csv/output.csv")
+    remove_irrelevant_columns(dgw_processed).to_csv("csv/output_100.csv")
