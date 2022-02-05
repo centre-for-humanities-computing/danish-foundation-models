@@ -23,6 +23,13 @@ import spacy
 from spacy.tokens import Doc
 
 
+def len_getter(doc):
+    # dynamic len getter
+    if doc._._len is None:
+        doc._._len = len(doc)
+    return doc._._len
+
+
 class QualityFilter:
     """
     Danish implementation of quality filter described in (Rae et al., 2021).
@@ -47,7 +54,7 @@ class QualityFilter:
             with a bulletpoint. Defaults to 0.9.
         max_p_end_ellipsis (float, optional): Maximum number of lines which ends
             with an ellipsis. Defaults to 0.3.
-        n_proc (int): Number of processes
+        max_length (int): max_length in characters
     """
 
     def __init__(
@@ -61,6 +68,7 @@ class QualityFilter:
         symbol_2_word_ellipsis: float = 0.1,
         max_p_begin_bullets: float = 0.9,
         max_p_end_ellipsis: float = 0.3,
+        max_length: int = 5_000_000,
     ):
         if stop_words is None:
             stop_words = set(
@@ -117,9 +125,16 @@ class QualityFilter:
         }
         self.filtered = Counter()
 
+        if not Doc.has_extension("_len"):
+            Doc.set_extension("_len", default=None)
+        if not Doc.has_extension("len"):
+            Doc.set_extension("len", getter=len_getter)
+
+        self.nlp.max_length = max_length
+
     def __call__(
         self, docs: Iterable[str], as_tuples: bool = False, **kwargs
-    ) -> Generator:
+    ) -> Iterable[str]:
         """
         Applies quality filter
 
@@ -134,18 +149,7 @@ class QualityFilter:
             Generator: A Generator of either texts or tuples depending on the as_tuples
                 argument.
         """
-
-        def len_getter(doc):
-            # dynamic len getter
-            if doc._._len is None:
-                doc._._len = len(doc)
-            return doc._._len
-
-        if not Doc.has_extension("_len"):
-            Doc.set_extension("_len", default=None)
-        if not Doc.has_extension("len"):
-            Doc.set_extension("len", getter=len_getter)
-
+        docs = self._filter_max_length(docs, as_tuples)
         for doc in self.nlp.pipe(docs, as_tuples=as_tuples, **kwargs):
             if as_tuples:
                 doc, context = doc
@@ -158,6 +162,17 @@ class QualityFilter:
                 yield doc, context
             else:
                 yield doc
+
+    def _filter_max_length(self, docs: Iterable[str], as_tuples: bool) -> Iterable[str]:
+        for d in docs:
+            if as_tuples:
+                text = d[0]
+            else:
+                text = d
+            if len(text) < self.nlp.max_length:
+                yield d
+            else:
+                self.filtered["max_chr_length"] += 1
 
     def is_filtered(self, doc: Doc) -> Optional[str]:
         """
@@ -188,7 +203,7 @@ class QualityFilter:
             Generator: A Generator strings of which filter was applied to the document
                 "None" indicate not filtered.
         """
-
+        docs = self._filter_max_length(docs, as_tuples=False)
         for doc in self.nlp.pipe(docs, **kwargs):
 
             is_filtered = self.is_filtered(doc)
