@@ -140,7 +140,7 @@ class QualityFilter:
                 doc, context = doc
 
             is_filtered = self.is_filtered(doc)
-            if is_filtered is None:
+            if is_filtered is not None:
                 continue
 
             if as_tuples:
@@ -325,7 +325,7 @@ class QualityFilter:
         """
         n_stopwords = 0
         for t in doc:
-            if t in stop_words:
+            if t.text in stop_words:
                 n_stopwords += 1
                 if n_stopwords >= n:
                     return True
