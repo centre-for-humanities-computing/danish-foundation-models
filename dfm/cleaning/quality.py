@@ -219,8 +219,9 @@ class QualityFilter:
         Returns:
             bool: A boolean indicator of whether the text passed the filter.
         """
-
-        w_len = [len(t) for t in doc]
+        w_len = 0
+        for t in doc:
+            w_len += len(t)
         mwl = sum(w_len) / len(doc)
         return mean_word_length[0] <= mwl <= mean_word_length[1]
 
@@ -330,3 +331,4 @@ class QualityFilter:
                 if n_stopwords >= n:
                     return True
         return False
+
