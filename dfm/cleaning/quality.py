@@ -243,11 +243,9 @@ class QualityFilter:
                 if c.isalpha():
                     return True
             return False
-    
+
         # checks if a non-space token contains a alphabetic character
-        contains_alpha = sum(
-            contains_alpha_fn(t.text) for t in doc if not t.is_space
-        )
+        contains_alpha = sum(contains_alpha_fn(t.text) for t in doc if not t.is_space)
         len_doc = len(doc)
         ratio_ = contains_alpha / len_doc
         return ratio_ >= ratio
@@ -317,5 +315,10 @@ class QualityFilter:
         Returns:
             bool: A boolean indicator of whether the text passed the filter.
         """
-        n_stopwords = sum(1 for t in doc if t.text in stop_words)
-        return n_stopwords >= n
+        n_stopwords = 0
+        for t in doc:
+            if t in stop_words:
+                n_stopwords += 1
+                if n_stopwords >= n:
+                    return True
+        return False
