@@ -47,6 +47,7 @@ class QualityFilter:
             with a bulletpoint. Defaults to 0.9.
         max_p_end_ellipsis (float, optional): Maximum number of lines which ends
             with an ellipsis. Defaults to 0.3.
+        n_proc (int): Number of processes
     """
 
     def __init__(
@@ -60,6 +61,7 @@ class QualityFilter:
         symbol_2_word_ellipsis: float = 0.1,
         max_p_begin_bullets: float = 0.9,
         max_p_end_ellipsis: float = 0.3,
+        n_proc: int = 1,
     ):
         if stop_words is None:
             stop_words = set(
@@ -99,6 +101,9 @@ class QualityFilter:
                 self.mean_word_length, mean_word_length=mean_word_length
             ),
             "alpha_ratio": partial(self.alpha, ratio=alpha_ratio),
+            "stop_word": partial(
+                self.stop_word, stop_words=stop_words, n=min_stop_words
+            ),
             "symbol_2_word_hashtag": partial(
                 self.symbol_2_word, ratio=symbol_2_word_hashtag, symbol="#"
             ),
@@ -110,14 +115,13 @@ class QualityFilter:
                 max_p_bullets=max_p_begin_bullets,
                 max_p_ellipsis=max_p_end_ellipsis,
             ),
-            "stop_word": partial(
-                self.stop_word, stop_words=stop_words, n=min_stop_words
-            ),
         }
         self.filtered = Counter()
+        self.n_proc = n_proc
 
     def __call__(self, docs: Iterable[str], as_tuples: bool = False) -> Generator:
-        """Applies quality filter
+        """
+        Applies quality filter
 
         Args:
             docs (Iterable[str]): An iterable of strings of the text you wish to filter.
@@ -131,25 +135,58 @@ class QualityFilter:
                 argument.
         """
 
-        for doc in self.nlp.pipe(docs, as_tuples=as_tuples):
+        for doc in self.nlp.pipe(docs, as_tuples=as_tuples, n_process=self.n_proc):
             if as_tuples:
                 doc, context = doc
 
-            valid = True
-            for filter, filter_fn in self.filters.items():
-                if not filter_fn(doc):
-                    valid = False
-
-                    # log filtered documents
-                    self.filtered[filter] += 1
-                    break
-            if not valid:
+            is_filtered = self.is_filtered(doc)
+            if is_filtered is None:
                 continue
 
             if as_tuples:
                 yield doc, context
             else:
                 yield doc
+
+    def is_filtered(self, doc: Doc) -> Optional[str]:
+        """
+        Check if a single document is filtered
+
+        Args:
+            doc (Doc): A spaCy document
+
+        Returns: the name of the filter which filtered out the document or None if the
+            document wasn't filtered
+        """
+        for filter, filter_fn in self.filters.items():
+            if not filter_fn(doc):
+                # log filtered documents
+                self.filtered[filter] += 1
+                return filter
+
+    def describe_filter(
+        self, docs: Iterable[str], as_tuples: bool = False
+    ) -> Generator:
+        """
+        Applies quality filter and return which filter (if any) each document was
+        filtered by
+
+        Args:
+            docs (Iterable[str]): An iterable of strings of the text you wish to apply
+                quality filter to
+
+        Yields:
+            Generator: A Generator strings of which filter was applied to the document
+                "None" indicate not filtered.
+        """
+
+        for doc in self.nlp.pipe(docs, n_process=self.n_proc):
+
+            is_filtered = self.is_filtered(doc)
+            if is_filtered is None:
+                yield "None"
+            else:
+                yield is_filtered
 
     @staticmethod
     def doc_length(doc: Doc, doc_length: Tuple[int, int]) -> bool:
@@ -200,9 +237,16 @@ class QualityFilter:
         Returns:
             bool: A boolean indicator of whether the text passed the filter.
         """
+
+        def contains_alpha_fn(token: str):
+            for c in token:
+                if c.isalpha():
+                    return True
+            return False
+    
         # checks if a non-space token contains a alphabetic character
         contains_alpha = sum(
-            any(c.isalpha() for c in t.text) for t in doc if not t.is_space
+            contains_alpha_fn(t.text) for t in doc if not t.is_space
         )
         len_doc = len(doc)
         ratio_ = contains_alpha / len_doc
