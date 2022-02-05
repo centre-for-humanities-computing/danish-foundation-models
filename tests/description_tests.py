@@ -1,4 +1,7 @@
-from dfm.description.gen_description import get_match_counts_from_doc, gen_matcher_object_from_pattern_list
+from dfm.description.gen_description import (
+    get_match_counts_from_doc,
+    gen_matcher_object_from_pattern_list,
+)
 import spacy
 import pytest
 

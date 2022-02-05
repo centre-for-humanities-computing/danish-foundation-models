@@ -203,7 +203,7 @@ if __name__ == "__main__":
 
     ds = load_dataset("DDSC/partial-danish-gigaword-no-twitter")
 
-    ds_sharded = ds["train"].shard(num_shards=1000, index=0) # Work on 1/1000th of DGW
+    ds_sharded = ds["train"].shard(num_shards=1000, index=0)  # Work on 1/1000th of DGW
 
     dgw_processed = ds_sharded.map(
         lambda batch: get_match_counts_from_batch(batch, matcher_objects, nlp),
@@ -212,9 +212,7 @@ if __name__ == "__main__":
         num_proc=16,
     )
 
-    if not os.path.exists('csv'):
-        os.makedirs('csv')
+    if not os.path.exists("csv"):
+        os.makedirs("csv")
 
     remove_irrelevant_columns(dgw_processed).to_csv("csv/output.csv")
-
-
