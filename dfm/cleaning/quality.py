@@ -61,7 +61,6 @@ class QualityFilter:
         symbol_2_word_ellipsis: float = 0.1,
         max_p_begin_bullets: float = 0.9,
         max_p_end_ellipsis: float = 0.3,
-        n_proc: int = 1,
     ):
         if stop_words is None:
             stop_words = set(
@@ -117,9 +116,10 @@ class QualityFilter:
             ),
         }
         self.filtered = Counter()
-        self.n_proc = n_proc
 
-    def __call__(self, docs: Iterable[str], as_tuples: bool = False) -> Generator:
+    def __call__(
+        self, docs: Iterable[str], as_tuples: bool = False, **kwargs
+    ) -> Generator:
         """
         Applies quality filter
 
@@ -135,7 +135,18 @@ class QualityFilter:
                 argument.
         """
 
-        for doc in self.nlp.pipe(docs, as_tuples=as_tuples, n_process=self.n_proc):
+        def len_getter(doc):
+            # dynamic len getter
+            if doc._._len is None:
+                doc._._len = len(doc)
+            return doc._._len
+
+        if not Doc.has_extension("_len"):
+            Doc.set_extension("_len", default=None)
+        if not Doc.has_extension("len"):
+            Doc.set_extension("len", getter=len_getter)
+
+        for doc in self.nlp.pipe(docs, as_tuples=as_tuples, **kwargs):
             if as_tuples:
                 doc, context = doc
 
@@ -164,9 +175,7 @@ class QualityFilter:
                 self.filtered[filter] += 1
                 return filter
 
-    def describe_filter(
-        self, docs: Iterable[str], as_tuples: bool = False
-    ) -> Generator:
+    def describe_filter(self, docs: Iterable[str], **kwargs) -> Generator:
         """
         Applies quality filter and return which filter (if any) each document was
         filtered by
@@ -180,7 +189,7 @@ class QualityFilter:
                 "None" indicate not filtered.
         """
 
-        for doc in self.nlp.pipe(docs, n_process=self.n_proc):
+        for doc in self.nlp.pipe(docs, **kwargs):
 
             is_filtered = self.is_filtered(doc)
             if is_filtered is None:
@@ -203,7 +212,7 @@ class QualityFilter:
             bool: A boolean indicator of whether the text passed the filter.
         """
 
-        return doc_length[0] <= len(doc) <= doc_length[1]
+        return doc_length[0] <= doc._.len <= doc_length[1]
 
     @staticmethod
     def mean_word_length(doc: Doc, mean_word_length: Tuple[int, int]) -> bool:
@@ -222,7 +231,7 @@ class QualityFilter:
         w_len = 0
         for t in doc:
             w_len += len(t)
-        mwl = sum(w_len) / len(doc)
+        mwl = w_len / doc._.len
         return mean_word_length[0] <= mwl <= mean_word_length[1]
 
     @staticmethod
@@ -246,7 +255,7 @@ class QualityFilter:
             return False
 
         # min number of word to satisfy the ratio
-        min_alpha_token = int(len(doc) * ratio)
+        min_alpha_token = int(doc._.len * ratio)
 
         n_alpha_tokens = 0
         for t in doc:
@@ -274,7 +283,7 @@ class QualityFilter:
             bool: A boolean indicator of whether the text passed the filter.
         """
         n_symbol = doc.text.count(symbol)
-        ratio_ = n_symbol / len(doc)
+        ratio_ = n_symbol / doc._.len
         return ratio_ < ratio
 
     @staticmethod
@@ -331,4 +340,3 @@ class QualityFilter:
                 if n_stopwords >= n:
                     return True
         return False
-
