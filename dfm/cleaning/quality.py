@@ -244,11 +244,19 @@ class QualityFilter:
                     return True
             return False
 
-        # checks if a non-space token contains a alphabetic character
-        contains_alpha = sum(contains_alpha_fn(t.text) for t in doc if not t.is_space)
-        len_doc = len(doc)
-        ratio_ = contains_alpha / len_doc
-        return ratio_ >= ratio
+        # min number of word to satisfy the ratio
+        min_alpha_token = int(len(doc) * ratio)
+
+        n_alpha_tokens = 0
+        for t in doc:
+            if t.is_space:
+                continue
+            # checks if a non-space token contains a alphabetic character
+            if contains_alpha_fn(t.text):
+                n_alpha_tokens += 1
+                if n_alpha_tokens >= min_alpha_token:
+                    return True
+        return False
 
     @staticmethod
     def symbol_2_word(doc: Doc, ratio: float, symbol: str) -> bool:
