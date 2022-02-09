@@ -44,7 +44,7 @@ ds = ds.map(q_filter, batched=True, batch_size=batch_size, num_proc=12)
 
 ds = ds.remove_columns(["text"])
 
-with open("DAGW_filter2.ndjson", "w") as f:
+with open("DAGW_filter.ndjson", "w") as f:
     writer = ndjson.writer(f, ensure_ascii=False)
 
     for sample in ds:
