@@ -133,13 +133,13 @@ class QualityFilter:
         self.nlp.max_length = max_length
 
     def __call__(
-        self, docs: Iterable[str], as_tuples: bool = False, **kwargs
+        self, texts: Iterable[str], as_tuples: bool = False, **kwargs
     ) -> Iterable[str]:
         """
         Applies quality filter
 
         Args:
-            docs (Iterable[str]): An iterable of strings of the text you wish to filter.
+            texts (Iterable[str]): An iterable of strings of the text you wish to filter.
             as_tuples (bool, optional): If True doc is expected to be a tuple of size
                 two with the first element being the text. The output of this function
                     will then also be a generator of tuples filtered based on the text.
@@ -149,30 +149,29 @@ class QualityFilter:
             Generator: A Generator of either texts or tuples depending on the as_tuples
                 argument.
         """
-        docs = self._filter_max_length(docs, as_tuples)
-        for doc in self.nlp.pipe(docs, as_tuples=as_tuples, **kwargs):
-            if as_tuples:
-                doc, context = doc
+        texts = iter(texts)
+        docs = self.nlp.pipe(texts, as_tuples=as_tuples, **kwargs)
 
-            is_filtered = self.is_filtered(doc)
-            if is_filtered is not None:
-                continue
+        while docs:
+            try:
+                doc = next(docs)
+                if as_tuples:
+                    doc, context = doc
 
-            if as_tuples:
-                yield doc, context
-            else:
-                yield doc
+                is_filtered = self.is_filtered(doc)
+                if is_filtered is not None:
+                    continue
 
-    def _filter_max_length(self, docs: Iterable[str], as_tuples: bool) -> Iterable[str]:
-        for d in docs:
-            if as_tuples:
-                text = d[0]
-            else:
-                text = d
-            if len(text) < self.nlp.max_length:
-                yield d
-            else:
+                if as_tuples:
+                    yield doc, context
+                else:
+                    yield doc
+
+            except ValueError:  # max length exceeded
                 self.filtered["max_chr_length"] += 1
+                docs = self.nlp.pipe(texts)
+            except StopIteration:
+                break
 
     def is_filtered(self, doc: Doc) -> Optional[str]:
         """
@@ -190,27 +189,36 @@ class QualityFilter:
                 self.filtered[filter] += 1
                 return filter
 
-    def describe_filter(self, docs: Iterable[str], **kwargs) -> Generator:
+    def describe_filter(self, texts: Iterable[tuple], **kwargs) -> Generator:
         """
         Applies quality filter and return which filter (if any) each document was
         filtered by
 
         Args:
-            docs (Iterable[str]): An iterable of strings of the text you wish to apply
-                quality filter to
+            texts (Iterable[tuple]): An iterable of tuples where the first element is a
+            string of the text you wish to apply quality filter to
 
         Yields:
             Generator: A Generator strings of which filter was applied to the document
                 "None" indicate not filtered.
         """
-        docs = self._filter_max_length(docs, as_tuples=False)
-        for doc in self.nlp.pipe(docs, **kwargs):
 
-            is_filtered = self.is_filtered(doc)
-            if is_filtered is None:
-                yield "None"
-            else:
-                yield is_filtered
+        texts = iter(texts)
+        docs = self.nlp.pipe(texts, **kwargs)
+
+        while docs:
+            try:
+                doc = next(docs)
+                is_filtered = self.is_filtered(doc)
+                if is_filtered is not None:
+                    yield is_filtered
+                else:
+                    yield "None"
+            except ValueError:  # max length exceeded
+                yield "max_chr_length"
+                docs = self.nlp.pipe(texts)
+            except StopIteration:
+                break
 
     @staticmethod
     def doc_length(doc: Doc, doc_length: Tuple[int, int]) -> bool:
