@@ -105,16 +105,13 @@ class TestQualityFilter:
             ("56789okd23456789098765sds", False),
         ],
     )
-    def test_stop_words(
-        self, quality_filter, stop_words, text: str, expected: bool
-    ):
+    def test_stop_words(self, quality_filter, stop_words, text: str, expected: bool):
         assert (
             quality_filter.stop_word(
                 quality_filter.nlp(text), n=2, stop_words=stop_words
             )
             is expected
         )
-
 
     @pytest.mark.parametrize(
         "texts,expected",
