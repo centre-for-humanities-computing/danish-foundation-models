@@ -4,7 +4,7 @@ Loading scripts for HF type datasets
 import os
 import sys
 
-from typing import Union
+from typing import Set, Union
 from datasets import (
     load_dataset,
     interleave_datasets,
@@ -64,29 +64,29 @@ def load_news():
     return ds
 
 
-def load_dagw(filter_danavis: bool = True, streaming: bool = False):
+def load_dagw(
+    remove_cols: Set[str] = {"danavis", "dannet"}, streaming: bool = False, **kwargs
+):
     dataset = load_dataset(
         "DDSC/partial-danish-gigaword-no-twitter", streaming=streaming
     )
+
+    def filter_(examples):
+        i = 0
+        while i < len(examples["source"]):
+            s = examples["source"][i]
+            if s in remove_cols:
+                for k in examples:
+                    examples[k].pop(i)
+            else:
+                i += 1
+        return examples
+
     ds = dataset["train"]
-    if filter_danavis:
 
-        def filter_(examples):
-            i = 0
-            while i < len(examples["source"]):
-                s = examples["source"][i]
-                if s == "danavis":
-                    for k in examples:
-                        examples[k].pop(i)
-                else:
-                    i += 1
-            return examples
-
+    if remove_cols:
         # not possible to use filter with a streamed dataset
-        ds = ds.map(
-            filter_,
-            batched=True,
-        )
+        ds = ds.map(filter_, batched=True, **kwargs)
     return ds
 
 
