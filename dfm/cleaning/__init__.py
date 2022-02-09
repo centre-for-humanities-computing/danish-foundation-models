@@ -1,1 +1,1 @@
-from .quality import QualityFilter
+from .quality_filter import QualityFilter

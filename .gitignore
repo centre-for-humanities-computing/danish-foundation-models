@@ -135,8 +135,12 @@ dmypy.json
 # MacOS
 .DS_Store
 
+# MacOS
+.DS_Store
+
 # vs code
 .vscode/*
 
-# profiling
+# Profiling
 *.prof
+
