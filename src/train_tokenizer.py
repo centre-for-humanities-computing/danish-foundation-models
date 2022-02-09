@@ -1,7 +1,7 @@
-from dfm.data import load_dfm_dataset
-from dfm.tokenizers import train_tokenizer, TokenizerConfig
 from wasabi import msg
 
+from dfm.data import load_dfm_dataset
+from dfm.tokenizers import TokenizerConfig, train_tokenizer
 
 ds = load_dfm_dataset("tokenization")
 ds = ds.take(2_000_000)

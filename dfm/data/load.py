@@ -3,11 +3,11 @@ Loading scripts for HF type datasets
 """
 import os
 import sys
+from typing import Optional, Union
 
-from typing import Optional
-
+from datasets import (Dataset, Features, IterableDataset, Value,
+                      interleave_datasets, load_dataset)
 from wasabi import msg
-from datasets import load_dataset, interleave_datasets, Dataset
 
 
 def load_tweets(dedupe=False):
@@ -65,6 +65,7 @@ def load_dagw(filter_danavis: bool = True, streaming: bool = False):
     )
     ds = dataset["train"]
     if filter_danavis:
+
         def filter_(examples):
             i = 0
             while i < len(examples["source"]):
@@ -90,10 +91,36 @@ def load_reddit(streaming=False):
     return ds
 
 
+def load_lexdk(streaming: bool = False) -> Union[Dataset, IterableDataset]:
+    """Load the Lex.dk dataset as a Hugging Face Dataset object.
+
+    Args:
+        streaming (bool, optional):
+            Whether to stream the dataset. Defaults to False.
+
+    Returns:
+        Dataset or IterableDataset: The loaded Hugging Face dataset.
+    """
+    features = Features(
+        dict(
+            url=Value("string"),
+            title=Value("string"),
+            clarification=Value("string"),
+            authors=[Value("string")],
+            date=Value("string"),
+            text=Value("string"),
+        )
+    )
+    return load_dataset(
+        path="dfm/data/lexdk", features=features, streaming=streaming, split="train"
+    )
+
+
 def load_tokenizer_ds():
     """
-    script used for training the tokenizer. Load a balances set of data to train the tokenizer on. 
+    script used for training the tokenizer. Load a balances set of data to train the tokenizer on.
     """
+
     def word_count(example):
         example["n_words"] = len(list(filter(lambda x: x, example["text"].split(" "))))
         return example
@@ -117,12 +144,13 @@ def load_tokenizer_ds():
 
     reddit = load_reddit(streaming=False)
     dagw = load_dagw(streaming=False)
-    n_reddit = len(reddit) # 1 908 887
-    n_dagw = len(dagw) # 666 437
+    n_reddit = len(reddit)  # 1 908 887
+    n_dagw = len(dagw)  # 666 437
 
     reddit = load_reddit(streaming=True)  # use all tokens ~86M
-    dagw = load_dagw(streaming=True)  # use all tokens (-danavis, -twitter) ~1 000M tokens
-
+    dagw = load_dagw(
+        streaming=True
+    )  # use all tokens (-danavis, -twitter) ~1 000M tokens
 
     # calculate proportion of each dataset
     arr = np.array([n_tweets, n_news, n_dagw, n_reddit])
@@ -134,22 +162,28 @@ def load_tokenizer_ds():
     ds = ds.take(n)
     return ds
 
+
 def load_dfm_dataset(dataset: str, **kwargs) -> Dataset:
     """load a predefined dfm dataset
 
     Args:
         dataset (str): A predefined dataset
-    
+
     Returns:
         Dataset: a Huggingface dataset
     """
-    dataset_loaders = {"tokenization": load_tokenizer_ds,
-                       "hopetweets": load_tweets,
-                       "reddit": load_reddit,
-                       "danews": load_news,
-                       "dagw": load_dagw}
+    dataset_loaders = {
+        "tokenization": load_tokenizer_ds,
+        "hopetweets": load_tweets,
+        "reddit": load_reddit,
+        "danews": load_news,
+        "dagw": load_dagw,
+        "lexdk": load_lexdk,
+    }
 
     if dataset in dataset_loaders:
         return dataset_loaders[dataset.lower()](**kwargs)
     else:
-        raise ValueError(f"invalid dataset. Valid datasets include {dataset_loaders.keys()}")
+        raise ValueError(
+            f"invalid dataset. Valid datasets include {dataset_loaders.keys()}"
+        )

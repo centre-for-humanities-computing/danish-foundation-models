@@ -8,7 +8,8 @@ datasets~=1.17.0
 ndjson==0.3.1
 
 ## data cleaning
-git+https://github.com/KennethEnevoldsen/text-dedup
+spacy>=3.1.4,<=3.3.0
+datasketch~=1.5.6
 
 # utility
 wasabi~=0.9.0
@@ -16,3 +17,6 @@ pydantic~=1.8.2
 
 # testing
 pytest~=6.2.5
+
+# format
+black==20.8b1

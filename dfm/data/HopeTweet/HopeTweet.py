@@ -112,8 +112,15 @@ class HopeTweet(datasets.GeneratorBasedBuilder):
                     texts_dedup.add(row["text"])
                     row_ = {
                         k: row.pop(k)
-                        for k in ["text", "lang", "id", "possibly_sensitive", "created_at", "conversation_id", "author_id"]
+                        for k in [
+                            "text",
+                            "lang",
+                            "id",
+                            "possibly_sensitive",
+                            "created_at",
+                            "conversation_id",
+                            "author_id",
+                        ]
                     }
                     yield row_n, row_
                     row_n += 1
-
