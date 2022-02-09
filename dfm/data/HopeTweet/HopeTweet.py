@@ -98,7 +98,7 @@ class HopeTweet(datasets.GeneratorBasedBuilder):
         row_n = 0
         id = set()
         for fp in filepaths:
-            msg.info("HopeTweet: Started reading from:", fp)
+            msg.info(f"HopeTweet: Started reading from:\n {fp}")
             texts_dedup = set()
             with open(fp) as f:
                 reader = ndjson.reader(f)

@@ -4,8 +4,9 @@ from wasabi import msg
 
 
 ds = load_dfm_dataset("tokenization")
+ds = ds.take(2_000_000)
 t_config = TokenizerConfig(tokenizer_type = "unigram",
-    vocab_size = 55000,
+    vocab_size = 32000, # 55
     lower_case = False,
     sentence_piece = True,
     add_prefix_space = True,

@@ -5,6 +5,8 @@ import os
 import sys
 
 from typing import Optional
+
+from wasabi import msg
 from datasets import load_dataset, interleave_datasets, Dataset
 
 
@@ -127,7 +129,9 @@ def load_tokenizer_ds():
     prob = arr / sum(arr)
 
     ds = interleave_datasets([tweets, news, dagw, reddit], probabilities=prob.tolist())
-    ds.take(n_reddit + n_dagw + n_tweets + n_news)
+    n = 10_000_000
+    msg.info(f"Limiting dataset to {n} samples.")
+    ds = ds.take(n)
     return ds
 
 def load_dfm_dataset(dataset: str, **kwargs) -> Dataset:
