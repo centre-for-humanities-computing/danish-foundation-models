@@ -20,7 +20,7 @@ import json
 from unicodedata import normalize
 import re
 from tqdm.auto import tqdm
-from collections.abc import Callable
+from typing import Callable
 
 
 def _default_normalization(doc: str) -> str:
