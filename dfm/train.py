@@ -1,7 +1,8 @@
 """Training script for training masked language models with sweeps
 Inspiration: https://github.com/huggingface/transformers/blob/master/examples/pytorch/language-modeling/run_mlm.py
 
-CMD: train.py --path_to_config_file
+CMD: 
+PYTHONPATH="." python dfm/train.py --path_to_config_file
 """
 
 from dataclasses import dataclass, field
@@ -20,8 +21,8 @@ from transformers import (
 from datasets import interleave_datasets
 
 from dfm.data.load import dfm_load_dataset
-from dfm.data.preprocess import preprocess_dataset
-from dfm.utils import read_yaml
+from dfm.modelling.preprocess import preprocess_dataset
+from dfm.modelling.utils import read_yaml
 from dfm.modelling.model_types import MODEL_TYPES
 
 

@@ -6,10 +6,10 @@ data_arguments:
 
 model_arguments:
     model_type: "autoencoding"
-    model_name: "microsoft/deberta-v3-base"
+    model_name: "Maltehb/aelaectra-danish-electra-small-cased"
 
 training_arguments:
-    learning_rate: 0.003
+    learning_rate: 0.0005
     do_train: true
     do_eval: true
     push_to_hub: false

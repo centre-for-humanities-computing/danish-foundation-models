@@ -138,3 +138,5 @@ dmypy.json
 wandb/*
 # vs code
 .vscode/*
+
+models/*
