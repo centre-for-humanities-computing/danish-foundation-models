@@ -4,7 +4,7 @@ Loading scripts for HF type datasets
 import os
 import sys
 
-from typing import Union
+from typing import Union, List
 from datasets import (
     load_dataset,
     interleave_datasets,
@@ -12,6 +12,7 @@ from datasets import (
     IterableDataset,
     Features,
     Value,
+    DatasetDict
 )
 
 
@@ -21,7 +22,7 @@ def load_tweets(dedupe=False):
     data_path = os.path.join(f_path, "..", "data")
     sys.path.append(data_path)
     from dedupe import min_hash_deduper, duplicate_filter
-    from utils import to_datetime
+    from dfm.data.utils import to_datetime
 
     os.chdir(data_path)
 
@@ -195,3 +196,33 @@ def load_dfm_dataset(dataset: str, **kwargs) -> Dataset:
 def load_multiple_dfm_datasets(datasets: List[str], **kwargs) -> Dataset:
     datasets = [load_dfm_dataset(dataset, **kwargs) for dataset in datasets]
     return datasets.concatenate_datasets(datasets)
+
+
+
+#### TEMPORARY TO TEST TRAIN SCRIPT
+def dfm_load_dataset(dataset: str):
+    """loads a single dataset from the Hugging Face Datasets hub.
+
+    Args:
+        dataset (str): string for Hugging Face dataset.
+
+    Returns:
+        DatasetDict: Dataset with train, test and validation split.
+    """
+
+    ds = load_dataset(dataset, streaming=False)
+
+    if "validation" not in ds or "test" not in ds:
+        train_test = ds["train"].train_test_split(test_size=0.1)
+        # Split the 10% test + valid in half test, half valid
+        test_valid = train_test["test"].train_test_split(test_size=0.5)
+        # gather everyone if you want to have a single DatasetDict
+        ds = DatasetDict(
+            {
+                "train": train_test["train"],
+                "test": test_valid["test"],
+                "val": test_valid["train"],
+            }
+        )
+
+    return ds
