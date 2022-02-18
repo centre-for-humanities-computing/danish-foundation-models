@@ -5,7 +5,6 @@ CMD: train.py --path_to_config_file
 """
 
 from dataclasses import dataclass, field
-import json
 from typing import List, Optional
 
 import wandb
@@ -22,14 +21,14 @@ from datasets import interleave_datasets
 
 from dfm.data.load import dfm_load_dataset
 from dfm.data.preprocess import preprocess_dataset
-from dfm.utils import read_json
+from dfm.utils import read_yaml
 from dfm.modelling.model_types import MODEL_TYPES
 
 
 def main():
-    d = DataArguments.from_json("tests/test_configs/pretrain_config.json")
+    d = DataArguments.from_yaml("tests/test_configs/pretrain_config.yaml")
     trainer = DFMTrainer(
-        pretraining_config_path="tests/test_configs/pretrain_config.json",
+        pretraining_config_path="tests/test_configs/pretrain_config.yaml",
     )
     trainer.train()
 
@@ -43,19 +42,20 @@ class DataArguments(object):
     dataset_names: List[str]
     interleave: bool
     interleave_probabilities: List[float]
+    num_proc: int
 
     @classmethod
-    def from_json(cls, config_path: str):
-        file = json.load(open(config_path))
+    def from_yaml(cls, config_path: str):
+        file = read_yaml(config_path)
         keys = cls.__dataclass_fields__.keys()
-        json_data = file["data_arguments"]
-        normal_json_data = {key: json_data[key] for key in json_data if key in keys}
-        anormal_json_data = {
-            key: json_data[key] for key in json_data if key not in keys
+        yaml_data = file["data_arguments"]
+        normal_yaml_data = {key: yaml_data[key] for key in yaml_data if key in keys}
+        anormal_yaml_data = {
+            key: yaml_data[key] for key in yaml_data if key not in keys
         }
-        tmp = cls(**normal_json_data)
-        for anormal_key in anormal_json_data:
-            setattr(tmp, anormal_key, anormal_json_data[anormal_key])
+        tmp = cls(**normal_yaml_data)
+        for anormal_key in anormal_yaml_data:
+            setattr(tmp, anormal_key, anormal_yaml_data[anormal_key])
         return tmp
 
 
@@ -65,17 +65,17 @@ class ModelArguments(object):
     model_name: str
 
     @classmethod
-    def from_json(cls, config_path: str):
-        file = json.load(open(config_path))
+    def from_yaml(cls, config_path: str):
+        file = read_yaml(config_path)
         keys = cls.__dataclass_fields__.keys()
-        json_data = file["model_arguments"]
-        normal_json_data = {key: json_data[key] for key in json_data if key in keys}
-        anormal_json_data = {
-            key: json_data[key] for key in json_data if key not in keys
+        yaml_data = file["model_arguments"]
+        normal_yaml_data = {key: yaml_data[key] for key in yaml_data if key in keys}
+        anormal_yaml_data = {
+            key: yaml_data[key] for key in yaml_data if key not in keys
         }
-        tmp = cls(**normal_json_data)
-        for anormal_key in anormal_json_data:
-            setattr(tmp, anormal_key, anormal_json_data[anormal_key])
+        tmp = cls(**normal_yaml_data)
+        for anormal_key in anormal_yaml_data:
+            setattr(tmp, anormal_key, anormal_yaml_data[anormal_key])
         return tmp
 
 
@@ -102,11 +102,11 @@ class DFMTrainer:
         """
         # Configuration arguments
         self.pretraining_config_path = pretraining_config_path
-        self.training_args = read_json(self.pretraining_config_path)[
+        self.training_args = read_yaml(self.pretraining_config_path)[
             "training_arguments"
         ]
-        self.data_args = DataArguments.from_json(self.pretraining_config_path)
-        self.model_args = ModelArguments.from_json(self.pretraining_config_path)
+        self.data_args = DataArguments.from_yaml(self.pretraining_config_path)
+        self.model_args = ModelArguments.from_yaml(self.pretraining_config_path)
 
         self.dataset_names = self.data_args.dataset_names
         self.interleave = self.data_args.interleave
@@ -133,8 +133,9 @@ class DFMTrainer:
 
         # Load and preprocess datasets
         datasets = [dfm_load_dataset(d) for d in self.dataset_names]
-        # might want to set num_proc to more than 4 in `preprocess_dataset``
-        datasets = [preprocess_dataset(d, tokenizer=tokenizer) for d in datasets]
+        # TODO
+        # Make flag for num_proc
+        datasets = [preprocess_dataset(d, tokenizer=tokenizer, num_proc=self.data_args.num_proc) for d in datasets]
         train_datasets = [d["train"] for d in datasets]
         eval_datasets = [d["val"] for d in datasets]
         # Interleave
@@ -168,18 +169,17 @@ class DFMTrainer:
         training_args = TrainingArguments(
             f"models/{model.name_or_path}", **self.training_args
         )
-
+        
         trainer = Trainer(
             model=model,
             args=training_args,
             train_dataset=train_datasets,
             eval_dataset=eval_datasets,
-            data_collator=data_collator,
+            data_collator=data_collator
         )
 
         # Train
         trainer.train()
-        trainer.push_to_hub()
 
 
 if __name__ == "__main__":
