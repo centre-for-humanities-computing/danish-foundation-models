@@ -1,5 +1,4 @@
 """Training script for training masked language models with sweeps
-Inspiration: https://github.com/huggingface/transformers/blob/master/examples/pytorch/language-modeling/run_mlm.py
 
 CMD: 
 PYTHONPATH="." python dfm/train.py --path_to_config_file
@@ -136,7 +135,10 @@ class DFMTrainer:
         datasets = [dfm_load_dataset(d) for d in self.dataset_names]
         # TODO
         # Make flag for num_proc
-        datasets = [preprocess_dataset(d, tokenizer=tokenizer, num_proc=self.data_args.num_proc) for d in datasets]
+        datasets = [
+            preprocess_dataset(d, tokenizer=tokenizer, num_proc=self.data_args.num_proc)
+            for d in datasets
+        ]
         train_datasets = [d["train"] for d in datasets]
         eval_datasets = [d["val"] for d in datasets]
         # Interleave
@@ -170,13 +172,13 @@ class DFMTrainer:
         training_args = TrainingArguments(
             f"models/{model.name_or_path}", **self.training_args
         )
-        
+
         trainer = Trainer(
             model=model,
             args=training_args,
             train_dataset=train_datasets,
             eval_dataset=eval_datasets,
-            data_collator=data_collator
+            data_collator=data_collator,
         )
 
         # Train
