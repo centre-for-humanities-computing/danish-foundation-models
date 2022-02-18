@@ -1,14 +1,15 @@
 wandb~=0.12.9
 
+--find-links https://download.pytorch.org/whl/torch_stable.html
 # models
-torch~=1.10.1
+torch==1.10.2+cu113
 git+https://github.com/huggingface/transformers@e09473a817c5e5871e11cc81004355ef30250502
 datasets >= 1.8.0
 sentencepiece != 0.1.92
 protobuf==3.19.4
 
 # data
-datasets~=1.17.0
+# datasets~=1.17.0
 ndjson==0.3.1
 
 ## data cleaning
