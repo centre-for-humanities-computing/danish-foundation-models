@@ -3,6 +3,7 @@ Loading scripts for HF type datasets
 """
 import os
 import sys
+from typing import Optional, Union
 
 from typing import Union, List
 from datasets import (
@@ -14,6 +15,10 @@ from datasets import (
     Value,
     DatasetDict
 )
+from datasets import (Dataset, Features, IterableDataset, Value,
+                      interleave_datasets, load_dataset)
+from wasabi import msg
+
 
 
 def load_tweets(dedupe=False):
@@ -163,6 +168,9 @@ def load_tokenizer_ds():
     prob = arr / sum(arr)
 
     ds = interleave_datasets([tweets, news, dagw, reddit], probabilities=prob.tolist())
+    n = 10_000_000
+    msg.info(f"Limiting dataset to {n} samples.")
+    ds = ds.take(n)
     return ds
 
 

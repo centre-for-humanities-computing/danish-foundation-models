@@ -13,7 +13,8 @@ protobuf==3.19.4
 ndjson==0.3.1
 
 ## data cleaning
-git+https://github.com/KennethEnevoldsen/text-dedup
+spacy>=3.1.4,<=3.3.0
+datasketch~=1.5.6
 
 # utility
 wasabi~=0.9.0
