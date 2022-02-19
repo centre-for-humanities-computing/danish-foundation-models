@@ -4,7 +4,6 @@ Loading scripts for HF type datasets
 import os
 import sys
 from typing import Union, List
-from typing import 
 from datasets import (
     load_dataset,
     interleave_datasets,
@@ -15,6 +14,8 @@ from datasets import (
     DatasetDict,
 )
 from wasabi import msg
+from dedupe import min_hash_deduper, duplicate_filter
+from dfm.data.utils import to_datetime
 
 
 def load_tweets(dedupe=False):
@@ -22,8 +23,6 @@ def load_tweets(dedupe=False):
     f_path = os.path.dirname(os.path.abspath(__file__))
     data_path = os.path.join(f_path, "..", "data")
     sys.path.append(data_path)
-    from dedupe import min_hash_deduper, duplicate_filter
-    from dfm.data.utils import to_datetime
 
     os.chdir(data_path)
 
