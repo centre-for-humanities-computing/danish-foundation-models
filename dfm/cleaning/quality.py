@@ -4,6 +4,7 @@ Danish implementation of quality filter described in [1]
 Authors:
     Kenneth C. Enevoldsen
     Kasper Junge
+    Malte Højmark-Bertelsen
 
 References:
     [1] Rae, J. W., Borgeaud, S., Cai, T., Millican, K., Hoffmann, J., Song, F.,
