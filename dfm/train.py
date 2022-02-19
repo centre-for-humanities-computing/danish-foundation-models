@@ -150,8 +150,8 @@ class DFMTrainer:
         elif self.model_type == "seq-to-seq":
             # TODO
             # Create DataCollatorForT5MLM.
-            raise ValueError(
-                f"Sorry. Model type: {self.model_type} has not yet been implemented."
+            raise NotImplementedError(
+                f"Model type: {self.model_type} has not yet been implemented."
             )
         else:
             raise ValueError(

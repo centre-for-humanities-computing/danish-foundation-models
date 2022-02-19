@@ -114,7 +114,7 @@ class QualityFilter:
             "stop_word": partial(
                 self.stop_word, stop_words=stop_words, n=min_stop_words
             ),
-            "lorem_ipsum": partial(self.lorem_ipsum),
+            "lorem_ipsum": self.lorem_ipsum,
         }
         self.filtered = Counter()
 
