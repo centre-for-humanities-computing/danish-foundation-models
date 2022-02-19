@@ -131,12 +131,11 @@ dmypy.json
 
 # vscode
 .vscode/
+
 # JSONL data files
 **/*.jsonl
 
 #wandb
 wandb/*
-# vs code
-.vscode/*
 
 models/*
