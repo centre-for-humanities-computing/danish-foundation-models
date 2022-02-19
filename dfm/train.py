@@ -9,12 +9,11 @@ PYTHONPATH="." python dfm/train.py --path_to_config_file
 ```
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Optional
 
 from transformers import (
     AutoConfig,
-    AutoModelForMaskedLM,
     AutoModelForPreTraining,
     Trainer,
     TrainingArguments,
@@ -30,7 +29,6 @@ from dfm.modelling.model_types import MODEL_TYPES
 
 
 def main():
-    d = DataArguments.from_yaml("tests/test_configs/pretrain_config.yaml")
     trainer = DFMTrainer(
         pretraining_config_path="tests/test_configs/pretrain_config.yaml",
     )
@@ -40,7 +38,6 @@ def main():
 # TODO:
 # create configs for models (training + model)
 # create collator for T5
-# remove variables and make it more IaC
 @dataclass
 class DataArguments(object):
     dataset_names: List[str]
@@ -89,11 +86,6 @@ class DFMTrainer:
     def __init__(
         self,
         pretraining_config_path: str,
-        model_type: Optional[str] = None,
-        dataset_names: Optional[List[str]] = None,
-        model_name: Optional[str] = None,
-        interleave_probabilities: Optional[List[float]] = [0.5, 0.5],
-        mlm_probability: int = 0.15,
     ) -> None:
         """
         Training function with Weights & Biases logging.
@@ -122,13 +114,9 @@ class DFMTrainer:
         if self.model_type not in MODEL_TYPES:
             raise ValueError(f"Invalid model type. Choose one from: {MODEL_TYPES}")
 
-        self.mlm_probability = mlm_probability
-
     def train(
         self,
     ):
-
-        # wandb.login()
 
         HF_config = AutoConfig.from_pretrained(self.model_name)
         tokenizer = AutoTokenizer.from_pretrained(
@@ -137,14 +125,13 @@ class DFMTrainer:
 
         # Load and preprocess datasets
         datasets = [dfm_load_dataset(d) for d in self.dataset_names]
-        # TODO
-        # Make flag for num_proc
         datasets = [
             preprocess_dataset(d, tokenizer=tokenizer, num_proc=self.data_args.num_proc)
             for d in datasets
         ]
         train_datasets = [d["train"] for d in datasets]
         eval_datasets = [d["val"] for d in datasets]
+
         # Interleave
         train_datasets = interleave_datasets(
             train_datasets, probabilities=self.interleave_probabilities
@@ -157,14 +144,16 @@ class DFMTrainer:
         if self.model_type == "autoencoding":
             # Data Collator
             data_collator = DataCollatorForLanguageModeling(
-                tokenizer=tokenizer, mlm_probability=self.mlm_probability
+                tokenizer=tokenizer, mlm_probability=self.data_args.mlm_probability
             )
 
         elif self.model_type == "seq-to-seq":
-            # data_collator = DataCollatorForLanguageModeling(
-            #     tokenizer=tokenizer, mlm_probability=0.15
-            # )
-            # model = AutoModelForMaskedLM.from_config(HF_config)
+            # TODO
+            # Create DataCollatorForT5MLM.
+            raise ValueError(
+                f"Sorry. Model type: {self.model_type} has not yet been implemented."
+            )
+        else:
             raise ValueError(
                 f"Sorry. Model type: {self.model_type} has not yet been implemented."
             )
