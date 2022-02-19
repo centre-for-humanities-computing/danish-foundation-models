@@ -1,5 +1,9 @@
 """Training script for training masked language models with sweeps
 
+Authors:
+    Lasse Hansen
+    Malte Højmark-Bertelsen
+
 ```bash 
 PYTHONPATH="." python dfm/train.py --path_to_config_file
 ```
