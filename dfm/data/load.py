@@ -3,9 +3,8 @@ Loading scripts for HF type datasets
 """
 import os
 import sys
-from typing import Optional, Union
-
 from typing import Union, List
+from typing import 
 from datasets import (
     load_dataset,
     interleave_datasets,
@@ -14,14 +13,6 @@ from datasets import (
     Features,
     Value,
     DatasetDict,
-)
-from datasets import (
-    Dataset,
-    Features,
-    IterableDataset,
-    Value,
-    interleave_datasets,
-    load_dataset,
 )
 from wasabi import msg
 
