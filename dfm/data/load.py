@@ -13,12 +13,17 @@ from datasets import (
     IterableDataset,
     Features,
     Value,
-    DatasetDict
+    DatasetDict,
 )
-from datasets import (Dataset, Features, IterableDataset, Value,
-                      interleave_datasets, load_dataset)
+from datasets import (
+    Dataset,
+    Features,
+    IterableDataset,
+    Value,
+    interleave_datasets,
+    load_dataset,
+)
 from wasabi import msg
-
 
 
 def load_tweets(dedupe=False):
@@ -204,7 +209,6 @@ def load_dfm_dataset(dataset: str, **kwargs) -> Dataset:
 def load_multiple_dfm_datasets(datasets: List[str], **kwargs) -> Dataset:
     datasets = [load_dfm_dataset(dataset, **kwargs) for dataset in datasets]
     return datasets.concatenate_datasets(datasets)
-
 
 
 #### TEMPORARY TO TEST TRAIN SCRIPT

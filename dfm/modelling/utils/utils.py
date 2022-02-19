@@ -1,6 +1,7 @@
 import json
 import yaml
 
+
 def read_json(file_path: str):
     """Function for reading a json file.
 
@@ -12,8 +13,9 @@ def read_json(file_path: str):
     """
     with open(file_path) as f:
         d = json.load(f)
-       
+
     return d
+
 
 def read_yaml(yaml_path):
     """Get a yaml object into a Python-dictionary.
