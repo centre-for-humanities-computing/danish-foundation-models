@@ -1,13 +1,13 @@
 """Training script for training masked language models with sweeps
 
-CMD: 
+```bash 
 PYTHONPATH="." python dfm/train.py --path_to_config_file
+```
 """
 
 from dataclasses import dataclass, field
 from typing import List, Optional
 
-import wandb
 from transformers import (
     AutoConfig,
     AutoModelForMaskedLM,
