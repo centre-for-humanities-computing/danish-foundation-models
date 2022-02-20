@@ -10,7 +10,7 @@ PYTHONPATH="." python dfm/train.py --path_to_config_file
 """
 
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from transformers import (
     AutoConfig,
@@ -146,7 +146,20 @@ class DFMTrainer:
 
     def train(
         self,
+        resume_from_checkpoint: Optional[Union[str, bool]] = None,
     ):
+        """Main training method for Danish Foundation Models
+
+        Args:
+            resume_from_checkpoint (Optional[Union[str, bool]], optional):
+                Loads a model previously saved by a Trainer.
+                If str it loads it from the path,
+                if bool it looads it from the most recently
+                save model from the training_args.output_dir. Defaults to None.
+
+        Raises:
+            NotImplementedError: Raises a NotImplementedError if a model type not yet supported is passed.
+        """
 
         HF_config = AutoConfig.from_pretrained(self.model_name)
         tokenizer = AutoTokenizer.from_pretrained(
@@ -192,9 +205,7 @@ class DFMTrainer:
         model = AutoModelForPreTraining.from_config(HF_config)
 
         # Training args
-        training_args = TrainingArguments(
-            f"models/{model.name_or_path}", **self.training_args
-        )
+        training_args = TrainingArguments(**self.training_args)
 
         trainer = Trainer(
             model=model,
@@ -205,7 +216,7 @@ class DFMTrainer:
         )
 
         # Train
-        trainer.train()
+        trainer.train(resume_from_checkpoint=resume_from_checkpoint)
 
 
 if __name__ == "__main__":
