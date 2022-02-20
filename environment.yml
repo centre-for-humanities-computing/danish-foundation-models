@@ -3,14 +3,12 @@
 name: dfm
 
 channels:
-- conda-forge
-- pytorch
-- defaults
+  - conda-forge
+  - pytorch
+  - defaults
 
 dependencies:
-- python=3.9
-- flake8
-- black
-- pip
-- pip:
-  - -r requirements.txt
+  - python=3.9
+  - pip
+  - pip:
+      - -r requirements.txt
