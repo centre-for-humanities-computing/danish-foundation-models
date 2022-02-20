@@ -29,6 +29,7 @@ from dfm.modelling.model_types import MODEL_TYPES
 
 
 def main():
+    """Main function for running the training script."""
     trainer = DFMTrainer(
         pretraining_config_path="tests/test_configs/pretrain_config.yaml",
     )
