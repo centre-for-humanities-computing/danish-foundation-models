@@ -154,8 +154,8 @@ class DFMTrainer:
                 f"Model type: {self.model_type} has not yet been implemented."
             )
         else:
-            raise ValueError(
-                f"Sorry. Model type: {self.model_type} has not yet been implemented."
+            raise NotImplementedError(
+                f"Model type: {self.model_type} has not yet been implemented."
             )
 
         # Load model
