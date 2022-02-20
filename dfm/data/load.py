@@ -14,8 +14,10 @@ from datasets import (
     DatasetDict,
 )
 from wasabi import msg
-from dedupe import min_hash_deduper, duplicate_filter
 from dfm.data.utils import to_datetime
+
+# Removed import below untill fixed.
+# from text_dedup import min_hash_deduper, duplicate_filter
 
 
 def load_tweets(dedupe=False):
