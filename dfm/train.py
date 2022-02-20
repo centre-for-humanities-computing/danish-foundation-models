@@ -39,44 +39,74 @@ def main():
 # create configs for models (training + model)
 # create collator for T5
 @dataclass
-class DataArguments(object):
+class DataArguments:
+    """This is a dataclass for dataarguments.
+
+    Args:
+            dataset_names (list(str)): List of names of the datasets wanted to be used in training.
+            interleave (bool): Whether to interleave datasets.
+            interleave_probabilities (list(bool)): The different interleave probabilties.
+            num_proc (int): How many cores to run the preprocessing with.
+    """
+
     dataset_names: List[str]
     interleave: bool
     interleave_probabilities: List[float]
     num_proc: int
 
     @classmethod
-    def from_yaml(cls, config_path: str):
+    def from_yaml(cls, config_path: str) -> dict:
+        """Reads a yaml file into a dictionary.
+
+        Args:
+            config_path (str): Path to the configuration YAML file.
+
+        Returns:
+            dict: Dictionary containing the data arguments.
+        """
+
+        # Read dataarguments from yaml file
         file = read_yaml(config_path)
         keys = cls.__dataclass_fields__.keys()
         yaml_data = file["data_arguments"]
+
+        # Get the yaml data
         normal_yaml_data = {key: yaml_data[key] for key in yaml_data if key in keys}
-        anormal_yaml_data = {
-            key: yaml_data[key] for key in yaml_data if key not in keys
-        }
         tmp = cls(**normal_yaml_data)
-        for anormal_key in anormal_yaml_data:
-            setattr(tmp, anormal_key, anormal_yaml_data[anormal_key])
         return tmp
 
 
 @dataclass
-class ModelArguments(object):
+class ModelArguments:
+    """This is a dataclass for modelarguments.
+
+    Args:
+            model_type (str): What kind of model you want to train. Currently supported is 'autoencoding'.
+            model_name (str): Name of the model.
+    """
+
     model_type: str
     model_name: str
 
     @classmethod
-    def from_yaml(cls, config_path: str):
+    def from_yaml(cls, config_path: str) -> dict:
+        """Reads a yaml file into a dictionary.
+
+        Args:
+            config_path (str): Path to the configuration YAML file.
+
+        Returns:
+            dict: Dictionary containing the model arguments.
+        """
+
+        # Read dataarguments from yaml file
         file = read_yaml(config_path)
         keys = cls.__dataclass_fields__.keys()
         yaml_data = file["model_arguments"]
+
+        # Get the yaml data
         normal_yaml_data = {key: yaml_data[key] for key in yaml_data if key in keys}
-        anormal_yaml_data = {
-            key: yaml_data[key] for key in yaml_data if key not in keys
-        }
         tmp = cls(**normal_yaml_data)
-        for anormal_key in anormal_yaml_data:
-            setattr(tmp, anormal_key, anormal_yaml_data[anormal_key])
         return tmp
 
 
