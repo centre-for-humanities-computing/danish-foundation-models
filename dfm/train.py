@@ -38,6 +38,7 @@ def main():
 # TODO:
 # create configs for models (training + model)
 # create collator for T5
+# consider whether to actually use dataclasses.
 @dataclass
 class DataArguments:
     """This is a dataclass for dataarguments.
@@ -47,12 +48,14 @@ class DataArguments:
             interleave (bool): Whether to interleave datasets.
             interleave_probabilities (list(bool)): The different interleave probabilties.
             num_proc (int): How many cores to run the preprocessing with.
+            mlm_probability (float): The masking probability.
     """
 
     dataset_names: List[str]
     interleave: bool
     interleave_probabilities: List[float]
     num_proc: int
+    mlm_probability: float
 
     @classmethod
     def from_yaml(cls, config_path: str) -> dict:
