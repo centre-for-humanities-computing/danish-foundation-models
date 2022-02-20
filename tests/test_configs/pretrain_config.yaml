@@ -1,8 +1,9 @@
 data_arguments:
-    dataset_names: ["DDSC/reddit-da", "DDSC/partial-danish-gigaword-no-twitter"]
+    dataset_names: ["DDSC/reddit-da", "DDSC/dkhate"]
     interleave: true
     interleave_probabilities: [0.5, 0.5]
-    num_proc: 12
+    num_proc: 6
+    mlm_probability: 0.15
 
 model_arguments:
     model_type: "autoencoding"
@@ -16,3 +17,4 @@ training_arguments:
     fp16: true
     num_train_epochs: 15
     evaluation_strategy: "epoch"
+    output_dir: "models123"
