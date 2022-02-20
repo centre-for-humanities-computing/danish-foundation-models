@@ -244,7 +244,7 @@ def load_multiple_dfm_datasets(datasets: List[str], **kwargs) -> Dataset:
 
 
 #### TEMPORARY TO TEST TRAIN SCRIPT
-def dfm_load_dataset(dataset: str):
+def dfm_load_dataset(dataset: str) -> DatasetDict:
     """loads a single dataset from the Hugging Face Datasets hub.
 
     Args:
@@ -258,8 +258,10 @@ def dfm_load_dataset(dataset: str):
 
     if "validation" not in ds or "test" not in ds:
         train_test = ds["train"].train_test_split(test_size=0.1)
+
         # Split the 10% test + valid in half test, half valid
         test_valid = train_test["test"].train_test_split(test_size=0.5)
+
         # gather everyone if you want to have a single DatasetDict
         ds = DatasetDict(
             {
