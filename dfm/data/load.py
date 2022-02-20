@@ -20,7 +20,15 @@ from dfm.data.utils import to_datetime
 # from text_dedup import min_hash_deduper, duplicate_filter
 
 
-def load_tweets(dedupe=False):
+def load_tweets(dedupe=False) -> Union[Dataset, IterableDataset]:
+    """Dataloader for tweets from the HOPE project.
+
+    Args:
+        dedupe (bool, optional): Whether to deplicate tweets or not. Defaults to False.
+
+    Returns:
+        Union[Dataset, IterableDataset]: A Hugging Face dataset for HOPE tweets.
+    """
     cwd = os.getcwd()
     f_path = os.path.dirname(os.path.abspath(__file__))
     data_path = os.path.join(f_path, "..", "data")
@@ -39,7 +47,12 @@ def load_tweets(dedupe=False):
     return ds
 
 
-def load_news():
+def load_news() -> Union[Dataset, IterableDataset]:
+    """Dataloader for news.
+
+    Returns:
+        Union[Dataset, IterableDataset]: A Hugging Face dataset for DaNews.
+    """
     cwd = os.getcwd()
     f_path = os.path.dirname(os.path.abspath(__file__))
     data_path = os.path.join(f_path, "..", "data")
@@ -67,7 +80,18 @@ def load_news():
     return ds
 
 
-def load_dagw(filter_danavis: bool = True, streaming: bool = False):
+def load_dagw(
+    filter_danavis: bool = True, streaming: bool = False
+) -> Union[Dataset, IterableDataset]:
+    """Dataloader for Danish Gigaword.
+
+    Args:
+        filter_danavis (bool, optional): Whether to filter DanAvis documents. Defaults to True.
+        streaming (bool, optional): Whether to stream the dataset. Defaults to False.
+
+    Returns:
+        Union[Dataset, IterableDataset]: A Hugging Face dataset for Danish Gigaword.
+    """
     dataset = load_dataset(
         "DDSC/partial-danish-gigaword-no-twitter", streaming=streaming
     )
@@ -93,7 +117,15 @@ def load_dagw(filter_danavis: bool = True, streaming: bool = False):
     return ds
 
 
-def load_reddit(streaming=False):
+def load_reddit(streaming=False) -> Union[Dataset, IterableDataset]:
+    """Dataloader for Danish reddit data.
+
+    Args:
+        streaming (bool, optional): Whether to stream the dataset. Defaults to False.
+
+    Returns:
+        Union[Dataset, IterableDataset]: A Hugging Face dataset for Danish reddit data.
+    """
     dataset = load_dataset("DDSC/reddit-da", streaming=streaming)
     ds = dataset["train"]
     return ds
@@ -124,7 +156,7 @@ def load_lexdk(streaming: bool = False) -> Union[Dataset, IterableDataset]:
     )
 
 
-def load_tokenizer_ds():
+def load_tokenizer_ds() -> Dataset:
     """
     script used for training the tokenizer. Load a balances set of data to train the tokenizer on.
     """
@@ -199,6 +231,14 @@ def load_dfm_dataset(dataset: str, **kwargs) -> Dataset:
 
 
 def load_multiple_dfm_datasets(datasets: List[str], **kwargs) -> Dataset:
+    """Dataloader for loading multiple Danish Foundation Models datasets.
+
+    Args:
+        datasets (List[str]): List of strings containing the names of the datasets
+
+    Returns:
+        Dataset: A concatenated Hugging Face dataset containing the given DFM datasets.
+    """
     datasets = [load_dfm_dataset(dataset, **kwargs) for dataset in datasets]
     return datasets.concatenate_datasets(datasets)
 
