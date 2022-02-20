@@ -114,7 +114,7 @@ class QualityFilter:
             "stop_word": partial(
                 self.stop_word, stop_words=stop_words, n=min_stop_words
             ),
-            "lorem_ipsum": self.lorem_ipsum,
+            "string_filter": self.string_filter,
         }
         self.filtered = Counter()
 
@@ -279,11 +279,11 @@ class QualityFilter:
         return n_stopwords >= n
 
     @staticmethod
-    def lorem_ipsum(doc: Doc, lorem_ipsum: str = "lorem ipsum"):
-        """Method for filtering documents containing 'lorem ipsum'.
+    def string_filter(doc: Doc, string: str) -> bool:
+        """Method for filtering documents containing a specific string.
 
         Args:
             doc (Doc): SpaCy document
-            lorem_ipsum (str, optional): String for lorem ipsum. Defaults to "lorem ipsum".
+            string (str, optional): String for filtering.
         """
-        return lorem_ipsum not in doc.text.lower()
+        return string not in doc.text.lower()
