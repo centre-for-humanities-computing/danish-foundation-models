@@ -4,7 +4,6 @@ wandb~=0.12.9
 
 transformers~=4.16.2
 torch~=1.10.2
-datasets >= 1.8.0
 protobuf==3.19.4
 
 # data
