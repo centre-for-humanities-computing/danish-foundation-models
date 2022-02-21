@@ -28,7 +28,7 @@ def preprocess_dataset(
     tokenizer: Union[PreTrainedTokenizerFast, PreTrainedTokenizerBase],
     num_proc: int = 4,
     block_size: int = 512,
-) -> DatasetDict:
+) -> Dataset:
     """Preprocesses a dataset for training.
 
     Args:
@@ -38,7 +38,7 @@ def preprocess_dataset(
         block_size (int, optional): Block size of how long the grouped texts can maximally be. Defaults to 512.
 
     Returns:
-        DatasetDict: A preprocessed Hugging Face dataset.
+        Dataset: A preprocessed dataset.
     """
 
     # Only use text columns
