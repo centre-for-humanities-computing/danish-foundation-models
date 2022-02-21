@@ -175,8 +175,10 @@ class TestQualityFilter:
         assert sum(qfilter.filtered.values()) == (len(texts) - 1)
 
     def test_string_filter(self, texts, qfilter):
+        assert (
+            qfilter.string_filter(qfilter.nlp(texts[0]), string="lorem ipsum") is True
+        )
         assert qfilter.string_filter(qfilter.nlp(texts[0])) is True
         assert (
-            qfilter.string_filter(qfilter.nlp(texts[9], removal_string="lorem_ipsum"))
-            is False
+            qfilter.string_filter(qfilter.nlp(texts[9]), string="lorem ipsum") is False
         )

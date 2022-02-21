@@ -48,6 +48,7 @@ class QualityFilter:
             with a bulletpoint. Defaults to 0.9.
         max_p_end_ellipsis (float, optional): Maximum number of lines which ends
             with an ellipsis. Defaults to 0.3.
+        string (str, optional): String for filtering. Defaults to None.
     """
 
     def __init__(
@@ -61,6 +62,7 @@ class QualityFilter:
         symbol_2_word_ellipsis: float = 0.1,
         max_p_begin_bullets: float = 0.9,
         max_p_end_ellipsis: float = 0.3,
+        string: Optional[str] = None,
     ):
         if stop_words is None:
             stop_words = set(
@@ -114,7 +116,7 @@ class QualityFilter:
             "stop_word": partial(
                 self.stop_word, stop_words=stop_words, n=min_stop_words
             ),
-            "string_filter": self.string_filter,
+            "string_filter": partial(self.string_filter, string=string),
         }
         self.filtered = Counter()
 
@@ -279,11 +281,14 @@ class QualityFilter:
         return n_stopwords >= n
 
     @staticmethod
-    def string_filter(doc: Doc, string: str) -> bool:
+    def string_filter(doc: Doc, string: Optional[str] = None) -> bool:
         """Method for filtering documents containing a specific string.
 
         Args:
             doc (Doc): SpaCy document
             string (str, optional): String for filtering.
         """
-        return string not in doc.text.lower()
+        if string is None:
+            return True
+        else:
+            return string not in doc.text.lower()
