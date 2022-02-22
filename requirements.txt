@@ -1,10 +1,12 @@
 wandb~=0.12.9
 
 # models
-
 transformers~=4.16.2
 torch~=1.10.2
 protobuf==3.19.4
+
+# tokenizers
+tokenizers==0.10.1
 
 # data
 datasets~=1.17.0
