@@ -32,7 +32,7 @@ class Deduper:
             The method to split the documents into shingles. Can be either
             'char_ngram', 'word_ngram', 'paragraph', 'none' or None. Here
             'none' or None means that a document is not split up at all.
-            Defaults to 'char_ngram'.
+            Defaults to 'word_ngram'.
         ngram_size (int, optional):
             The size of the ngram shingles. Only relevant if `split_method` is
             'char_ngram' or 'word_ngram'. Defaults to 13.
@@ -64,7 +64,7 @@ class Deduper:
 
     def __init__(
         self,
-        split_method: Optional[str] = "char_ngram",
+        split_method: Optional[str] = "word_ngram",
         ngram_size: int = 13,
         ngram_stride: int = 1,
         similarity_threshold: float = 0.8,
