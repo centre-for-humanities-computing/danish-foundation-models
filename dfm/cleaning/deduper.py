@@ -261,18 +261,22 @@ if __name__ == "__main__":
         path.unlink()
 
     # Load the test dataset
-    corpus = load_dataset("DDSC/partial-danish-gigaword-no-twitter",
-                          streaming=args.streaming,
-                          split="train")
+    corpus = load_dataset(
+        "DDSC/partial-danish-gigaword-no-twitter",
+        streaming=args.streaming,
+        split="train",
+    )
 
-    # Deduplicate the test dataset
-    deduper = Deduper(split_method=args.split_method,
-                      ngram_size=args.ngram_size,
-                      ngram_stride=args.ngram_stride)
+    #  Deduplicate the test dataset
+    deduper = Deduper(
+        split_method=args.split_method,
+        ngram_size=args.ngram_size,
+        ngram_stride=args.ngram_stride,
+    )
     deduper.deduplicate(corpus, output_fname=path)
 
     # *** Time taken to deduplicate DAGW with 0.8 threshold, by `split_method` ***
-    #   - 'none': ~31 minutes (found 24.75% duplicates)
-    #   - 'paragraph': ~43 minutes (found 25.83% duplicates)
+    #   - 'none': ~30 minutes (found 24.75% duplicates)
+    #   - 'paragraph': ~45 minutes (found 25.83% duplicates)
     #   - 'word_ngram' with n == 13: ~xx minutes (found xx.xx% duplicates)
     #   - 'char_ngram' with n == 13: ~xx minutes (found xx.xx% duplicates)
