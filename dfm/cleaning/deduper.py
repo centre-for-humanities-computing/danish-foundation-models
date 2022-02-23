@@ -247,7 +247,7 @@ if __name__ == "__main__":
     from datasets import load_dataset
 
     corpus = load_dataset(
-        "DDSC/partial-danish-gigaword-no-twitter", streaming=True, split="train"
+        "DDSC/partial-danish-gigaword-no-twitter", streaming=False, split="train"
     )
-    deduper = Deduper(split_method="none")
+    deduper = Deduper(split_method="word_ngram")
     deduper.deduplicate(corpus, output_fname="deduplicated.jsonl")
