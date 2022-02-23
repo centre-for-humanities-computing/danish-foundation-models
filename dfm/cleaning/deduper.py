@@ -143,8 +143,7 @@ class Deduper:
         minhash = MinHash(num_perm=self.num_minhashes, seed=self.random_seed)
 
         # Add all the shingles to the fingerprint
-        for shingle in shingles:
-            minhash.update(shingle.encode("utf-8"))
+        minhash.update_batch([shingle.encode("utf-8") for shingle in shingles])
 
         # Convert the fingerprint to a LeanMinHash fingerprint, to save memory
         # and increase performance
