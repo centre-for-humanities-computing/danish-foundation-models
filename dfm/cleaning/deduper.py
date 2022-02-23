@@ -20,6 +20,9 @@ import json
 from unicodedata import normalize
 import re
 from tqdm.auto import tqdm
+from more_itertools import chunked
+from joblib import Parallel, delayed
+import multiprocessing as mp
 
 
 class Deduper:
@@ -45,6 +48,12 @@ class Deduper:
             Defaults to 0.8.
         num_minhashes (int, optional):
             The number of MinHash functions to use. Defaults to 128.
+        batch_size_per_job (int, optional):
+            The number of documents to process at a time, for each process.
+            Defaults to 1000.
+        n_jobs (int, optional):
+            The number of parallel jobs to use. If set to -1 then all available
+            cores are used. Defaults to -1.
         random_seed (int, optional):
             The random seed to use for the MinHash functions. Defaults to 42.
 
@@ -54,6 +63,8 @@ class Deduper:
         ngram_stride (str): The stride used for the ngram shingles.
         similarity_threshold (float): The Jaccard similarity threshold.
         num_minhashes (int): The number of MinHash functions to use.
+        batch_size (int): The number of documents to process at a time.
+        n_jobs (int): The number of parallel jobs to use.
         random_seed (int): The random seed to use for the MinHash functions.
 
     References:
@@ -69,6 +80,8 @@ class Deduper:
         ngram_stride: int = 1,
         similarity_threshold: float = 0.8,
         num_minhashes: int = 128,
+        batch_size_per_job: int = 1000,
+        n_jobs: int = -1,
         random_seed: int = 42,
     ):
         self.split_method = "none" if split_method is None else split_method
@@ -76,6 +89,8 @@ class Deduper:
         self.ngram_stride = ngram_stride
         self.similarity_threshold = similarity_threshold
         self.num_minhashes = num_minhashes
+        self.n_jobs = mp.cpu_count() if n_jobs == -1 else n_jobs
+        self.batch_size = batch_size_per_job * self.n_jobs
         self.random_seed = random_seed
 
     def _get_shingles(self, doc: str) -> List[str]:
@@ -217,29 +232,44 @@ class Deduper:
             threshold=self.similarity_threshold, num_perm=self.num_minhashes
         )
 
+        # Split the corpus into batches of `self.batch_size` documents
+        batches = chunked(enumerate(corpus), self.batch_size)
+
         # Iterate over the corpus and store documents that are not duplicates
         duplicates = 0
-        with tqdm(corpus, desc="Deduplicating", total=num_docs) as pbar:
-            for doc_idx, doc in enumerate(pbar):
+        with tqdm(batches, desc="Deduplicating", total=num_docs) as pbar:
+            for batch in batches:
 
                 # Compute the fingerprint for the document
-                minhash = self._get_minhash(doc)
+                with Parallel(n_jobs=self.n_jobs) as parallel:
+                    fn = delayed(self._get_minhash)
+                    minhashes = parallel(fn(doc) for _, doc in batch)
 
-                # If the document is not a near-duplicate candidate then store
-                # in the LSH cache and append it to the JSONL output file
-                candidates = cache.query(minhash)
-                if len(candidates) == 0:
-                    cache.insert(doc_idx, minhash)
-                    self._store_document(doc_idx=doc_idx, doc=doc, fname=output_fname)
+                # Iterate over the minhashes
+                for (doc_idx, doc), minhash in zip(batch, minhashes):
 
-                # Otherwise, increment the number of duplicate documents
-                else:
-                    duplicates += 1
+                    # If the document is not a near-duplicate candidate then
+                    # store in the LSH cache and append it to the JSONL output
+                    # file
+                    candidates = cache.query(minhash)
+                    if len(candidates) == 0:
+                        cache.insert(doc_idx, minhash)
+                        self._store_document(doc_idx=doc_idx,
+                                             doc=doc,
+                                             fname=output_fname)
 
-                #  Update the progress bar description with the number of
-                # duplicates found so far
-                pct_duplicated = 100 * duplicates / (1 + doc_idx)
-                desc = f"Deduplicating - {pct_duplicated:.2f}% near-duplicates found"
+                    # Otherwise, increment the number of duplicate documents
+                    else:
+                        duplicates += 1
+
+                # Get the maximal doc_idx in the batch
+                max_doc_idx = max(doc_idx for doc_idx, _ in batch)
+
+                # Update the progress bar
+                pbar.update(len(batch))
+                pct_duplicated = 100 * duplicates / (1 + max_doc_idx)
+                desc = (f"Deduplicating - {pct_duplicated:.2f}% "
+                        f"near-duplicates found")
                 pbar.set_description(desc)
 
 
@@ -252,11 +282,15 @@ if __name__ == "__main__":
     parser.add_argument("--split_method", "-s", type=str, required=True)
     parser.add_argument("--ngram_size", "-n", type=int, default=13)
     parser.add_argument("--ngram_stride", type=int, default=1)
+    parser.add_argument("--batch_size_per_job", type=int, default=1000)
+    parser.add_argument("--n_jobs", type=int, default=-1)
     parser.add_argument("--streaming", action="store_true")
     args = parser.parse_args()
 
-    # Remove the previous `deduplicated-test.jsonl` file if it exists
+    # Set up path to store the deduplicated corpus
     path = Path("deduplicated-test.jsonl")
+
+    # Remove the deduplicated corpus if it already exists
     if path.exists():
         path.unlink()
 
@@ -272,11 +306,12 @@ if __name__ == "__main__":
         split_method=args.split_method,
         ngram_size=args.ngram_size,
         ngram_stride=args.ngram_stride,
+        batch_size_per_job=args.batch_size_per_job
     )
     deduper.deduplicate(corpus, output_fname=path)
 
-    # *** Time taken to deduplicate DAGW with 0.8 threshold, by `split_method` ***
-    #   - 'none': ~30 minutes (found 24.75% duplicates)
+    # *** Time taken to deduplicate DAGW, by `split_method` ***
+    #   - 'none': ~10 minutes (found 24.75% duplicates)
     #   - 'paragraph': ~45 minutes (found 25.83% duplicates)
     #   - 'word_ngram' with n == 13: ~xx minutes (found xx.xx% duplicates)
     #   - 'char_ngram' with n == 13: ~xx minutes (found xx.xx% duplicates)
