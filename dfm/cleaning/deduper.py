@@ -225,9 +225,10 @@ class Deduper:
                 # Compute the fingerprint for the document
                 minhash = self._get_minhash(doc)
 
-                # If the document is not a near-duplicate then store in the LSH
-                # cache and append it to the JSONL output file
-                if len(cache.query(minhash)) == 0:
+                # If the document is not a near-duplicate candidate then store
+                # in the LSH cache and append it to the JSONL output file
+                candidates = cache.query(minhash)
+                if len(candidates) == 0:
                     cache.insert(doc_idx, minhash)
                     self._store_document(doc_idx=doc_idx, doc=doc, fname=output_fname)
 
