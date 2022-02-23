@@ -239,10 +239,7 @@ class Deduper:
                 #  Update the progress bar description with the number of
                 # duplicates found so far
                 pct_duplicated = 100 * duplicates / (1 + doc_idx)
-                desc = (
-                    f"Deduplicating - {pct_duplicated:.2f}% "
-                    f"duplicates or near-duplicates found"
-                )
+                desc = f"Deduplicating - {pct_duplicated:.2f}% near-duplicates found"
                 pbar.set_description(desc)
 
 
