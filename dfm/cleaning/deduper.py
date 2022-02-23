@@ -174,6 +174,9 @@ class Deduper:
             FileExistsError:
                 If the output file already exists and `overwrite` is False.
         """
+        # Register number of documents in the corpus
+        num_docs = len(corpus) if hasattr(corpus, "__len__") else None
+
         # Convert corpus to an iterable of strings if a Dataset is given
         if isinstance(corpus, Dataset) or isinstance(corpus, IterableDataset):
             corpus = (sample["text"] for sample in corpus)
@@ -196,7 +199,7 @@ class Deduper:
 
         # Iterate over the corpus and store documents that are not duplicates
         duplicates = 0
-        with tqdm(corpus, desc="Deduplicating") as pbar:
+        with tqdm(corpus, desc="Deduplicating", total=num_docs) as pbar:
             for doc_idx, doc in enumerate(pbar):
 
                 # Compute the fingerprint for the document
