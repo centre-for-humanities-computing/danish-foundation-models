@@ -7,7 +7,7 @@ import os
 
 
 f_path = os.path.dirname(os.path.abspath(__file__))
-path = os.path.join(f_path, "..", "..", "DAGW_filter2.ndjson")
+path = os.path.join(f_path, "..", "..", "DAGW_filter.ndjson")
 
 df = pd.read_json(path, lines=True)
 df["Counts"] = df.index
@@ -46,9 +46,9 @@ mapping_dict2 = {
     "hest": "Hestenettet",
     "cc": "CommonCrawl",
     "adl": "Danish Litterature",
-    "botxt": "Botxt (Bornholmsk?)",
+    "botxt": "Botxt (Bornholmsk)",
     "danavis": "DanAvis",
-    "dannet": "dannet",  # WHAT ARE YOU!
+    "dannet": "dannet (Danish wordnet)",
     "depbank": "Danish Dependendency treebank",
     "ep": "European Parlament",
     "ft": "Folketinget",
