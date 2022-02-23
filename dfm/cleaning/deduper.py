@@ -48,9 +48,8 @@ class Deduper:
             Defaults to 0.8.
         num_minhashes (int, optional):
             The number of MinHash functions to use. Defaults to 128.
-        batch_size_per_job (int, optional):
-            The number of documents to process at a time, for each process.
-            Defaults to 1000.
+        batch_size (int, optional):
+            The number of documents to process at a time. Defaults to 1000.
         n_jobs (int, optional):
             The number of parallel jobs to use. If set to -1 then all available
             cores are used. Defaults to -1.
@@ -80,7 +79,7 @@ class Deduper:
         ngram_stride: int = 1,
         similarity_threshold: float = 0.8,
         num_minhashes: int = 128,
-        batch_size_per_job: int = 1000,
+        batch_size: int = 1000,
         n_jobs: int = -1,
         random_seed: int = 42,
     ):
@@ -89,8 +88,8 @@ class Deduper:
         self.ngram_stride = ngram_stride
         self.similarity_threshold = similarity_threshold
         self.num_minhashes = num_minhashes
+        self.batch_size = batch_size
         self.n_jobs = mp.cpu_count() if n_jobs == -1 else n_jobs
-        self.batch_size = batch_size_per_job * self.n_jobs
         self.random_seed = random_seed
 
     def _get_shingles(self, doc: str) -> List[str]:
@@ -281,7 +280,7 @@ if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("--split_method", "-s", type=str, required=True)
     parser.add_argument("--ngram_size", "-n", type=int, default=13)
-    parser.add_argument("--batch_size_per_job", "-b", type=int, default=1000)
+    parser.add_argument("--batch_size", "-b", type=int, default=1000)
     parser.add_argument("--n_jobs", type=int, default=-1)
     parser.add_argument("--streaming", action="store_true")
     args = parser.parse_args()
@@ -304,12 +303,18 @@ if __name__ == "__main__":
     deduper = Deduper(
         split_method=args.split_method,
         ngram_size=args.ngram_size,
-        batch_size_per_job=args.batch_size_per_job
+        batch_size=args.batch_size
     )
     deduper.deduplicate(corpus, output_fname=path)
 
-    # *** Time taken to deduplicate DAGW, by `split_method` and `n_jobs` ***
-    #   - 'none': ~10 minutes with 8 cores (found 24.75% duplicates)
-    #   - 'paragraph': ~45 minutes (found 25.83% duplicates)
+    # *** Time taken to deduplicate DAGW with 8 cores, by `split_method` ***
+    #   - 'none': ~9.5 minutes (found 24.75% duplicates)
+    #   - 'paragraph': ~10.5 minutes (found xx.xx% duplicates)
+    #   - 'word_ngram' with n == 13: ~xx minutes (found xx.xx% duplicates)
+    #   - 'char_ngram' with n == 13: ~xx minutes (found xx.xx% duplicates)
+
+    # *** Time taken to deduplicate DAGW with 16 cores, by `split_method` ***
+    #   - 'none': ~3.5 minutes (found 24.75% duplicates)
+    #   - 'paragraph': ~4 minutes (found 25.83% duplicates)
     #   - 'word_ngram' with n == 13: ~xx minutes (found xx.xx% duplicates)
     #   - 'char_ngram' with n == 13: ~xx minutes (found xx.xx% duplicates)
