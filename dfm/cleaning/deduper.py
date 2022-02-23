@@ -245,12 +245,31 @@ class Deduper:
 
 if __name__ == "__main__":
     from datasets import load_dataset
+    from pathlib import Path
+    from argparse import ArgumentParser
 
-    corpus = load_dataset(
-        "DDSC/partial-danish-gigaword-no-twitter", streaming=False, split="train"
-    )
-    deduper = Deduper(split_method="word_ngram")
-    deduper.deduplicate(corpus, output_fname="deduplicated.jsonl")
+    parser = ArgumentParser()
+    parser.add_argument("--split_method", "-s", type=str, required=True)
+    parser.add_argument("--ngram_size", "-n", type=int, default=13)
+    parser.add_argument("--ngram_stride", type=int, default=1)
+    parser.add_argument("--streaming", action="store_true")
+    args = parser.parse_args()
+
+    # Remove the previous `deduplicated-test.jsonl` file if it exists
+    path = Path("deduplicated-test.jsonl")
+    if path.exists():
+        path.unlink()
+
+    # Load the test dataset
+    corpus = load_dataset("DDSC/partial-danish-gigaword-no-twitter",
+                          streaming=args.streaming,
+                          split="train")
+
+    # Deduplicate the test dataset
+    deduper = Deduper(split_method=args.split_method,
+                      ngram_size=args.ngram_size,
+                      ngram_stride=args.ngram_stride)
+    deduper.deduplicate(corpus, output_fname=path)
 
     # *** Time taken to deduplicate DAGW with 0.8 threshold, by `split_method` ***
     #   - 'none': ~31 minutes (found 24.75% duplicates)
