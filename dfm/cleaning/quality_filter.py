@@ -5,7 +5,7 @@ Authors:
     Kenneth C. Enevoldsen
     Kasper Junge
 
-References:
+References: 
     [1] Rae, J. W., Borgeaud, S., Cai, T., Millican, K., Hoffmann, J., Song, F.,
     Aslanides, J., Henderson, S., Ring, R., Young, S., Rutherford, E., Hennigan,
     T., Menick, J., Cassirer, A., Powell, R., Driessche, G. van den, Hendricks,
@@ -15,12 +15,13 @@ References:
 """
 
 from collections import Counter
-from email.generator import Generator
 from functools import partial
 from typing import Iterable, Optional, Set, Tuple
 
 import spacy
 from spacy.tokens import Doc
+
+from nltk.tokenize import RegexpTokenizer
 
 
 def len_getter(doc):
@@ -28,6 +29,51 @@ def len_getter(doc):
     if doc._._len is None:
         doc._._len = len(doc)
     return doc._._len
+
+
+class NLTKTokenizer:
+    """
+    The NLTK tokenizer is noticeably faster than the spacy tokenizer
+    though performs notably worse tokenization:
+
+    Speed Comparison on a text of 237 tokens:
+
+    .. code:
+
+        text multiplication: time taken to tokenize
+
+        NLTK
+        10: 0.004389047622680664
+        100: 0.018768787384033203
+        1000: 0.17305397987365723
+        10000: 1.4743471145629883
+        SPACY
+        10: 0.019192934036254883
+        100: 0.15356707572937012
+        1000: 1.7956039905548096
+        10000: 18.097763776779175
+
+    Note this removes newlines and does not keep the text intact. Therefore it sets
+    the extension: doc._.text to keep the original text.
+
+    Example:
+        >>> nlp = spacy.blank("en")
+        >>> nlp.tokenizer = NLTKTokenizer(nlp.vocab)
+        >>> doc = nlp("What's happened to me? he thought. It wasn't a dream.")
+    """
+
+    def __init__(self, vocab):
+        self.vocab = vocab
+        self.tokenizer = RegexpTokenizer(pattern=r"\w+|[^\w\s]+")
+
+        if not Doc.has_extension("text"):
+            Doc.set_extension("text", default=None)
+
+    def __call__(self, text):
+        words = self.tokenizer.tokenize(text)
+        doc = Doc(self.vocab, words=words)
+        doc._.text = text
+        return doc
 
 
 class QualityFilter:
@@ -101,6 +147,7 @@ class QualityFilter:
             )
 
         self.nlp = spacy.blank("da")
+        self.nlp.tokenizer = NLTKTokenizer(self.nlp.vocab)
 
         self.filters = {
             "doc_length": partial(self.doc_length, doc_length=doc_length),
@@ -189,7 +236,7 @@ class QualityFilter:
                 self.filtered[filter] += 1
                 return filter
 
-    def describe_filter(self, texts: Iterable[tuple], **kwargs) -> Generator:
+    def describe_filter(self, texts: Iterable[tuple], **kwargs) -> Iterable[str]:
         """
         Applies quality filter and return which filter (if any) each document was
         filtered by
@@ -199,7 +246,7 @@ class QualityFilter:
             string of the text you wish to apply quality filter to
 
         Yields:
-            Generator: A Generator strings of which filter was applied to the document
+            Iterable: An Iterable strings of which filter was applied to the document
                 "None" indicate not filtered.
         """
 
@@ -240,8 +287,8 @@ class QualityFilter:
     @staticmethod
     def mean_word_length(doc: Doc, mean_word_length: Tuple[int, int]) -> bool:
         """
-        Filter document whose mean word length is outside the range of {mean_word_length[0]} to {mean_word_length[1]}
-        characters
+        Filter document whose mean word length is outside the range of
+        {mean_word_length[0]} to {mean_word_length[1]} characters
 
         Args:
             doc (Doc): SpaCy document
@@ -305,7 +352,7 @@ class QualityFilter:
         Returns:
             bool: A boolean indicator of whether the text passed the filter.
         """
-        n_symbol = doc.text.count(symbol)
+        n_symbol = doc._.text.count(symbol)
         ratio_ = n_symbol / doc._.len
         return ratio_ < ratio
 
@@ -327,7 +374,7 @@ class QualityFilter:
         Returns:
             bool: A boolean indicator of whether the text passed the filter.
         """
-        lines = doc.text.split("\n")
+        lines = doc._.text.split("\n")
         if lines:
             n_bullets = sum(
                 1 for line in lines if line.strip(" ").startswith(("-", "*"))
