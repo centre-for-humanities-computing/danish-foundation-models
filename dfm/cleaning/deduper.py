@@ -251,3 +251,9 @@ if __name__ == "__main__":
     )
     deduper = Deduper(split_method="word_ngram")
     deduper.deduplicate(corpus, output_fname="deduplicated.jsonl")
+
+    # *** Time taken to deduplicate DAGW with 0.8 threshold, by `split_method` ***
+    #   - 'none': ~31 minutes (found 24.75% duplicates)
+    #   - 'paragraph': ~43 minutes (found 25.83% duplicates)
+    #   - 'word_ngram' with n == 13: ~xx minutes (found xx.xx% duplicates)
+    #   - 'char_ngram' with n == 13: ~xx minutes (found xx.xx% duplicates)
