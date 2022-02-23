@@ -4,6 +4,7 @@ Danish implementation of quality filter described in [1]
 Authors:
     Kenneth C. Enevoldsen
     Kasper Junge
+    Malte Højmark-Bertelsen
 
 References: 
     [1] Rae, J. W., Borgeaud, S., Cai, T., Millican, K., Hoffmann, J., Song, F.,
@@ -78,29 +79,33 @@ class NLTKTokenizer:
 
 class QualityFilter:
     """
-    Danish implementation of quality filter described in (Rae et al., 2021).
+        Danish implementation of quality filter described in (Rae et al., 2021).
 
-    Args:
-        stop_words (Optional[Set[str]], optional): A set of stop words to use.
-            Defaults to None.
-        min_stop_words (int, optional): The least amount of stop words a text
-            should have before it is kept. Defaults to 2.
-        mean_word_length (Tuple[int, int], optional): Upper and lower bound on the
-            mean word length. Defaults to (3, 10).
-        doc_length (Tuple[int, int], optional): Upper and lower bound on the
-            documents length. Defaults to [50, 100_000].
-        alpha_ratio (float, optional): the percentage of words in this document
-            which should contain alphabetic character. Defaults to 0.7.
-            Changed from 0.8 in the paper.
-        symbol_2_word_ellipsis (float, optional): The highest acceptable ratio of
-            ellipsis to words. Defaults to 0.1.
-        symbol_2_word_hashtag (float, optional): The highest acceptable ratio of
-            ellipsis to words.. Defaults to 0.1.
-        max_p_begin_bullets (float, optional): Maximum number of lines which begins
-            with a bulletpoint. Defaults to 0.9.
-        max_p_end_ellipsis (float, optional): Maximum number of lines which ends
-            with an ellipsis. Defaults to 0.3.
-        max_length (int): max_length in characters
+        Args:
+            stop_words (Optional[Set[str]], optional): A set of stop words to use.
+                Defaults to None.
+            min_stop_words (int, optional): The least amount of stop words a text
+                should have before it is kept. Defaults to 2.
+            mean_word_length (Tuple[int, int], optional): Upper and lower bound on the
+                mean word length. Defaults to (3, 10).
+            doc_length (Tuple[int, int], optional): Upper and lower bound on the
+                documents length. Defaults to [50, 100_000].
+            alpha_ratio (float, optional): the percentage of words in this document
+                which should contain alphabetic character. Defaults to 0.7.
+                Changed from 0.8 in the paper.
+            symbol_2_word_ellipsis (float, optional): The highest acceptable ratio of
+                ellipsis to words. Defaults to 0.1.
+            symbol_2_word_hashtag (float, optional): The highest acceptable ratio of
+                ellipsis to words.. Defaults to 0.1.
+            max_p_begin_bullets (float, optional): Maximum number of lines which begins
+                with a bulletpoint. Defaults to 0.9.
+            max_p_end_ellipsis (float, optional): Maximum number of lines which ends
+                with an ellipsis. Defaults to 0.3.
+    <<<<<<< HEAD:dfm/cleaning/quality_filter.py
+            max_length (int): max_length in characters
+    =======
+            string (str, optional): String for filtering. Defaults to None.
+    >>>>>>> origin/main:dfm/cleaning/quality.py
     """
 
     def __init__(
@@ -115,6 +120,7 @@ class QualityFilter:
         max_p_begin_bullets: float = 0.9,
         max_p_end_ellipsis: float = 0.3,
         max_length: int = 5_000_000,
+        string_filter: Optional[str] = None,
     ):
         if stop_words is None:
             stop_words = set(
@@ -169,7 +175,15 @@ class QualityFilter:
                 max_p_bullets=max_p_begin_bullets,
                 max_p_ellipsis=max_p_end_ellipsis,
             ),
+            "stop_word": partial(
+                self.stop_word, stop_words=stop_words, n=min_stop_words
+            ),
         }
+
+        if string_filter:
+            self.filters["string_filter"] = partial(
+                self.string_filter, string=string_filter
+            )
         self.filtered = Counter()
 
         if not Doc.has_extension("_len"):
@@ -403,6 +417,7 @@ class QualityFilter:
         Returns:
             bool: A boolean indicator of whether the text passed the filter.
         """
+
         n_stopwords = 0
         for t in doc:
             if t.text in stop_words:
@@ -410,3 +425,16 @@ class QualityFilter:
                 if n_stopwords >= n:
                     return True
         return False
+
+    @staticmethod
+    def string_filter(doc: Doc, string: Optional[str] = None) -> bool:
+        """Method for filtering documents containing a specific string.
+
+        Args:
+            doc (Doc): SpaCy document
+            string (str, optional): String for filtering.
+        """
+        if string is None:
+            return True
+        else:
+            return string not in doc.text.lower()
