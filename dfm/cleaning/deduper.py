@@ -14,7 +14,7 @@ References:
 from datasketch import MinHash, LeanMinHash, MinHashLSH
 from datasets.arrow_dataset import Dataset
 from datasets.iterable_dataset import IterableDataset
-from typing import Union, Iterable, Optional
+from typing import Union, Iterable, Optional, List
 from pathlib import Path
 import json
 from unicodedata import normalize
@@ -78,14 +78,16 @@ class Deduper:
         self.num_minhashes = num_minhashes
         self.random_seed = random_seed
 
-    def _get_minhash(self, doc: str) -> LeanMinHash:
-        """Returns a minhash fingerprint for the given document.
+    def _get_shingles(self, doc: str) -> List[str]:
+        """Extracts the shingles from a document.
 
         Args:
-            doc (str): The document to create the MinHash object for.
+            doc (str):
+                The document to extract the shingles from.
 
         Returns:
-            LeanMinHash: The minhash fingerprint for the given document.
+            list of str:
+                The shingles extracted from the document.
 
         Raises:
             ValueError:
@@ -96,9 +98,6 @@ class Deduper:
         doc = normalize("NFKC", doc)
         doc = re.sub(r"[\.\,\:\;\!\?\(\)\[\]\{\}]", " ", doc)
         doc = re.sub(" +", " ", doc)
-
-        # Initialise the fingerprint
-        minhash = MinHash(num_perm=self.num_minhashes, seed=self.random_seed)
 
         # Extract shingles from the document, depending on the `split_method`
         if self.split_method == "char_ngram":
@@ -120,6 +119,28 @@ class Deduper:
             shingles = [doc]
         else:
             raise ValueError(f"Invalid split method: {self.split_method}")
+
+        return shingles
+
+    def _get_minhash(self, doc: str) -> LeanMinHash:
+        """Returns a minhash fingerprint for the given document.
+
+        Args:
+            doc (str): The document to create the MinHash object for.
+
+        Returns:
+            LeanMinHash: The minhash fingerprint for the given document.
+
+        Raises:
+            ValueError:
+                If `self.split_method` is not 'char_ngram', 'word_ngram',
+                'paragraph' or 'none'.
+        """
+        # Extract shingles from the document, depending on the `split_method`
+        shingles = self._get_shingles(doc)
+
+        # Initialise the fingerprint
+        minhash = MinHash(num_perm=self.num_minhashes, seed=self.random_seed)
 
         # Add all the shingles to the fingerprint
         for shingle in shingles:
