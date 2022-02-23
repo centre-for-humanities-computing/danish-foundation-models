@@ -3,20 +3,36 @@ Loading scripts for HF type datasets
 """
 import os
 import sys
-from typing import Optional, Union
-
-from datasets import (Dataset, Features, IterableDataset, Value,
-                      interleave_datasets, load_dataset)
+from typing import Union, List
+from datasets import (
+    load_dataset,
+    interleave_datasets,
+    Dataset,
+    IterableDataset,
+    Features,
+    Value,
+    DatasetDict,
+)
 from wasabi import msg
+from dfm.data.utils import to_datetime
+
+# Removed import below untill fixed.
+# from text_dedup import min_hash_deduper, duplicate_filter
 
 
-def load_tweets(dedupe=False):
+def load_tweets(dedupe=False) -> Union[Dataset, IterableDataset]:
+    """Dataloader for tweets from the HOPE project.
+
+    Args:
+        dedupe (bool, optional): Whether to deplicate tweets or not. Defaults to False.
+
+    Returns:
+        Union[Dataset, IterableDataset]: A Hugging Face dataset for HOPE tweets.
+    """
     cwd = os.getcwd()
     f_path = os.path.dirname(os.path.abspath(__file__))
     data_path = os.path.join(f_path, "..", "data")
     sys.path.append(data_path)
-    from dedupe import min_hash_deduper, duplicate_filter
-    from utils import to_datetime
 
     os.chdir(data_path)
 
@@ -31,7 +47,12 @@ def load_tweets(dedupe=False):
     return ds
 
 
-def load_news():
+def load_news() -> Union[Dataset, IterableDataset]:
+    """Dataloader for news.
+
+    Returns:
+        Union[Dataset, IterableDataset]: A Hugging Face dataset for DaNews.
+    """
     cwd = os.getcwd()
     f_path = os.path.dirname(os.path.abspath(__file__))
     data_path = os.path.join(f_path, "..", "data")
@@ -59,7 +80,18 @@ def load_news():
     return ds
 
 
-def load_dagw(filter_danavis: bool = True, streaming: bool = False):
+def load_dagw(
+    filter_danavis: bool = True, streaming: bool = False
+) -> Union[Dataset, IterableDataset]:
+    """Dataloader for Danish Gigaword.
+
+    Args:
+        filter_danavis (bool, optional): Whether to filter DanAvis documents. Defaults to True.
+        streaming (bool, optional): Whether to stream the dataset. Defaults to False.
+
+    Returns:
+        Union[Dataset, IterableDataset]: A Hugging Face dataset for Danish Gigaword.
+    """
     dataset = load_dataset(
         "DDSC/partial-danish-gigaword-no-twitter", streaming=streaming
     )
@@ -85,7 +117,15 @@ def load_dagw(filter_danavis: bool = True, streaming: bool = False):
     return ds
 
 
-def load_reddit(streaming=False):
+def load_reddit(streaming=False) -> Union[Dataset, IterableDataset]:
+    """Dataloader for Danish reddit data.
+
+    Args:
+        streaming (bool, optional): Whether to stream the dataset. Defaults to False.
+
+    Returns:
+        Union[Dataset, IterableDataset]: A Hugging Face dataset for Danish reddit data.
+    """
     dataset = load_dataset("DDSC/reddit-da", streaming=streaming)
     ds = dataset["train"]
     return ds
@@ -116,7 +156,7 @@ def load_lexdk(streaming: bool = False) -> Union[Dataset, IterableDataset]:
     )
 
 
-def load_tokenizer_ds():
+def load_tokenizer_ds() -> Dataset:
     """
     script used for training the tokenizer. Load a balances set of data to train the tokenizer on.
     """
@@ -179,6 +219,7 @@ def load_dfm_dataset(dataset: str, **kwargs) -> Dataset:
         "danews": load_news,
         "dagw": load_dagw,
         "lexdk": load_lexdk,
+        # "all": load_concatenated_datasets
     }
 
     if dataset in dataset_loaders:
@@ -187,3 +228,47 @@ def load_dfm_dataset(dataset: str, **kwargs) -> Dataset:
         raise ValueError(
             f"invalid dataset. Valid datasets include {dataset_loaders.keys()}"
         )
+
+
+def load_multiple_dfm_datasets(datasets: List[str], **kwargs) -> Dataset:
+    """Dataloader for loading multiple Danish Foundation Models datasets.
+
+    Args:
+        datasets (List[str]): List of strings containing the names of the datasets
+
+    Returns:
+        Dataset: A concatenated Hugging Face dataset containing the given DFM datasets.
+    """
+    datasets = [load_dfm_dataset(dataset, **kwargs) for dataset in datasets]
+    return datasets.concatenate_datasets(datasets)
+
+
+#### TEMPORARY TO TEST TRAIN SCRIPT
+def dfm_load_dataset(dataset: str) -> DatasetDict:
+    """loads a single dataset from the Hugging Face Datasets hub.
+
+    Args:
+        dataset (str): string for Hugging Face dataset.
+
+    Returns:
+        DatasetDict: Dataset with train, test and validation split.
+    """
+
+    ds = load_dataset(dataset, streaming=False)
+
+    if "validation" not in ds or "test" not in ds:
+        train_test = ds["train"].train_test_split(test_size=0.1)
+
+        # Split the 10% test + valid in half test, half valid
+        test_valid = train_test["test"].train_test_split(test_size=0.5)
+
+        # gather everyone if you want to have a single DatasetDict
+        ds = DatasetDict(
+            {
+                "train": train_test["train"],
+                "test": test_valid["test"],
+                "val": test_valid["train"],
+            }
+        )
+
+    return ds
