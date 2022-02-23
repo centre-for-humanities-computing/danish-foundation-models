@@ -281,8 +281,7 @@ if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("--split_method", "-s", type=str, required=True)
     parser.add_argument("--ngram_size", "-n", type=int, default=13)
-    parser.add_argument("--ngram_stride", type=int, default=1)
-    parser.add_argument("--batch_size_per_job", type=int, default=1000)
+    parser.add_argument("--batch_size_per_job", "-b", type=int, default=1000)
     parser.add_argument("--n_jobs", type=int, default=-1)
     parser.add_argument("--streaming", action="store_true")
     args = parser.parse_args()
@@ -305,13 +304,12 @@ if __name__ == "__main__":
     deduper = Deduper(
         split_method=args.split_method,
         ngram_size=args.ngram_size,
-        ngram_stride=args.ngram_stride,
         batch_size_per_job=args.batch_size_per_job
     )
     deduper.deduplicate(corpus, output_fname=path)
 
-    # *** Time taken to deduplicate DAGW, by `split_method` ***
-    #   - 'none': ~10 minutes (found 24.75% duplicates)
+    # *** Time taken to deduplicate DAGW, by `split_method` and `n_jobs` ***
+    #   - 'none': ~10 minutes with 8 cores (found 24.75% duplicates)
     #   - 'paragraph': ~45 minutes (found 25.83% duplicates)
     #   - 'word_ngram' with n == 13: ~xx minutes (found xx.xx% duplicates)
     #   - 'char_ngram' with n == 13: ~xx minutes (found xx.xx% duplicates)
