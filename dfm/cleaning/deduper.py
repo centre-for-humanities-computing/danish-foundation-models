@@ -216,7 +216,7 @@ class Deduper:
 
         # Convert corpus to an iterable of strings if a Dataset is given
         if isinstance(corpus, Dataset) or isinstance(corpus, IterableDataset):
-            corpus = (sample["text"] for sample in corpus)
+            corpus = [sample["text"] for sample in corpus]
 
         # Ensure that `output_fname` is a Path object
         output_fname = Path(output_fname)
@@ -262,6 +262,12 @@ class Deduper:
 
                     # Otherwise, increment the number of duplicate documents
                     else:
+                        print('\n*** Found duplicate ***\n')
+                        print('Document 1:')
+                        print(doc)
+                        print('\nDocument 2:')
+                        print(corpus[candidates[0]])
+                        print()
                         duplicates += 1
 
                 # Get the maximal doc_idx in the batch
