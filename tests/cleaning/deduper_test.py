@@ -1,6 +1,5 @@
 from dfm.cleaning import Deduper
 
-import pytest
 import tempfile
 from pathlib import Path
 import json
