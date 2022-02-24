@@ -156,7 +156,9 @@ class Deduper:
                 # cache and append it to the JSONL output file
                 if len(cache.query(minhash)) == 0:
                     cache.insert(doc_idx, minhash)
-                    self._store_document(doc_idx=doc_idx, doc=doc, output_fname=output_fname)
+                    self._store_document(
+                        doc_idx=doc_idx, doc=doc, output_fname=output_fname
+                    )
 
                 # Otherwise, increment the number of duplicate documents
                 else:
