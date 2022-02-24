@@ -277,9 +277,7 @@ class Deduper:
 
                     # Otherwise, increment the number of duplicate documents
                     else:
-                        if len(doc) > 0:
-                            duplicates += 1
-                        #duplicates += 1
+                        duplicates += 1
 
                 # Get the maximal doc_idx in the batch
                 max_doc_idx = max(doc_idx for doc_idx, _ in batch)
