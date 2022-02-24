@@ -20,8 +20,10 @@ class TestDeduper:
 
     def miss_percentage(self, corpus=None, iterations=100, **kwargs):
         corpus = corpus or [
-            "Der kom en soldat marcherende hen ad landevejen:\n én, to, tre! én, to, tre!",
-            "Da kom en soldat marcherende hen ad landevejen:\n én, to, tre! én, to, tre!",
+            "Der kom en soldat marcherende hen ad landevejen:\n "
+            "én, to, tre! én, to, tre!",
+            "Da kom en soldat marcherende hen ad landevejen:\n "
+            "én, to, tre! én, to, tre!",
         ]
         misses = 0
         for i in range(0, iterations):
@@ -37,11 +39,14 @@ class TestDeduper:
     def test_removes_near_duplicates(self):
         assert self.dedup(
             [
-                "Der kom en soldat marcherende hen ad landevejen:\n én, to, tre! én, to, tre!",
-                "Da kom en soldat marcherende hen ad landevejen:\n én, to, tre! én, to, tre!",
+                "Der kom en soldat marcherende hen ad landevejen:\n "
+                "én, to, tre! én, to, tre!",
+                "Da kom en soldat marcherende hen ad landevejen:\n "
+                "én, to, tre! én, to, tre!",
             ]
         ) == [
-            "Der kom en soldat marcherende hen ad landevejen:\n én, to, tre! én, to, tre!"
+            "Der kom en soldat marcherende hen ad landevejen:\n "
+            "én, to, tre! én, to, tre!"
         ]
 
     def test_document_shorter_than_shingles(self):
@@ -53,8 +58,10 @@ class TestDeduper:
         assert (
             self.dedup(
                 [
-                    "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-                    "Er kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
+                    "Der kom en soldat marcherende hen ad landevejen:\n "
+                    "én, to! én, to!",
+                    "Er kom en soldat marcherende hen ad landevejen:\n "
+                    "én, to! én, to!",
                 ],
                 split_method="word_ngram",
                 ngram_size=5,
@@ -104,8 +111,10 @@ class TestDeduper:
         assert (
             self.dedup(
                 [
-                    "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-                    "Den var jo typisk påtrængende pæn og overrasket:\n et, tu! et, tu!",
+                    "Der kom en soldat marcherende hen ad landevejen:\n "
+                    "én, to! én, to!",
+                    "Den var jo typisk påtrængende pæn og overrasket:\n "
+                    "et, tu! et, tu!",
                 ],
                 normalization_func=word_shape,
             )
