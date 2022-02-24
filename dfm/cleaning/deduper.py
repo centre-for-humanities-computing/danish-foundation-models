@@ -1,6 +1,7 @@
-"""Class that deduplicates an iterable corpus.
+"""Class that deduplicates a corpus.
 
-The deduplication is based on the MinHash algorithm [1].
+The deduplication is based on the MinHash algorithm [1], which is optimised
+using parallelism and vectorisation.
 
 Author:
     Dan Saattrup Nielsen (saattrupdan@gmail.com)
