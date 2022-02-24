@@ -302,8 +302,7 @@ if __name__ == "__main__":
     )
 
     #  Deduplicate the test dataset
-    deduper = Deduper(split_method=args.split_method, n_jobs=args.n_jobs,
-            batch_size=1000)
+    deduper = Deduper(split_method=args.split_method, n_jobs=args.n_jobs)
     deduper.deduplicate(corpus, output_fname=path)
 
     # *** Time taken to deduplicate DAGW with 16 cores, by `split_method` ***
