@@ -34,16 +34,15 @@ class Deduper:
     Args:
         split_method (str or None, optional):
             The method to split the documents into shingles. Can be either
-            'char_ngram', 'word_ngram', 'paragraph', 'none' or None. Here
-            'none' or None means that a document is not split up at all.
-            Defaults to 'word_ngram'.
+            'word_ngram', 'paragraph', 'none' or None. Here 'none' or None
+            means that a document is not split up at all. Defaults to
+            'word_ngram'.
         ngram_size (int, optional):
             The size of the ngram shingles. Only relevant if `split_method` is
-            'char_ngram' or 'word_ngram'. Defaults to 13.
+            'word_ngram'. Defaults to 13.
         ngram_stride (int, optional):
             The stride of the ngram shingles. Only relevant if `split_method`
-            is 'char_ngram' or 'word_ngram'. Defaults to 1, corresponding to no
-            stride.
+            is 'word_ngram'. Defaults to 1, corresponding to no stride.
         similarity_threshold (float, optional):
             The similarity threshold to use for the MinHash functions.
             Defaults to 0.8.
@@ -52,8 +51,7 @@ class Deduper:
         batch_size (int or None, optional):
             The number of documents to process at a time. If None then it is
             set to 10,000 if `split_method` is 'paragraph', 'none' or None,
-            1,000 if `split_method` is 'word_ngram' and 100 if `split_method`
-            is 'char_ngram'. Defaults to None.
+            and 1,000 if `split_method` is 'word_ngram'. Defaults to None.
         n_jobs (int, optional):
             The number of parallel jobs to use. If set to -1 then all available
             cores are used. Defaults to -1.
@@ -96,17 +94,15 @@ class Deduper:
         self.random_seed = random_seed
 
         if batch_size is None:
-            if self.split_method in ["paragraph", "none", None]:
+            if (self.split_method in ["paragraph", "none"] or
+                    self.split_method is None):
                 self.batch_size = 10_000
             elif self.split_method == "word_ngram":
                 self.batch_size = 1_000
-            elif self.split_method == "char_ngram":
-                self.batch_size = 100
             else:
                 raise ValueError(
                     f"Invalid split_method: {self.split_method}. "
-                    "Valid values are 'char_ngram', 'word_ngram', "
-                    "'paragraph', 'none' and None."
+                    "Valid values are 'word_ngram', 'paragraph', 'none' and None."
                 )
         else:
             self.batch_size = batch_size
@@ -124,8 +120,8 @@ class Deduper:
 
         Raises:
             ValueError:
-                If `self.split_method` is not 'char_ngram', 'word_ngram',
-                'paragraph' or 'none'.
+                If `self.split_method` is not 'word_ngram', 'paragraph', 'none'
+                or None.
         """
         # NFKC normalise document and remove punctuation
         doc = normalize("NFKC", doc)
@@ -133,13 +129,7 @@ class Deduper:
         doc = re.sub(" +", " ", doc)
 
         # Extract shingles from the document, depending on the `split_method`
-        if self.split_method == "char_ngram":
-            max_char_idx = len(doc) - self.ngram_size
-            shingles = [
-                doc[i : i + self.ngram_size]
-                for i in range(0, max_char_idx, self.ngram_stride)
-            ]
-        elif self.split_method == "word_ngram":
+        if self.split_method == "word_ngram":
             words = [word for word in doc.split(" ") if len(word) > 0]
             max_word_idx = len(words) - self.ngram_size
             shingles = [
@@ -148,7 +138,7 @@ class Deduper:
             ]
         elif self.split_method == "paragraph":
             shingles = [p for p in doc.split("\n") if len(p) > 0]
-        elif self.split_method == "none":
+        elif self.split_method == "none" or self.split_method is None:
             shingles = [doc]
         else:
             raise ValueError(f"Invalid split method: {self.split_method}")
@@ -166,8 +156,8 @@ class Deduper:
 
         Raises:
             ValueError:
-                If `self.split_method` is not 'char_ngram', 'word_ngram',
-                'paragraph' or 'none'.
+                If `self.split_method` is not 'word_ngram', 'paragraph', 'none'
+                or None.
         """
         # Extract shingles from the document, depending on the `split_method`
         shingles = self._get_shingles(doc)
@@ -322,4 +312,3 @@ if __name__ == "__main__":
     #   - 'none': ~3.5 minutes (found 24.75% duplicates)
     #   - 'paragraph': ~4 minutes (found 25.83% duplicates)
     #   - 'word_ngram' with n == 13: ~16 minutes (found 31.49% duplicates)
-    #   - 'char_ngram' with n == 13: ~xx minutes (found xx.xx% duplicates)
