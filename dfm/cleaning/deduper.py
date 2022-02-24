@@ -50,9 +50,9 @@ class Deduper:
             The number of MinHash functions to use. Defaults to 128.
         batch_size (int or None, optional):
             The number of documents to process at a time. If None then it is
-            set to 10,000 if `split_method` is None or 'none', 1,000 if
-            `split_method` is 'word_ngram' and 100 if `split_method` is
-            'char_ngram'. Defaults to None.
+            set to 10,000 if `split_method` is 'paragraph', 'none' or None,
+            1,000 if `split_method` is 'word_ngram' and 100 if `split_method`
+            is 'char_ngram'. Defaults to None.
         n_jobs (int, optional):
             The number of parallel jobs to use. If set to -1 then all available
             cores are used. Defaults to -1.
@@ -95,7 +95,7 @@ class Deduper:
         self.random_seed = random_seed
 
         if batch_size is None:
-            if self.split_method == "none":
+            if self.split_method in ['paragraph', 'none', None]:
                 self.batch_size = 10_000
             elif self.split_method == "word_ngram":
                 self.batch_size = 1_000
@@ -105,7 +105,7 @@ class Deduper:
                 raise ValueError(
                     f"Invalid split_method: {self.split_method}. "
                     "Valid values are 'char_ngram', 'word_ngram', "
-                    "'paragraph', and 'none' and None."
+                    "'paragraph', 'none' and None."
                 )
         else:
             self.batch_size = batch_size
@@ -277,7 +277,9 @@ class Deduper:
 
                     # Otherwise, increment the number of duplicate documents
                     else:
-                        duplicates += 1
+                        if len(doc) > 0:
+                            duplicates += 1
+                        #duplicates += 1
 
                 # Get the maximal doc_idx in the batch
                 max_doc_idx = max(doc_idx for doc_idx, _ in batch)
