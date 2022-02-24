@@ -267,12 +267,11 @@ class Deduper:
 
                     # Otherwise, increment the number of duplicate documents
                     else:
-                        if len(doc) > 0:
+                        dup_doc = corpus[candidates[0]]
+                        if len(doc) > 0 and doc != dup_doc:
                             with dup_fname.open("a") as f:
-                                jsonned = json.dumps(doc)
+                                jsonned = json.dumps([doc, dup_doc])
                                 f.write(jsonned + "\n")
-                                jsonned = json.dumps(corpus[candidates[0]])
-                                f.write(jsonned + "\n\n")
                         duplicates += 1
 
                 # Get the maximal doc_idx in the batch
