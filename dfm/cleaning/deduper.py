@@ -105,7 +105,7 @@ class Deduper:
         n_jobs: int = -1,
         random_seed: int = 42,
         normalization_func: Callable[[str], str] = _default_normalization,
-        verbose: bool = True
+        verbose: bool = True,
     ):
         self.split_method = "none" if split_method is None else split_method
         self.ngram_size = ngram_size
@@ -263,9 +263,9 @@ class Deduper:
 
         # Iterate over the corpus and store documents that are not duplicates
         duplicates = 0
-        pbar_params = dict(desc="Deduplicating",
-                           total=num_docs,
-                           disable=(not self.verbose))
+        pbar_params = dict(
+            desc="Deduplicating", total=num_docs, disable=(not self.verbose)
+        )
         with tqdm(batches, **pbar_params) as pbar:
             for batch in batches:
 
