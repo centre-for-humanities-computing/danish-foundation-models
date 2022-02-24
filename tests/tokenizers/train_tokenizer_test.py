@@ -2,7 +2,7 @@ import pytest
 import pandas as pd
 from datasets import load_dataset
 import os
-from dfm.tokenizers import TokenizerConfig, train_tokenizer
+from dfm.dfm_tokenizers import TokenizerConfig, train_tokenizer
 
 
 # Disable tokenizer parallelization

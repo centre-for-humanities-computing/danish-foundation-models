@@ -55,6 +55,18 @@ It is currently noticably missing webdata.
 # Wish to contribute
 DFM is considered a collaborate project for training and improving Danish Language models. If you wish to contribute don't hesitate to reach out using the discussion section or directly to the authors.
 
+To get started contributing:
+```
+# Clone the project
+git clone https://github.com/centre-for-humanities-computing/danish-foundation-models
+
+# Install libraries
+pip3 install -r requirements.txt
+
+# Run test suite (first run will download datasets)
+python3 -m pytest tests
+```
+
 # Acknowledgements
 This project uses compute resources supplied by [Ucloud](https://docs.cloud.sdu.dk/index.html).
 
