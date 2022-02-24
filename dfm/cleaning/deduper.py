@@ -94,8 +94,7 @@ class Deduper:
         self.random_seed = random_seed
 
         if batch_size is None:
-            if (self.split_method in ["paragraph", "none"] or
-                    self.split_method is None):
+            if self.split_method in ["paragraph", "none"] or self.split_method is None:
                 self.batch_size = 10_000
             elif self.split_method == "word_ngram":
                 self.batch_size = 1_000
@@ -175,9 +174,7 @@ class Deduper:
         # Return the fingerprint
         return minhash
 
-    def _store_document(
-        self, doc_idx: int, doc: str, fname: Union[str, Path]
-    ):
+    def _store_document(self, doc_idx: int, doc: str, fname: Union[str, Path]):
         """Appends the document to a JSONL file.
 
         Args:
