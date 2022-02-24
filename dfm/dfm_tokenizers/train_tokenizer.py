@@ -66,11 +66,11 @@ def train_tokenizer(
 
     # Initialise the special tokens and add them to the tokenizer
     special_tokens = [
-        AddedToken(config.pad_token, single_word=True, normalized=False),
-        AddedToken(config.bos_token, single_word=True, normalized=False),
-        AddedToken(config.eos_token, single_word=True, normalized=False),
-        AddedToken(config.unk_token, single_word=True, normalized=False),
-        AddedToken(config.mask_token, single_word=True, normalized=False),
+        AddedToken(config.pad_token, single_word=False, normalized=False),
+        AddedToken(config.bos_token, single_word=False, normalized=False),
+        AddedToken(config.eos_token, single_word=False, normalized=False),
+        AddedToken(config.unk_token, single_word=False, normalized=False),
+        AddedToken(config.mask_token, single_word=False, normalized=False),
     ]
     tokenizer.add_special_tokens(special_tokens)
 

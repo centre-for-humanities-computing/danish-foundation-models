@@ -32,6 +32,9 @@ def test_load_news():
     assert "text" in samples[0]
 
 
+@pytest.mark.skip(
+    reason="Large dataset download leading to a slow test suite with dependencies outside of code base"
+)
 def test_load_dagw():
     ds = load_dagw(streaming=True)
     assert isinstance(ds, IterableDataset)
@@ -42,6 +45,9 @@ def test_load_dagw():
     assert "danavis" not in set(ds["source"])
 
 
+@pytest.mark.skip(
+    reason="Large dataset download leading to a slow test suite with dependencies outside of code base"
+)
 def test_load_reddit():
     ds = load_reddit(streaming=True)
     assert isinstance(ds, IterableDataset)
