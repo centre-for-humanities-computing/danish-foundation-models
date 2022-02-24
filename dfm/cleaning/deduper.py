@@ -95,7 +95,7 @@ class Deduper:
         self.random_seed = random_seed
 
         if batch_size is None:
-            if self.split_method in ['paragraph', 'none', None]:
+            if self.split_method in ["paragraph", "none", None]:
                 self.batch_size = 10_000
             elif self.split_method == "word_ngram":
                 self.batch_size = 1_000
@@ -249,7 +249,7 @@ class Deduper:
             threshold=self.similarity_threshold, num_perm=self.num_minhashes
         )
 
-        # Split the corpus into batches of `self.batch_size` documents
+        #  Split the corpus into batches of `self.batch_size` documents
         batches = chunked(enumerate(corpus), self.batch_size)
 
         # Iterate over the corpus and store documents that are not duplicates
@@ -271,9 +271,9 @@ class Deduper:
                     candidates = cache.query(minhash)
                     if len(candidates) == 0:
                         cache.insert(doc_idx, minhash)
-                        self._store_document(doc_idx=doc_idx,
-                                             doc=doc,
-                                             fname=output_fname)
+                        self._store_document(
+                            doc_idx=doc_idx, doc=doc, fname=output_fname
+                        )
 
                     # Otherwise, increment the number of duplicate documents
                     else:
@@ -285,8 +285,9 @@ class Deduper:
                 # Update the progress bar
                 pbar.update(len(batch))
                 pct_duplicated = 100 * duplicates / (1 + max_doc_idx)
-                desc = (f"Deduplicating - {pct_duplicated:.2f}% "
-                        f"near-duplicates found")
+                desc = (
+                    f"Deduplicating - {pct_duplicated:.2f}% " f"near-duplicates found"
+                )
                 pbar.set_description(desc)
 
 
