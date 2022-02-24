@@ -262,12 +262,13 @@ class Deduper:
 
                     # Otherwise, increment the number of duplicate documents
                     else:
-                        print('\n*** Found duplicate ***\n')
-                        print('Document 1:')
-                        print(doc)
-                        print('\nDocument 2:')
-                        print(corpus[candidates[0]])
-                        print()
+                        if len(doc) > 0:
+                            print('\n*** Found duplicate ***\n')
+                            print('Document 1:')
+                            print(doc)
+                            print('\nDocument 2:')
+                            print(corpus[candidates[0]])
+                            print()
                         duplicates += 1
 
                 # Get the maximal doc_idx in the batch
