@@ -55,19 +55,14 @@ class TestDeduper:
         ) == ["Hej med dig", "Gå din vej"]
 
     def test_split_by_word_ngram(self):
-        assert (
-            self.dedup(
-                [
-                    "Der kom en soldat marcherende hen ad landevejen:\n "
-                    "én, to! én, to!",
-                    "Er kom en soldat marcherende hen ad landevejen:\n "
-                    "én, to! én, to!",
-                ],
-                split_method="word_ngram",
-                ngram_size=5,
-            )
-            == ["Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"]
-        )
+        assert self.dedup(
+            [
+                "Der kom en soldat marcherende hen ad landevejen:\n " "én, to! én, to!",
+                "Er kom en soldat marcherende hen ad landevejen:\n " "én, to! én, to!",
+            ],
+            split_method="word_ngram",
+            ngram_size=5,
+        ) == ["Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"]
 
     def test_split_by_paragraph(self):
         assert self.dedup(
@@ -108,18 +103,13 @@ class TestDeduper:
 
     def test_aggresive_normalization(self):
         word_shape = lambda doc: re.sub("[A-Z]", "X", re.sub("[^A-Z ]", "x", doc))
-        assert (
-            self.dedup(
-                [
-                    "Der kom en soldat marcherende hen ad landevejen:\n "
-                    "én, to! én, to!",
-                    "Den var jo typisk påtrængende pæn og overrasket:\n "
-                    "et, tu! et, tu!",
-                ],
-                normalization_func=word_shape,
-            )
-            == ["Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"]
-        )
+        assert self.dedup(
+            [
+                "Der kom en soldat marcherende hen ad landevejen:\n " "én, to! én, to!",
+                "Den var jo typisk påtrængende pæn og overrasket:\n " "et, tu! et, tu!",
+            ],
+            normalization_func=word_shape,
+        ) == ["Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"]
 
     def test_2_minhashes(self):
         miss = self.miss_percentage(num_minhashes=2)
