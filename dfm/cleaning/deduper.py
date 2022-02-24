@@ -154,11 +154,11 @@ class Deduper:
         # Extract shingles from the document, depending on the `split_method`
         if self.split_method == "word_ngram":
             words = [word for word in doc.split(" ") if len(word) > 0]
-            max_word_idx = len(words) - self.ngram_size
+            max_word_idx = 1 + len(words) - self.ngram_size
             shingles = [
                 " ".join(words[i : i + self.ngram_size]).strip()
                 for i in range(0, max_word_idx, self.ngram_stride)
-            ]
+            ] or [doc]
         elif self.split_method == "paragraph":
             shingles = [p for p in doc.split("\n") if len(p) > 0]
         elif self.split_method == "none" or self.split_method is None:
