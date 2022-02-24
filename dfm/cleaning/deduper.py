@@ -15,7 +15,7 @@ References:
 from datasketch import MinHash, LeanMinHash, MinHashLSH
 from datasets.arrow_dataset import Dataset
 from datasets.iterable_dataset import IterableDataset
-from typing import Union, Iterable, Optional, List
+from typing import Union, Iterable, Optional, List, Callable
 from pathlib import Path
 import json
 from unicodedata import normalize
@@ -24,6 +24,19 @@ from tqdm.auto import tqdm
 from more_itertools import chunked
 from joblib import Parallel, delayed
 import multiprocessing as mp
+
+
+def _default_normalization(doc: str) -> str:
+    """NFKC normalise document and remove punctuation
+
+    Args:
+        doc (str): The document to normalize.
+    Returns:
+        doc (str): The normalized document.
+    """
+    doc = normalize("NFKC", doc)
+    doc = re.sub(r"[\.\,\:\;\!\?\(\)\[\]\{\}]", " ", doc)
+    return re.sub(" +", " ", doc)
 
 
 class Deduper:
@@ -57,6 +70,11 @@ class Deduper:
             cores are used. Defaults to -1.
         random_seed (int, optional):
             The random seed to use for the MinHash functions. Defaults to 42.
+        normalization_func: (Callable[[str], str], optional):
+            The function used to normalize documents before they are compared to
+            ignore insignificant differences.
+        verbose (bool, optional):
+            Print progress to stdout. Defaults to True.
 
     Attributes:
         split_method (str): The splitting method for extracting shingles.
@@ -67,6 +85,8 @@ class Deduper:
         batch_size (int): The number of documents to process at a time.
         n_jobs (int): The number of parallel jobs to use.
         random_seed (int): The random seed to use for the MinHash functions.
+        normalization_func (Callable): The function used for normalization.
+        verbose (bool): Print progress to stdout.
 
     References:
         [1] Broder, Andrei Z. "On the resemblance and containment of documents."
@@ -84,6 +104,8 @@ class Deduper:
         batch_size: Optional[int] = None,
         n_jobs: int = -1,
         random_seed: int = 42,
+        normalization_func: Callable[[str], str] = _default_normalization,
+        verbose: bool = True
     ):
         self.split_method = "none" if split_method is None else split_method
         self.ngram_size = ngram_size
@@ -92,6 +114,8 @@ class Deduper:
         self.num_minhashes = num_minhashes
         self.n_jobs = mp.cpu_count() if n_jobs == -1 else n_jobs
         self.random_seed = random_seed
+        self.normalization_func = normalization_func
+        self.verbose = verbose
 
         if batch_size is None:
             if self.split_method in ["paragraph", "none"] or self.split_method is None:
@@ -239,7 +263,10 @@ class Deduper:
 
         # Iterate over the corpus and store documents that are not duplicates
         duplicates = 0
-        with tqdm(batches, desc="Deduplicating", total=num_docs) as pbar:
+        pbar_params = dict(desc="Deduplicating",
+                           total=num_docs,
+                           disable=(not self.verbose))
+        with tqdm(batches, **pbar_params) as pbar:
             for batch in batches:
 
                 # Compute the fingerprint for the document
@@ -257,7 +284,7 @@ class Deduper:
                     if len(candidates) == 0:
                         cache.insert(doc_idx, minhash)
                         self._store_document(
-                            doc_idx=doc_idx, doc=doc, fname=output_fname
+                            doc_idx=doc_idx, doc=doc, output_fname=output_fname
                         )
 
                     # Otherwise, increment the number of duplicate documents
@@ -274,6 +301,87 @@ class Deduper:
                     f"Deduplicating - {pct_duplicated:.2f}% " f"near-duplicates found"
                 )
                 pbar.set_description(desc)
+
+    def _get_minhash(self, doc: str) -> LeanMinHash:
+        """Returns a minhash fingerprint for the given document.
+
+        Args:
+            doc (str): The document to create the MinHash object for.
+
+        Returns:
+            LeanMinHash: The minhash fingerprint for the given document.
+        """
+        # Normalize the document to ignore insignificant differences
+        doc = self.normalization_func(doc)
+
+        # Initialise the fingerprint
+        minhash = MinHash(num_perm=self.num_minhashes, seed=self.random_seed)
+
+        # Add all shingles of the document to the fingerprint
+        for shingle in self._extract_shingles(doc):
+            minhash.update(shingle.encode("utf-8"))
+
+        # Convert the fingerprint to a LeanMinHash fingerprint, to save memory
+        # and increase performance
+        minhash = LeanMinHash(minhash, seed=self.random_seed)
+
+        # Return the fingerprint
+        return minhash
+
+    def _extract_shingles(self, doc: str):
+        """Extract shingles from the document, depending on the `split_method`
+
+        Args:
+            doc (str): The document to extract shingles from.
+
+        Returns:
+            shingles (list): A list of shingles the document has been split into.
+
+        Raises:
+            ValueError:
+                If `self.split_method` is not 'char_ngram', 'word_ngram',
+                'paragraph' or 'none'.
+        """
+        if self.split_method == "char_ngram":
+            max_char_idx = 1 + len(doc) - self.ngram_size
+            return [
+                doc[i : i + self.ngram_size]
+                for i in range(0, max_char_idx, self.ngram_stride)
+            ] or [doc]
+        elif self.split_method == "word_ngram":
+            words = [word for word in doc.split(" ") if len(word) > 0]
+            max_word_idx = 1 + len(words) - self.ngram_size
+            return [
+                " ".join(words[i : i + self.ngram_size]).strip()
+                for i in range(0, max_word_idx, self.ngram_stride)
+            ] or [doc]
+        elif self.split_method == "paragraph":
+            return [p for p in doc.split("\n") if len(p) > 0]
+        elif self.split_method == "none":
+            return [doc]
+        else:
+            raise ValueError(f"Invalid split method: {self.split_method}")
+
+    def _store_document(
+        self, doc_idx: Union[str, int], doc: str, output_fname: Union[str, Path]
+    ):
+        """Appends the document to a JSONL file.
+
+        Args:
+            doc_idx (str or int): The document index.
+            doc (str): The document to append to the JSONL file.
+            output_fname (str or Path): The name of the JSONL file to append to.
+        """
+        # Ensure that `doc_idx` is a string
+        doc_idx = str(doc_idx)
+
+        # Ensure that `output_fname` is a Path object
+        output_fname = Path(output_fname)
+
+        # Append the document to the JSONL file
+        with output_fname.open("a") as f:
+            jsonned = json.dumps(dict(id=doc_idx, text=doc))
+            f.write(jsonned + "\n")
 
 
 if __name__ == "__main__":
