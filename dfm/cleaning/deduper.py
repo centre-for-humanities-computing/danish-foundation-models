@@ -185,18 +185,15 @@ class Deduper:
         return minhash
 
     def _store_document(
-        self, doc_idx: Union[str, int], doc: str, fname: Union[str, Path]
+        self, doc_idx: int, doc: str, fname: Union[str, Path]
     ):
         """Appends the document to a JSONL file.
 
         Args:
-            doc_idx (str or int): The document index.
+            doc_idx (int): The document index.
             doc (str): The document to append to the JSONL file.
             fname (str or Path): The name of the JSONL file to append to.
         """
-        # Ensure that `doc_idx` is a string
-        doc_idx = str(doc_idx)
-
         # Ensure that `fname` is a Path object
         fname = Path(fname)
 
