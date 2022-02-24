@@ -229,6 +229,11 @@ class Deduper:
             else:
                 raise FileExistsError(f"Output file {output_fname} " f"already exists.")
 
+        # TEMP: Store duplicates
+        dup_fname = Path('duplicates.jsonl')
+        if dup_fname.exists():
+            dup_fname.unlink()
+
         # Initialise the LSH cache
         cache = MinHashLSH(
             threshold=self.similarity_threshold, num_perm=self.num_minhashes
@@ -263,12 +268,11 @@ class Deduper:
                     # Otherwise, increment the number of duplicate documents
                     else:
                         if len(doc) > 0:
-                            print('\n*** Found duplicate ***\n')
-                            print('Document 1:')
-                            print(doc)
-                            print('\nDocument 2:')
-                            print(corpus[candidates[0]])
-                            print()
+                            with dup_fname.open("a") as f:
+                                jsonned = json.dumps(doc)
+                                f.write(jsonned + "\n")
+                                jsonned = json.dumps(corpus[candidates[0]])
+                                f.write(jsonned + "\n\n")
                         duplicates += 1
 
                 # Get the maximal doc_idx in the batch
