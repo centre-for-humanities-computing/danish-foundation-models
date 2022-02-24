@@ -1,5 +1,6 @@
-from dfm.cleaning import Deduper
+"""Tests for the deduplication module"""
 
+from dfm.cleaning import Deduper
 import tempfile
 from pathlib import Path
 import json
