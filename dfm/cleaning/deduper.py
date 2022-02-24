@@ -298,7 +298,7 @@ class Deduper:
                 pbar.update(len(batch))
                 pct_duplicated = 100 * duplicates / (1 + max_doc_idx)
                 desc = (
-                    f"Deduplicating - {pct_duplicated:.2f}% " f"near-duplicates found"
+                    f"Deduplicating - {pct_duplicated:.2f}% near-duplicates found"
                 )
                 pbar.set_description(desc)
 
