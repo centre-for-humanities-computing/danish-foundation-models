@@ -1,6 +1,6 @@
-from dfm.cleaning import Deduper
+"""Tests for the deduplication module"""
 
-import pytest
+from dfm.cleaning import Deduper
 import tempfile
 from pathlib import Path
 import json
@@ -9,7 +9,7 @@ import re
 
 class TestDeduper:
     def deduper(self, **kwargs):
-        default_test_args = {"random_seed": 42, "verbose": False}
+        default_test_args = dict(ngram_size=1, random_seed=42, verbose=False)
         return Deduper(**dict(default_test_args, **kwargs))
 
     def dedup(self, corpus, **kwargs):
@@ -20,8 +20,10 @@ class TestDeduper:
 
     def miss_percentage(self, corpus=None, iterations=100, **kwargs):
         corpus = corpus or [
-            "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-            "Da kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
+            "Der kom en soldat marcherende hen ad landevejen:\n "
+            "én, to, tre! én, to, tre!",
+            "Da kom en soldat marcherende hen ad landevejen:\n "
+            "én, to, tre! én, to, tre!",
         ]
         misses = 0
         for i in range(0, iterations):
@@ -37,25 +39,20 @@ class TestDeduper:
     def test_removes_near_duplicates(self):
         assert self.dedup(
             [
-                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-                "Er kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
+                "Der kom en soldat marcherende hen ad landevejen:\n "
+                "én, to, tre! én, to, tre!",
+                "Da kom en soldat marcherende hen ad landevejen:\n "
+                "én, to, tre! én, to, tre!",
             ]
-        ) == ["Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"]
+        ) == [
+            "Der kom en soldat marcherende hen ad landevejen:\n "
+            "én, to, tre! én, to, tre!"
+        ]
 
     def test_document_shorter_than_shingles(self):
         assert self.dedup(
             ["Hej med dig", "Hej med dig", "Gå din vej"], ngram_size=13
         ) == ["Hej med dig", "Gå din vej"]
-
-    def test_split_by_char_ngram(self):
-        assert self.dedup(
-            [
-                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-                "Er kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-            ],
-            split_method="char_ngram",
-            ngram_size=5,
-        ) == ["Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!"]
 
     def test_split_by_word_ngram(self):
         assert self.dedup(
@@ -116,43 +113,27 @@ class TestDeduper:
 
     def test_2_minhashes(self):
         miss = self.miss_percentage(num_minhashes=2)
-        assert miss > 10
-        assert miss < 20
+        assert miss >= 35
+        assert miss <= 40
 
     def test_128_minhashes(self):
-        miss = self.miss_percentage()
-        assert miss > 2
-        assert miss < 10
+        miss = self.miss_percentage(num_minhashes=128)
+        assert miss >= 30
+        assert miss <= 35
 
     def test_256_minhashes(self):
         miss = self.miss_percentage(num_minhashes=256)
-        assert miss < 2
+        assert miss >= 20
+        assert miss <= 30
 
-    def test_13_char_shingles(self):
-        shingles = self.deduper()._extract_shingles("Hej med dig Kim")
-        assert shingles == ["Hej med dig K", "ej med dig Ki", "j med dig Kim"]
+    def test_2_ngram_shingles(self):
+        shingles = self.deduper(ngram_size=2)._extract_shingles("Hej med dig Kim")
+        assert shingles == ["Hej med", "med dig", "dig Kim"]
 
-    def test_5_char_shingles(self):
-        shingles = self.deduper(ngram_size=5)._extract_shingles("Hej med dig Kim")
-        assert shingles == [
-            "Hej m",
-            "ej me",
-            "j med",
-            " med ",
-            "med d",
-            "ed di",
-            "d dig",
-            " dig ",
-            "dig K",
-            "ig Ki",
-            "g Kim",
-        ]
+    def test_3_ngram_shingles(self):
+        shingles = self.deduper(ngram_size=3)._extract_shingles("Hej med dig Kim")
+        assert shingles == ["Hej med dig", "med dig Kim"]
 
     def test_double_stride_shingles(self):
         shingles = self.deduper(ngram_stride=2)._extract_shingles("Hej med dig Kim")
-        assert shingles == ["Hej med dig K", "j med dig Kim"]
-
-    def test_5_word_shingles(self):
-        deduper = self.deduper(ngram_size=5, split_method="word_ngram")
-        shingles = deduper._extract_shingles("Hej med dig,\n hvordan går det?")
-        assert shingles == ["Hej med dig,\n hvordan går", "med dig,\n hvordan går det?"]
+        assert shingles == ["Hej", "dig"]

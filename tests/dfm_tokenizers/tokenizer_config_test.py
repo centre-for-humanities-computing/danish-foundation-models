@@ -1,3 +1,5 @@
+"""Tests for the tokenizer configuration"""
+
 import pytest
 from pathlib import Path
 from pydantic import ValidationError

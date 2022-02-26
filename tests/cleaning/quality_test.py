@@ -1,3 +1,5 @@
+"""Tests for the quality filter"""
+
 from dfm.cleaning import QualityFilter
 import pytest
 
@@ -26,7 +28,7 @@ class TestQualityFilter:
         Der er nemlig målt vindstød på 29,3 meter i sekundet. Det er stærk storm,
         når det er over 28,5 meter i sekundet.
 
-        Andre dele af landet har nu også mærket de første vindstød af stormstyrke. 
+        Andre dele af landet har nu også mærket de første vindstød af stormstyrke.
 
         Odense Lufthavn har haft 24,5 meter i sekundet, mens Grønlandshavnen i Aalborg har ramt 24,7
         meter i sekundet. Det er mest centrale sted i landet, hvor der indtil videre er målet stormstyrke.
@@ -59,7 +61,7 @@ class TestQualityFilter:
         )
         texts.append(
             """
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
         sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
         Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
         Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
