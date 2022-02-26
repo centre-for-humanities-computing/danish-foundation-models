@@ -1,6 +1,6 @@
 import os
 import sys
-from typing import Optional
+from typing import Iterable, Optional
 from datasets import load_dataset
 
 from collections import defaultdict
@@ -18,7 +18,7 @@ from dfm.description.description_pattern_lists import (
 )
 
 
-def terms_to_lowercase_match_patterns(
+def term_list_to_lowercase_match_patterns(
     term_list: list, label: Optional[str] = None, label_prefix: str = ""
 ) -> list:
     """
@@ -42,7 +42,7 @@ def gen_muslim_name_patterns() -> list:
 
     muslim_names_list = [name.lower() for name in muslim_names()["first_name"]]
 
-    return terms_to_lowercase_match_patterns(
+    return term_list_to_lowercase_match_patterns(
         term_list=muslim_names_list, label="muslim_names"
     )
 
@@ -54,12 +54,12 @@ def gen_gender_name_patterns() -> list:
     from dacy.datasets import female_names, male_names
 
     female_names_list = [name.lower() for name in female_names()["first_name"]]
-    female_names_patterns = terms_to_lowercase_match_patterns(
+    female_names_patterns = term_list_to_lowercase_match_patterns(
         female_names_list, label="female_names"
     )
 
     male_names_list = [name.lower() for name in male_names()["first_name"]]
-    male_name_patterns = terms_to_lowercase_match_patterns(
+    male_name_patterns = term_list_to_lowercase_match_patterns(
         male_names_list, label="male_names"
     )
 
@@ -77,7 +77,7 @@ def gen_matcher_object_from_pattern_list(
     Generates matcher objects from a list of dictionaries with {matcher_label (str): pattern (list)}
     Pattern must conform to SpaCy pattern standards:
 
-    Example:
+    Example input:
         >>> pattern_container_list = [
         >>>    {"atheism": [{"LOWER": {"REGEX": "athei.+"}}]},
         >>>    {"atheism": [{"LOWER": {"REGEX": "atei.+"}}]},
@@ -120,16 +120,15 @@ def get_match_counts_from_doc(doc: Doc, matcher_object: Matcher, nlp: Language) 
 
     return dict(counts)
 
-
-def get_match_counts_from_batch(batch, matcher_object: Matcher, nlp: Language) -> dict:
+def get_match_counts_from_texts(texts: Iterable[str], matcher_object: Matcher, nlp: Language) -> dict:
     """
-    Takes a spacy batch of docs and processes them into a dictionary with
+    Takes an iterable of texts and processes them into a dictionary with
     {match_label (str): match_counts (list of ints)}
     """
 
-    docs = nlp.pipe(batch["text"])
+    docs = nlp.pipe(texts)
 
-    batch_match_counts = defaultdict(list)
+    aggregated_match_counts = defaultdict(list)
 
     for doc in docs:
         doc_match_counts = get_match_counts_from_doc(doc, matcher_object, nlp)
@@ -137,9 +136,9 @@ def get_match_counts_from_batch(batch, matcher_object: Matcher, nlp: Language) -
         for pattern_label in doc_match_counts.keys():
             pattern_match_count = doc_match_counts.get(pattern_label, 0)
 
-            batch_match_counts[pattern_label].append(pattern_match_count)
+            aggregated_match_counts[pattern_label].append(pattern_match_count)
 
-    return dict(batch_match_counts)
+    return aggregated_match_counts
 
 
 if __name__ == "__main__":
@@ -172,17 +171,17 @@ if __name__ == "__main__":
 
     # List is a partial translation of Rae et al. 2022, p. 95
 
-    male_gendered_term_patterns = terms_to_lowercase_match_patterns(
+    male_gendered_term_patterns = term_list_to_lowercase_match_patterns(
         male_gendered_terms, label="male_gendered_terms"
     )
-    female_gendered_term_patterns = terms_to_lowercase_match_patterns(
+    female_gendered_term_patterns = term_list_to_lowercase_match_patterns(
         female_gendered_terms, label="female_gendered_terms"
     )
 
     ###############
     # Occupations #
     ###############
-    occupation_patterns = terms_to_lowercase_match_patterns(
+    occupation_patterns = term_list_to_lowercase_match_patterns(
         occupation_pattern_list, label_prefix="occu_"
     )
     # List is a partial translation of Rae et al. 2022, p. 95
@@ -208,7 +207,7 @@ if __name__ == "__main__":
     ds_sharded = ds.shuffle()["train"].shard(num_shards=100, index=0)  # Work on 1/10th of DGW
 
     dgw_processed = ds_sharded.map(
-        lambda batch: get_match_counts_from_batch(batch, matcher_objects, nlp),
+        lambda batch: get_match_counts_from_texts(batch["text"], matcher_objects, nlp),
         batched=True,
         batch_size=50,
         num_proc=16,
