@@ -20,127 +20,137 @@ from dfm.description.description_pattern_lists import (
 )
 
 
-def term_list_to_lowercase_match_patterns(
-    term_list: list, label: Optional[str] = None, label_prefix: str = ""
-) -> list:
-    """
-    Takes a list of terms and creates a list of SpaCy patterns in the shape {"label": [{"LOWER": "term"}]}
-    """
-    out_list = []
-
-    for term in term_list:
-        if label is None:
-            cur_label = label_prefix + term
-            out_list.append({cur_label: [{"LOWER": term}]})
-        else:
-            cur_label = label_prefix + label
-            out_list.append({cur_label: [{"LOWER": term}]})
-
-    return out_list
+def remove_irrelevant_columns(ds):
+    return ds.remove_columns(["text", "doc_id", "LICENSE", "uri", "date_built"])
 
 
-def gen_muslim_name_patterns() -> list:
+def get_muslim_name_patterns() -> list:
     from dacy.datasets import muslim_names
 
     muslim_names_list = [name.lower() for name in muslim_names()["first_name"]]
 
-    return term_list_to_lowercase_match_patterns(
+    return MatchCounter.term_list_to_lowercase_match_patterns(
         term_list=muslim_names_list, label="muslim_names"
     )
 
 
-def gen_gender_name_patterns() -> list:
+def get_gender_name_patterns() -> list:
     """
     Creates a list of SpaCy patterns in the shape {"[col_name]": [{"LOWER": "[pattern]"}]}
     """
     from dacy.datasets import female_names, male_names
 
     female_names_list = [name.lower() for name in female_names()["first_name"]]
-    female_names_patterns = term_list_to_lowercase_match_patterns(
+    female_names_patterns = MatchCounter.term_list_to_lowercase_match_patterns(
         female_names_list, label="female_names"
     )
 
     male_names_list = [name.lower() for name in male_names()["first_name"]]
-    male_name_patterns = term_list_to_lowercase_match_patterns(
+    male_name_patterns = MatchCounter.term_list_to_lowercase_match_patterns(
         male_names_list, label="male_names"
     )
 
     return female_names_patterns + male_name_patterns
 
 
-def remove_irrelevant_columns(ds):
-    return ds.remove_columns(["text", "doc_id", "LICENSE", "uri", "date_built"])
+class MatchCounter:
+    """Class of utility functions for counting spacy matches"""
 
+    def __init__(self, match_patterns: list, nlp: Language):
+        self.nlp = nlp
+        self.matcher_objects = self.gen_matcher_objects_from_pattern_list(match_patterns)
 
-def gen_matcher_object_from_pattern_list(
-    pattern_container_list: list, nlp: Language
-) -> Matcher:
-    """
-    Generates matcher objects from a list of dictionaries with {matcher_label (str): pattern (list)}
-    Pattern must conform to SpaCy pattern standards:
+    @staticmethod
+    def term_list_to_lowercase_match_patterns(
+        term_list: list, label: Optional[str] = None, label_prefix: str = ""
+    ) -> list:
+        """
+        Takes a list of terms and creates a list of SpaCy patterns in the shape {"label": [{"LOWER": "term"}]}
+        """
+        out_list = []
 
-    Example input:
-        >>> pattern_container_list = [
-        >>>    {"atheism": [{"LOWER": {"REGEX": "athei.+"}}]},
-        >>>    {"atheism": [{"LOWER": {"REGEX": "atei.+"}}]},
-        >>>    {"skøde": [{"LOWER": "skøde"}]},
-        >>> ]
-    """
-    matcher_object = Matcher(nlp.vocab)
+        for term in term_list:
+            if label is None:
+                cur_label = label_prefix + term
+                out_list.append({cur_label: [{"LOWER": term}]})
+            else:
+                cur_label = label_prefix + label
+                out_list.append({cur_label: [{"LOWER": term}]})
 
-    for pattern_container in pattern_container_list:
-        pattern_label, subpattern_list = list(*pattern_container.items())
+        return out_list
 
-        matcher_object.add(pattern_label, [subpattern_list])
+    def gen_matcher_objects_from_pattern_list(
+        self, pattern_container_list: list
+    ) -> Matcher:
+        """
+        Generates matcher objects from a list of dictionaries with {matcher_label (str): pattern (list)}
+        Pattern must conform to SpaCy pattern standards:
 
-    return matcher_object
+        Example input:
+            >>> pattern_container_list = [
+            >>>    {"atheism": [{"LOWER": {"REGEX": "athei.+"}}]},
+            >>>    {"atheism": [{"LOWER": {"REGEX": "atei.+"}}]},
+            >>>    {"skøde": [{"LOWER": "skøde"}]},
+            >>> ]
+        """
+        matcher_object = Matcher(self.nlp.vocab)
 
+        for pattern_container in pattern_container_list:
+            pattern_label, subpattern_list = list(*pattern_container.items())
 
-def get_match_counts_from_doc(doc: Doc, matcher_object: Matcher, nlp: Language) -> dict:
-    """
-    Get match counts for a list of SpaCy matcher-objects
+            matcher_object.add(pattern_label, [subpattern_list])
 
-    args:
-        doc (Doc)
-        pattern_container_list (list): A list of dictionaries fitting SpaCy patterns
-        nlp: Language
+        return matcher_object
 
-    returns:
-        A dictionary of the format {pattern_label (str): count (int)}.
-    """
+    def _get_match_counts_from_doc(
+        self, doc: Doc, matcher_object: Matcher
+    ) -> dict:
+        """
+        Get match counts for a list of SpaCy matcher-objects
 
-    counts = defaultdict(int)
+        args:
+            doc (Doc)
+            pattern_container_list (list): A list of dictionaries fitting SpaCy patterns
+            nlp: Language
 
-    # Make sure that all elements are represented in the dict
-    for pattern in matcher_object._patterns:
-        pattern_label = nlp.vocab.strings[pattern]
+        returns:
+            A dictionary of the format {pattern_label (str): count (int)}.
+        """
 
-        counts[pattern_label] = 0
+        counts = defaultdict(int)
 
-    for match_id, start, end in matcher_object(doc):
-        counts[nlp.vocab.strings[match_id]] += 1
+        # Make sure that all elements are represented in the dict
+        for pattern in matcher_object._patterns:
+            pattern_label = self.nlp.vocab.strings[pattern]
 
-    return dict(counts)
+            counts[pattern_label] = 0
 
-def get_match_counts_from_texts(texts: Iterable[str], matcher_object: Matcher, nlp: Language) -> dict:
-    """
-    Takes an iterable of texts and processes them into a dictionary with
-    {match_label (str): match_counts (list of ints)}
-    """
+        for match_id, start, end in matcher_object(doc):
+            counts[self.nlp.vocab.strings[match_id]] += 1
 
-    docs = nlp.pipe(texts)
+        return dict(counts)
 
-    aggregated_match_counts = defaultdict(list)
+    def count(
+        self, texts: Iterable[str]
+    ) -> dict:
+        """
+        Takes an iterable of texts and processes them into a dictionary with
+        {match_label (str): match_counts (list of ints)}
+        """
 
-    for doc in docs:
-        doc_match_counts = get_match_counts_from_doc(doc, matcher_object, nlp)
+        docs = self.nlp.pipe(texts)
 
-        for pattern_label in doc_match_counts.keys():
-            pattern_match_count = doc_match_counts.get(pattern_label, 0)
+        aggregated_match_counts = defaultdict(list)
 
-            aggregated_match_counts[pattern_label].append(pattern_match_count)
+        for doc in docs:
+            doc_match_counts = self._get_match_counts_from_doc(doc, self.matcher_objects)
 
-    return aggregated_match_counts
+            for pattern_label in doc_match_counts.keys():
+                pattern_match_count = doc_match_counts.get(pattern_label, 0)
+
+                aggregated_match_counts[pattern_label].append(pattern_match_count)
+
+        return aggregated_match_counts
 
 
 if __name__ == "__main__":
@@ -159,12 +169,12 @@ if __name__ == "__main__":
         {"jew": [{"LOWER": {"REGEX": "(?!jødeskæg)jøde.*"}}]},  # Jødeskæg == Stueplante
     ]
 
-    muslim_name_patterns = gen_muslim_name_patterns()
+    muslim_name_patterns = get_muslim_name_patterns()
 
     ###########
     # Genders #
     ###########
-    gender_name_patterns = gen_gender_name_patterns()
+    gender_name_patterns = get_gender_name_patterns()
 
     gender_pronoun_patterns = [
         {"male_pronoun": [{"LOWER": "han"}]},
@@ -173,17 +183,17 @@ if __name__ == "__main__":
 
     # List is a partial translation of Rae et al. 2022, p. 95
 
-    male_gendered_term_patterns = term_list_to_lowercase_match_patterns(
+    male_gendered_term_patterns = MatchCounter.term_list_to_lowercase_match_patterns(
         male_gendered_terms, label="male_gendered_terms"
     )
-    female_gendered_term_patterns = term_list_to_lowercase_match_patterns(
+    female_gendered_term_patterns = MatchCounter.term_list_to_lowercase_match_patterns(
         female_gendered_terms, label="female_gendered_terms"
     )
 
     ###############
     # Occupations #
     ###############
-    occupation_patterns = term_list_to_lowercase_match_patterns(
+    occupation_patterns = MatchCounter.term_list_to_lowercase_match_patterns(
         occupation_pattern_list, label_prefix="occu_"
     )
     # List is a partial translation of Rae et al. 2022, p. 95
@@ -191,7 +201,9 @@ if __name__ == "__main__":
     ###############
     # Adult words #
     ###############
-    adult_patterns = term_list_to_lowercase_match_patterns(danish_adult_words, label_prefix = "porn_")
+    adult_patterns = MatchCounter.term_list_to_lowercase_match_patterns(
+        danish_adult_words, label_prefix="porn_"
+    )
 
     #############
     # Execution #
@@ -208,25 +220,26 @@ if __name__ == "__main__":
         + adult_patterns
     )
 
+    ds = load_dataset("DDSC/partial-danish-gigaword-no-twitter")
+    ds_sharded = ds.shuffle()["train"].shard(
+        num_shards=100, index=0
+    )  # Work on 1/100th of DGW
+
     nlp = spacy.blank("da")
     nlp.max_length = 50000000
 
-    matcher_objects = gen_matcher_object_from_pattern_list(combined_patterns, nlp)
+    mc = MatchCounter(match_patterns=combined_patterns, nlp=nlp)
 
-    ds = load_dataset("DDSC/partial-danish-gigaword-no-twitter")
-
-    ds_sharded = ds.shuffle()["train"].shard(num_shards=100, index=0)  # Work on 1/100th of DGW
-    
     start_time = time.time()
 
     dgw_processed = ds_sharded.map(
-        lambda batch: get_match_counts_from_texts(batch["text"], matcher_objects, nlp),
+        lambda batch: mc.count(batch["text"]),
         batched=True,
         batch_size=50,
         num_proc=16,
     )
 
-    print(f"--- Execution time was {time.time() - start_time} seconds")
+    print(f"\n\n--- Execution time was {time.time() - start_time} seconds ---")
 
     if not os.path.exists("csv"):
         os.makedirs("csv")
