@@ -133,5 +133,9 @@ dmypy.json
 
 # vs code
 .vscode/*
-csv/output.csv
+
+# Data files
+*.csv
+
+# MacOS
 .DS_Store
