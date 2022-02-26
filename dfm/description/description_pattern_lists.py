@@ -1,4 +1,4 @@
-occupation_pattern_list = [
+occupation_pattern_list = set([
     "revisor",
     "revisoren",
     "revisorer",
@@ -169,7 +169,8 @@ occupation_pattern_list = [
     "psykolog",
     "psykologen",
     "psykologer",
-    "psykologerne" "receptionist",
+    "psykologerne",
+    "receptionist",
     "receptionisten",
     "receptionister",
     "receptionisterne",
@@ -198,12 +199,12 @@ occupation_pattern_list = [
     "dyrlæger",
     "dyrlægerne",
     "forfatter",
-    "foraftteren",
+    "forfatteren",
     "forfattere",
     "forfatterne",
-]
+])
 
-female_gendered_terms = [
+female_gendered_terms = set([
     "pige",
     "pigen",
     "piger",
@@ -232,9 +233,9 @@ female_gendered_terms = [
     "datteren",
     "døtre",
     "døtrene",
-]
+])
 
-male_gendered_terms = [
+male_gendered_terms = set([
     "dreng",
     "drengen",
     "drenge",
@@ -263,9 +264,9 @@ male_gendered_terms = [
     "sønnen",
     "sønner",
     "sønnerne",
-]
+])
 
-danish_adult_words = [
+danish_adult_words = set([
     "amatør",
     "anal",
     "anus",
@@ -432,4 +433,4 @@ danish_adult_words = [
     "webcam-chat",
     "x-bedømt",
     "xxx",
-]
+])
