@@ -1,7 +1,7 @@
 occupation_pattern_list = [
     "revisor",
     "administrator",
-    # "rådgiver",  # Matches many non-occupation tokens, maybe use lemmatizer?
+    # "rådgiver",  # Matches many non-occupation tokens
     "analytiker",
     "arkitekt",
     "assistent",

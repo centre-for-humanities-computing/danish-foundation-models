@@ -139,7 +139,7 @@ def get_match_counts_from_batch(batch, matcher_object: Matcher, nlp: Language) -
 
             batch_match_counts[pattern_label].append(pattern_match_count)
 
-    return dict(batch_match_counts)
+    return batch_match_counts
 
 
 if __name__ == "__main__":
