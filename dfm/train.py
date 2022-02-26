@@ -23,6 +23,7 @@ from transformers import (
 from datasets import interleave_datasets
 
 from dfm.data.load import dfm_load_dataset
+from dfm.modelling.data_collators import DataCollatorForSeq2SeqMaskLanguageModeling
 from dfm.modelling.preprocess import preprocess_dataset
 from dfm.modelling.utils import read_yaml
 from dfm.modelling.model_types import MODEL_TYPES
@@ -31,7 +32,7 @@ from dfm.modelling.model_types import MODEL_TYPES
 def main():
     """Main function for running the training script."""
     trainer = DFMTrainer(
-        pretraining_config_path="tests/test_configs/pretrain_config.yaml",
+        pretraining_config_path="tests/test_configs/pretrain_config_seq2seq.yaml",
     )
     trainer.train()
 
@@ -194,9 +195,12 @@ class DFMTrainer:
                 tokenizer=tokenizer, mlm_probability=self.data_args.mlm_probability
             )
 
-        elif self.model_type == "seq-to-seq":
+        elif self.model_type == "seq2seq":
             # TODO
             # Create DataCollatorForT5MLM.
+            data_collator = DataCollatorForSeq2SeqMaskLanguageModeling(
+                tokenizer=tokenizer, mlm_probability=self.data_args.mlm_probability
+            )
             raise NotImplementedError(
                 f"Model type: {self.model_type} has not yet been implemented."
             )

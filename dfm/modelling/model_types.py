@@ -1,1 +1,1 @@
-MODEL_TYPES = ["autoencoding", "seq-to-seq"]
+MODEL_TYPES = ["autoencoding", "seq2seq"]
