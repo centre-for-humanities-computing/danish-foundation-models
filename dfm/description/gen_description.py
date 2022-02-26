@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 from typing import Iterable, Optional
 from datasets import load_dataset
 
@@ -15,6 +16,7 @@ from dfm.description.description_pattern_lists import (
     female_gendered_terms,
     male_gendered_terms,
     occupation_pattern_list,
+    danish_adult_words,
 )
 
 
@@ -186,6 +188,14 @@ if __name__ == "__main__":
     )
     # List is a partial translation of Rae et al. 2022, p. 95
 
+    ###############
+    # Adult words #
+    ###############
+    adult_patterns = term_list_to_lowercase_match_patterns(danish_adult_words, label_prefix = "porn_")
+
+    #############
+    # Execution #
+    #############
     combined_patterns = (
         any_token_pattern
         + religion_patterns
@@ -195,6 +205,7 @@ if __name__ == "__main__":
         + male_gendered_term_patterns
         + female_gendered_term_patterns
         + occupation_patterns
+        + adult_patterns
     )
 
     nlp = spacy.blank("da")
@@ -204,7 +215,9 @@ if __name__ == "__main__":
 
     ds = load_dataset("DDSC/partial-danish-gigaword-no-twitter")
 
-    ds_sharded = ds.shuffle()["train"].shard(num_shards=100, index=0)  # Work on 1/10th of DGW
+    ds_sharded = ds.shuffle()["train"].shard(num_shards=100, index=0)  # Work on 1/100th of DGW
+    
+    start_time = time.time()
 
     dgw_processed = ds_sharded.map(
         lambda batch: get_match_counts_from_texts(batch["text"], matcher_objects, nlp),
@@ -212,6 +225,8 @@ if __name__ == "__main__":
         batch_size=50,
         num_proc=16,
     )
+
+    print(f"--- Execution time was {time.time() - start_time} seconds")
 
     if not os.path.exists("csv"):
         os.makedirs("csv")
