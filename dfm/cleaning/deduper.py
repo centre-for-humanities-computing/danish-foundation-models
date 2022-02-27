@@ -31,8 +31,9 @@ def _default_normalization(doc: str) -> str:
 
     Args:
         doc (str): The document to normalize.
+
     Returns:
-        doc (str): The normalized document.
+        str: The normalized document.
     """
     doc = normalize("NFKC", doc)
     doc = re.sub(r"[\.\,\:\;\!\?\(\)\[\]\{\}]", " ", doc)
