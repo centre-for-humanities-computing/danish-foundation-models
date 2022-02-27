@@ -228,7 +228,8 @@ class Deduper:
 
         Args:
             corpus (Dataset, IterableDataset or iterable of strings):
-                The corpus to deduplicate.
+                The corpus to deduplicate. If `corpus` is a Dataset, it must
+                have a `text` column.
             output_fname (str or Path, optional):
                 The name of the output file.
             overwrite (bool, optional):
