@@ -256,7 +256,7 @@ class Deduper:
             if overwrite:
                 output_fname.unlink()
             else:
-                raise FileExistsError(f"Output file {output_fname} " f"already exists.")
+                raise FileExistsError(f"Output file {output_fname} already exists.")
 
         # Initialise the LSH cache
         cache = MinHashLSH(
