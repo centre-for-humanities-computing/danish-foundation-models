@@ -147,10 +147,8 @@ class Deduper:
                 If `self.split_method` is not 'word_ngram', 'paragraph', 'none'
                 or None.
         """
-        # NFKC normalise document and remove punctuation
-        doc = normalize("NFKC", doc)
-        doc = re.sub(r"[\.\,\:\;\!\?\(\)\[\]\{\}]", " ", doc)
-        doc = re.sub(" +", " ", doc)
+        # Normalise document
+        doc = self.normalization_func(doc)
 
         # Extract shingles from the document, depending on the `split_method`
         if self.split_method == "word_ngram":
