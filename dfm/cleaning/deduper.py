@@ -199,19 +199,22 @@ class Deduper:
         # Return the fingerprint
         return minhash
 
-    def _store_document(self, doc_idx: int, doc: str, fname: Union[str, Path]):
+    def _store_document(self, doc_idx: int, doc: str, output_fname: Union[str, Path]):
         """Appends the document to a JSONL file.
 
         Args:
-            doc_idx (int): The document index.
-            doc (str): The document to append to the JSONL file.
-            fname (str or Path): The name of the JSONL file to append to.
+            doc_idx (int):
+                The document index.
+            doc (str):
+                The document to append to the JSONL file.
+            output_fname (str or Path):
+                The name of the JSONL file to append to.
         """
         # Ensure that `fname` is a Path object
-        fname = Path(fname)
+        output_fname = Path(output_fname)
 
         # Append the document to the JSONL file
-        with fname.open("a") as f:
+        with output_fname.open("a") as f:
             jsonned = json.dumps(dict(id=doc_idx, text=doc))
             f.write(jsonned + "\n")
 
