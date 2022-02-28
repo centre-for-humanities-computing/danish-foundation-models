@@ -31,8 +31,9 @@ def _default_normalization(doc: str) -> str:
 
     Args:
         doc (str): The document to normalize.
+
     Returns:
-        doc (str): The normalized document.
+        str: The normalized document.
     """
     doc = normalize("NFKC", doc)
     doc = re.sub(r"[\.\,\:\;\!\?\(\)\[\]\{\}]", " ", doc)
@@ -146,10 +147,8 @@ class Deduper:
                 If `self.split_method` is not 'word_ngram', 'paragraph', 'none'
                 or None.
         """
-        # NFKC normalise document and remove punctuation
-        doc = normalize("NFKC", doc)
-        doc = re.sub(r"[\.\,\:\;\!\?\(\)\[\]\{\}]", " ", doc)
-        doc = re.sub(" +", " ", doc)
+        # Normalise document
+        doc = self.normalization_func(doc)
 
         # Extract shingles from the document, depending on the `split_method`
         if self.split_method == "word_ngram":
@@ -198,19 +197,22 @@ class Deduper:
         # Return the fingerprint
         return minhash
 
-    def _store_document(self, doc_idx: int, doc: str, fname: Union[str, Path]):
+    def _store_document(self, doc_idx: int, doc: str, output_fname: Union[str, Path]):
         """Appends the document to a JSONL file.
 
         Args:
-            doc_idx (int): The document index.
-            doc (str): The document to append to the JSONL file.
-            fname (str or Path): The name of the JSONL file to append to.
+            doc_idx (int):
+                The document index.
+            doc (str):
+                The document to append to the JSONL file.
+            output_fname (str or Path):
+                The name of the JSONL file to append to.
         """
         # Ensure that `fname` is a Path object
-        fname = Path(fname)
+        output_fname = Path(output_fname)
 
         # Append the document to the JSONL file
-        with fname.open("a") as f:
+        with output_fname.open("a") as f:
             jsonned = json.dumps(dict(id=doc_idx, text=doc))
             f.write(jsonned + "\n")
 
@@ -224,7 +226,8 @@ class Deduper:
 
         Args:
             corpus (Dataset, IterableDataset or iterable of strings):
-                The corpus to deduplicate.
+                The corpus to deduplicate. If `corpus` is a Dataset, it must
+                have a `text` column.
             output_fname (str or Path, optional):
                 The name of the output file.
             overwrite (bool, optional):
@@ -240,7 +243,7 @@ class Deduper:
 
         # Convert corpus to an iterable of strings if a Dataset is given
         if isinstance(corpus, Dataset) or isinstance(corpus, IterableDataset):
-            corpus = [sample["text"] for sample in corpus]
+            corpus = (sample["text"] for sample in corpus)
 
         # Ensure that `output_fname` is a Path object
         output_fname = Path(output_fname)
@@ -251,7 +254,7 @@ class Deduper:
             if overwrite:
                 output_fname.unlink()
             else:
-                raise FileExistsError(f"Output file {output_fname} " f"already exists.")
+                raise FileExistsError(f"Output file {output_fname} already exists.")
 
         # Initialise the LSH cache
         cache = MinHashLSH(
@@ -299,87 +302,6 @@ class Deduper:
                 pct_duplicated = 100 * duplicates / (1 + max_doc_idx)
                 desc = f"Deduplicating - {pct_duplicated:.2f}% near-duplicates found"
                 pbar.set_description(desc)
-
-    def _get_minhash(self, doc: str) -> LeanMinHash:
-        """Returns a minhash fingerprint for the given document.
-
-        Args:
-            doc (str): The document to create the MinHash object for.
-
-        Returns:
-            LeanMinHash: The minhash fingerprint for the given document.
-        """
-        # Normalize the document to ignore insignificant differences
-        doc = self.normalization_func(doc)
-
-        # Initialise the fingerprint
-        minhash = MinHash(num_perm=self.num_minhashes, seed=self.random_seed)
-
-        # Add all shingles of the document to the fingerprint
-        for shingle in self._extract_shingles(doc):
-            minhash.update(shingle.encode("utf-8"))
-
-        # Convert the fingerprint to a LeanMinHash fingerprint, to save memory
-        # and increase performance
-        minhash = LeanMinHash(minhash, seed=self.random_seed)
-
-        # Return the fingerprint
-        return minhash
-
-    def _extract_shingles(self, doc: str):
-        """Extract shingles from the document, depending on the `split_method`
-
-        Args:
-            doc (str): The document to extract shingles from.
-
-        Returns:
-            shingles (list): A list of shingles the document has been split into.
-
-        Raises:
-            ValueError:
-                If `self.split_method` is not 'char_ngram', 'word_ngram',
-                'paragraph' or 'none'.
-        """
-        if self.split_method == "char_ngram":
-            max_char_idx = 1 + len(doc) - self.ngram_size
-            return [
-                doc[i : i + self.ngram_size]
-                for i in range(0, max_char_idx, self.ngram_stride)
-            ] or [doc]
-        elif self.split_method == "word_ngram":
-            words = [word for word in doc.split(" ") if len(word) > 0]
-            max_word_idx = 1 + len(words) - self.ngram_size
-            return [
-                " ".join(words[i : i + self.ngram_size]).strip()
-                for i in range(0, max_word_idx, self.ngram_stride)
-            ] or [doc]
-        elif self.split_method == "paragraph":
-            return [p for p in doc.split("\n") if len(p) > 0]
-        elif self.split_method == "none":
-            return [doc]
-        else:
-            raise ValueError(f"Invalid split method: {self.split_method}")
-
-    def _store_document(
-        self, doc_idx: Union[str, int], doc: str, output_fname: Union[str, Path]
-    ):
-        """Appends the document to a JSONL file.
-
-        Args:
-            doc_idx (str or int): The document index.
-            doc (str): The document to append to the JSONL file.
-            output_fname (str or Path): The name of the JSONL file to append to.
-        """
-        # Ensure that `doc_idx` is a string
-        doc_idx = str(doc_idx)
-
-        # Ensure that `output_fname` is a Path object
-        output_fname = Path(output_fname)
-
-        # Append the document to the JSONL file
-        with output_fname.open("a") as f:
-            jsonned = json.dumps(dict(id=doc_idx, text=doc))
-            f.write(jsonned + "\n")
 
 
 if __name__ == "__main__":
