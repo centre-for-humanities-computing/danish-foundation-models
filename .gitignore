@@ -128,14 +128,17 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# JSONL data files
+# vscode
+.vscode/
+
+# data files
 **/*.jsonl
-
-# vs code
-.vscode/*
-
-# Data files
 *.csv
 
 # MacOS
 .DS_Store
+
+#wandb
+wandb/*
+
+models/*
