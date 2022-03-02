@@ -134,8 +134,15 @@ dmypy.json
 
 # JSONL data files
 **/*.jsonl
+*.ndjson
 
 #wandb
 wandb/*
 
 models/*
+
+# MacOS
+.DS_Store
+
+# other
+*.prof

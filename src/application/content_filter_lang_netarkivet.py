@@ -9,7 +9,6 @@ import shutil
 
 import json
 import multiprocessing as mp
-from multiprocessing import Pool
 from collections import Counter
 
 import pandas as pd
