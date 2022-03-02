@@ -116,7 +116,6 @@ class QualityFilter:
             "stop_word": partial(
                 self.stop_word, stop_words=stop_words, n=min_stop_words
             ),
-            "string_filter": partial(self.string_filter, string=string),
         }
         self.filtered = Counter()
 
