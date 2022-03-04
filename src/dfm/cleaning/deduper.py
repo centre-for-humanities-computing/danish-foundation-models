@@ -1,4 +1,3 @@
-
 """Class that deduplicates a corpus.
 
 The deduplication is based on the MinHash algorithm [1], which is optimised

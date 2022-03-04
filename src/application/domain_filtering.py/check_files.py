@@ -35,16 +35,11 @@ host1 = "http://www.pornhub.com"
 host2 = "http://www.google.com"
 
 
-
-
-
-
 def dns_lookup_system(host):
     try:
         return requests.head("http://" + host)
     except Exception as e:
         return e
-
 
 
 import subprocess
@@ -56,6 +51,7 @@ import requests
 import concurrent.futures
 import requests
 import threading
+
 if __name__ == "__main__":
     # s = time.time()
     # for i in ss_domains["false"][:1000]:
@@ -97,6 +93,3 @@ if __name__ == "__main__":
 # print(dns_lookup("wowsucherror"))  # false
 # print(dns_lookup("google.com"))  # true
 # print(dns_lookup("www.pornhub.com"))  # false
-
-
-

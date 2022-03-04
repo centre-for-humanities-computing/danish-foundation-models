@@ -20,13 +20,32 @@ write_path = os.path.join("/work", "netarkivet-cleaned")
 lang_codes = {"da"}
 clean_code = "_filtered-lang"
 write_filtered = False
-n_process=32 # 32 actual cores on 64 CPU Ucloud instance (we get Brokenpipe error with >32)
+n_process = (
+    32  # 32 actual cores on 64 CPU Ucloud instance (we get Brokenpipe error with >32)
+)
 
-def get_paths(path = read_path, nested: bool=True, folder_suffix=".parquet", file_suffix=".parquet") -> List[str]:
-    folders = [os.path.join(path, f) for f in os.listdir(path) if f.endswith(folder_suffix)]
+
+def get_paths(
+    path=read_path,
+    nested: bool = True,
+    folder_suffix=".parquet",
+    file_suffix=".parquet",
+) -> List[str]:
+    folders = [
+        os.path.join(path, f) for f in os.listdir(path) if f.endswith(folder_suffix)
+    ]
     if nested:
-        return {f: [os.path.join(f, p) for p in os.listdir(f) if p.endswith(file_suffix)] for f in folders}
-    return [os.path.join(f, p) for f in folders for p in os.listdir(f) if p.endswith(file_suffix)]
+        return {
+            f: [os.path.join(f, p) for p in os.listdir(f) if p.endswith(file_suffix)]
+            for f in folders
+        }
+    return [
+        os.path.join(f, p)
+        for f in folders
+        for p in os.listdir(f)
+        if p.endswith(file_suffix)
+    ]
+
 
 def split_mult_extension(path: str) -> Tuple[str, str]:
     ext = ""
@@ -46,12 +65,11 @@ def process(path, write=write_filtered):
     write_folder = os.path.join(write_path, year)
     write_path_ = os.path.join(write_folder, fname)
 
+    df = pd.read_parquet(path, engine="pyarrow")
 
-    df = pd.read_parquet(path, engine='pyarrow')
-    
     # filter
     df = df[df["language"].isin(lang_codes)]
-    
+
     # record domains and timestamps
     domain_counts = Counter(df["domain_key"])
     timestamps = Counter(df["timestamp"].apply(lambda x: x[:8]))
@@ -63,7 +81,7 @@ def process(path, write=write_filtered):
     return domain_counts, timestamps
 
 
-def main(n_process = n_process):
+def main(n_process=n_process):
     paths = get_paths()
     list(paths.keys())[0]
 
@@ -71,13 +89,13 @@ def main(n_process = n_process):
         n_process = mp.cpu_count()
 
     msg.info(f"Using {n_process} cores")
-    
+
     for folder, paths_ in paths.items():
         msg.info(f"Currently processing folder: {folder}")
 
         _, year = os.path.split(folder)
         write_folder = os.path.join(write_path, year)
-        s_path = os.path.join(write_folder,  os.path.split(__file__)[-1] + "__SUCCESS")
+        s_path = os.path.join(write_folder, os.path.split(__file__)[-1] + "__SUCCESS")
         if os.path.isfile(s_path):
             msg.info(f"\tAlready processed - skipping")
         if os.path.isdir(write_folder):
@@ -92,16 +110,16 @@ def main(n_process = n_process):
             json.dump(domain, f)
         with open(os.path.join(write_folder, "timestamp_counts.json"), "w") as f:
             json.dump(timestamp, f)
-        
+
         with open(os.path.join(write_folder, "timestamp_counts.json"), "w") as f:
             json.dump(timestamp, f)
-        
+
         # create success file
-        open(s_path, 'a').close()
+        open(s_path, "a").close()
 
 
-#def parse_arguments():
-#    args = 
+# def parse_arguments():
+#    args =
 
 if __name__ == "__main__":
     main()

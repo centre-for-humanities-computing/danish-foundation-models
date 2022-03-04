@@ -33,8 +33,8 @@ def sum_counters(counters: List[Counter]) -> Counter:
     """
     length = len(counters)
     if length > 10:
-        c1 = sum_counters(counters[:int(length/2)])
-        c2 = sum_counters(counters[int(length/2):])
+        c1 = sum_counters(counters[: int(length / 2)])
+        c2 = sum_counters(counters[int(length / 2) :])
         return sum([c1, c2], Counter())
     else:
         return sum(counters, Counter())
@@ -55,9 +55,9 @@ def main():
     else:
         msg.warn("Did not find any previous lookups.")
         prev = {}
-    
+
     already_checked = {d for k, dom in prev.items() for d in dom}
-    
+
     safe_search = defaultdict(list)
     for k in prev:
         safe_search[k] = prev[k]
@@ -71,28 +71,30 @@ def main():
 
     n_domains_entries = sum(counter.values())
 
-    api_calls = daily_api_calls 
+    api_calls = daily_api_calls
     # remove singles
     domains = [(dom, count) for dom, count in counter.most_common() if count > 1]
-
 
     # load api key
     with open(API_key_path, "r") as f:
         key = f.read()
     safebrowse = SafeBrowsing(key)
 
-    
     n = len(domains)
-    msg.info(f"A total of  {len(counter)} unique domains and {n} unique domains with more than one entry.")
-    msg.info(f"There was a total of {n_domains_entries} entries and {n_domains_entries - sum([c for d,c in domains])} were unique domain entries.")
+    msg.info(
+        f"A total of  {len(counter)} unique domains and {n} unique domains with more than one entry."
+    )
+    msg.info(
+        f"There was a total of {n_domains_entries} entries and {n_domains_entries - sum([c for d,c in domains])} were unique domain entries."
+    )
 
     # call safe search API
     domains = [d for d, c in domains if d not in already_checked]
     start, end = 0, 0
     msg.info(f"Planning to make {len(range(500, n, 500))+1} API calls")
 
-    for end in range(500, n, 500): # max domains pr. call is 500
-        domains_ = domains[start: end]
+    for end in range(500, n, 500):  # max domains pr. call is 500
+        domains_ = domains[start:end]
         api_calls -= 1
         r = safebrowse.lookup_urls(domains_)
         for dom, mal in r.items():
@@ -105,7 +107,6 @@ def main():
         r = safebrowse.lookup_urls(domains[end:])
         for dom, mal in r.items():
             safe_search[str(mal["malicious"]).lower()].append(dom)
-
 
     msg.info(f"API calls left: {api_calls}")
 

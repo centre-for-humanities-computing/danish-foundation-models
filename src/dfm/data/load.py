@@ -85,7 +85,6 @@ def load_news() -> Union[Dataset, IterableDataset]:
 
 def load_dagw(
     remove_cat: Set[str] = {"danavis", "dannet"}, streaming: bool = False, **kwargs
-
 ) -> Union[Dataset, IterableDataset]:
     """Dataloader for Danish Gigaword.
 
