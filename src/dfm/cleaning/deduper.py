@@ -150,6 +150,7 @@ class Deduper:
         # Normalise document
         doc = self.normalization_func(doc)
 
+
         # Extract shingles from the document, depending on the `split_method`
         if self.split_method == "word_ngram":
             words = [word for word in doc.split(" ") if len(word) > 0]
