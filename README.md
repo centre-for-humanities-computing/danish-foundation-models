@@ -81,4 +81,17 @@ This project uses compute resources supplied by [Ucloud](https://docs.cloud.sdu.
 - Peter Bjerregaard Vahlstrup - the guy who makes sure data collections works
 - Kristoffer Nielbo - Supervisor
 
+## FAQ
 
+### How to I run the tests
+If you are used to running
+```
+python -m  pytest
+```
+
+to run the test, you will notice that this does not work with the current folder setup. This is intentional as this ensure that you always run the package installation before running the tests, this removed potential errors from the installation process.
+
+```
+pip install --editable .
+python -m  pytest
+```
