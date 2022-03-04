@@ -6,6 +6,7 @@ import sys
 
 from typing import Set, Union, List
 
+
 from datasets import (
     load_dataset,
     interleave_datasets,
@@ -84,6 +85,7 @@ def load_news() -> Union[Dataset, IterableDataset]:
 
 def load_dagw(
     remove_cat: Set[str] = {"danavis", "dannet"}, streaming: bool = False, **kwargs
+
 ) -> Union[Dataset, IterableDataset]:
     """Dataloader for Danish Gigaword.
 
@@ -114,6 +116,7 @@ def load_dagw(
     if remove_cat:
         # not possible to use filter with a streamed dataset
         ds = ds.map(filter_, batched=True, **kwargs)
+
     return ds
 
 
