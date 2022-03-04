@@ -147,10 +147,6 @@ filters = {
     > 0.2,
 }
 
-import re
-from unicodedata import normalize
-from collections import defaultdict
-
 
 def n_gram(doc: Doc, ngram_range: Tuple[int, int]):
     max_len = doc._.len
