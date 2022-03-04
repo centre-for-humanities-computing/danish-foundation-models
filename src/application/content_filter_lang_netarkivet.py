@@ -13,6 +13,7 @@ from collections import Counter
 
 import pandas as pd
 from wasabi import msg
+import argparse
 
 read_path = os.path.join("/work", "netarchive")
 write_path = os.path.join("/work", "netarkivet-cleaned")
@@ -97,6 +98,10 @@ def main(n_process = n_process):
         
         # create success file
         open(s_path, 'a').close()
+
+
+#def parse_arguments():
+#    args = 
 
 if __name__ == "__main__":
     main()
