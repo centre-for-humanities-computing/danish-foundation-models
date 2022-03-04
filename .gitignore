@@ -128,7 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-
 # vscode
 .vscode/
 
@@ -136,13 +135,19 @@ dmypy.json
 **/*.jsonl
 *.ndjson
 
-#wandb
-wandb/*
-
-models/*
-
 # MacOS
 .DS_Store
 
-# other
+# vs code
+.vscode/*
+
+# Profiling
 *.prof
+
+#wandb
+wandb/*
+models/*
+
+
+
+

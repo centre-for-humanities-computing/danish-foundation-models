@@ -1,3 +1,4 @@
+
 """Class that deduplicates a corpus.
 
 The deduplication is based on the MinHash algorithm [1], which is optimised
@@ -21,6 +22,7 @@ import json
 from unicodedata import normalize
 import re
 from tqdm.auto import tqdm
+
 from more_itertools import chunked
 from joblib import Parallel, delayed
 import multiprocessing as mp
@@ -61,6 +63,8 @@ class Deduper:
             Defaults to 0.8.
         num_minhashes (int, optional):
             The number of MinHash functions to use. Defaults to 128.
+        random_seed (int, optional):
+            The random seed to use for the MinHash functions. Defaults to 42.
         batch_size (int or None, optional):
             The number of documents to process at a time. If None then it is
             set to 10,000 if `split_method` is 'paragraph', 'none' or None,
@@ -235,6 +239,7 @@ class Deduper:
             FileExistsError:
                 If the output file already exists and `overwrite` is False.
         """
+
         # Register number of documents in the corpus
         num_docs = len(corpus) if hasattr(corpus, "__len__") else None
 
