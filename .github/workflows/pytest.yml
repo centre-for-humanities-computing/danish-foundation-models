@@ -31,6 +31,7 @@ jobs:
         pip install -r requirements.txt
     - name: Run and write pytest
       run: |
+        pip install .
         python -m  pytest --cov=src/dfm --cov-report term-missing | tee pytest-coverage.txt
 
 
@@ -49,6 +50,7 @@ jobs:
         pip install -r requirements.txt
     - name: Run and write pytest
       run: |
+        pip install .
         python -m  pytest --cov=src/dfm --cov-report term-missing | tee pytest-coverage.txt
     - name: Pytest coverage comment
       id: coverage-comment
