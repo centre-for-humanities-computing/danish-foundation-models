@@ -1,7 +1,7 @@
 """
 Filters domains from Netarkivet using Google Safe Browsing and a DNS filter
 
-Order (content filtering):
+Dependent on:
     Assumed run after count_domains_netarkivet.py
 
 Authors:

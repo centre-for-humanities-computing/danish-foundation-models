@@ -1,9 +1,9 @@
 """
-Counts domains on netarkivet based on conditioned on a language tag derived from
+Counts domains and timestamps on netarkivet based on conditioned on a language tag derived from
 https://github.com/optimaize/language-detector
 
-Order (content filtering):
-    Assumed run first
+Dependent on:
+    isn't dependent
 
 Authors:
     Kenneth Enevoldsen
@@ -64,10 +64,6 @@ def split_mult_extension(path: str) -> Tuple[str, str]:
 
 
 def process(path):
-    _, fname = os.path.split(path)
-    fname_, ext = split_mult_extension(fname)
-    fname = fname_ + clean_code + ext
-
     df = pd.read_parquet(path, engine="pyarrow")
 
     # filter
