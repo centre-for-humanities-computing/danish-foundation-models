@@ -4,7 +4,7 @@ from setuptools import find_packages
 
 def setup_package():
     setup(
-        packages=find_packages("src"),
+        packages=["dfm"],
         package_dir={"": "src"},
     )
 
