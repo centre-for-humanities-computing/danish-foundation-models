@@ -1,3 +1,5 @@
+"""Tests for the quality filter"""
+
 from dfm.cleaning import QualityFilter
 import pytest
 
@@ -26,7 +28,7 @@ class TestQualityFilter:
         Der er nemlig målt vindstød på 29,3 meter i sekundet. Det er stærk storm,
         når det er over 28,5 meter i sekundet.
 
-        Andre dele af landet har nu også mærket de første vindstød af stormstyrke. 
+        Andre dele af landet har nu også mærket de første vindstød af stormstyrke.
 
         Odense Lufthavn har haft 24,5 meter i sekundet, mens Grønlandshavnen i Aalborg har ramt 24,7
         meter i sekundet. Det er mest centrale sted i landet, hvor der indtil videre er målet stormstyrke.
@@ -57,6 +59,16 @@ class TestQualityFilter:
                 * test 3
         """
         )
+        texts.append(
+            """
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        """
+        )
+
         return texts
 
     @pytest.fixture(scope="class")
@@ -110,13 +122,13 @@ class TestQualityFilter:
         )
         assert (
             qfilter.line_bullets_or_ellipsis(
-                qfilter.nlp(texts[-1]), max_p_bullets=0.5, max_p_ellipsis=1
+                qfilter.nlp(texts[8]), max_p_bullets=0.5, max_p_ellipsis=1
             )
             is False
         )
         assert (
             qfilter.line_bullets_or_ellipsis(
-                qfilter.nlp(texts[-2]), max_p_bullets=0.5, max_p_ellipsis=1
+                qfilter.nlp(texts[7]), max_p_bullets=0.5, max_p_ellipsis=1
             )
             is False
         )
@@ -124,7 +136,7 @@ class TestQualityFilter:
         # ellipsis
         assert (
             qfilter.line_bullets_or_ellipsis(
-                qfilter.nlp(texts[-1]), max_p_bullets=1.0, max_p_ellipsis=0.5
+                qfilter.nlp(texts[8]), max_p_bullets=1.0, max_p_ellipsis=0.5
             )
             is True
         )
@@ -163,3 +175,12 @@ class TestQualityFilter:
         filtered = list(qfilter(texts))
         assert len(filtered) == 1
         assert sum(qfilter.filtered.values()) == (len(texts) - 1)
+
+    def test_string_filter(self, texts, qfilter):
+        assert (
+            qfilter.string_filter(qfilter.nlp(texts[0]), string="lorem ipsum") is True
+        )
+        assert qfilter.string_filter(qfilter.nlp(texts[0])) is True
+        assert (
+            qfilter.string_filter(qfilter.nlp(texts[9]), string="lorem ipsum") is False
+        )
