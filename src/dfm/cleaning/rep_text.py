@@ -13,7 +13,7 @@ References:
     https://arxiv.org/abs/2112.11446v2
 """
 from functools import partial
-from typing import Callable, Tuple
+from typing import Callable, List, Tuple
 
 from spacy.tokens import Doc, Token
 
@@ -104,9 +104,8 @@ def duplicate_chr_fraction_getter(doc, attr: str):
     cum_frac = 0
     for t, c in counter.items():
         if c > 1:
-            cum_frac += chr_fraction(t) * (c - 1)
-            n_duplicate += c - 1
-    frac = cum_frac / n_duplicate
+            duplicate_chr += len(t) * (c - 1)
+    frac = duplicate_chr / doc._.chr_len
     return frac
 
 
@@ -119,6 +118,15 @@ if not Doc.has_extension("duplicate_lines_chr_fraction"):
         ),
     )
 
+if not Doc.has_extension("chr_len"):
+    Doc.set_extension(
+        "chr_len",
+        getter=create_dynamic_getter(
+            "_chr_len",
+            getter=lambda doc: len(doc.text),
+        ),
+    )
+
 if not Doc.has_extension("duplicate_paragraph_chr_fraction"):
     Doc.set_extension(
         "duplicate_lines_chr_fraction",
@@ -127,10 +135,6 @@ if not Doc.has_extension("duplicate_paragraph_chr_fraction"):
             getter=partial(duplicate_chr_fraction_getter, "paragraph_counter"),
         ),
     )
-
-
-def chr_fraction(text: str):
-    return sum(t.isalpha() for t in text)
 
 
 filters = {
@@ -148,43 +152,103 @@ from unicodedata import normalize
 from collections import defaultdict
 
 
-
 def n_gram(doc: Doc, ngram_range: Tuple[int, int]):
-    max_len = len(doc) #doc._.len
+    max_len = doc._.len
     lower, upper = ngram_range
-    shingles = defaultdict(lambda: Counter())
+    shingles_count = defaultdict(lambda: Counter())
     for i, _ in enumerate(doc):
-        for ngram_size in range(lower, upper+1):
+        for ngram_size in range(lower, upper + 1):
             end = i + ngram_size
-            if end <= max_len:
-                shingles[ngram_size][doc[i:end]] += 1
-    return shingles
-    
+            if end < max_len:
+                span = doc[i:end]
+                shingles_count[ngram_size][span.text.lower()] += 1
+    return shingles_count
 
 
-def token_chr_fraction(token: Token):
-    return sum(t.isalpha() for t in text)
+def top_ngram_chr_fraction(doc, ngram):
+    shingles = doc._.n_gram_counts
+    ngram, count = shingles[ngram].most_common(1)[0]
+    return len(ngram) * count / doc._.chr_len
 
 
-def n_gram_character_fraction(doc):
+def duplicate_n_gram_fraction(
+    doc: Doc,
+    ngram_range: Tuple[int, int] = (5, 11),
+    thresholds: List[float] = [0.15, 0.14, 0.13, 0.12, 0.11, 0.10],
+) -> bool:
+    """calculates the character fraction of duplicate n-gram over the overall text,
+    taking care not to count overlapping n-grams twice.
 
-    shingles = n_gram(doc, (2, 11))
+    Args:
+        doc (Doc): a spacy Doc
+        ngram_range (Tuple[int, int], optional): The n-gram range. Defaults to (5, 11).
+        thresholds (List[float], optional): The character fraction thresholds. Defaults
+        to [0.15, 0.14, 0.13, 0.12, 0.11, 0.10], which for example denote that the
+        any text with duplicate 5 grams constituting more than 15% of the text
+        characters is filtered, 14% for 6-grams and so on.
 
-    for n, threhold in [(2, 0.2), (3, 0.18), (4, 0.16)]:
-        top_n_gram_chr_fraction = chr_fraction(
-            shingles[n].most_common(1)[0][0])
-        if top_n_gram_chr_fraction > threhold:
+    Returns:
+        bool: a boolean indicating whether the doc passed the filter. True indicating it
+        was not surpass any of the thresholds.
+    """
+    max_len = len(doc)  # doc._.len
+    lower, upper = ngram_range
+
+    chr_len = doc._.chr_len
+    if chr_len == 0:
+        return False
+
+    max_duplicate_chr = {
+        ng: t * chr_len for ng, t in zip(range(lower, upper + 1), thresholds)
+    }
+    ngrams = defaultdict(set)
+    overlapping_char = defaultdict(int)
+    minmax = defaultdict(lambda x: (0, 0))
+    for i, _ in enumerate(doc):
+        for ngram_size in range(lower, upper + 1):
+
+            min_, max_ = minmax[ngram_size]
+
+            end = i + ngram_size
+            if end < max_len:
+                span = doc[i:end]
+                ngram = span.text.lower()
+                if ngram in ngrams[ngram_size]:
+                    # if it doesn't overlap update count
+                    if span.start_char > max_:
+                        overlapping_char[ngram_size] += max_ - min_
+                        minmax[ngram_size] = span.start_char, span.end_char
+
+                        # early stopping if invalid text
+                        if max_duplicate_chr[ngram_size] < overlapping_char[ngram_size]:
+                            return False
+                    else:
+                        # extend range of duplicates
+                        minmax[ngram_size][1] = span.end_char
+
+    for ngram_size in range(lower, upper + 1):
+        min_, max_ = minmax[ngram_size]
+        overlapping_char[ngram_size] += max_ - min_
+        if max_duplicate_chr[ngram_size] < overlapping_char[ngram_size]:
             return False
+    return True
 
-    for n in zip(range(5, 11), [0.15, 0.14, 0.13, 0.12, 0.11, 0.10]):
-        duplicate_ngram = {ng: c for ng, c in shingles[n] if c > 1}
-        n_duplicates = sum(duplicate_ngram.values())
 
-        duplicate_c_fraction = [chr_fraction(ng) for c in ] 
+# def n_gram_character_fraction(doc):
+
+#     shingles = n_gram(doc, (2, 11))
+
+#     for n, threhold in [(2, 0.2), (3, 0.18), (4, 0.16)]:
+#         top_n_gram_chr_fraction = chr_fraction(
+#             shingles[n].most_common(1)[0][0])
+#         if top_n_gram_chr_fraction > threhold:
+#             return False
 
 
 import spacy
+
 nlp = spacy.blank("da")
-doc = nlp("Hej jeg hedder kenneth")
+doc = nlp("Hej jeg hedder kenneth, hej jeg")
+doc[1:3].end_char
 shingles = n_gram(doc, ngram_range=(2, 11))
-shingles[2].most_common(1)[0][0].text
+shingles[2].most_common(1)[0][0]
