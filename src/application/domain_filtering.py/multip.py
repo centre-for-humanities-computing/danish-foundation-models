@@ -7,6 +7,7 @@ import time
 
 import os
 import json
+
 path = os.path.join(
     "/Users/au561649/Desktop/Github/danish-foundation-models/src/application/domain_filtering.py/safe_search_domains.json"
 )
