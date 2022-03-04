@@ -9,7 +9,6 @@ import numpy as np
 from search import search
 
 
-
 def gen_wait_time():
     wait = np.random.normal(2, 1)
     if wait < 1:
