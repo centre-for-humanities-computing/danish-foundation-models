@@ -5,6 +5,7 @@ CleanBrowsing DNS.
 
 Authors:
     Kenneth Enevoldsen
+
 """
 
 from typing import Iterable, Optional
@@ -146,7 +147,8 @@ def DNS_filter(
     """
     A DNS filters for domains looking up the domains using the Google public DNS and the
     CleanBrowsing adult DNS and returns sites which were deemed unsafe by the
-    CleanBrowsing DNS.
+    CleanBrowsing DNS. This function assumed a linux distribution as it will set the DNS
+    of the system, it is thus not recommended for non-virtual enviroments.
 
     Args:
         domains (Iterable[str]): An iterable of domains on the form "www.domain.com"
@@ -154,13 +156,15 @@ def DNS_filter(
             save temporary results to. ensures that you can continue where you left.
 
     """
+    msg.warn("This script will change the DNS of your system")
+
     dns_servers: dict = {
         "cleanweb": "185.228.168.10",
         "google public DNS": "8.8.8.8",
     }
 
     for DNS in dns_servers:
-        msg.info("Changing DNS to:", DNS)
+        msg.info(f"Changing DNS ({dns_servers[DNS]}) to:", dns_servers[DNS])
         cmd = f"""sudo sh -c 'echo \"nameserver {dns_servers[DNS]}\" > /etc/resolv.conf'"""
         os.system(cmd)
 

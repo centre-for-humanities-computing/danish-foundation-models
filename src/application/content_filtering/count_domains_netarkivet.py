@@ -1,8 +1,9 @@
 """
-Filter the netarkivet based on its language tag derived from https://github.com/optimaize/language-detector
+Counts domains on netarkivet based on conditioned on a language tag derived from
+https://github.com/optimaize/language-detector
 
-Order:
-    Assumed run after content_filter_lang_netarkivet.py
+Order (content filtering):
+    Assumed run first
 
 Authors:
     Kenneth Enevoldsen
@@ -63,12 +64,9 @@ def split_mult_extension(path: str) -> Tuple[str, str]:
 
 
 def process(path):
-    folder, fname = os.path.split(path)
+    _, fname = os.path.split(path)
     fname_, ext = split_mult_extension(fname)
     fname = fname_ + clean_code + ext
-    _, year = os.path.split(folder)
-    write_folder = os.path.join(write_path, year)
-    write_path_ = os.path.join(write_folder, fname)
 
     df = pd.read_parquet(path, engine="pyarrow")
 
@@ -78,10 +76,6 @@ def process(path):
     # record domains and timestamps
     domain_counts = Counter(df["domain_key"])
     timestamps = Counter(df["timestamp"].apply(lambda x: x[:8]))
-
-    Path(write_folder).mkdir(parents=True, exist_ok=True)
-    if write is True:
-        df.to_parquet(write_path_, engine="pyarrow")
 
     return domain_counts, timestamps
 
@@ -100,6 +94,7 @@ def main(n_process=n_process):
 
         _, year = os.path.split(folder)
         write_folder = os.path.join(write_path, year)
+        Path(write_folder).mkdir(parents=True, exist_ok=True)
         s_path = os.path.join(write_folder, os.path.split(__file__)[-1] + "__SUCCESS")
         if os.path.isfile(s_path):
             msg.info(f"\tAlready processed - skipping")
@@ -122,9 +117,6 @@ def main(n_process=n_process):
         # create success file
         open(s_path, "a").close()
 
-
-# def parse_arguments():
-#    args =
 
 if __name__ == "__main__":
     main()

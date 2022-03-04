@@ -22,6 +22,8 @@ pydantic~=1.8.2
 # testing
 pytest~=6.2.5
 
-# format
-black==20.8b1
 
+# domain filtering
+pysafebrowsing==0.1.1
+asyncio==3.4.3
+aiohttp==3.8.1
