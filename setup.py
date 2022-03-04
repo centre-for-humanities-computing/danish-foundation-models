@@ -1,13 +1,14 @@
 from setuptools import setup
 from setuptools import find_packages
 
+
 def setup_package():
     setup(
         packages=find_packages(
             "src",
             exclude=[
-                "src/application",
-                "src/application/*",
+                "application",
+                "application/*",
             ],
         ),
         package_dir={"": "src"},
