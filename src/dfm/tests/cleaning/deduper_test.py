@@ -133,13 +133,13 @@ class TestDeduper:
         assert miss <= 30
 
     def test_2_ngram_shingles(self):
-        shingles = self.deduper(ngram_size=2)._extract_shingles("Hej med dig Kim")
+        shingles = self.deduper(ngram_size=2)._get_shingles("Hej med dig Kim")
         assert shingles == ["Hej med", "med dig", "dig Kim"]
 
     def test_3_ngram_shingles(self):
-        shingles = self.deduper(ngram_size=3)._extract_shingles("Hej med dig Kim")
+        shingles = self.deduper(ngram_size=3)._get_shingles("Hej med dig Kim")
         assert shingles == ["Hej med dig", "med dig Kim"]
 
     def test_double_stride_shingles(self):
-        shingles = self.deduper(ngram_stride=2)._extract_shingles("Hej med dig Kim")
+        shingles = self.deduper(ngram_stride=2)._get_shingles("Hej med dig Kim")
         assert shingles == ["Hej", "dig"]
