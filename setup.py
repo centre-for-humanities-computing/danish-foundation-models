@@ -8,7 +8,6 @@ def setup_package():
             "src",
             exclude=[
                 "application",
-                "application/*",
             ],
         ),
         package_dir={"": "src"},
