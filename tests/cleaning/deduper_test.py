@@ -160,3 +160,9 @@ class TestDeduper:
     def test_double_stride_shingles(self):
         shingles = self.deduper(ngram_stride=2)._get_shingles("Hej med dig Kim")
         assert shingles == ["Hej", "dig"]
+
+    def test_get_config(self):
+        deduper = self.deduper()
+        config = deduper.get_config()
+        for key, val in config.items():
+            assert val == getattr(deduper, key)
