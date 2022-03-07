@@ -193,16 +193,18 @@ class Deduper:
         Returns:
             dict: The configuration of the deduplicator.
         """
-        config = dict(split_method=self.split_method,
-                      ngram_size=self.ngram_size,
-                      ngram_stride=self.ngram_stride,
-                      similarity_threshold=self.similarity_threshold,
-                      num_minhashes=self.num_minhashes,
-                      batch_size=self.batch_size,
-                      n_jobs=self.n_jobs,
-                      random_seed=self.random_seed,
-                      normalization_func=self.normalization_func,
-                      verbose=self.verbose)
+        config = dict(
+            split_method=self.split_method,
+            ngram_size=self.ngram_size,
+            ngram_stride=self.ngram_stride,
+            similarity_threshold=self.similarity_threshold,
+            num_minhashes=self.num_minhashes,
+            batch_size=self.batch_size,
+            n_jobs=self.n_jobs,
+            random_seed=self.random_seed,
+            normalization_func=self.normalization_func,
+            verbose=self.verbose,
+        )
         return config
 
     def _get_shingles(self, doc: str) -> List[str]:
@@ -315,7 +317,11 @@ class Deduper:
 
         # Convert corpus to an iterable of strings if a Dataset is given
         if isinstance(corpus, Dataset) or isinstance(corpus, IterableDataset):
-            corpus = (sample["text"] for sample in corpus)
+            corpus = (
+                sample["text"]
+                for doc_idx, sample in enumerate(corpus)
+                if doc_idx not in [i for i, _ in self.mask]
+            )
 
         # Ensure that `output_dir` is a Path object
         output_dir = Path(output_dir)
