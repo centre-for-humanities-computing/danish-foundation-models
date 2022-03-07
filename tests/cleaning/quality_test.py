@@ -200,8 +200,8 @@ class TestQualityFilter:
     @pytest.mark.parametrize(
         "text, expected",
         [
-            ("dasdsadasdasdddddddddd\njeg er glad\n" * 2, True),
-            ("jeg er glad\n\n" * 4, True),
+            ("dasdsadasdasdddddddddd\njeg er glad\n" * 2, False),
+            ("jeg er glad\n\n" * 4, False),
         ],
     )
     def test_duplicate_line_chr_fraction(
