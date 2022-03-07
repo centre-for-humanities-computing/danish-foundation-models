@@ -1,3 +1,5 @@
+"""Test for the quality filter"""
+
 from typing import List
 
 from dfm.cleaning import QualityFilter
