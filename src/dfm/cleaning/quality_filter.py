@@ -17,19 +17,20 @@ References:
 
 from collections import Counter
 from functools import partial
-from typing import Iterable, Optional, Set, Tuple
+from typing import Iterable, Optional, Set, Tuple, List
 
 import spacy
 from spacy.tokens import Doc
 
 from nltk.tokenize import RegexpTokenizer
 
-
-def len_getter(doc):
-    # dynamic len getter
-    if doc._._len is None:
-        doc._._len = len(doc)
-    return doc._._len
+from .repetitious_filter import (
+    set_dynamic_ext,
+    duplicate_fraction_getter,
+    duplicate_chr_fraction_getter,
+    top_ngram_chr_fraction,
+    duplicate_n_gram_fraction,
+)
 
 
 class NLTKTokenizer:
@@ -79,33 +80,52 @@ class NLTKTokenizer:
 
 class QualityFilter:
     """
-        Danish implementation of quality filter described in (Rae et al., 2021).
+    Danish implementation of quality filter described in (Rae et al., 2021).
 
-        Args:
-            stop_words (Optional[Set[str]], optional): A set of stop words to use.
-                Defaults to None.
-            min_stop_words (int, optional): The least amount of stop words a text
-                should have before it is kept. Defaults to 2.
-            mean_word_length (Tuple[int, int], optional): Upper and lower bound on the
-                mean word length. Defaults to (3, 10).
-            doc_length (Tuple[int, int], optional): Upper and lower bound on the
-                documents length. Defaults to [50, 100_000].
-            alpha_ratio (float, optional): the percentage of words in this document
-                which should contain alphabetic character. Defaults to 0.7.
-                Changed from 0.8 in the paper.
-            symbol_2_word_ellipsis (float, optional): The highest acceptable ratio of
-                ellipsis to words. Defaults to 0.1.
-            symbol_2_word_hashtag (float, optional): The highest acceptable ratio of
-                ellipsis to words.. Defaults to 0.1.
-            max_p_begin_bullets (float, optional): Maximum number of lines which begins
-                with a bulletpoint. Defaults to 0.9.
-            max_p_end_ellipsis (float, optional): Maximum number of lines which ends
-                with an ellipsis. Defaults to 0.3.
-    <<<<<<< HEAD:dfm/cleaning/quality_filter.py
-            max_length (int): max_length in characters
-    =======
-            string (str, optional): String for filtering. Defaults to None.
-    >>>>>>> origin/main:dfm/cleaning/quality.py
+    Args:
+        stop_words (Optional[Set[str]], optional): A set of stop words to use.
+            Defaults to None.
+        min_stop_words (int, optional): The least amount of stop words a text
+            should have before it is kept. Defaults to 2.
+        mean_word_length (Tuple[int, int], optional): Upper and lower bound on the
+            mean word length. Defaults to (3, 10).
+        doc_length (Tuple[int, int], optional): Upper and lower bound on the
+            documents length. Defaults to [50, 100_000].
+        alpha_ratio (float, optional): the percentage of words in this document
+            which should contain alphabetic character. Defaults to 0.7.
+            Changed from 0.8 in the paper.
+        symbol_2_word_ellipsis (float, optional): The highest acceptable ratio of
+            ellipsis to words. Defaults to 0.1.
+        symbol_2_word_hashtag (float, optional): The highest acceptable ratio of
+            ellipsis to words.. Defaults to 0.1.
+        max_p_begin_bullets (float, optional): Maximum number of lines which begins
+            with a bulletpoint. Defaults to 0.9.
+        max_p_end_ellipsis (float, optional): Maximum number of lines which ends
+            with an ellipsis. Defaults to 0.3.
+        duplicate_line_fraction (float, optional): Max fraction of duplicate lines.
+        duplicate_paragraph_fraction (float, optional): Max fraction of duplicate
+            paragraphs
+        duplicate_lines_chr_fraction (float, optional): Max fraction of character which
+            is a part of a duplicate line
+        duplicate_paragraph_chr_fraction (float, optional): Max fraction of character
+            which is a part of a duplicate paragraph
+        top_ngram_chr_fraction_thresholds: The maximum fraction of characters which is a
+            part of the top ngram. Should be a list of floats corresponding to the
+            n-grams range top_ngram_chr_fraction_range. I.e. [0.20, 0.18, 0.16] with a
+            range of (2, 4) states that if the first top 20% of characters is contained
+            within the top 2-gram then filter out the text.
+        top_ngram_chr_fraction_range (Tuple[int, int], optional): Range of n-gram to
+            check for top_ngram_chr_fraction_thresholds.
+        duplicate_n_gram_fraction_thresholds (List[float], optional): The character
+            fraction thresholds. Defaults to [0.15, 0.14, 0.13, 0.12, 0.11, 0.10],
+            which for example denote that the any text with duplicate 5 grams
+            constituting more than 15% of the text characters is filtered, 14% for
+            6-grams and so on.
+        duplicate_n_gram_fraction_range (Tuple[int, int], optional): The n-gram range.
+            Defaults to (5, 11).
+        max_length (int, optional): max_length in characters
+        string (str, optional): String for filtering. Defaults to None.
+        tokenizer (str, optional): Tokenizer to use. Either "nltk" or "spacy".
     """
 
     def __init__(
@@ -113,14 +133,30 @@ class QualityFilter:
         stop_words: Optional[Set[str]] = None,
         min_stop_words: int = 2,
         mean_word_length: Tuple[int, int] = (3, 10),
-        doc_length: Tuple[int, int] = [50, 100_000],
+        doc_length: Tuple[int, int] = (50, 100_000),
         alpha_ratio: float = 0.7,
         symbol_2_word_hashtag: float = 0.1,
         symbol_2_word_ellipsis: float = 0.1,
         max_p_begin_bullets: float = 0.9,
         max_p_end_ellipsis: float = 0.3,
+        duplicate_line_fraction: float = 0.3,
+        duplicate_paragraph_fraction: float = 0.3,
+        duplicate_lines_chr_fraction: float = 0.2,
+        duplicate_paragraph_chr_fraction: float = 0.2,
+        top_ngram_chr_fraction_thresholds: List[float] = [0.20, 0.18, 0.16],
+        top_ngram_chr_fraction_range: Tuple[int, int] = (2, 4),
+        duplicate_n_gram_fraction_thresholds: List[float] = [
+            0.15,
+            0.14,
+            0.13,
+            0.12,
+            0.11,
+            0.10,
+        ],
+        duplicate_n_gram_fraction_range: Tuple[int, int] = (5, 11),
         max_length: int = 5_000_000,
         string_filter: Optional[str] = None,
+        tokenizer: str = "NLTK",
     ):
         if stop_words is None:
             stop_words = set(
@@ -153,7 +189,11 @@ class QualityFilter:
             )
 
         self.nlp = spacy.blank("da")
-        self.nlp.tokenizer = NLTKTokenizer(self.nlp.vocab)
+
+        if tokenizer.lower() == "nltk":
+            self.nlp.tokenizer = NLTKTokenizer(self.nlp.vocab)
+
+        self.__set_getters()
 
         self.filters = {
             "doc_length": partial(self.doc_length, doc_length=doc_length),
@@ -175,8 +215,23 @@ class QualityFilter:
                 max_p_bullets=max_p_begin_bullets,
                 max_p_ellipsis=max_p_end_ellipsis,
             ),
-            "stop_word": partial(
-                self.stop_word, stop_words=stop_words, n=min_stop_words
+            "duplicate_line_fraction": lambda doc: doc._.duplicate_lines_fraction
+            > duplicate_line_fraction,
+            "duplicate_paragraph_fraction": lambda doc: doc._.duplicate_paragraph_fraction
+            > duplicate_paragraph_fraction,
+            "duplicate_lines_chr_fraction": lambda doc: doc._.duplicate_lines_chr_fraction
+            > duplicate_lines_chr_fraction,
+            "duplicate_paragraph_chr_fraction": lambda doc: doc._.duplicate_paragraph_chr_fraction
+            > duplicate_paragraph_chr_fraction,
+            "top_ngram_chr_fraction": partial(
+                top_ngram_chr_fraction,
+                ngram_range=top_ngram_chr_fraction_range,
+                thresholds=top_ngram_chr_fraction_thresholds,
+            ),
+            "duplicate_n_gram_fraction": partial(
+                duplicate_n_gram_fraction,
+                ngram_range=duplicate_n_gram_fraction_range,
+                thresholds=duplicate_n_gram_fraction_thresholds,
             ),
         }
 
@@ -185,13 +240,41 @@ class QualityFilter:
                 self.string_filter, string=string_filter
             )
         self.filtered = Counter()
-
-        if not Doc.has_extension("_len"):
-            Doc.set_extension("_len", default=None)
-        if not Doc.has_extension("len"):
-            Doc.set_extension("len", getter=len_getter)
-
         self.nlp.max_length = max_length
+
+    def set_getters(self):
+        # getters for quality filters
+        set_dynamic_ext("len", func=lambda doc: len(doc))
+
+        # getter for rep. text filters
+        set_dynamic_ext("lines", func=lambda doc: doc.text.split("\n"))
+        set_dynamic_ext("paragraphs", func=lambda doc: doc.text.split("\n\n"))
+
+        set_dynamic_ext("lines_counter", func=lambda doc: Counter(doc._.lines))
+        set_dynamic_ext(
+            "paragraphs_counter", func=lambda doc: Counter(doc._.paragraphs)
+        )
+
+        set_dynamic_ext(
+            "duplicate_lines_fraction",
+            func=partial(duplicate_fraction_getter, attr="lines_counter"),
+        )
+
+        set_dynamic_ext(
+            "duplicate_paragraph_fraction",
+            func=partial(duplicate_fraction_getter, attr="paragraphs_counter"),
+        )
+
+        set_dynamic_ext(
+            "duplicate_lines_chr_fraction",
+            func=partial(duplicate_chr_fraction_getter, attr="lines_counter"),
+        )
+        set_dynamic_ext(
+            "duplicate_paragraph_chr_fraction",
+            func=partial(duplicate_chr_fraction_getter, attr="paragraphs_counter"),
+        )
+
+        set_dynamic_ext("chr_len", func=lambda doc: len(doc.text))
 
     def __call__(
         self, texts: Iterable[str], as_tuples: bool = False, **kwargs
