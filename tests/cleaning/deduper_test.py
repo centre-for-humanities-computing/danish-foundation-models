@@ -114,20 +114,18 @@ class TestDeduper:
         ]
 
     def test_no_normalization(self):
-        identity = lambda doc: doc
         assert self.dedup(
             [
                 "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
                 "Der kom en soldat marcherende hen ad landevejen!\n én. to? én; to?",
             ],
-            normalization_func=identity,
+            normalization_func=identity_fn,
         ) == [
             "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
             "Der kom en soldat marcherende hen ad landevejen!\n én. to? én; to?",
         ]
 
     def test_aggresive_normalization(self):
-        word_shape = lambda doc: re.sub("[A-Z]", "X", re.sub("[^A-Z ]", "x", doc))
         assert self.dedup(
             [
                 "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
