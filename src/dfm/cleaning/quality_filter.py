@@ -153,10 +153,10 @@ class QualityFilter:
             0.11,
             0.10,
         ],
-        duplicate_n_gram_fraction_range: Tuple[int, int] = (5, 11),
+        duplicate_n_gram_fraction_range: Tuple[int, int] = (5, 10),
         max_length: int = 5_000_000,
         string_filter: Optional[str] = None,
-        tokenizer: str = "NLTK",
+        tokenizer: str = "spacy",
     ):
         if stop_words is None:
             stop_words = set(
@@ -216,25 +216,24 @@ class QualityFilter:
                 max_p_ellipsis=max_p_end_ellipsis,
             ),
             "duplicate_line_fraction": lambda doc: doc._.duplicate_lines_fraction
-            > duplicate_line_fraction,
+            < duplicate_line_fraction,
             "duplicate_paragraph_fraction": lambda doc: doc._.duplicate_paragraph_fraction
-            > duplicate_paragraph_fraction,
+            < duplicate_paragraph_fraction,
             "duplicate_lines_chr_fraction": lambda doc: doc._.duplicate_lines_chr_fraction
-            > duplicate_lines_chr_fraction,
+            < duplicate_lines_chr_fraction,
             "duplicate_paragraph_chr_fraction": lambda doc: doc._.duplicate_paragraph_chr_fraction
-            > duplicate_paragraph_chr_fraction,
+            < duplicate_paragraph_chr_fraction,
             "top_ngram_chr_fraction": partial(
                 top_ngram_chr_fraction,
                 ngram_range=top_ngram_chr_fraction_range,
                 thresholds=top_ngram_chr_fraction_thresholds,
             ),
-            "duplicate_n_gram_fraction": partial(
+            "duplicate_ngram_chr_fraction": partial(
                 duplicate_n_gram_fraction,
                 ngram_range=duplicate_n_gram_fraction_range,
                 thresholds=duplicate_n_gram_fraction_thresholds,
             ),
         }
-        
 
         if string_filter:
             self.filters["string_filter"] = partial(
@@ -243,7 +242,7 @@ class QualityFilter:
         self.filtered = Counter()
         self.nlp.max_length = max_length
 
-    def set_getters(self):
+    def __set_getters(self):
         # getters for quality filters
         set_dynamic_ext("len", func=lambda doc: len(doc))
 
@@ -450,7 +449,7 @@ class QualityFilter:
         Returns:
             bool: A boolean indicator of whether the text passed the filter.
         """
-        n_symbol = doc._.text.count(symbol)
+        n_symbol = doc.text.count(symbol)
         ratio_ = n_symbol / doc._.len
         return ratio_ < ratio
 
@@ -472,7 +471,7 @@ class QualityFilter:
         Returns:
             bool: A boolean indicator of whether the text passed the filter.
         """
-        lines = doc._.text.split("\n")
+        lines = doc.text.split("\n")
         if lines:
             n_bullets = sum(
                 1 for line in lines if line.strip(" ").startswith(("-", "*"))

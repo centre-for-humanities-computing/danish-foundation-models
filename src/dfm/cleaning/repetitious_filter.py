@@ -4,7 +4,7 @@ Implementation of Repetitious text filter described in [1]
 Authors:
     Kenneth C. Enevoldsen
 
-References: 
+References:
     [1] Rae, J. W., Borgeaud, S., Cai, T., Millican, K., Hoffmann, J., Song, F.,
     Aslanides, J., Henderson, S., Ring, R., Young, S., Rutherford, E., Hennigan,
     T., Menick, J., Cassirer, A., Powell, R., Driessche, G. van den, Hendricks,
@@ -34,10 +34,12 @@ def create_dynamic_getter(ext_name: str, func: Callable) -> None:
     def dynamic_getter(doc):
         attr = getattr(doc._, ext_name)
         if attr is None:
-            setattr(doc._, ext_name, func(doc))
+            attr = func(doc)
+            setattr(doc._, ext_name, attr)
+        return attr
 
     Doc.set_extension(ext_name, default=None, force=True)
-    return dynamic_getter()
+    return dynamic_getter
 
 
 def __duplicate_fraction(n_total, n_unique):
@@ -47,7 +49,7 @@ def __duplicate_fraction(n_total, n_unique):
 def duplicate_fraction_getter(doc, attr: str = "lines_counter"):
     counts = getattr(doc._, attr)
     n_lines = sum(counts.values())
-    n_unique = len(k for k, c in counts.items() if c == 1)
+    n_unique = len([k for k, c in counts.items() if c == 1])
     return __duplicate_fraction(n_lines, n_unique)
 
 
@@ -90,7 +92,7 @@ def top_ngram_chr_fraction(
 
 def duplicate_n_gram_fraction(
     doc: Doc,
-    ngram_range: Tuple[int, int] = (5, 11),
+    ngram_range: Tuple[int, int] = (5, 10),
     thresholds: List[float] = [0.15, 0.14, 0.13, 0.12, 0.11, 0.10],
 ) -> bool:
     """calculates the character fraction of duplicate n-gram over the overall text,
@@ -120,7 +122,7 @@ def duplicate_n_gram_fraction(
     }
     ngrams = defaultdict(set)
     overlapping_char = defaultdict(int)
-    minmax = defaultdict(lambda x: (0, 0))
+    minmax = defaultdict(lambda: [0, 0])
     for i, _ in enumerate(doc):
         for ngram_size in range(lower, upper + 1):
 
@@ -134,7 +136,7 @@ def duplicate_n_gram_fraction(
                     # if it doesn't overlap update count
                     if span.start_char > max_:
                         overlapping_char[ngram_size] += max_ - min_
-                        minmax[ngram_size] = span.start_char, span.end_char
+                        minmax[ngram_size] = [span.start_char, span.end_char]
 
                         # early stopping if invalid text
                         if max_duplicate_chr[ngram_size] < overlapping_char[ngram_size]:
@@ -142,6 +144,9 @@ def duplicate_n_gram_fraction(
                     else:
                         # extend range of duplicates
                         minmax[ngram_size][1] = span.end_char
+                else:
+                    ngrams[ngram_size].add(ngram)
+
 
     for ngram_size in range(lower, upper + 1):
         min_, max_ = minmax[ngram_size]
@@ -149,12 +154,3 @@ def duplicate_n_gram_fraction(
         if max_duplicate_chr[ngram_size] < overlapping_char[ngram_size]:
             return False
     return True
-
-
-import spacy
-
-nlp = spacy.blank("da")
-doc = nlp("Hej jeg hedder kenneth, hej jeg")
-doc[1:3].end_char
-shingles = n_gram(doc, ngram_range=(2, 11))
-shingles[2].most_common(1)[0][0]

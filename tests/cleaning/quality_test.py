@@ -29,7 +29,7 @@ class TestQualityFilter:
         Der er nemlig målt vindstød på 29,3 meter i sekundet. Det er stærk storm,
         når det er over 28,5 meter i sekundet.
 
-        Andre dele af landet har nu også mærket de første vindstød af stormstyrke. 
+        Andre dele af landet har nu også mærket de første vindstød af stormstyrke.
 
         Odense Lufthavn har haft 24,5 meter i sekundet, mens Grønlandshavnen i Aalborg har ramt 24,7
         meter i sekundet. Det er mest centrale sted i landet, hvor der indtil videre er målet stormstyrke.
@@ -176,61 +176,57 @@ class TestQualityFilter:
         assert sum(quality_filter.filtered.values()) == (len(all_texts) - 1)
 
     @pytest.mark.parametrize(
-        "text,expected",
-        [
-            ("jeg er glad", False),
-            ("jeg er glad\n" * 4, True),
-        ],
+        "text, expected", [("jeg er glad", True), ("jeg er glad\n" * 4, False)]
     )
-    def test_duplicate_line_fraction(text, expected, quality_filter):
+    def test_duplicate_line_fraction(self, quality_filter, text: str, expected: bool):
         filter_func = quality_filter.filters["duplicate_line_fraction"]
         nlp = quality_filter.nlp
         assert filter_func(nlp(text)) is expected
 
     @pytest.mark.parametrize(
-        "text,expected",
+        "text, expected",
         [
-            ("jeg er glad\n" * 11, False),
-            ("jeg er glad\n\n" * 4, True),
+            ("jeg er glad\n" * 11, True),
+            ("jeg er glad\n\n" * 4, False),
         ],
     )
-    def test_duplicate_paragraph_fraction(text, expected, quality_filter):
+    def test_duplicate_paragraph_fraction(self, quality_filter, text: str, expected: bool):
         filter_func = quality_filter.filters["duplicate_paragraph_fraction"]
         nlp = quality_filter.nlp
         assert filter_func(nlp(text)) is expected
 
     @pytest.mark.parametrize(
-        "text,expected",
+        "text, expected",
         [
             ("dasdsadasdasdddddddddd\njeg er glad\n" * 2, True),
             ("jeg er glad\n\n" * 4, True),
         ],
     )
-    def test_duplicate_line_chr_fraction(text, expected, quality_filter):
-        filter_func = quality_filter.filters["duplicate_line_chr_fraction"]
+    def test_duplicate_line_chr_fraction(self, quality_filter, text: str, expected: bool):
+        filter_func = quality_filter.filters["duplicate_lines_chr_fraction"]
         nlp = quality_filter.nlp
         assert filter_func(nlp(text)) is expected
 
     @pytest.mark.parametrize(
-        "text,expected",
+        "text, expected",
         [
             ("dasdsadasdasdddddddddd\njeg er glad\n" * 2, True),
-            ("jeg er glad\n\n" * 4, True),
+            ("jeg er glad\n\n" * 4, False),
         ],
     )
-    def test_duplicate_para_chr_fraction(text, expected, quality_filter):
+    def test_duplicate_para_chr_fraction(self, quality_filter, text: str, expected: bool):
         filter_func = quality_filter.filters["duplicate_paragraph_chr_fraction"]
         nlp = quality_filter.nlp
         assert filter_func(nlp(text)) is expected
 
     @pytest.mark.parametrize(
-        "text,expected",
+        "text, expected",
         [
-            ("Jeg er jeg er jeg, JeG ER, jeg er", True),
+            ("Jeg er jeg er jeg, JeG ER, jeg er", False),
             ("jeg er glad, men også noglegange sur...", False),
         ],
     )
-    def test_top_ngram_chr_fraction(text, expected, quality_filter):
+    def test_top_ngram_chr_fraction(self, quality_filter, text: str, expected: bool):
         filter_func = quality_filter.filters["top_ngram_chr_fraction"]
         nlp = quality_filter.nlp
         assert filter_func(nlp(text)) is expected
@@ -238,11 +234,11 @@ class TestQualityFilter:
     @pytest.mark.parametrize(
         "text,expected",
         [
-            ("jeg er glad, men også noglegange sur måske hvertfald." * 10, True),
-            ("jeg er glad, men også noglegange sur...", False),
+            ("jeg er glad, men også noglegange sur måske hvertfald." * 10, False),
+            ("jeg er glad, men også noglegange sur...", True),
         ],
     )
-    def test_duplicate_ngram_chr_fraction(text, expected, quality_filter):
+    def test_duplicate_ngram_chr_fraction(self, quality_filter, text: str, expected: bool):
         filter_func = quality_filter.filters["duplicate_ngram_chr_fraction"]
         nlp = quality_filter.nlp
         assert filter_func(nlp(text)) is expected
