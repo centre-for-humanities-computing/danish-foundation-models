@@ -15,7 +15,6 @@ ndjson==0.3.1
 ## data cleaning
 spacy>=3.1.4,<=3.3.0
 datasketch~=1.5.6
-nltk==3.7
 google==3.0.0  # safesearch filtering
 more_itertools~=8.12.0
 

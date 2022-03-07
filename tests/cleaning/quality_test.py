@@ -19,7 +19,7 @@ class TestQualityFilter:
             "67 54 13 B7",
             "#yolo # test ##",
         ]
-
+    
     @pytest.fixture(scope="class")
     def long_text(self):
         return """
