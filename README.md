@@ -89,7 +89,7 @@ If you are used to running
 python -m  pytest
 ```
 
-to run the test, you will notice that this does not work with the current folder setup. This is intentional as this ensure that you always run the package installation before running the tests, this removed potential errors from the installation process.
+to run the test, you will notice that this does not work with the current folder setup. This is intentional as this ensures that you always run the package installation before running the tests, this removed potential errors from the installation process.
 
 ```
 pip install --editable .
