@@ -37,10 +37,11 @@ class TestDeduper:
         return Deduper(**dict(default_test_args, **kwargs))
 
     def dedup(self, corpus, **kwargs):
-        temp = tempfile.NamedTemporaryFile()
+        temp = tempfile.TemporaryDirectory()
         deduper = self.deduper(**kwargs)
-        deduper.deduplicate(corpus, output_fname=temp.name, overwrite=True)
-        return [json.loads(line)["text"] for line in Path(temp.name).open("r")]
+        deduper.deduplicate(corpus, output_dir=str(temp), overwrite=True)
+        deduped_corpus = Path(str(temp)) / "deduplicated_corpus.jsonl"
+        return [json.loads(line)["text"] for line in deduped_corpus.open("r")]
 
     def miss_percentage(self, corpus=None, iterations=100, **kwargs):
         corpus = corpus or [
