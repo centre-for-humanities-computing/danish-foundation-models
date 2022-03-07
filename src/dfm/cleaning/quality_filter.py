@@ -234,6 +234,7 @@ class QualityFilter:
                 thresholds=duplicate_n_gram_fraction_thresholds,
             ),
         }
+        
 
         if string_filter:
             self.filters["string_filter"] = partial(
