@@ -373,19 +373,19 @@ class Deduper:
                     candidates = self.lsh_cache.query(minhash)
                     if len(candidates) == 0:
 
-                        # Insert the document into the LSH cache
+                        # Insert the document into the LSH cache
                         self.lsh_cache.insert(doc_idx, minhash)
 
-                        # Store the LSH cache to disk
+                        # Store the LSH cache to disk
                         with lsh_cache_path.open("wb") as f:
                             pickle.dump(self.lsh_cache, f)
 
-                        # Store the non-duplicate document in the JSONL output
+                        # Store the non-duplicate document in the JSONL output
                         self._store_document(
-                            doc_idx=doc_idx, text=doc, output_path=output_path
+                            id=doc_idx, text=doc, output_path=output_path
                         )
 
-                        # Add the current document to the Boolean mask
+                        # Add the current document to the Boolean mask
                         mask_entry = dict(id=doc_idx, duplicate=False)
                         self.mask.append(mask_entry)
 
