@@ -145,6 +145,48 @@ class Deduper:
         )
         return self
 
+    @classmethod
+    def load_from_disk(cls, directory: Union[str, Path]) -> "Deduper":
+        """Load a Deduper from disk.
+
+        Args:
+            directory (str or Path):
+                The directory to load the Deduper from.
+
+        Returns:
+            Deduper:
+                The Deduper loaded from disk.
+
+        Raises:
+            FileNotFoundError:
+                If the directory does not exist.
+        """
+        # Ensure that `directory` is a Path
+        directory = Path(directory)
+
+        # Check if the directory exists, and raise an error if it doesn't
+        if not directory.exists():
+            raise FileNotFoundError(f"Directory {directory} does not exist.")
+
+        # Load the config file
+        with open(directory / "config.pkl", "rb") as f:
+            config = pickle.load(f)
+
+        # Create the Deduper
+        deduper = cls(**config)
+
+        # Load the mask
+        with open(directory / "mask.jsonl", "r") as f:
+            mask = [json.loads(line) for line in f]
+        deduper.mask = mask
+
+        # Load the LSH cache
+        with open(directory / "lsh_cache.pkl", "rb") as f:
+            deduper.lsh_cache = pickle.load(f)
+
+        # Return the Deduper
+        return deduper
+
     def get_config(self) -> dict:
         """Get the configuration of the deduplicator.
 
