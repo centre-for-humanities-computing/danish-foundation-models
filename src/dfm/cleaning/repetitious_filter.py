@@ -147,7 +147,6 @@ def duplicate_n_gram_fraction(
                 else:
                     ngrams[ngram_size].add(ngram)
 
-
     for ngram_size in range(lower, upper + 1):
         min_, max_ = minmax[ngram_size]
         overlapping_char[ngram_size] += max_ - min_

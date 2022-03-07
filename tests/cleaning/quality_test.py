@@ -190,7 +190,9 @@ class TestQualityFilter:
             ("jeg er glad\n\n" * 4, False),
         ],
     )
-    def test_duplicate_paragraph_fraction(self, quality_filter, text: str, expected: bool):
+    def test_duplicate_paragraph_fraction(
+        self, quality_filter, text: str, expected: bool
+    ):
         filter_func = quality_filter.filters["duplicate_paragraph_fraction"]
         nlp = quality_filter.nlp
         assert filter_func(nlp(text)) is expected
@@ -202,7 +204,9 @@ class TestQualityFilter:
             ("jeg er glad\n\n" * 4, True),
         ],
     )
-    def test_duplicate_line_chr_fraction(self, quality_filter, text: str, expected: bool):
+    def test_duplicate_line_chr_fraction(
+        self, quality_filter, text: str, expected: bool
+    ):
         filter_func = quality_filter.filters["duplicate_lines_chr_fraction"]
         nlp = quality_filter.nlp
         assert filter_func(nlp(text)) is expected
@@ -214,7 +218,9 @@ class TestQualityFilter:
             ("jeg er glad\n\n" * 4, False),
         ],
     )
-    def test_duplicate_para_chr_fraction(self, quality_filter, text: str, expected: bool):
+    def test_duplicate_para_chr_fraction(
+        self, quality_filter, text: str, expected: bool
+    ):
         filter_func = quality_filter.filters["duplicate_paragraph_chr_fraction"]
         nlp = quality_filter.nlp
         assert filter_func(nlp(text)) is expected
@@ -238,7 +244,9 @@ class TestQualityFilter:
             ("jeg er glad, men også noglegange sur...", True),
         ],
     )
-    def test_duplicate_ngram_chr_fraction(self, quality_filter, text: str, expected: bool):
+    def test_duplicate_ngram_chr_fraction(
+        self, quality_filter, text: str, expected: bool
+    ):
         filter_func = quality_filter.filters["duplicate_ngram_chr_fraction"]
         nlp = quality_filter.nlp
         assert filter_func(nlp(text)) is expected
