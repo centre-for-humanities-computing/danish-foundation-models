@@ -334,21 +334,19 @@ class Deduper:
             else:
                 raise FileExistsError(f"Output directory {output_dir} already exists.")
 
-        # Set up paths
+        # Create the output directory
+        output_dir.mkdir(parents=True)
+
+        # Set up paths
         output_path = output_dir / "deduplicated_corpus.jsonl"
         mask_path = output_dir / "mask.jsonl"
         lsh_cache_path = output_dir / "lsh_cache.pkl"
         config_path = output_dir / "config.pkl"
 
-        # Store the deduper config to disk
+        # Store the deduper config to disk
         config = self.get_config()
         with config_path.open("wb") as f:
             pickle.dump(config, f)
-
-        # Initialise the LSH cache
-        cache = MinHashLSH(
-            threshold=self.similarity_threshold, num_perm=self.num_minhashes
-        )
 
         #  Split the corpus into batches of `self.batch_size` documents
         batches = chunked(enumerate(corpus), self.batch_size)
@@ -372,22 +370,22 @@ class Deduper:
                     # If the document is not a near-duplicate candidate then
                     # store in the LSH cache and append it to the JSONL output
                     # file
-                    candidates = cache.query(minhash)
+                    candidates = self.lsh_cache.query(minhash)
                     if len(candidates) == 0:
 
-                        # Insert the document into the LSH cache
-                        cache.insert(doc_idx, minhash)
+                        # Insert the document into the LSH cache
+                        self.lsh_cache.insert(doc_idx, minhash)
 
-                        # Store the LSH cache to disk
+                        # Store the LSH cache to disk
                         with lsh_cache_path.open("wb") as f:
-                            pickle.dump(cache, f)
+                            pickle.dump(self.lsh_cache, f)
 
-                        # Store the non-duplicate document in the JSONL output
+                        # Store the non-duplicate document in the JSONL output
                         self._store_document(
-                            doc_idx=doc_idx, doc=doc, output_path=output_path
+                            doc_idx=doc_idx, text=doc, output_path=output_path
                         )
 
-                        # Add the current document to the Boolean mask
+                        # Add the current document to the Boolean mask
                         mask_entry = dict(id=doc_idx, duplicate=False)
                         self.mask.append(mask_entry)
 
@@ -395,7 +393,7 @@ class Deduper:
                     else:
                         duplicates += 1
 
-                        # Add the current document to the Boolean mask
+                        # Add the current document to the Boolean mask
                         mask_entry = dict(id=doc_idx, duplicate=True)
                         self.mask.append(mask_entry)
 
