@@ -137,6 +137,14 @@ class Deduper:
         else:
             self.batch_size = batch_size
 
+    def reset(self):
+        """Reset the deduplicator, removing the mask and the LSH cache"""
+        self.mask = list()
+        self.lsh_cache = MinHashLSH(
+            threshold=self.similarity_threshold, num_perm=self.num_minhashes
+        )
+        return self
+
     def get_config(self) -> dict:
         """Get the configuration of the deduplicator.
 
