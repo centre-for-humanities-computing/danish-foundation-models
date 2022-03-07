@@ -1,5 +1,5 @@
 """
-Implementation of Repetitious text filter described in [1]
+Utilities for implementation of Repetitious text filter described in [1]
 
 Authors:
     Kenneth C. Enevoldsen
@@ -23,23 +23,33 @@ from collections import Counter, defaultdict
 def set_dynamic_ext(
     ext_name: str, func: Callable, dynamic_ext_prefix: str = "_", object=Doc
 ) -> None:
+    """set a dynamic extension which only computes when required.
+
+    Args:
+        ext_name (str): The extension name which should be set
+        func (Callable): The getter function for the specified extension
+        dynamic_ext_prefix (str, optional): The dynamic extension prefix where to store
+            if the value is already calculated. Defaults to "_".
+        object (optional): The spaCy object to set the extension to. Options include
+            Token, Doc, Span. Defaults to Doc.
+    """
+
+    def __create_dynamic_getter(ext_name: str, func: Callable) -> None:
+        def dynamic_getter(doc):
+            attr = getattr(doc._, ext_name)
+            if attr is None:
+                attr = func(doc)
+                setattr(doc._, ext_name, attr)
+            return attr
+
+        Doc.set_extension(ext_name, default=None, force=True)
+        return dynamic_getter
+
     if not object.has_extension(ext_name):
         object.set_extension(
             ext_name,
-            getter=create_dynamic_getter(dynamic_ext_prefix + ext_name, func=func),
+            getter=__create_dynamic_getter(dynamic_ext_prefix + ext_name, func=func),
         )
-
-
-def create_dynamic_getter(ext_name: str, func: Callable) -> None:
-    def dynamic_getter(doc):
-        attr = getattr(doc._, ext_name)
-        if attr is None:
-            attr = func(doc)
-            setattr(doc._, ext_name, attr)
-        return attr
-
-    Doc.set_extension(ext_name, default=None, force=True)
-    return dynamic_getter
 
 
 def __duplicate_fraction(n_total, n_unique):
@@ -47,6 +57,7 @@ def __duplicate_fraction(n_total, n_unique):
 
 
 def duplicate_fraction_getter(doc, attr: str = "lines_counter"):
+    """Calculate the duplicate fraction of based on a counter object"""
     counts = getattr(doc._, attr)
     n_lines = sum(counts.values())
     n_unique = len([k for k, c in counts.items() if c == 1])
@@ -54,6 +65,7 @@ def duplicate_fraction_getter(doc, attr: str = "lines_counter"):
 
 
 def duplicate_chr_fraction_getter(doc, attr: str):
+    """Calculate the character fraction of duplicates based on a counter object"""
     counter = getattr(doc._, attr)
     duplicate_chr = 0
     for t, c in counter.items():
@@ -63,7 +75,8 @@ def duplicate_chr_fraction_getter(doc, attr: str):
     return frac
 
 
-def n_gram(doc: Doc, ngram_range: Tuple[int, int]):
+def __n_gram(doc: Doc, ngram_range: Tuple[int, int]):
+    """Calculate the counts of n-grams in the specified range"""
     max_len = doc._.len
     lower, upper = ngram_range
     shingles_count = defaultdict(lambda: Counter())
@@ -77,11 +90,25 @@ def n_gram(doc: Doc, ngram_range: Tuple[int, int]):
 
 
 def top_ngram_chr_fraction(
-    doc,
+    doc: Doc,
     ngram_range: Tuple[int, int] = (2, 4),
     thresholds: List[float] = [0.20, 0.18, 0.16],
-):
-    ngram_counter = n_gram(doc, ngram_range=ngram_range)
+) -> bool:
+    """Calculated whether the character fraction of the top n-grams is below the given
+    thresholds
+
+    Args:
+        doc (Doc): A spaCy doc
+        ngram_range (Tuple[int, int], optional): Range of n grams to examine. 
+            Defaults to (2, 4).
+        thresholds (List[float], optional): Maximum character fraction of n-gram.
+            Defaults to [0.20, 0.18, 0.16], e.g. a the top 2-gram should not constitute
+            more than 20% of the text. 
+
+    Returns:
+        bool: a boolean indicator returns True if the Doc is not filtered.
+    """
+    ngram_counter = __n_gram(doc, ngram_range=ngram_range)
     for n, threshold in zip(ngram_counter, thresholds):
         ngram, count = ngram_counter[n].most_common(1)[0]
         frac = len(ngram) * count / doc._.chr_len

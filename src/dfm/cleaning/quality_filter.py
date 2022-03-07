@@ -24,58 +24,13 @@ from spacy.tokens import Doc
 
 from nltk.tokenize import RegexpTokenizer
 
-from .repetitious_filter import (
+from .quality_filter_utils import (
     set_dynamic_ext,
     duplicate_fraction_getter,
     duplicate_chr_fraction_getter,
     top_ngram_chr_fraction,
     duplicate_n_gram_fraction,
 )
-
-
-class NLTKTokenizer:
-    """
-    The NLTK tokenizer is noticeably faster than the spacy tokenizer
-    though performs notably worse tokenization:
-
-    Speed Comparison on a text of 237 tokens:
-
-    .. code:
-
-        text multiplication: time taken to tokenize
-
-        NLTK
-        10: 0.004389047622680664
-        100: 0.018768787384033203
-        1000: 0.17305397987365723
-        10000: 1.4743471145629883
-        SPACY
-        10: 0.019192934036254883
-        100: 0.15356707572937012
-        1000: 1.7956039905548096
-        10000: 18.097763776779175
-
-    Note this removes newlines and does not keep the text intact. Therefore it sets
-    the extension: doc._.text to keep the original text.
-
-    Example:
-        >>> nlp = spacy.blank("en")
-        >>> nlp.tokenizer = NLTKTokenizer(nlp.vocab)
-        >>> doc = nlp("What's happened to me? he thought. It wasn't a dream.")
-    """
-
-    def __init__(self, vocab):
-        self.vocab = vocab
-        self.tokenizer = RegexpTokenizer(pattern=r"\w+|[^\w\s]+")
-
-        if not Doc.has_extension("text"):
-            Doc.set_extension("text", default=None)
-
-    def __call__(self, text):
-        words = self.tokenizer.tokenize(text)
-        doc = Doc(self.vocab, words=words)
-        doc._.text = text
-        return doc
 
 
 class QualityFilter:
@@ -156,7 +111,6 @@ class QualityFilter:
         duplicate_n_gram_fraction_range: Tuple[int, int] = (5, 10),
         max_length: int = 5_000_000,
         string_filter: Optional[str] = None,
-        tokenizer: str = "spacy",
     ):
         if stop_words is None:
             stop_words = set(
@@ -189,9 +143,6 @@ class QualityFilter:
             )
 
         self.nlp = spacy.blank("da")
-
-        if tokenizer.lower() == "nltk":
-            self.nlp.tokenizer = NLTKTokenizer(self.nlp.vocab)
 
         self.__set_getters()
 
