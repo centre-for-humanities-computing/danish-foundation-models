@@ -99,11 +99,11 @@ def top_ngram_chr_fraction(
 
     Args:
         doc (Doc): A spaCy doc
-        ngram_range (Tuple[int, int], optional): Range of n grams to examine. 
+        ngram_range (Tuple[int, int], optional): Range of n grams to examine.
             Defaults to (2, 4).
         thresholds (List[float], optional): Maximum character fraction of n-gram.
             Defaults to [0.20, 0.18, 0.16], e.g. a the top 2-gram should not constitute
-            more than 20% of the text. 
+            more than 20% of the text.
 
     Returns:
         bool: a boolean indicator returns True if the Doc is not filtered.
