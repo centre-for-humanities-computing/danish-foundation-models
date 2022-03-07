@@ -120,6 +120,9 @@ class Deduper:
         self.normalization_func = normalization_func
         self.verbose = verbose
         self.mask = list()
+        self.lsh_cache = MinHashLSH(
+            threshold=self.similarity_threshold, num_perm=self.num_minhashes
+        )
 
         if batch_size is None:
             if self.split_method in ["paragraph", "none"] or self.split_method is None:
