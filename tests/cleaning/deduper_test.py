@@ -166,3 +166,26 @@ class TestDeduper:
         config = deduper.get_config()
         for key, val in config.items():
             assert val == getattr(deduper, key)
+
+    def test_load_from_disk(self):
+        corpus = ["hej med dig min ven", "hej med dig min ven", "farvel du gamle"]
+        with tempfile.TemporaryDirectory() as temp:
+
+            # Create a deduper loaded from disk, and a different new one
+            deduper = self.deduper(split_method="paragraph")
+            deduper.deduplicate(corpus, output_dir=temp, overwrite=True)
+            loaded_deduper = Deduper.load_from_disk(temp)
+            new_deduper = self.deduper()
+
+            # Test that the loaded config is the same as the original
+            assert loaded_deduper.get_config() == deduper.get_config()
+            assert new_deduper.get_config() != deduper.get_config()
+
+            # Test that the loaded mask is the same as the original
+            assert loaded_deduper.mask == deduper.mask
+            assert new_deduper.mask != deduper.mask
+
+            # Test that the loaded LSH cache works as intended
+            minhash = deduper._get_minhash(corpus[0])
+            assert len(loaded_deduper.lsh_cache.query(minhash)) > 0
+            assert len(new_deduper.lsh_cache.query(minhash)) == 0
