@@ -8,7 +8,7 @@ Authors:
 
 """
 
-from typing import Iterable, Optional
+from typing import Iterable, Optional, Tuple
 
 import asyncio
 import json
@@ -25,6 +25,7 @@ from aiohttp import ClientTimeout
 
 from wasabi import msg
 
+
 ssl_context = ssl._create_unverified_context()
 ssl_context.set_ciphers("DEFAULT@SECLEVEL=1")
 
@@ -39,6 +40,7 @@ else:
 
 
 def get_domains(limit=None, checked={}):
+    """Extract a list of domains"""
     with open(path, "r") as f:
         ss_domains = json.load(f)
     if limit:
@@ -48,7 +50,8 @@ def get_domains(limit=None, checked={}):
     return ["http://" + d for d in domains if "http://" + d not in checked]
 
 
-async def download_site(session, ssl_context, url):
+async def check_sites(session, ssl_context, url) -> Tuple[str, int]:
+    """check if sites is fetchable return the url along with status code"""
     async with session.get(
         url,
         timeout=ClientTimeout(total=None, sock_connect=5, sock_read=5),
@@ -58,11 +61,21 @@ async def download_site(session, ssl_context, url):
     return url, code
 
 
-async def download_all_sites(sites, ssl_context):
+async def check_all_sites(sites: Iterable[str], ssl_context):
+    """check if a site is fetchable
+
+    Args:
+        sites (Iterable[str]): A list of sites
+        ssl_context: An ssl context
+
+    Returns:
+        list: a list of response consist of either a tuple with the url and response
+            or the error message when fetching the site.
+    """
     async with aiohttp.ClientSession() as session:
         tasks = []
         for url in sites:
-            task = asyncio.create_task(download_site(session, ssl_context, url))
+            task = asyncio.create_task(check_sites(session, ssl_context, url))
             tasks.append(task)
         responses = await asyncio.gather(*tasks, return_exceptions=True)
     return responses
@@ -138,7 +151,7 @@ def ignore_aiohttp_ssl_eror(loop):
     loop.set_exception_handler(ignore_ssl_error)
 
 
-def DNS_filter(
+def dns_filter(
     domains: Iterable[str],
     cache_file: Optional[str] = None,
     batch_size: int = 10_000,
@@ -187,7 +200,7 @@ def DNS_filter(
             loop = asyncio.get_event_loop()
             ignore_aiohttp_ssl_eror(loop)
             loop.set_default_executor(ThreadPoolExecutor(n_threads))
-            t = loop.run_until_complete(download_all_sites(sites, ssl_context))
+            t = loop.run_until_complete(check_all_sites(sites, ssl_context))
 
             duration = time.time() - start_time
             print(f"\tDownloaded {len(sites)} sites in {duration} seconds")
@@ -229,7 +242,7 @@ def DNS_filter(
         ignore_aiohttp_ssl_eror(loop)
         loop.set_default_executor(ThreadPoolExecutor(n_threads))
         t = loop.run_until_complete(
-            download_all_sites(output["unsafe_sites_double_checked"], ssl_context)
+            check_all_sites(output["unsafe_sites_double_checked"], ssl_context)
         )
         output["unsafe_sites_double_checked"] = [
             site
@@ -250,4 +263,4 @@ if __name__ == "__main__":
 
     save_path = os.path.join("/work/netarkivet-cleaned/safe_search_domains_safe.pkl")
 
-    DNS_filter(cache_file=save_path)
+    dns_filter(cache_file=save_path)
