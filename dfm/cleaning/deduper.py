@@ -75,7 +75,7 @@ class Deduper:
             The random seed to use for the MinHash functions. Defaults to 42.
         normalization_func: (Callable[[str], str], optional):
             The function used to normalize documents before they are compared to
-            ignore insignificant differences.
+            ignore insignificant differences. Needs to be pickleable.
         verbose (bool, optional):
             Print progress to stdout. Defaults to True.
 
