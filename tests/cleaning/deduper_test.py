@@ -7,6 +7,30 @@ import json
 import re
 
 
+def word_shape(doc: str) -> str:
+    '''Aggressive normalization function used in unit tests.
+
+    Args:
+        doc (str): The document to normalize.
+
+    Returns:
+        str: The normalized document.
+    '''
+    return re.sub("[A-Z]", "X", re.sub("[^A-Z ]", "x", doc))
+
+
+def identity_fn(doc: str) -> str:
+    '''Identity function used in unit tests.
+
+    Args:
+        doc (str): The document to normalize.
+
+    Returns:
+        str: The normalized document.
+    '''
+    return doc
+
+
 class TestDeduper:
     def deduper(self, **kwargs):
         default_test_args = dict(ngram_size=1, random_seed=42, verbose=False)
