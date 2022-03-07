@@ -86,12 +86,13 @@ class MatchCounter:
         Generates matcher objects from a list of dictionaries with {matcher_label (str): pattern (list)}
         Pattern must conform to SpaCy pattern standards:
 
-        Example input:
+        Example:
             >>> pattern_container_list = [
             >>>    {"atheism": [{"LOWER": {"REGEX": "athei.+"}}]},
             >>>    {"atheism": [{"LOWER": {"REGEX": "atei.+"}}]},
             >>>    {"skøde": [{"LOWER": "skøde"}]},
             >>> ]
+            >>> match_counter.gen_matcher_objects_from_pattern_list(pattern_container_list)
         """
         matcher_object = Matcher(self.nlp.vocab)
 
@@ -156,9 +157,7 @@ class MatchCounter:
 if __name__ == "__main__":
     any_token_pattern = [{"tokens": [{"TEXT": {"REGEX": ".+"}}]}]
 
-    ############
-    # Religion #
-    ############
+    # Religion
     religion_patterns = [
         {"atheist": [{"LOWER": {"REGEX": "ath{0,1}eis.*"}}]},
         {"buddhist": [{"LOWER": {"REGEX": "buddh{0,1}.*"}}]},
@@ -171,9 +170,7 @@ if __name__ == "__main__":
 
     muslim_name_patterns = get_muslim_name_patterns()
 
-    ###########
-    # Genders #
-    ###########
+    # Genders
     gender_name_patterns = get_gender_name_patterns()
 
     gender_pronoun_patterns = [
@@ -190,24 +187,18 @@ if __name__ == "__main__":
         female_gendered_terms, label="female_gendered_terms"
     )
 
-    ###############
-    # Occupations #
-    ###############
+    # Occupations 
     occupation_patterns = MatchCounter.term_list_to_lowercase_match_patterns(
         occupation_pattern_list, label_prefix="occu_"
     )
     # List is a partial translation of Rae et al. 2022, p. 95
 
-    ###############
-    # Adult words #
-    ###############
+    # Adult words
     adult_patterns = MatchCounter.term_list_to_lowercase_match_patterns(
         danish_adult_words, label_prefix="porn_"
     )
 
-    #############
-    # Execution #
-    #############
+    # Execution
     combined_patterns = (
         any_token_pattern
         + religion_patterns
