@@ -117,7 +117,7 @@ class QualityFilter:
         symbol_2_word_ellipsis (float, optional): The highest acceptable ratio of
             ellipsis to words. Defaults to 0.1.
         symbol_2_word_hashtag (float, optional): The highest acceptable ratio of
-            ellipsis to words.. Defaults to 0.1.
+            symbols to words.. Defaults to 0.1.
         max_p_begin_bullets (float, optional): Maximum number of lines which begins
             with a bulletpoint. Defaults to 0.9.
         max_p_end_ellipsis (float, optional): Maximum number of lines which ends
