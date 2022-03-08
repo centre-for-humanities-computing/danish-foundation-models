@@ -183,12 +183,12 @@ class QualityFilter:
         top_ngram_chr_fraction_thresholds: List[float] = [0.20, 0.18, 0.16],
         top_ngram_chr_fraction_range: Tuple[int, int] = (2, 4),
         duplicate_n_gram_fraction_thresholds: List[float] = [
+            0.17,
+            0.16,
             0.15,
             0.14,
             0.13,
             0.12,
-            0.11,
-            0.10,
         ],
         duplicate_n_gram_fraction_range: Tuple[int, int] = (5, 10),
         max_length: int = 5_000_000,
@@ -445,6 +445,8 @@ class QualityFilter:
         """
         w_len = 0
         for t in doc:
+            if t.is_space or t.is_punct:
+                continue
             w_len += len(t)
         mwl = w_len / doc._.len
         return mean_word_length[0] <= mwl <= mean_word_length[1]
