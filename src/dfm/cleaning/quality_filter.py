@@ -143,7 +143,7 @@ class QualityFilter:
             6-grams and so on.
         duplicate_n_gram_fraction_range (Tuple[int, int], optional): The n-gram range.
             Defaults to (5, 11).
-        max_length (int, optional): max_length in characters
+        max_length (int, optional): max_length in characters. Defaults to 5_000_000
         string (str, optional): String for filtering. Defaults to None.
     """
 
