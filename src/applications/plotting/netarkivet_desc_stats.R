@@ -1,7 +1,7 @@
 library(tidyverse)
 library(lubridate)
 
-domains <- read_csv("../../../docs/desc_stats/domain_counts.csv")
+domains <- read_csv("../../../data/domain_counts.csv")
 domains$X1 <- NULL
 colnames(domains) <- c("domain", "frequency")
 
@@ -30,7 +30,7 @@ ggsave("../../../docs/desc_stats/netarkivet_top_50_domains.png")
 
 
 # Count of domains
-times <- read_csv("../../../docs/desc_stats/timestamp_counts.csv")
+times <- read_csv("../../../data/timestamp_counts.csv")
 times$X1 <- NULL
 colnames(times) <- c("time", "frequency")
 
