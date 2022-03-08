@@ -65,11 +65,11 @@ def n_gram_counter(doc: Doc, ngram_range: Tuple[int, int]) -> Dict[str, Counter]
 
 
 def duplicate_fraction_getter(doc: Doc, attr: str = "lines_counter") -> float:
-    """Calculate the duplicate fraction of based on a counter object
+    """Calculate the duplicate fraction of a Doc attribute based on a counter object
 
     Args:
         doc (Doc): A spaCy Doc
-        attr (str, optional): The attribute to the extracted.
+        attr (str, optional): The attribute to be extracted.
             Defaults to "lines_counter".
 
     Returns:
@@ -134,25 +134,25 @@ class QualityFilter:
         symbol_2_word_ellipsis (float, optional): The highest acceptable ratio of
             ellipsis to words. Defaults to 0.1.
         symbol_2_word_hashtag (float, optional): The highest acceptable ratio of
-            ellipsis to words.. Defaults to 0.1.
+            symbols to words.. Defaults to 0.1.
         max_p_begin_bullets (float, optional): Maximum number of lines which begins
             with a bulletpoint. Defaults to 0.9.
         max_p_end_ellipsis (float, optional): Maximum number of lines which ends
             with an ellipsis. Defaults to 0.3.
-        duplicate_line_fraction (float, optional): Max fraction of duplicate lines.
+        duplicate_line_fraction (float, optional): Max fraction of duplicate lines. Defaults to 0.3.
         duplicate_paragraph_fraction (float, optional): Max fraction of duplicate
-            paragraphs
-        duplicate_lines_chr_fraction (float, optional): Max fraction of character which
-            is a part of a duplicate line
-        duplicate_paragraph_chr_fraction (float, optional): Max fraction of character
-            which is a part of a duplicate paragraph
+            paragraphs. Defaults to 0.3.
+        duplicate_lines_chr_fraction (float, optional): Max fraction of characters which
+            is a part of a duplicate line. Defaults to 0.2
+        duplicate_paragraph_chr_fraction (float, optional): Max fraction of characters
+            which is a part of a duplicate paragraph. Defaults to 0.2.
         top_ngram_chr_fraction_thresholds: The maximum fraction of characters which is a
             part of the top ngram. Should be a list of floats corresponding to the
             n-grams range top_ngram_chr_fraction_range. I.e. [0.20, 0.18, 0.16] with a
             range of (2, 4) states that if the first top 20% of characters is contained
-            within the top 2-gram then filter out the text.
+            within the top 2-gram then filter out the text. Defaults to [0.20, 0.18, 0.16].
         top_ngram_chr_fraction_range (Tuple[int, int], optional): Range of n-gram to
-            check for top_ngram_chr_fraction_thresholds.
+            check for top_ngram_chr_fraction_thresholds. Defaults to (2, 4).
         duplicate_n_gram_fraction_thresholds (List[float], optional): The character
             fraction thresholds. Defaults to [0.15, 0.14, 0.13, 0.12, 0.11, 0.10],
             which for example denote that the any text with duplicate 5 grams
@@ -160,7 +160,7 @@ class QualityFilter:
             6-grams and so on.
         duplicate_n_gram_fraction_range (Tuple[int, int], optional): The n-gram range.
             Defaults to (5, 11).
-        max_length (int, optional): max_length in characters
+        max_length (int, optional): max_length in characters. Defaults to 5_000_000
         string (str, optional): String for filtering. Defaults to None.
     """
 
