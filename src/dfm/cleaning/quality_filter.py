@@ -127,8 +127,8 @@ class QualityFilter:
             paragraphs. Defaults to 0.3.
         duplicate_lines_chr_fraction (float, optional): Max fraction of characters which
             is a part of a duplicate line. Defaults to 0.2
-        duplicate_paragraph_chr_fraction (float, optional): Max fraction of character
-            which is a part of a duplicate paragraph
+        duplicate_paragraph_chr_fraction (float, optional): Max fraction of characters
+            which is a part of a duplicate paragraph. Defaults to 0.2.
         top_ngram_chr_fraction_thresholds: The maximum fraction of characters which is a
             part of the top ngram. Should be a list of floats corresponding to the
             n-grams range top_ngram_chr_fraction_range. I.e. [0.20, 0.18, 0.16] with a
