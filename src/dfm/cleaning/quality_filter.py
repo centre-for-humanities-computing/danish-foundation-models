@@ -135,7 +135,7 @@ class QualityFilter:
             range of (2, 4) states that if the first top 20% of characters is contained
             within the top 2-gram then filter out the text.
         top_ngram_chr_fraction_range (Tuple[int, int], optional): Range of n-gram to
-            check for top_ngram_chr_fraction_thresholds.
+            check for top_ngram_chr_fraction_thresholds. Defaults to (2, 4).
         duplicate_n_gram_fraction_thresholds (List[float], optional): The character
             fraction thresholds. Defaults to [0.15, 0.14, 0.13, 0.12, 0.11, 0.10],
             which for example denote that the any text with duplicate 5 grams
