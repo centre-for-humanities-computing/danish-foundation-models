@@ -3,7 +3,10 @@ Loading scripts for HF type datasets
 """
 import os
 import sys
-from typing import Union, List
+
+from typing import Set, Union, List
+
+
 from datasets import (
     load_dataset,
     interleave_datasets,
@@ -81,12 +84,12 @@ def load_news() -> Union[Dataset, IterableDataset]:
 
 
 def load_dagw(
-    filter_danavis: bool = True, streaming: bool = False
+    remove_cat: Set[str] = {"danavis", "dannet"}, streaming: bool = False, **kwargs
 ) -> Union[Dataset, IterableDataset]:
     """Dataloader for Danish Gigaword.
 
     Args:
-        filter_danavis (bool, optional): Whether to filter DanAvis documents. Defaults to True.
+        remove_cat (bool, optional): Text categories to remove.
         streaming (bool, optional): Whether to stream the dataset. Defaults to False.
 
     Returns:
@@ -95,25 +98,24 @@ def load_dagw(
     dataset = load_dataset(
         "DDSC/partial-danish-gigaword-no-twitter", streaming=streaming
     )
+
+    def filter_(examples):
+        i = 0
+        while i < len(examples["source"]):
+            s = examples["source"][i]
+            if s in remove_cat:
+                for k in examples:
+                    examples[k].pop(i)
+            else:
+                i += 1
+        return examples
+
     ds = dataset["train"]
-    if filter_danavis:
 
-        def filter_(examples):
-            i = 0
-            while i < len(examples["source"]):
-                s = examples["source"][i]
-                if s == "danavis":
-                    for k in examples:
-                        examples[k].pop(i)
-                else:
-                    i += 1
-            return examples
-
+    if remove_cat:
         # not possible to use filter with a streamed dataset
-        ds = ds.map(
-            filter_,
-            batched=True,
-        )
+        ds = ds.map(filter_, batched=True, **kwargs)
+
     return ds
 
 
