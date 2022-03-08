@@ -152,6 +152,9 @@ class QualityFilter:
             within the top 2-gram then filter out the text. Defaults to [0.20, 0.18, 0.16].
         top_ngram_chr_fraction_range (Tuple[int, int], optional): Range of n-gram to
             check for top_ngram_chr_fraction_thresholds. Defaults to (2, 4).
+        min_count (int): Minimum count of n-grams. Ignores n-grams below this
+            threshold. This is to avoid filtering text with very large n-grams,
+            which happens in legal text or languages with compound words.
         duplicate_n_gram_fraction_thresholds (List[float], optional): The character
             fraction thresholds. Defaults to [0.15, 0.14, 0.13, 0.12, 0.11, 0.10],
             which for example denote that the any text with duplicate 5 grams
@@ -179,6 +182,7 @@ class QualityFilter:
         duplicate_paragraph_chr_fraction: float = 0.2,
         top_ngram_chr_fraction_thresholds: List[float] = [0.20, 0.18, 0.16],
         top_ngram_chr_fraction_range: Tuple[int, int] = (2, 4),
+        top_ngram_min_count: int = 3,
         duplicate_n_gram_fraction_thresholds: List[float] = [
             0.17,
             0.16,
@@ -192,7 +196,6 @@ class QualityFilter:
         string_filter: Optional[str] = None,
     ):
 
-
         self.nlp = spacy.blank("da")
 
         # required docuement extension for spaCy
@@ -205,9 +208,7 @@ class QualityFilter:
                 self.mean_word_length, mean_word_length=mean_word_length
             ),
             "alpha_ratio": partial(self.alpha, ratio=alpha_ratio),
-            "stop_word": partial(
-                self.stop_word, n=min_stop_words
-            ),
+            "stop_word": partial(self.stop_word, n=min_stop_words),
             "symbol_2_word_hashtag": partial(
                 self.symbol_2_word, ratio=symbol_2_word_hashtag, symbol="#"
             ),
@@ -236,6 +237,7 @@ class QualityFilter:
                 self.top_ngram_chr_fraction_filter,
                 ngram_range=top_ngram_chr_fraction_range,
                 thresholds=top_ngram_chr_fraction_thresholds,
+                min_count=top_ngram_min_count,
             ),
             "duplicate_ngram_chr_fraction": partial(
                 self.duplicate_ngram_fraction_filter,
@@ -615,6 +617,7 @@ class QualityFilter:
         doc: Doc,
         ngram_range: Tuple[int, int],
         thresholds: List[float],
+        min_count: int,
     ) -> bool:
         """Calculated whether the character fraction of the top n-grams is below the
         given thresholds
@@ -623,6 +626,9 @@ class QualityFilter:
             doc (Doc): A spaCy doc
             ngram_range (Tuple[int, int], optional): Range of n grams to examine.
             thresholds (List[float], optional): Maximum character fraction of n-gram.
+            min_count (int): Minimum count of n-grams. Ignores n-grams below this
+                threshold. This is to avoid filtering text with very large n-grams,
+                which happens in legal text or languages with compound words.
 
         Returns:
             bool: a boolean indicator returns True if the Doc is not filtered.
@@ -631,7 +637,7 @@ class QualityFilter:
         for n, threshold in zip(ngram_counter, thresholds):
             ngram, count = ngram_counter[n].most_common(1)[0]
             frac = len(ngram) * count / doc._.chr_len
-            if frac > threshold:
+            if frac > threshold and count > min_count:
                 return False
         return True
 
