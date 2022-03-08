@@ -122,7 +122,7 @@ class QualityFilter:
             with a bulletpoint. Defaults to 0.9.
         max_p_end_ellipsis (float, optional): Maximum number of lines which ends
             with an ellipsis. Defaults to 0.3.
-        duplicate_line_fraction (float, optional): Max fraction of duplicate lines.
+        duplicate_line_fraction (float, optional): Max fraction of duplicate lines. Defaults to 0.3.
         duplicate_paragraph_fraction (float, optional): Max fraction of duplicate
             paragraphs
         duplicate_lines_chr_fraction (float, optional): Max fraction of character which
