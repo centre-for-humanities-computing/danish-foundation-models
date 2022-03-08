@@ -76,6 +76,7 @@ def duplicate_fraction_getter(doc: Doc, attr: str = "lines_counter") -> float:
         float: the duplicate fraction
     """
     counts = getattr(doc._, attr)
+    counts = {k: v for k, v in counts.items() if k.strip()}
     n_lines = sum(counts.values())
     n_unique = len([k for k, c in counts.items() if c == 1])
     duplicate_fraction = (n_lines - n_unique) / n_lines
@@ -128,9 +129,9 @@ class QualityFilter:
             mean word length. Defaults to (3, 10).
         doc_length (Tuple[int, int], optional): Upper and lower bound on the
             documents length. Defaults to [50, 100_000].
-        alpha_ratio (float, optional): the percentage of words in this document
-            which should contain alphabetic character. Defaults to 0.7.
-            Changed from 0.8 in the paper.
+        alpha_ratio (float, optional): the percentage of spacy tokens in this document
+            which should contain alphabetic character. Defaults to 0.6, changed from 0.8
+            in [1], estimated from Danish Gigaword.
         symbol_2_word_ellipsis (float, optional): The highest acceptable ratio of
             ellipsis to words. Defaults to 0.1.
         symbol_2_word_hashtag (float, optional): The highest acceptable ratio of
@@ -170,7 +171,7 @@ class QualityFilter:
         min_stop_words: int = 2,
         mean_word_length: Tuple[int, int] = (3, 10),
         doc_length: Tuple[int, int] = (50, 100_000),
-        alpha_ratio: float = 0.7,
+        alpha_ratio: float = 0.6,
         symbol_2_word_hashtag: float = 0.1,
         symbol_2_word_ellipsis: float = 0.1,
         max_p_begin_bullets: float = 0.9,
