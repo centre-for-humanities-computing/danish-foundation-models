@@ -10,15 +10,15 @@ A collaborative project for training foundational Danish language model.
 The dataset currently available to the project for training:
 
 
-| Dataset | Description | Size in million tokens |
-| ------- | ------- | ------- |
-| :books: DAGW    | Danish Gigaword. A wide coverage dataset of Danish text. | ~1 000 |
-| :bird: HopeTwitter    | A dataset of tweets collected as a part of the HOPE project. | |
-| :newspaper: DaNews | A dataset consisting of Danish newspapers | |
-| 🗯 Reddit-da | A Danish subsection of reddit  | ~86 | 
-| :link: Netarkivet | A subsection of the "Danish" internet collected the royal Danish library | | 
-| :link: mC4 | A cleaned part of the common crawl | | 
-| Lex.dk | A Danish curated wikipedia, written by experts | ~26 |
+| Dataset            | Description                                                              | Size in million tokens |
+| ------------------ | ------------------------------------------------------------------------ | ---------------------- |
+| :books: DAGW       | Danish Gigaword. A wide coverage dataset of Danish text.                 | ~1 000                 |
+| :bird: HopeTwitter | A dataset of tweets collected as a part of the HOPE project.             |                        |
+| :newspaper: DaNews | A dataset consisting of Danish newspapers                                |                        |
+| 🗯 Reddit-da        | A Danish subsection of reddit                                            | ~86                    |
+| :link: Netarkivet  | A subsection of the "Danish" internet collected the royal Danish library |                        |
+| :link: mC4         | A cleaned part of the common crawl                                       |                        |
+| Lex.dk             | A Danish curated wikipedia, written by experts                           | ~26                    |
 
 
 ## Models:
@@ -81,4 +81,17 @@ This project uses compute resources supplied by [Ucloud](https://docs.cloud.sdu.
 - Peter Bjerregaard Vahlstrup - the guy who makes sure data collections works
 - Kristoffer Nielbo - Supervisor
 
+## FAQ
 
+### How to I run the tests
+If you are used to running
+```
+python -m  pytest
+```
+
+to run the test, you will notice that this does not work with the current folder setup. This is intentional as this ensures that you always run the package installation before running the tests. This removes potential errors from the installation process.
+
+```
+pip install --editable .
+python -m  pytest
+```
