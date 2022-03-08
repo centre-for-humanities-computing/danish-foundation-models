@@ -15,7 +15,7 @@ References:
     https://arxiv.org/abs/2112.11446v2
 """
 
-from typing import Iterable, Optional, Set, Tuple, List, Callable
+from typing import Dict, Iterable, Optional, Set, Tuple, List, Callable
 from collections import Counter, defaultdict
 from functools import partial
 
@@ -24,7 +24,15 @@ from spacy.tokens import Doc
 
 
 def duplicate_chr_fraction_getter(doc: Doc, attr: str) -> float:
-    """Calculate the character fraction of duplicates based on a counter object"""
+    """Calculate the character fraction of duplicates based on a counter object
+
+    Args:
+        doc (Doc): A spaCy doc
+        attr (str): The document attribute to extraxct
+
+    Returns:
+        float: the fraction of duplicate chr
+    """
     counter = getattr(doc._, attr)
     duplicate_chr = 0
     for t, c in counter.items():
@@ -34,8 +42,16 @@ def duplicate_chr_fraction_getter(doc: Doc, attr: str) -> float:
     return frac
 
 
-def n_gram_counter(doc: Doc, ngram_range: Tuple[int, int]):
-    """Calculate the counts of n-grams in the specified range"""
+def n_gram_counter(doc: Doc, ngram_range: Tuple[int, int]) -> Dict[str, Counter]:
+    """Calculate the counts of n-grams in the specified range
+
+    Args:
+        doc (Doc): a spaCy Doc
+        ngram_range (Tuple[int, int]): The n-gram range
+
+    Returns:
+        Dict[str, Counter]: A dict. containing the counts of n-grams for a specific n.
+    """
     max_len = doc._.len
     lower, upper = ngram_range
     shingles_count = defaultdict(lambda: Counter())
@@ -69,7 +85,8 @@ def duplicate_fraction_getter(doc: Doc, attr: str = "lines_counter") -> float:
 def set_dynamic_ext(
     ext_name: str, func: Callable, dynamic_ext_prefix: str = "_", object=Doc
 ) -> None:
-    """set a dynamic extension which only computes when required.
+    """Set a dynamic extension which only computes when the first time otherwise fetched
+    the previous results.
 
     Args:
         ext_name (str): The extension name which should be set
@@ -208,8 +225,10 @@ class QualityFilter:
 
         self.nlp = spacy.blank("da")
 
-        self.__set_getters()
+        # required docuement extension for spaCy
+        self.__set_extensions()
 
+        # a ordered dictionary of which filters to apply
         self.filters = {
             "doc_length": partial(self.doc_length, doc_length=doc_length),
             "mean_word_length": partial(
@@ -259,11 +278,17 @@ class QualityFilter:
             self.filters["string_filter"] = partial(
                 self.string_filter, string=string_filter
             )
+
+        # create a counter for keeping track of how many times the specific filter
+        # removed a document
         self.filtered = Counter()
+
+        # set maximum length for the nlp pipeline.
         self.nlp.max_length = max_length
 
-    def __set_getters(self):
-        """sets dynamic getters such that values isn't calculated multiple times."""
+    def __set_extensions(self) -> None:
+        """Sets dynamic extension such that certain values aren't calculated multiple
+        times."""
         # getters for quality filters
         set_dynamic_ext("len", func=lambda doc: len(doc))
 
@@ -304,14 +329,15 @@ class QualityFilter:
         Applies quality filter
 
         Args:
-            texts (Iterable[str]): An iterable of strings of the text you wish to filter.
+            texts (Iterable[str]): An iterable of strings of the text you wish to
+                filter.
             as_tuples (bool, optional): If True doc is expected to be a tuple of size
                 two with the first element being the text. The output of this function
                     will then also be a generator of tuples filtered based on the text.
                     Defaults to False.
 
         Yields:
-            Generator: A Generator of either texts or tuples depending on the as_tuples
+            str: Either texts or tuples depending on the as_tuples
                 argument.
         """
         texts = iter(texts)
@@ -320,14 +346,16 @@ class QualityFilter:
         while docs:
             try:
                 doc = next(docs)
-                if as_tuples:
+                if as_tuples:  # split tuple into doc and context
                     doc, context = doc
 
                 is_filtered = self.is_filtered(doc)
+
+                # don't yield texts which did not pass the filter
                 if is_filtered is not None:
                     continue
 
-                if as_tuples:
+                if as_tuples:  # yield doc along with context
                     yield doc, context
                 else:
                     yield doc
@@ -367,7 +395,6 @@ class QualityFilter:
             Iterable: An Iterable strings of which filter was applied to the document
                 "None" indicate not filtered.
         """
-
         texts = iter(texts)
         docs = self.nlp.pipe(texts, **kwargs)
 
@@ -399,7 +426,6 @@ class QualityFilter:
         Returns:
             bool: A boolean indicator of whether the text passed the filter.
         """
-
         return doc_length[0] <= doc._.len <= doc_length[1]
 
     @staticmethod
@@ -521,7 +547,6 @@ class QualityFilter:
         Returns:
             bool: A boolean indicator of whether the text passed the filter.
         """
-
         n_stopwords = 0
         for t in doc:
             if t.text in stop_words:
@@ -546,20 +571,16 @@ class QualityFilter:
     @staticmethod
     def duplicate_ngram_fraction_filter(
         doc: Doc,
-        ngram_range: Tuple[int, int] = (5, 10),
-        thresholds: List[float] = [0.15, 0.14, 0.13, 0.12, 0.11, 0.10],
+        ngram_range: Tuple[int, int],
+        thresholds: List[float],
     ) -> bool:
         """calculates the character fraction of duplicate n-gram over the overall text,
         taking care not to count overlapping n-grams twice.
 
         Args:
             doc (Doc): a spacy Doc
-            ngram_range (Tuple[int, int], optional): The n-gram range. Defaults to
-                (5, 11).
+            ngram_range (Tuple[int, int], optional): The n-gram range.
             thresholds (List[float], optional): The character fraction thresholds.
-                Defaults to [0.15, 0.14, 0.13, 0.12, 0.11, 0.10], which for example
-                denote that the any text with duplicate 5 grams constituting more than
-                15% of the text characters is filtered, 14% for 6-grams and so on.
 
         Returns:
             bool: a boolean indicating whether the doc passed the filter. True
@@ -572,31 +593,35 @@ class QualityFilter:
         if chr_len == 0:
             return False
 
+        # calcuate maximum chr. limits according to thresholds
         max_duplicate_chr = {
             ng: t * chr_len for ng, t in zip(range(lower, upper + 1), thresholds)
         }
         ngrams = defaultdict(set)
-        overlapping_char = defaultdict(int)
+        duplicate_char = defaultdict(int)
         minmax = defaultdict(lambda: [0, 0])
+
         for i, _ in enumerate(doc):
             for ngram_size in range(lower, upper + 1):
 
                 min_, max_ = minmax[ngram_size]
-
                 end = i + ngram_size
+
                 if end < max_len:
                     span = doc[i:end]
-                    ngram = span.text.lower()
+                    ngram = span.text.lower()  # create n-gram from span
+
                     if ngram in ngrams[ngram_size]:
-                        # if it doesn't overlap update count
+                        # if it doesn't overlap with other ngrams of the same size
+                        # update
                         if span.start_char > max_:
-                            overlapping_char[ngram_size] += max_ - min_
+                            duplicate_char[ngram_size] += max_ - min_
                             minmax[ngram_size] = [span.start_char, span.end_char]
 
-                            # early stopping if invalid text
+                            # early stopping if duplicate char. is higher than allowed
                             if (
                                 max_duplicate_chr[ngram_size]
-                                < overlapping_char[ngram_size]
+                                < duplicate_char[ngram_size]
                             ):
                                 return False
                         else:
@@ -605,18 +630,19 @@ class QualityFilter:
                     else:
                         ngrams[ngram_size].add(ngram)
 
+        # empty buffer for of duplicate chr. which have yet to be added.
         for ngram_size in range(lower, upper + 1):
             min_, max_ = minmax[ngram_size]
-            overlapping_char[ngram_size] += max_ - min_
-            if max_duplicate_chr[ngram_size] < overlapping_char[ngram_size]:
+            duplicate_char[ngram_size] += max_ - min_
+            if max_duplicate_chr[ngram_size] < duplicate_char[ngram_size]:
                 return False
         return True
 
     @staticmethod
     def top_ngram_chr_fraction_filter(
         doc: Doc,
-        ngram_range: Tuple[int, int] = (2, 4),
-        thresholds: List[float] = [0.20, 0.18, 0.16],
+        ngram_range: Tuple[int, int],
+        thresholds: List[float],
     ) -> bool:
         """Calculated whether the character fraction of the top n-grams is below the
         given thresholds
@@ -624,10 +650,7 @@ class QualityFilter:
         Args:
             doc (Doc): A spaCy doc
             ngram_range (Tuple[int, int], optional): Range of n grams to examine.
-                Defaults to (2, 4).
             thresholds (List[float], optional): Maximum character fraction of n-gram.
-                Defaults to [0.20, 0.18, 0.16], e.g. a the top 2-gram should not
-                constitute more than 20% of the text.
 
         Returns:
             bool: a boolean indicator returns True if the Doc is not filtered.
