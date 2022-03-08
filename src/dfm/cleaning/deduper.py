@@ -22,6 +22,7 @@ import json
 from unicodedata import normalize
 import re
 from tqdm.auto import tqdm
+
 from more_itertools import chunked
 from joblib import Parallel, delayed
 import multiprocessing as mp
@@ -312,6 +313,7 @@ class Deduper:
             FileExistsError:
                 If the output file already exists and `overwrite` is False.
         """
+
         # Register number of documents in the corpus
         num_docs = len(corpus) if hasattr(corpus, "__len__") else None
 
