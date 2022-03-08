@@ -63,8 +63,6 @@ class Deduper:
             Defaults to 0.8.
         num_minhashes (int, optional):
             The number of MinHash functions to use. Defaults to 128.
-        random_seed (int, optional):
-            The random seed to use for the MinHash functions. Defaults to 42.
         batch_size (int or None, optional):
             The number of documents to process at a time. If None then it is
             set to 10,000 if `split_method` is 'paragraph', 'none' or None,
