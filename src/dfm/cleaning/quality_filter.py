@@ -49,7 +49,7 @@ def n_gram_counter(doc: Doc, ngram_range: Tuple[int, int]):
 
 
 def duplicate_fraction_getter(doc: Doc, attr: str = "lines_counter") -> float:
-    """Calculate the duplicate fraction of based on a counter object
+    """Calculate the duplicate fraction of a Doc attribute based on a counter object
 
     Args:
         doc (Doc): A spaCy Doc
