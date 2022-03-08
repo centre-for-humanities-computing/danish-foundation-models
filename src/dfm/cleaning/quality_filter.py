@@ -124,7 +124,7 @@ class QualityFilter:
             with an ellipsis. Defaults to 0.3.
         duplicate_line_fraction (float, optional): Max fraction of duplicate lines. Defaults to 0.3.
         duplicate_paragraph_fraction (float, optional): Max fraction of duplicate
-            paragraphs
+            paragraphs. Defaults to 0.3.
         duplicate_lines_chr_fraction (float, optional): Max fraction of character which
             is a part of a duplicate line
         duplicate_paragraph_chr_fraction (float, optional): Max fraction of character
