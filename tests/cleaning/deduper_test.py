@@ -7,16 +7,41 @@ import json
 import re
 
 
+def word_shape(doc: str) -> str:
+    """Aggressive normalization function used in unit tests.
+
+    Args:
+        doc (str): The document to normalize.
+
+    Returns:
+        str: The normalized document.
+    """
+    return re.sub("[A-Z]", "X", re.sub("[^A-Z ]", "x", doc))
+
+
+def identity_fn(doc: str) -> str:
+    """Identity function used in unit tests.
+
+    Args:
+        doc (str): The document to normalize.
+
+    Returns:
+        str: The normalized document.
+    """
+    return doc
+
+
 class TestDeduper:
     def deduper(self, **kwargs):
         default_test_args = dict(ngram_size=1, random_seed=42, verbose=False)
         return Deduper(**dict(default_test_args, **kwargs))
 
     def dedup(self, corpus, **kwargs):
-        temp = tempfile.NamedTemporaryFile()
-        deduper = self.deduper(**kwargs)
-        deduper.deduplicate(corpus, output_fname=temp.name, overwrite=True)
-        return [json.loads(line)["text"] for line in Path(temp.name).open("r")]
+        with tempfile.TemporaryDirectory() as temp:
+            deduper = self.deduper(**kwargs)
+            deduper.deduplicate(corpus, output_dir=temp, overwrite=True)
+            deduped_corpus = Path(temp) / "deduplicated_corpus.jsonl"
+            return [json.loads(line)["text"] for line in deduped_corpus.open("r")]
 
     def miss_percentage(self, corpus=None, iterations=100, **kwargs):
         corpus = corpus or [
@@ -89,20 +114,18 @@ class TestDeduper:
         ]
 
     def test_no_normalization(self):
-        identity = lambda doc: doc
         assert self.dedup(
             [
                 "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
                 "Der kom en soldat marcherende hen ad landevejen!\n én. to? én; to?",
             ],
-            normalization_func=identity,
+            normalization_func=identity_fn,
         ) == [
             "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
             "Der kom en soldat marcherende hen ad landevejen!\n én. to? én; to?",
         ]
 
     def test_aggresive_normalization(self):
-        word_shape = lambda doc: re.sub("[A-Z]", "X", re.sub("[^A-Z ]", "x", doc))
         assert self.dedup(
             [
                 "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
@@ -137,3 +160,32 @@ class TestDeduper:
     def test_double_stride_shingles(self):
         shingles = self.deduper(ngram_stride=2)._get_shingles("Hej med dig Kim")
         assert shingles == ["Hej", "dig"]
+
+    def test_get_config(self):
+        deduper = self.deduper()
+        config = deduper.get_config()
+        for key, val in config.items():
+            assert val == getattr(deduper, key)
+
+    def test_load_from_disk(self):
+        corpus = ["hej med dig min ven", "hej med dig min ven", "farvel du gamle"]
+        with tempfile.TemporaryDirectory() as temp:
+
+            # Create a deduper loaded from disk, and a different new one
+            deduper = self.deduper(split_method="paragraph")
+            deduper.deduplicate(corpus, output_dir=temp, overwrite=True)
+            loaded_deduper = Deduper.load_from_disk(temp)
+            new_deduper = self.deduper()
+
+            # Test that the loaded config is the same as the original
+            assert loaded_deduper.get_config() == deduper.get_config()
+            assert new_deduper.get_config() != deduper.get_config()
+
+            # Test that the loaded mask is the same as the original
+            assert loaded_deduper.mask == deduper.mask
+            assert new_deduper.mask != deduper.mask
+
+            # Test that the loaded LSH cache works as intended
+            minhash = deduper._get_minhash(corpus[0])
+            assert len(loaded_deduper.lsh_cache.query(minhash)) > 0
+            assert len(new_deduper.lsh_cache.query(minhash)) == 0

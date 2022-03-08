@@ -17,6 +17,7 @@ from datasets.arrow_dataset import Dataset
 from datasets.iterable_dataset import IterableDataset
 from typing import Union, Iterable, Optional, List, Callable
 from pathlib import Path
+import shutil
 import json
 from unicodedata import normalize
 import re
@@ -25,6 +26,7 @@ from tqdm.auto import tqdm
 from more_itertools import chunked
 from joblib import Parallel, delayed
 import multiprocessing as mp
+import pickle
 
 
 def _default_normalization(doc: str) -> str:
@@ -74,7 +76,7 @@ class Deduper:
             The random seed to use for the MinHash functions. Defaults to 42.
         normalization_func: (Callable[[str], str], optional):
             The function used to normalize documents before they are compared to
-            ignore insignificant differences.
+            ignore insignificant differences. Needs to be pickleable.
         verbose (bool, optional):
             Print progress to stdout. Defaults to True.
 
@@ -118,6 +120,10 @@ class Deduper:
         self.random_seed = random_seed
         self.normalization_func = normalization_func
         self.verbose = verbose
+        self.mask = list()
+        self.lsh_cache = MinHashLSH(
+            threshold=self.similarity_threshold, num_perm=self.num_minhashes
+        )
 
         if batch_size is None:
             if self.split_method in ["paragraph", "none"] or self.split_method is None:
@@ -131,6 +137,76 @@ class Deduper:
                 )
         else:
             self.batch_size = batch_size
+
+    def reset(self):
+        """Reset the deduplicator, removing the mask and the LSH cache"""
+        self.mask = list()
+        self.lsh_cache = MinHashLSH(
+            threshold=self.similarity_threshold, num_perm=self.num_minhashes
+        )
+        return self
+
+    @classmethod
+    def load_from_disk(cls, directory: Union[str, Path]) -> "Deduper":
+        """Load a Deduper from disk.
+
+        Args:
+            directory (str or Path):
+                The directory to load the Deduper from.
+
+        Returns:
+            Deduper:
+                The Deduper loaded from disk.
+
+        Raises:
+            FileNotFoundError:
+                If the directory does not exist.
+        """
+        # Ensure that `directory` is a Path
+        directory = Path(directory)
+
+        # Check if the directory exists, and raise an error if it doesn't
+        if not directory.exists():
+            raise FileNotFoundError(f"Directory {directory} does not exist.")
+
+        # Load the config file
+        with open(directory / "config.pkl", "rb") as f:
+            config = pickle.load(f)
+
+        # Create the Deduper
+        deduper = cls(**config)
+
+        # Load the mask
+        with open(directory / "mask.jsonl", "r") as f:
+            mask = [json.loads(line) for line in f]
+        deduper.mask = mask
+
+        # Load the LSH cache
+        with open(directory / "lsh_cache.pkl", "rb") as f:
+            deduper.lsh_cache = pickle.load(f)
+
+        # Return the Deduper
+        return deduper
+
+    def get_config(self) -> dict:
+        """Get the configuration of the deduplicator.
+
+        Returns:
+            dict: The configuration of the deduplicator.
+        """
+        config = dict(
+            split_method=self.split_method,
+            ngram_size=self.ngram_size,
+            ngram_stride=self.ngram_stride,
+            similarity_threshold=self.similarity_threshold,
+            num_minhashes=self.num_minhashes,
+            batch_size=self.batch_size,
+            n_jobs=self.n_jobs,
+            random_seed=self.random_seed,
+            normalization_func=self.normalization_func,
+            verbose=self.verbose,
+        )
+        return config
 
     def _get_shingles(self, doc: str) -> List[str]:
         """Extracts the shingles from a document.
@@ -198,29 +274,27 @@ class Deduper:
         # Return the fingerprint
         return minhash
 
-    def _store_document(self, doc_idx: int, doc: str, output_fname: Union[str, Path]):
+    def _store_document(self, output_path: Union[str, Path], **kwargs):
         """Appends the document to a JSONL file.
 
         Args:
-            doc_idx (int):
-                The document index.
-            doc (str):
-                The document to append to the JSONL file.
-            output_fname (str or Path):
+            output_path (str or Path):
                 The name of the JSONL file to append to.
+            **kwargs:
+                The document to append to the JSONL file.
         """
-        # Ensure that `fname` is a Path object
-        output_fname = Path(output_fname)
+        # Ensure that `path` is a Path object
+        output_path = Path(output_path)
 
         # Append the document to the JSONL file
-        with output_fname.open("a") as f:
-            jsonned = json.dumps(dict(id=doc_idx, text=doc))
+        with output_path.open("a") as f:
+            jsonned = json.dumps(kwargs)
             f.write(jsonned + "\n")
 
     def deduplicate(
         self,
         corpus: Union[Dataset, IterableDataset, Iterable[str]],
-        output_fname: Union[str, Path] = "deduplicated.jsonl",
+        output_dir: Union[str, Path] = "deduplicated",
         overwrite: bool = False,
     ):
         """Removes duplicate documents from the corpus and stores it to disk.
@@ -229,8 +303,8 @@ class Deduper:
             corpus (Dataset, IterableDataset or iterable of strings):
                 The corpus to deduplicate. If `corpus` is a Dataset, it must
                 have a `text` column.
-            output_fname (str or Path, optional):
-                The name of the output file.
+            output_dir (str or Path, optional):
+                The name of the output directory. Defaults to 'deduplicated'.
             overwrite (bool, optional):
                 Whether to overwrite the output file if it already exists.
                 Defaults to False.
@@ -245,23 +319,36 @@ class Deduper:
 
         # Convert corpus to an iterable of strings if a Dataset is given
         if isinstance(corpus, Dataset) or isinstance(corpus, IterableDataset):
-            corpus = (sample["text"] for sample in corpus)
+            corpus = (
+                sample["text"]
+                for doc_idx, sample in enumerate(corpus)
+                if doc_idx not in [i for i, _ in self.mask]
+            )
 
-        # Ensure that `output_fname` is a Path object
-        output_fname = Path(output_fname)
+        # Ensure that `output_dir` is a Path object
+        output_dir = Path(output_dir)
 
         # If the output file already exists then raise an error if `overwrite`
         # is False and otherwise delete the file
-        if output_fname.exists():
+        if output_dir.exists():
             if overwrite:
-                output_fname.unlink()
+                shutil.rmtree(output_dir)
             else:
-                raise FileExistsError(f"Output file {output_fname} already exists.")
+                raise FileExistsError(f"Output directory {output_dir} already exists.")
 
-        # Initialise the LSH cache
-        cache = MinHashLSH(
-            threshold=self.similarity_threshold, num_perm=self.num_minhashes
-        )
+        # Create the output directory
+        output_dir.mkdir(parents=True)
+
+        # Set up paths
+        output_path = output_dir / "deduplicated_corpus.jsonl"
+        mask_path = output_dir / "mask.jsonl"
+        lsh_cache_path = output_dir / "lsh_cache.pkl"
+        config_path = output_dir / "config.pkl"
+
+        # Store the deduper config to disk
+        config = self.get_config()
+        with config_path.open("wb") as f:
+            pickle.dump(config, f)
 
         #  Split the corpus into batches of `self.batch_size` documents
         batches = chunked(enumerate(corpus), self.batch_size)
@@ -272,7 +359,7 @@ class Deduper:
             desc="Deduplicating", total=num_docs, disable=(not self.verbose)
         )
         with tqdm(batches, **pbar_params) as pbar:
-            for batch in batches:
+            for batch in pbar:
 
                 # Compute the fingerprint for the document
                 with Parallel(n_jobs=self.n_jobs) as parallel:
@@ -285,16 +372,35 @@ class Deduper:
                     # If the document is not a near-duplicate candidate then
                     # store in the LSH cache and append it to the JSONL output
                     # file
-                    candidates = cache.query(minhash)
+                    candidates = self.lsh_cache.query(minhash)
                     if len(candidates) == 0:
-                        cache.insert(doc_idx, minhash)
+
+                        # Insert the document into the LSH cache
+                        self.lsh_cache.insert(doc_idx, minhash)
+
+                        # Store the LSH cache to disk
+                        with lsh_cache_path.open("wb") as f:
+                            pickle.dump(self.lsh_cache, f)
+
+                        # Store the non-duplicate document in the JSONL output
                         self._store_document(
-                            doc_idx=doc_idx, doc=doc, output_fname=output_fname
+                            id=doc_idx, text=doc, output_path=output_path
                         )
+
+                        # Add the current document to the Boolean mask
+                        mask_entry = dict(id=doc_idx, duplicate=False)
+                        self.mask.append(mask_entry)
 
                     # Otherwise, increment the number of duplicate documents
                     else:
                         duplicates += 1
+
+                        # Add the current document to the Boolean mask
+                        mask_entry = dict(id=doc_idx, duplicate=True)
+                        self.mask.append(mask_entry)
+
+                    # Store the Boolean mask to disk
+                    self._store_document(output_path=mask_path, **mask_entry)
 
                 # Get the maximal doc_idx in the batch
                 max_doc_idx = max(doc_idx for doc_idx, _ in batch)
@@ -318,11 +424,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Set up path to store the deduplicated corpus
-    path = Path("deduplicated-test.jsonl")
+    output_dir = Path("deduplicated-test")
 
     # Remove the deduplicated corpus if it already exists
-    if path.exists():
-        path.unlink()
+    if output_dir.exists():
+        output_dir.unlink()
 
     # Load the test dataset
     corpus = load_dataset(
@@ -333,7 +439,7 @@ if __name__ == "__main__":
 
     #  Deduplicate the test dataset
     deduper = Deduper(split_method=args.split_method, n_jobs=args.n_jobs)
-    deduper.deduplicate(corpus, output_fname=path)
+    deduper.deduplicate(corpus, output_dir=output_dir)
 
     # *** Time taken to deduplicate DAGW with 16 cores, by `split_method` ***
     #   - 'none': ~3.5 minutes (found 24.75% duplicates)
