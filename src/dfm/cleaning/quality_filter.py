@@ -133,7 +133,7 @@ class QualityFilter:
             part of the top ngram. Should be a list of floats corresponding to the
             n-grams range top_ngram_chr_fraction_range. I.e. [0.20, 0.18, 0.16] with a
             range of (2, 4) states that if the first top 20% of characters is contained
-            within the top 2-gram then filter out the text.
+            within the top 2-gram then filter out the text. Defaults to [0.20, 0.18, 0.16].
         top_ngram_chr_fraction_range (Tuple[int, int], optional): Range of n-gram to
             check for top_ngram_chr_fraction_thresholds. Defaults to (2, 4).
         duplicate_n_gram_fraction_thresholds (List[float], optional): The character
