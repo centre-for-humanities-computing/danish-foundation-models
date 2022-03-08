@@ -66,37 +66,6 @@ class TestQualityFilter:
         return tweet_texts + [long_text] + [bullets_texts]
 
     @pytest.fixture(scope="class")
-    def stop_words(self):
-        return set(
-            [
-                "er",
-                "jeg",
-                "det",
-                "du",
-                "ikke",
-                "at",
-                "en",
-                "og",
-                "har",
-                "vi",
-                "til",
-                "på",
-                "hvad",
-                "mig",
-                "med",
-                "de",
-                "for",
-                "den",
-                "så",
-                "der",
-                "dig",
-                "han",
-                "kan",
-                "af",
-            ]
-        )
-
-    @pytest.fixture(scope="class")
     def quality_filter(self):
         return QualityFilter()
 
@@ -107,13 +76,8 @@ class TestQualityFilter:
             ("56789okd23456789098765sds", False),
         ],
     )
-    def test_stop_words(self, quality_filter, stop_words, text: str, expected: bool):
-        assert (
-            quality_filter.stop_word(
-                quality_filter.nlp(text), n=2, stop_words=stop_words
-            )
-            is expected
-        )
+    def test_stop_words(self, quality_filter, text: str, expected: bool):
+        assert quality_filter.stop_word(quality_filter.nlp(text), n=2) is expected
 
     @pytest.mark.parametrize(
         "texts,expected",
@@ -244,6 +208,7 @@ class TestQualityFilter:
         [
             ("jeg er glad, men også noglegange sur måske hvertfald." * 10, False),
             ("jeg er glad, men også noglegange sur...", True),
+            (text, True),
         ],
     )
     def test_duplicate_ngram_chr_fraction(
