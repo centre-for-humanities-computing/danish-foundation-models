@@ -53,7 +53,7 @@ def duplicate_fraction_getter(doc: Doc, attr: str = "lines_counter") -> float:
 
     Args:
         doc (Doc): A spaCy Doc
-        attr (str, optional): The attribute to the extracted.
+        attr (str, optional): The attribute to be extracted.
             Defaults to "lines_counter".
 
     Returns:
