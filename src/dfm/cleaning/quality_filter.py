@@ -15,7 +15,7 @@ References:
     https://arxiv.org/abs/2112.11446v2
 """
 
-from typing import Dict, Iterable, Optional, Set, Tuple, List, Callable
+from typing import Dict, Iterable, Optional, Tuple, List, Callable
 from collections import Counter, defaultdict
 from functools import partial
 
@@ -118,7 +118,8 @@ def set_dynamic_ext(
 
 class QualityFilter:
     """
-    Danish implementation of quality filter described in (Rae et al., 2021).
+    Danish implementation of quality filter described in (Rae et al., 2021). With some 
+    notable changes (see args).
 
     Args:
         min_stop_words (int, optional): The least amount of stop words a text
@@ -138,9 +139,12 @@ class QualityFilter:
             with a bulletpoint. Defaults to 0.9.
         max_p_end_ellipsis (float, optional): Maximum number of lines which ends
             with an ellipsis. Defaults to 0.3.
-        duplicate_line_fraction (float, optional): Max fraction of duplicate lines. Defaults to 0.3.
+        duplicate_line_fraction (float, optional): Max fraction of duplicate lines.
+            Defaults to 0.5. Changed from 0.3 to avoid filtering text with a
+            few duplicate paragraphs from e.g. listings.
         duplicate_paragraph_fraction (float, optional): Max fraction of duplicate
-            paragraphs. Defaults to 0.3.
+            paragraphs. Defaults to 0.5. Changed from 0.3 to avoid filtering text with a
+            few duplicate paragraphs from e.g. listings.
         duplicate_lines_chr_fraction (float, optional): Max fraction of characters which
             is a part of a duplicate line. Defaults to 0.2
         duplicate_paragraph_chr_fraction (float, optional): Max fraction of characters
@@ -154,7 +158,8 @@ class QualityFilter:
             check for top_ngram_chr_fraction_thresholds. Defaults to (2, 4).
         min_count (int): Minimum count of n-grams. Ignores n-grams below this
             threshold. This is to avoid filtering text with very large n-grams,
-            which happens in legal text or languages with compound words.
+            which happens in legal text or languages with compound words. This is an 
+            extention to the existing filtering.
         duplicate_n_gram_fraction_thresholds (List[float], optional): The character
             fraction thresholds. Defaults to [0.15, 0.14, 0.13, 0.12, 0.11, 0.10],
             which for example denote that the any text with duplicate 5 grams
@@ -176,8 +181,8 @@ class QualityFilter:
         symbol_2_word_ellipsis: float = 0.1,
         max_p_begin_bullets: float = 0.9,
         max_p_end_ellipsis: float = 0.3,
-        duplicate_line_fraction: float = 0.3,
-        duplicate_paragraph_fraction: float = 0.3,
+        duplicate_line_fraction: float = 0.5,
+        duplicate_paragraph_fraction: float = 0.5,
         duplicate_lines_chr_fraction: float = 0.2,
         duplicate_paragraph_chr_fraction: float = 0.2,
         top_ngram_chr_fraction_thresholds: List[float] = [0.20, 0.18, 0.16],
@@ -415,11 +420,13 @@ class QualityFilter:
             bool: A boolean indicator of whether the text passed the filter.
         """
         w_len = 0
+        n_words = 0
         for t in doc:
             if t.is_space or t.is_punct:
                 continue
             w_len += len(t)
-        mwl = w_len / doc._.len
+            n_words += 1
+        mwl = w_len / n_words
         return mean_word_length[0] <= mwl <= mean_word_length[1]
 
     @staticmethod
@@ -507,7 +514,7 @@ class QualityFilter:
         return False
 
     @staticmethod
-    def stop_word(doc: Doc, n: int, stop_words: set) -> bool:
+    def stop_word(doc: Doc, n: int) -> bool:
         """
         A "stop word" filter, to remove documents that do not contain at least {n} of
         the {stop_words}. This adequately deals with documents that contain no
