@@ -149,5 +149,7 @@ wandb/*
 models/*
 
 
-
-
+# RProg
+*.Rproj
+*.Rproj.user
+.Rproj.user
