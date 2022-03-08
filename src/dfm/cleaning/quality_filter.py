@@ -118,8 +118,11 @@ def set_dynamic_ext(
 
 class QualityFilter:
     """
-    Danish implementation of quality filter described in (Rae et al., 2021). With some 
-    notable changes (see args).
+    Danish implementation of quality filter described in (Rae et al., 2021). With some
+    notable changes include removing duplicate line fraction as these typically would
+    either also be filtered by the duplicate line chr. fraction (similar for duplicate
+    paragraph fraction) or be false positive which could contain shorter lists with
+    duplicate values. see addtional changes in arguments description.
 
     Args:
         min_stop_words (int, optional): The least amount of stop words a text
@@ -130,7 +133,8 @@ class QualityFilter:
             documents length. Defaults to [50, 100_000].
         alpha_ratio (float, optional): the percentage of spacy tokens in this document
             which should contain alphabetic character. Defaults to 0.5, changed from 0.8
-            in [1], estimated from Danish Gigaword.
+            in [1], estimated from Danish Gigaword. Likely both due to the spaCy
+            tokenizer and the relatively fewer words in languages using compound words.
         symbol_2_word_ellipsis (float, optional): The highest acceptable ratio of
             ellipsis to words. Defaults to 0.1.
         symbol_2_word_hashtag (float, optional): The highest acceptable ratio of
@@ -139,12 +143,6 @@ class QualityFilter:
             with a bulletpoint. Defaults to 0.9.
         max_p_end_ellipsis (float, optional): Maximum number of lines which ends
             with an ellipsis. Defaults to 0.3.
-        duplicate_line_fraction (float, optional): Max fraction of duplicate lines.
-            Defaults to 0.5. Changed from 0.3 to avoid filtering text with a
-            few duplicate paragraphs from e.g. listings.
-        duplicate_paragraph_fraction (float, optional): Max fraction of duplicate
-            paragraphs. Defaults to 0.5. Changed from 0.3 to avoid filtering text with a
-            few duplicate paragraphs from e.g. listings.
         duplicate_lines_chr_fraction (float, optional): Max fraction of characters which
             is a part of a duplicate line. Defaults to 0.2
         duplicate_paragraph_chr_fraction (float, optional): Max fraction of characters
@@ -158,13 +156,15 @@ class QualityFilter:
             check for top_ngram_chr_fraction_thresholds. Defaults to (2, 4).
         min_count (int): Minimum count of n-grams. Ignores n-grams below this
             threshold. This is to avoid filtering text with very large n-grams,
-            which happens in legal text or languages with compound words. This is an 
+            which happens in legal text or languages with compound words. This is an
             extention to the existing filtering.
         duplicate_n_gram_fraction_thresholds (List[float], optional): The character
-            fraction thresholds. Defaults to [0.15, 0.14, 0.13, 0.12, 0.11, 0.10],
-            which for example denote that the any text with duplicate 5 grams
-            constituting more than 15% of the text characters is filtered, 14% for
-            6-grams and so on.
+            fraction thresholds. Defaults to [0.02, 0.20, 0.20, 0.20, 0.20, 0.20],
+            changed from [0.15, 0.14, 0.13, 0.12, 0.11, 0.10], which for example denote
+            that the any text with duplicate 5 grams constituting more than 15% of the
+            text characters is filtered, 14% for 6-grams and so on. The reason for the
+            change is that seemingly valid text where still excluded, especially in the
+            n-gram included compound words and thus where longer.
         duplicate_n_gram_fraction_range (Tuple[int, int], optional): The n-gram range.
             Defaults to (5, 11).
         max_length (int, optional): max_length in characters. Defaults to 5_000_000
@@ -181,20 +181,18 @@ class QualityFilter:
         symbol_2_word_ellipsis: float = 0.1,
         max_p_begin_bullets: float = 0.9,
         max_p_end_ellipsis: float = 0.3,
-        duplicate_line_fraction: float = 0.5,
-        duplicate_paragraph_fraction: float = 0.5,
         duplicate_lines_chr_fraction: float = 0.2,
         duplicate_paragraph_chr_fraction: float = 0.2,
         top_ngram_chr_fraction_thresholds: List[float] = [0.20, 0.18, 0.16],
         top_ngram_chr_fraction_range: Tuple[int, int] = (2, 4),
         top_ngram_min_count: int = 3,
         duplicate_n_gram_fraction_thresholds: List[float] = [
-            0.17,
-            0.16,
-            0.15,
-            0.14,
-            0.13,
-            0.12,
+            0.20,
+            0.20,
+            0.20,
+            0.20,
+            0.20,
+            0.20,
         ],
         duplicate_n_gram_fraction_range: Tuple[int, int] = (5, 10),
         max_length: int = 5_000_000,
@@ -224,12 +222,6 @@ class QualityFilter:
                 self.line_bullets_or_ellipsis,
                 max_p_bullets=max_p_begin_bullets,
                 max_p_ellipsis=max_p_end_ellipsis,
-            ),
-            "duplicate_line_fraction": partial(
-                self.duplicate_line_filter, fraction=duplicate_line_fraction
-            ),
-            "duplicate_paragraph_fraction": partial(
-                self.duplicate_paragraph_filter, fraction=duplicate_paragraph_fraction
             ),
             "duplicate_lines_chr_fraction": partial(
                 self.duplicate_lines_chr_filter, fraction=duplicate_lines_chr_fraction
