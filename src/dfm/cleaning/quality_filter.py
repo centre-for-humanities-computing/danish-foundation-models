@@ -125,8 +125,8 @@ class QualityFilter:
         duplicate_line_fraction (float, optional): Max fraction of duplicate lines. Defaults to 0.3.
         duplicate_paragraph_fraction (float, optional): Max fraction of duplicate
             paragraphs. Defaults to 0.3.
-        duplicate_lines_chr_fraction (float, optional): Max fraction of character which
-            is a part of a duplicate line
+        duplicate_lines_chr_fraction (float, optional): Max fraction of characters which
+            is a part of a duplicate line. Defaults to 0.2
         duplicate_paragraph_chr_fraction (float, optional): Max fraction of character
             which is a part of a duplicate paragraph
         top_ngram_chr_fraction_thresholds: The maximum fraction of characters which is a
