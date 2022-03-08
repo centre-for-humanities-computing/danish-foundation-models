@@ -121,8 +121,6 @@ class QualityFilter:
     Danish implementation of quality filter described in (Rae et al., 2021).
 
     Args:
-        stop_words (Optional[Set[str]], optional): A set of stop words to use.
-            Defaults to None.
         min_stop_words (int, optional): The least amount of stop words a text
             should have before it is kept. Defaults to 2.
         mean_word_length (Tuple[int, int], optional): Upper and lower bound on the
@@ -167,7 +165,6 @@ class QualityFilter:
 
     def __init__(
         self,
-        stop_words: Optional[Set[str]] = None,
         min_stop_words: int = 2,
         mean_word_length: Tuple[int, int] = (3, 10),
         doc_length: Tuple[int, int] = (50, 100_000),
@@ -194,35 +191,7 @@ class QualityFilter:
         max_length: int = 5_000_000,
         string_filter: Optional[str] = None,
     ):
-        if stop_words is None:
-            stop_words = set(
-                [
-                    "er",
-                    "jeg",
-                    "det",
-                    "du",
-                    "ikke",
-                    "at",
-                    "en",
-                    "og",
-                    "har",
-                    "vi",
-                    "til",
-                    "på",
-                    "hvad",
-                    "mig",
-                    "med",
-                    "de",
-                    "for",
-                    "den",
-                    "så",
-                    "der",
-                    "dig",
-                    "han",
-                    "kan",
-                    "af",
-                ]
-            )
+
 
         self.nlp = spacy.blank("da")
 
@@ -237,7 +206,7 @@ class QualityFilter:
             ),
             "alpha_ratio": partial(self.alpha, ratio=alpha_ratio),
             "stop_word": partial(
-                self.stop_word, stop_words=stop_words, n=min_stop_words
+                self.stop_word, n=min_stop_words
             ),
             "symbol_2_word_hashtag": partial(
                 self.symbol_2_word, ratio=symbol_2_word_hashtag, symbol="#"
@@ -552,7 +521,7 @@ class QualityFilter:
         """
         n_stopwords = 0
         for t in doc:
-            if t.text in stop_words:
+            if t.is_stop:
                 n_stopwords += 1
                 if n_stopwords >= n:
                     return True
