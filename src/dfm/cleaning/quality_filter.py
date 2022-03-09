@@ -130,9 +130,11 @@ class QualityFilter:
         mean_word_length (Tuple[int, int], optional): Upper and lower bound on the
             mean word length. Defaults to (3, 10).
         doc_length (Tuple[int, int], optional): Upper and lower bound on the
-            documents length. Defaults to [50, 100_000].
+            documents length. Defaults to (50, 100_000). The 50 words threshold is
+            quite high filtering texts in general, but for filtering text for e.g.
+            language modelling it ensures longer dependencies.
         alpha_ratio (float, optional): the percentage of spacy tokens in this document
-            which should contain alphabetic character. Defaults to 0.5, changed from 0.8
+            which should contain alphabetic character. Defaults to 0.6, changed from 0.8
             in [1], estimated from Danish Gigaword. Likely both due to the spaCy
             tokenizer and the relatively fewer words in languages using compound words.
         symbol_2_word_ellipsis (float, optional): The highest acceptable ratio of
@@ -143,6 +145,10 @@ class QualityFilter:
             with a bulletpoint. Defaults to 0.9.
         max_p_end_ellipsis (float, optional): Maximum number of lines which ends
             with an ellipsis. Defaults to 0.3.
+        min_bullets (int): Minimum number of bullets there should be before the text
+                is filtered. An addition from [1].
+        min_ellipsis (int): Minimum number of ellipsis there should be before the text
+                is filtered. An addition from [1].
         duplicate_lines_chr_fraction (float, optional): Max fraction of characters which
             is a part of a duplicate line. Defaults to 0.2
         duplicate_paragraph_chr_fraction (float, optional): Max fraction of characters
@@ -159,7 +165,7 @@ class QualityFilter:
             which happens in legal text or languages with compound words. This is an
             extention to the existing filtering.
         duplicate_n_gram_fraction_thresholds (List[float], optional): The character
-            fraction thresholds. Defaults to [0.02, 0.20, 0.20, 0.20, 0.20, 0.20],
+            fraction thresholds. Defaults to [0.25, 0.24, 0.23, 0.22, 0.21, 0.20],
             changed from [0.15, 0.14, 0.13, 0.12, 0.11, 0.10], which for example denote
             that the any text with duplicate 5 grams constituting more than 15% of the
             text characters is filtered, 14% for 6-grams and so on. The reason for the
@@ -176,22 +182,24 @@ class QualityFilter:
         min_stop_words: int = 2,
         mean_word_length: Tuple[int, int] = (3, 10),
         doc_length: Tuple[int, int] = (50, 100_000),
-        alpha_ratio: float = 0.5,
+        alpha_ratio: float = 0.6,
         symbol_2_word_hashtag: float = 0.1,
         symbol_2_word_ellipsis: float = 0.1,
         max_p_begin_bullets: float = 0.9,
         max_p_end_ellipsis: float = 0.3,
+        min_bullets: int = 2,
+        min_ellipsis: int = 2,
         duplicate_lines_chr_fraction: float = 0.2,
         duplicate_paragraph_chr_fraction: float = 0.2,
         top_ngram_chr_fraction_thresholds: List[float] = [0.20, 0.18, 0.16],
         top_ngram_chr_fraction_range: Tuple[int, int] = (2, 4),
         top_ngram_min_count: int = 3,
         duplicate_n_gram_fraction_thresholds: List[float] = [
-            0.20,
-            0.20,
-            0.20,
-            0.20,
-            0.20,
+            0.25,
+            0.24,
+            0.23,
+            0.22,
+            0.21,
             0.20,
         ],
         duplicate_n_gram_fraction_range: Tuple[int, int] = (5, 10),
@@ -222,6 +230,8 @@ class QualityFilter:
                 self.line_bullets_or_ellipsis,
                 max_p_bullets=max_p_begin_bullets,
                 max_p_ellipsis=max_p_end_ellipsis,
+                min_bullets=min_bullets,
+                min_ellipsis=min_ellipsis,
             ),
             "duplicate_lines_chr_fraction": partial(
                 self.duplicate_lines_chr_filter, fraction=duplicate_lines_chr_fraction
@@ -260,6 +270,10 @@ class QualityFilter:
         times."""
         # getters for quality filters
         set_dynamic_ext("len", func=lambda doc: len(doc))
+        set_dynamic_ext(
+            "n_words",
+            func=lambda doc: len([t for t in doc if not (t.is_space or t.is_punct)]),
+        )
 
         # getter for rep. text filters
         set_dynamic_ext("lines", func=lambda doc: doc.text.split("\n"))
@@ -374,7 +388,7 @@ class QualityFilter:
                 if is_filtered is not None:
                     yield is_filtered
                 else:
-                    yield "None"
+                    yield "Not filtered"
             except ValueError:  # max length exceeded
                 yield "max_chr_length"
                 docs = self.nlp.pipe(texts)
@@ -395,7 +409,7 @@ class QualityFilter:
         Returns:
             bool: A boolean indicator of whether the text passed the filter.
         """
-        return doc_length[0] <= doc._.len <= doc_length[1]
+        return doc_length[0] <= doc._.n_words <= doc_length[1]
 
     @staticmethod
     def mean_word_length(doc: Doc, mean_word_length: Tuple[int, int]) -> bool:
@@ -417,8 +431,7 @@ class QualityFilter:
             if t.is_space or t.is_punct:
                 continue
             w_len += len(t)
-            n_words += 1
-        mwl = w_len / n_words
+        mwl = w_len / doc._.n_words
         return mean_word_length[0] <= mwl <= mean_word_length[1]
 
     @staticmethod
@@ -442,17 +455,17 @@ class QualityFilter:
             return False
 
         # min number of word to satisfy the ratio
-        min_alpha_token = int(doc._.len * ratio)
+        min_alpha_token = int(doc._.n_words * ratio)
 
         n_alpha_tokens = 0
         for t in doc:
-            if t.is_space:
+            if t.is_space or t.is_punct:
                 continue
             # checks if a non-space token contains a alphabetic character
             if contains_alpha_fn(t.text):
                 n_alpha_tokens += 1
-                if n_alpha_tokens >= min_alpha_token:
-                    return True
+            if n_alpha_tokens >= min_alpha_token:
+                return True
         return False
 
     @staticmethod
@@ -470,12 +483,16 @@ class QualityFilter:
             bool: A boolean indicator of whether the text passed the filter.
         """
         n_symbol = doc.text.count(symbol)
-        ratio_ = n_symbol / doc._.len
+        ratio_ = n_symbol / doc._.n_words
         return ratio_ < ratio
 
     @staticmethod
     def line_bullets_or_ellipsis(
-        doc: Doc, max_p_bullets: float, max_p_ellipsis: float
+        doc: Doc,
+        max_p_bullets: float,
+        max_p_ellipsis: float,
+        min_bullets: int,
+        min_ellipsis: int,
     ) -> bool:
         """
         A filter that remove any document with more than {max_p_bullets}% of lines
@@ -487,6 +504,10 @@ class QualityFilter:
             max_p_bullets (float): Maximum percentage of lines starting with a bullet
                 point
             max_p_ellipsis (float): Maximum percentage of lines ending with an ellipsis
+            min_bullets (int): Minimum number of bullets there should be before the text
+                is filtered
+            min_ellipsis (int): Minimum number of ellipsis there should be before the text
+                is filtered
 
         Returns:
             bool: A boolean indicator of whether the text passed the filter.
@@ -497,12 +518,14 @@ class QualityFilter:
                 1 for line in lines if line.strip(" ").startswith(("-", "*"))
             )
             n_lines = len(lines)
-            if (n_bullets / n_lines) > max_p_bullets:
+            if (n_bullets / n_lines) > max_p_bullets and n_bullets > min_bullets:
                 return False
             n_ellipsis = sum(
                 1 for line in lines if line.strip(" ").endswith(("…", "..."))
             )
-            return (n_ellipsis / n_lines) < max_p_ellipsis
+            if (n_ellipsis / n_lines) > max_p_ellipsis and n_ellipsis > min_ellipsis:
+                return False
+            return True
         return False
 
     @staticmethod
@@ -695,3 +718,6 @@ class QualityFilter:
             bool: A boolean indicator of whether the text passed the filter.
         """
         return doc._.duplicate_lines_fraction < fraction
+
+
+# *** Time taken to filter DAGW with 10 cores: 23077 sec ***
