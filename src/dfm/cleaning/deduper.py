@@ -483,12 +483,16 @@ class Deduper:
                 # Iterate over the batches
                 for batch in pbar:
 
+                    # Create a copy of the batch to ensure that we're not
+                    # modifying the original
+                    batch, batch_copy = it.tee(batch)
+
                     # Compute the fingerprint for the document
                     with tqdm(batch, total=self.batch_size, leave=False) as pb:
                         minhashes = parallel(fn(doc) for _, doc in pb)
 
                     # Iterate over the minhashes
-                    for (doc_idx, doc), minhash in zip(batch, minhashes):
+                    for (doc_idx, doc), minhash in zip(batch_copy, minhashes):
 
                         # If the document is not a near-duplicate candidate then
                         # store in the LSH cache and append it to the JSONL output
