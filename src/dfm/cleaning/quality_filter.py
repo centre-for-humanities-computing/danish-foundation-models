@@ -376,7 +376,7 @@ class QualityFilter:
 
         Yields:
             Iterable: An Iterable strings of which filter was applied to the document
-                "None" indicate not filtered.
+                ""passed filters"" indicate not filtered.
         """
         texts = iter(texts)
         docs = self.nlp.pipe(texts, **kwargs)
@@ -388,7 +388,7 @@ class QualityFilter:
                 if is_filtered is not None:
                     yield is_filtered
                 else:
-                    yield "Not filtered"
+                    yield "passed filters"
             except ValueError:  # max length exceeded
                 yield "max_chr_length"
                 docs = self.nlp.pipe(texts)
