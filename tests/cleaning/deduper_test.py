@@ -36,10 +36,12 @@ def identity_fn(doc: str) -> str:
 class TestDeduper:
     @pytest.fixture(scope="class")
     def shingle_params(self):
-        yield dict(normalization_func=normalization_func,
-                   split=method='word_ngram',
-                   num_minhashes=128,
-                   random_seed=42)
+        yield dict(
+            normalization_func=normalization_func,
+            split_method="word_ngram",
+            num_minhashes=128,
+            random_seed=42,
+        )
 
     def deduper(self, **kwargs):
         default_test_args = dict(ngram_size=1, random_seed=42, verbose=False)
@@ -165,24 +167,21 @@ class TestDeduper:
         assert miss <= 30
 
     def test_2_ngram_shingles(self, shingle_params):
-        shingles = get_shingles("Hej med dig Kim",
-                                ngram_size=2,
-                                ngram_stride=1,
-                                **shingle_params)
+        shingles = get_shingles(
+            "Hej med dig Kim", ngram_size=2, ngram_stride=1, **shingle_params
+        )
         assert shingles == ["Hej med", "med dig", "dig Kim"]
 
     def test_3_ngram_shingles(self, shingle_params):
-        shingles = get_shingles("Hej med dig Kim",
-                                ngram_size=3,
-                                ngram_stride=1,
-                                **shingle_params)
+        shingles = get_shingles(
+            "Hej med dig Kim", ngram_size=3, ngram_stride=1, **shingle_params
+        )
         assert shingles == ["Hej med dig", "med dig Kim"]
 
     def test_double_stride_shingles(self, shingle_params):
-        shingles = get_shingles("Hej med dig Kim",
-                                ngram_size=1,
-                                ngram_stride=2,
-                                **shingle_params)
+        shingles = get_shingles(
+            "Hej med dig Kim", ngram_size=1, ngram_stride=2, **shingle_params
+        )
         assert shingles == ["Hej", "dig"]
 
     def test_get_config(self):
