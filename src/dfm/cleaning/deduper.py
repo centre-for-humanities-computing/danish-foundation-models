@@ -252,11 +252,7 @@ class Deduper:
         # If the corpus is a Dataset or IterableDataset then convert it to an
         # iterable of tuples
         if isinstance(corpus, Dataset) or isinstance(corpus, IterableDataset):
-            corpus = (
-                (sample["id"], sample["text"])
-                for sample in corpus
-                if sample["id"] not in [i for i, _ in self.mask]
-            )
+            corpus = ((sample["id"], sample["text"]) for sample in corpus)
 
         # Otherwise we check if the corpus is an iterable of dictionaries, in
         # which case we also convert it to an iterable of tuples
@@ -270,11 +266,7 @@ class Deduper:
             # If the first element of the corpus is a dictionary then we
             # convert the corpus to an iterable of tuples
             if isinstance(sample, dict):
-                corpus = (
-                    (sample["id"], sample["text"])
-                    for sample in corpus
-                    if sample["id"] not in [i for i, _ in self.mask]
-                )
+                corpus = ((sample["id"], sample["text"]) for sample in corpus)
 
         # Ensure that `output_dir` is a Path object
         output_dir = Path(output_dir)
