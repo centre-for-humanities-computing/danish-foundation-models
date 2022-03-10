@@ -12,15 +12,13 @@ References:
         (Cat. No. 97TB100171). IEEE, 1997.
 """
 
-from datasketch import MinHash, LeanMinHash, MinHashLSH
+from datasketch import MinHashLSH
 from datasets.arrow_dataset import Dataset
 from datasets.iterable_dataset import IterableDataset
-from typing import Union, Iterable, Optional, List, Callable, Dict, Tuple
+from typing import Union, Iterable, Optional, Callable, Dict, Tuple
 from pathlib import Path
 import shutil
 import json
-from unicodedata import normalize
-import re
 from tqdm.auto import tqdm
 import itertools as it
 import more_itertools as mit
@@ -28,98 +26,7 @@ from joblib import Parallel, delayed
 import multiprocessing as mp
 import pickle
 from functools import partial
-
-
-def _get_shingles(doc: str,
-                  normalization_func: Callable,
-                  split_method: str,
-                  ngram_size: int) -> List[str]:
-    """Extracts the shingles from a document.
-
-    Args:
-        doc (str):
-            The document to extract the shingles from.
-
-    Returns:
-        list of str:
-            The shingles extracted from the document.
-
-    Raises:
-        ValueError:
-            If `split_method` is not 'word_ngram', 'paragraph', 'none'
-            or None.
-    """
-    # Normalise document
-    doc = normalization_func(doc)
-
-    # Extract shingles from the document, depending on the `split_method`
-    if split_method == "word_ngram":
-        words = [word for word in doc.split(" ") if len(word) > 0]
-        max_word_idx = 1 + len(words) - ngram_size
-        shingles = [
-            " ".join(words[i : i + ngram_size]).strip()
-            for i in range(0, max_word_idx, ngram_stride)
-        ] or [doc]
-    elif split_method == "paragraph":
-        shingles = [p for p in doc.split("\n") if len(p) > 0]
-    elif split_method == "none" or split_method is None:
-        shingles = [doc]
-    else:
-        raise ValueError(f"Invalid split method: {split_method}")
-
-    return shingles
-
-def _get_minhash(doc: str,
-                 normalization_func: Callable,
-                 split_method: str,
-                 ngram_size: int,
-                 num_minhashes: int,
-                 random_seed: int) -> LeanMinHash:
-    """Returns a minhash fingerprint for the given document.
-
-    Args:
-        doc (str): The document to create the MinHash object for.
-
-    Returns:
-        LeanMinHash: The minhash fingerprint for the given document.
-
-    Raises:
-        ValueError:
-            If `split_method` is not 'word_ngram', 'paragraph', 'none'
-            or None.
-    """
-    # Extract shingles from the document, depending on the `split_method`
-    shingles = _get_shingles(doc,
-                             normalization_func=normalization_func,
-                             split_method=split_method,
-                             ngram_size=ngram_size)
-
-    # Initialise the fingerprint
-    minhash = MinHash(num_perm=num_minhashes, seed=random_seed)
-
-    # Add all the shingles to the fingerprint
-    minhash.update_batch([shingle.encode("utf-8") for shingle in shingles])
-
-    # Convert the fingerprint to a LeanMinHash fingerprint, to save memory
-    # and increase performance
-    minhash = LeanMinHash(minhash, seed=random_seed)
-
-    # Return the fingerprint
-    return minhash
-
-
-def _default_normalization(doc: str) -> str:
-    """NFKC normalise document and remove punctuation
-
-    Args:
-        doc (str): The document to normalize.
-
-    Returns:
-        str: The normalized document.
-    """
-    doc = normalize("NFKC", doc)
-    doc = re.sub(r"[\.\,\:\;\!\?\(\)\[\]\{\}]", " ", doc)
-    return re.sub(" +", " ", doc)
+from .deduper_utils import get_minhash, default_normalization
 
 
 class Deduper:
@@ -187,7 +94,7 @@ class Deduper:
         batch_size: Optional[int] = None,
         n_jobs: int = -1,
         random_seed: int = 42,
-        normalization_func: Callable[[str], str] = _default_normalization,
+        normalization_func: Callable[[str], str] = default_normalization,
         verbose: bool = True,
     ):
         self.split_method = "none" if split_method is None else split_method
@@ -286,72 +193,6 @@ class Deduper:
             verbose=self.verbose,
         )
         return config
-
-    def _get_shingles(self, doc: str) -> List[str]:
-        """Extracts the shingles from a document.
-
-        Args:
-            doc (str):
-                The document to extract the shingles from.
-
-        Returns:
-            list of str:
-                The shingles extracted from the document.
-
-        Raises:
-            ValueError:
-                If `self.split_method` is not 'word_ngram', 'paragraph', 'none'
-                or None.
-        """
-        # Normalise document
-        doc = self.normalization_func(doc)
-
-        # Extract shingles from the document, depending on the `split_method`
-        if self.split_method == "word_ngram":
-            words = [word for word in doc.split(" ") if len(word) > 0]
-            max_word_idx = 1 + len(words) - self.ngram_size
-            shingles = [
-                " ".join(words[i : i + self.ngram_size]).strip()
-                for i in range(0, max_word_idx, self.ngram_stride)
-            ] or [doc]
-        elif self.split_method == "paragraph":
-            shingles = [p for p in doc.split("\n") if len(p) > 0]
-        elif self.split_method == "none" or self.split_method is None:
-            shingles = [doc]
-        else:
-            raise ValueError(f"Invalid split method: {self.split_method}")
-
-        return shingles
-
-    def _get_minhash(self, doc: str) -> LeanMinHash:
-        """Returns a minhash fingerprint for the given document.
-
-        Args:
-            doc (str): The document to create the MinHash object for.
-
-        Returns:
-            LeanMinHash: The minhash fingerprint for the given document.
-
-        Raises:
-            ValueError:
-                If `self.split_method` is not 'word_ngram', 'paragraph', 'none'
-                or None.
-        """
-        # Extract shingles from the document, depending on the `split_method`
-        shingles = self._get_shingles(doc)
-
-        # Initialise the fingerprint
-        minhash = MinHash(num_perm=self.num_minhashes, seed=self.random_seed)
-
-        # Add all the shingles to the fingerprint
-        minhash.update_batch([shingle.encode("utf-8") for shingle in shingles])
-
-        # Convert the fingerprint to a LeanMinHash fingerprint, to save memory
-        # and increase performance
-        minhash = LeanMinHash(minhash, seed=self.random_seed)
-
-        # Return the fingerprint
-        return minhash
 
     def _store_document(self, output_path: Union[str, Path], **kwargs):
         """Appends the document to a JSONL file.
@@ -473,7 +314,7 @@ class Deduper:
 
             # Initialise the multiprocessing
             with Parallel(n_jobs=self.n_jobs) as parallel:
-                fn = delayed(partial(_get_minhash,
+                fn = delayed(partial(get_minhash,
                                      normalization_func=self.normalization_func,
                                      split_method=self.split_method,
                                      ngram_size=self.ngram_size,
