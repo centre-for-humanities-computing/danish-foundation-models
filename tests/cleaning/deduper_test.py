@@ -36,10 +36,7 @@ def identity_fn(doc: str) -> str:
 class TestDeduper:
     @pytest.fixture(scope="class")
     def shingle_params(self):
-        yield dict(
-            normalization_func=default_normalization,
-            split_method="word_ngram"
-        )
+        yield dict(normalization_func=default_normalization, split_method="word_ngram")
 
     def deduper(self, **kwargs):
         default_test_args = dict(ngram_size=1, random_seed=42, verbose=False)
