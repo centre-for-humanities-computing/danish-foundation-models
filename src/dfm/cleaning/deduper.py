@@ -300,7 +300,10 @@ class Deduper:
         duplicates = 0
         num_processed = 0
         pbar_params = dict(
-            desc="Deduplicating", total=num_docs, disable=(not self.verbose)
+            desc="Deduplicating",
+            total=num_docs,
+            disable=(not self.verbose),
+            leave=False
         )
         with tqdm(batches, **pbar_params) as pbar:
 
@@ -380,7 +383,7 @@ class Deduper:
                     num_processed = new_num_processed
 
                     # Update the progress bar
-                    pbar.update(min(num_docs - pbar.n, batch_size))
+                    pbar.update(batch_size)
                     pct_duplicated = 100 * duplicates / num_processed
                     desc = f"Deduplicating - {pct_duplicated:.2f}% near-duplicates found"
                     pbar.set_description(desc)
