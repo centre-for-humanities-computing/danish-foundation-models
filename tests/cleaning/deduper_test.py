@@ -38,9 +38,7 @@ class TestDeduper:
     def shingle_params(self):
         yield dict(
             normalization_func=default_normalization,
-            split_method="word_ngram",
-            num_minhashes=128,
-            random_seed=42,
+            split_method="word_ngram"
         )
 
     def deduper(self, **kwargs):
