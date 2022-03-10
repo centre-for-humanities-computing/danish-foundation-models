@@ -175,6 +175,12 @@ class QualityFilter:
             Defaults to (5, 11).
         max_length (int, optional): max_length in characters. Defaults to 5_000_000
         string (str, optional): String for filtering. Defaults to None.
+        ignore_filters (List[str], optional): Filters which should be skipped. Options
+            include: "doc_length", "mean_word_length", "alpha_ratio", "stop_word",
+            "symbol_2_word_hashtag", "symbol_2_word_ellipsis",
+            "line_bullets_or_ellipsis", "duplicate_lines_chr_fraction",
+            "duplicate_paragraph_chr_fraction", "top_ngram_chr_fraction",
+            "duplicate_ngram_chr_fraction", "string_filter"
     """
 
     def __init__(
@@ -205,6 +211,7 @@ class QualityFilter:
         duplicate_n_gram_fraction_range: Tuple[int, int] = (5, 10),
         max_length: int = 5_000_000,
         string_filter: Optional[str] = None,
+        ignore_filters: List[str] = [],
     ):
 
         self.nlp = spacy.blank("da")
@@ -257,6 +264,9 @@ class QualityFilter:
             self.filters["string_filter"] = partial(
                 self.string_filter, string=string_filter
             )
+
+        for f in ignore_filters:
+            self.filters.pop(f)
 
         # create a counter for keeping track of how many times the specific filter
         # removed a document
