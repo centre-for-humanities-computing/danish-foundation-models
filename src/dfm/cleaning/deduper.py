@@ -296,6 +296,7 @@ class Deduper:
         corpus: Union[Dataset, IterableDataset, Iterable[str]],
         output_dir: Union[str, Path] = "deduplicated",
         overwrite: bool = False,
+        store_mask: bool = False,
     ):
         """Removes duplicate documents from the corpus and stores it to disk.
 
@@ -308,6 +309,8 @@ class Deduper:
             overwrite (bool, optional):
                 Whether to overwrite the output file if it already exists.
                 Defaults to False.
+            store_mask (bool, optional):
+                Whether to store the mask to disk. Defaults to False.
 
         Raises:
             FileExistsError:
@@ -400,7 +403,8 @@ class Deduper:
                         self.mask.append(mask_entry)
 
                     # Store the Boolean mask to disk
-                    self._store_document(output_path=mask_path, **mask_entry)
+                    if store_mask:
+                        self._store_document(output_path=mask_path, **mask_entry)
 
                 # Get the maximal doc_idx in the batch
                 max_doc_idx = max(doc_idx for doc_idx, _ in batch)
