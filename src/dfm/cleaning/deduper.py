@@ -51,10 +51,8 @@ class Deduper:
             Defaults to 0.8.
         num_minhashes (int, optional):
             The number of MinHash functions to use. Defaults to 128.
-        batch_size (int or None, optional):
-            The number of documents to process at a time. If None then it is
-            set to 100,000 if `split_method` is 'paragraph', 'none' or None,
-            and 10,000 if `split_method` is 'word_ngram'. Defaults to None.
+        batch_size (int, optional):
+            The number of documents to process at a time.  Defaults to 100_000.
         n_jobs (int, optional):
             The number of parallel jobs to use. If set to -1 then all available
             cores are used. Defaults to -1.
@@ -91,7 +89,7 @@ class Deduper:
         ngram_stride: int = 1,
         similarity_threshold: float = 0.8,
         num_minhashes: int = 128,
-        batch_size: Optional[int] = None,
+        batch_size: int = 100_000,
         n_jobs: int = -1,
         random_seed: int = 42,
         normalization_func: Callable[[str], str] = default_normalization,
@@ -102,6 +100,7 @@ class Deduper:
         self.ngram_stride = ngram_stride
         self.similarity_threshold = similarity_threshold
         self.num_minhashes = num_minhashes
+        self.batch_size = batch_size
         self.n_jobs = mp.cpu_count() if n_jobs == -1 else n_jobs
         self.random_seed = random_seed
         self.normalization_func = normalization_func
@@ -110,19 +109,6 @@ class Deduper:
         self.lsh_cache = MinHashLSH(
             threshold=self.similarity_threshold, num_perm=self.num_minhashes
         )
-
-        if batch_size is None:
-            if self.split_method in ["paragraph", "none"] or self.split_method is None:
-                self.batch_size = 100_000
-            elif self.split_method == "word_ngram":
-                self.batch_size = 10_000
-            else:
-                raise ValueError(
-                    f"Invalid split_method: {self.split_method}. "
-                    "Valid values are 'word_ngram', 'paragraph', 'none' and None."
-                )
-        else:
-            self.batch_size = batch_size
 
     def reset(self):
         """Reset the deduplicator, removing the mask and the LSH cache"""
@@ -400,6 +386,7 @@ class Deduper:
 
         # Return final update
         if self.verbose:
+            pct_duplicated = 100 * duplicates / num_docs
             print("Finished deduplicating corpus.")
             print(f"- {num_processed:,} documents processed.")
             print(f"- {pct_duplicated:.2f}% documents marked as duplicates.")
