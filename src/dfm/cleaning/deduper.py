@@ -303,18 +303,22 @@ class Deduper:
             desc="Deduplicating",
             total=num_docs,
             disable=(not self.verbose),
-            leave=False
+            leave=False,
         )
         with tqdm(batches, **pbar_params) as pbar:
 
-            # Initialise the multiprocessing
+            # Initialise the multiprocessing
             with Parallel(n_jobs=self.n_jobs) as parallel:
-                fn = delayed(partial(get_minhash,
-                                     normalization_func=self.normalization_func,
-                                     split_method=self.split_method,
-                                     ngram_size=self.ngram_size,
-                                     num_minhashes=self.num_minhashes,
-                                     random_seed=self.random_seed))
+                fn = delayed(
+                    partial(
+                        get_minhash,
+                        normalization_func=self.normalization_func,
+                        split_method=self.split_method,
+                        ngram_size=self.ngram_size,
+                        num_minhashes=self.num_minhashes,
+                        random_seed=self.random_seed,
+                    )
+                )
 
                 # Iterate over the batches
                 for batch in pbar:
@@ -323,23 +327,23 @@ class Deduper:
                     # modifying the original
                     batch, batch_copy = it.tee(batch)
 
-                    # Compute size of the batch
+                    # Compute size of the batch
                     new_num_processed = num_processed + self.batch_size
                     new_num_processed = min(new_num_processed, num_docs)
                     batch_size = new_num_processed - num_processed
 
                     # Define parameters used in batch progress bars
-                    pbar_params = dict(total=batch_size,
-                                       leave=False,
-                                       disable=(not self.verbose))
+                    pbar_params = dict(
+                        total=batch_size, leave=False, disable=(not self.verbose)
+                    )
 
                     # Compute the fingerprint for the document
-                    pbar_params['desc'] = 'Computing minhashes'
+                    pbar_params["desc"] = "Computing minhashes"
                     with tqdm(batch, **pbar_params) as batch_pbar:
                         minhashes = parallel(fn(doc) for _, doc in batch_pbar)
 
                     # Iterate over the minhashes
-                    pbar_params['desc'] = 'Deduplicating batch'
+                    pbar_params["desc"] = "Deduplicating batch"
                     with tqdm(batch_copy, **pbar_params) as batch_pbar:
                         for (idx, doc), minhash in zip(batch_pbar, minhashes):
 
@@ -354,9 +358,9 @@ class Deduper:
 
                                 # Store the non-duplicate document in the JSONL
                                 # output
-                                self._store_document(id=idx,
-                                                     text=doc,
-                                                     output_path=output_path)
+                                self._store_document(
+                                    id=idx, text=doc, output_path=output_path
+                                )
 
                                 # Add the current document to the Boolean mask
                                 mask_entry = dict(id=idx, duplicate=False)
@@ -373,8 +377,9 @@ class Deduper:
 
                             # Store the Boolean mask to disk
                             if store_mask:
-                                self._store_document(output_path=mask_path,
-                                                     **mask_entry)
+                                self._store_document(
+                                    output_path=mask_path, **mask_entry
+                                )
 
                     # Store the LSH cache to disk
                     with lsh_cache_path.open("wb") as f:
@@ -387,12 +392,14 @@ class Deduper:
                     # Update the progress bar
                     pbar.update(batch_size)
                     pct_duplicated = 100 * duplicates / num_processed
-                    desc = f"Deduplicating - {pct_duplicated:.2f}% near-duplicates found"
+                    desc = (
+                        f"Deduplicating - {pct_duplicated:.2f}% near-duplicates found"
+                    )
                     pbar.set_description(desc)
 
         # Return final update
         if self.verbose:
-            print('Finished deduplicating corpus.')
+            print("Finished deduplicating corpus.")
             print(f"- {num_processed:,} documents processed.")
             print(f"- {pct_duplicated:.2f}% documents marked as duplicates.")
 
@@ -420,7 +427,7 @@ if __name__ == "__main__":
         "DDSC/partial-danish-gigaword-no-twitter",
         streaming=args.streaming,
         split="train",
-    ).rename_column('doc_id', 'id')
+    ).rename_column("doc_id", "id")
 
     #  Deduplicate the test dataset
     deduper = Deduper(split_method=args.split_method, n_jobs=args.n_jobs)
