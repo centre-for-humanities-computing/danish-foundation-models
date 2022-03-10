@@ -376,11 +376,15 @@ class Deduper:
                     with lsh_cache_path.open("wb") as f:
                         pickle.dump(self.lsh_cache, f)
 
-                    # Update the number of documents processed
-                    num_processed += self.batch_size
+                    # Update the number of documents processed, and compute the
+                    # number of documents in the batch
+                    new_num_processed = num_processed + self.batch_size
+                    new_num_processed = min(new_num_processed, num_docs)
+                    batch_size = new_num_processed - num_processed
+                    num_processed = new_num_processed
 
                     # Update the progress bar
-                    pbar.update(self.batch_size)
+                    pbar.update(batch_size)
                     pct_duplicated = 100 * duplicates / num_processed
                     desc = f"Deduplicating - {pct_duplicated:.2f}% near-duplicates found"
                     pbar.set_description(desc)
