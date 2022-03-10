@@ -424,4 +424,4 @@ if __name__ == "__main__":
     # *** Time taken to deduplicate DAGW with 16 cores, by `split_method` ***
     #   - 'none': ~3.5 minutes (found 24.75% duplicates)
     #   - 'paragraph': ~4 minutes (found 25.83% duplicates)
-    #   - 'word_ngram' with n == 13: ~16 minutes (found 31.49% duplicates)
+    #   - 'word_ngram' with n == 13: ~10 minutes (found 25.77% duplicates)

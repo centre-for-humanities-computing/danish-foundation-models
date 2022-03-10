@@ -1,11 +1,12 @@
 """Tests for the deduplication module"""
 
 from dfm.cleaning import Deduper
-from dfm.cleaning.deduper_utils import get_shingles
+from dfm.cleaning.deduper_utils import get_shingles, normalization_func
 import tempfile
 from pathlib import Path
 import json
 import re
+import pytest
 
 
 def word_shape(doc: str) -> str:
@@ -33,6 +34,13 @@ def identity_fn(doc: str) -> str:
 
 
 class TestDeduper:
+    @pytest.fixture(scope="class")
+    def shingle_params(self):
+        yield dict(normalization_func=normalization_func,
+                   split=method='word_ngram',
+                   num_minhashes=128,
+                   random_seed=42)
+
     def deduper(self, **kwargs):
         default_test_args = dict(ngram_size=1, random_seed=42, verbose=False)
         return Deduper(**dict(default_test_args, **kwargs))
@@ -156,16 +164,25 @@ class TestDeduper:
         assert miss >= 20
         assert miss <= 30
 
-    def test_2_ngram_shingles(self):
-        shingles = get_shingles("Hej med dig Kim", ngram_size=2)
+    def test_2_ngram_shingles(self, shingle_params):
+        shingles = get_shingles("Hej med dig Kim",
+                                ngram_size=2,
+                                ngram_stride=1,
+                                **shingle_params)
         assert shingles == ["Hej med", "med dig", "dig Kim"]
 
-    def test_3_ngram_shingles(self):
-        shingles = get_shingles("Hej med dig Kim", ngram_size=3)
+    def test_3_ngram_shingles(self, shingle_params):
+        shingles = get_shingles("Hej med dig Kim",
+                                ngram_size=3,
+                                ngram_stride=1,
+                                **shingle_params)
         assert shingles == ["Hej med dig", "med dig Kim"]
 
-    def test_double_stride_shingles(self):
-        shingles = get_shingles("Hej med dig Kim", ngram_size=1, ngram_stride=2)
+    def test_double_stride_shingles(self, shingle_params):
+        shingles = get_shingles("Hej med dig Kim",
+                                ngram_size=1,
+                                ngram_stride=2,
+                                **shingle_params)
         assert shingles == ["Hej", "dig"]
 
     def test_get_config(self):
