@@ -315,6 +315,7 @@ class Deduper:
                         normalization_func=self.normalization_func,
                         split_method=self.split_method,
                         ngram_size=self.ngram_size,
+                        ngram_stride=self.ngram_stride,
                         num_minhashes=self.num_minhashes,
                         random_seed=self.random_seed,
                     )
