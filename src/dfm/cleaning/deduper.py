@@ -460,7 +460,7 @@ class Deduper:
             pickle.dump(config, f)
 
         #  Split the corpus into batches of `self.batch_size` documents
-        batches = ichunked(corpus, self.batch_size)
+        batches = mit.ichunked(corpus, self.batch_size)
 
         # Iterate over the corpus and store documents that are not duplicates
         duplicates = 0
