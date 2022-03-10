@@ -387,6 +387,7 @@ class Deduper:
 
         # Iterate over the corpus and store documents that are not duplicates
         duplicates = 0
+        num_processed = 0
         pbar_params = dict(
             desc="Deduplicating", total=num_docs, disable=(not self.verbose)
         )
@@ -435,12 +436,12 @@ class Deduper:
                     if store_mask:
                         self._store_document(output_path=mask_path, **mask_entry)
 
-                # Get the maximal doc_idx in the batch
-                max_doc_idx = max(doc_idx for doc_idx, _ in batch)
+                # Update the number of documents processed
+                num_processed += len(batch)
 
                 # Update the progress bar
                 pbar.update(len(batch))
-                pct_duplicated = 100 * duplicates / (1 + max_doc_idx)
+                pct_duplicated = 100 * duplicates / num_processed
                 desc = f"Deduplicating - {pct_duplicated:.2f}% near-duplicates found"
                 pbar.set_description(desc)
 
