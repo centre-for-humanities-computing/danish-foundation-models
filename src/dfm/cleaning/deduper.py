@@ -461,14 +461,14 @@ if __name__ == "__main__":
 
     # Remove the deduplicated corpus if it already exists
     if output_dir.exists():
-        output_dir.unlink()
+        shutil.rmtree(output_dir)
 
     # Load the test dataset
     corpus = load_dataset(
         "DDSC/partial-danish-gigaword-no-twitter",
         streaming=args.streaming,
         split="train",
-    )
+    ).rename_column('doc_id', 'id')
 
     #  Deduplicate the test dataset
     deduper = Deduper(split_method=args.split_method, n_jobs=args.n_jobs)
