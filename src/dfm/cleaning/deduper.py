@@ -53,8 +53,8 @@ class Deduper:
             The number of MinHash functions to use. Defaults to 128.
         batch_size (int or None, optional):
             The number of documents to process at a time. If None then it is
-            set to 10,000 if `split_method` is 'paragraph', 'none' or None,
-            and 1,000 if `split_method` is 'word_ngram'. Defaults to None.
+            set to 100,000 if `split_method` is 'paragraph', 'none' or None,
+            and 10,000 if `split_method` is 'word_ngram'. Defaults to None.
         n_jobs (int, optional):
             The number of parallel jobs to use. If set to -1 then all available
             cores are used. Defaults to -1.
@@ -113,9 +113,9 @@ class Deduper:
 
         if batch_size is None:
             if self.split_method in ["paragraph", "none"] or self.split_method is None:
-                self.batch_size = 10_000
+                self.batch_size = 100_000
             elif self.split_method == "word_ngram":
-                self.batch_size = 1_000
+                self.batch_size = 10_000
             else:
                 raise ValueError(
                     f"Invalid split_method: {self.split_method}. "
