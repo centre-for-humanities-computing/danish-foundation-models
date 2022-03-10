@@ -27,6 +27,7 @@ import more_itertools as mit
 from joblib import Parallel, delayed
 import multiprocessing as mp
 import pickle
+from functools import partial
 
 
 def _get_shingles(doc: str,
@@ -472,7 +473,12 @@ class Deduper:
 
             # Initialise the multiprocessing
             with Parallel(n_jobs=self.n_jobs) as parallel:
-                fn = delayed(_get_minhash)
+                fn = delayed(partial(_get_minhash,
+                                     normalization_func=self.normalization_func,
+                                     split_method=self.split_method,
+                                     ngram_size=self.ngram_size,
+                                     num_minhashes=self.num_minhashes,
+                                     random_seed=self.random_seed))
 
                 # Iterate over the batches
                 for batch in pbar:
