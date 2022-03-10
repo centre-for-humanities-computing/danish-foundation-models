@@ -15,13 +15,14 @@ References:
 from datasketch import MinHash, LeanMinHash, MinHashLSH
 from datasets.arrow_dataset import Dataset
 from datasets.iterable_dataset import IterableDataset
-from typing import Union, Iterable, Optional, List, Callable
+from typing import Union, Iterable, Optional, List, Callable, Dict, Tuple
 from pathlib import Path
 import shutil
 import json
 from unicodedata import normalize
 import re
 from tqdm.auto import tqdm
+import itertools as it
 
 from more_itertools import chunked
 from joblib import Parallel, delayed
@@ -293,7 +294,10 @@ class Deduper:
 
     def deduplicate(
         self,
-        corpus: Union[Dataset, IterableDataset, Iterable[str]],
+        corpus: Union[Dataset,
+                      IterableDataset,
+                      Iterable[Tuple[Union[str, int], str]],
+                      Iterable[Dict[str, Union[str, int]]]],
         output_dir: Union[str, Path] = "deduplicated",
         overwrite: bool = False,
         store_mask: bool = False,
@@ -301,9 +305,14 @@ class Deduper:
         """Removes duplicate documents from the corpus and stores it to disk.
 
         Args:
-            corpus (Dataset, IterableDataset or iterable of strings):
-                The corpus to deduplicate. If `corpus` is a Dataset, it must
-                have a `text` column.
+            corpus (Dataset, IterableDataset, iter of tuples or dicts):
+                The corpus to deduplicate. If it is a Dataset or
+                IterableDataset then it must have an `id` column and a `text`
+                column. If it is an iterable of tuples then the first entry
+                must be the document id and the second entry must be the
+                document text. If it is an iterable of dicts then the keys must
+                be `id` and `text`. The document ID in all cases can be either
+                an integer or a string.
             output_dir (str or Path, optional):
                 The name of the output directory. Defaults to 'deduplicated'.
             overwrite (bool, optional):
@@ -316,17 +325,36 @@ class Deduper:
             FileExistsError:
                 If the output file already exists and `overwrite` is False.
         """
-
         # Register number of documents in the corpus
         num_docs = len(corpus) if hasattr(corpus, "__len__") else None
 
-        # Convert corpus to an iterable of strings if a Dataset is given
-        if isinstance(corpus, Dataset) or isinstance(corpus, IterableDataset):
+        # If the corpus is a Dataset or IterableDataset then convert it to an
+        # iterable of tuples
+        if (isinstance(corpus, Dataset) or
+                isinstance(corpus, IterableDataset)):
             corpus = (
-                sample["text"]
-                for doc_idx, sample in enumerate(corpus)
-                if doc_idx not in [i for i, _ in self.mask]
+                (sample["id"], sample["text"])
+                for sample in corpus
+                if sample["id"] not in [i for i, _ in self.mask]
             )
+
+        # Otherwise we check if the corpus is an iterable of dictionaries, in
+        # which case we also convert it to an iterable of tuples
+        else:
+
+            # Create a copy of the corpus to ensure that we're not modifying
+            # the original, and extract the first element of the copy.
+            corpus, corpus_copy = it.tee(corpus)
+            sample = next(corpus_copy)
+
+            # If the first element of the corpus is a dictionary then we
+            # convert the corpus to an iterable of tuples
+            if isinstance(sample, dict):
+                corpus = (
+                    (sample["id"], sample["text"])
+                    for sample in corpus
+                    if sample["id"] not in [i for i, _ in self.mask]
+                )
 
         # Ensure that `output_dir` is a Path object
         output_dir = Path(output_dir)
@@ -354,7 +382,7 @@ class Deduper:
             pickle.dump(config, f)
 
         #  Split the corpus into batches of `self.batch_size` documents
-        batches = chunked(enumerate(corpus), self.batch_size)
+        batches = chunked(corpus, self.batch_size)
 
         # Iterate over the corpus and store documents that are not duplicates
         duplicates = 0
