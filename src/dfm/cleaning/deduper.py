@@ -148,10 +148,12 @@ class Deduper:
         # Create the Deduper
         deduper = cls(**config)
 
-        # Load the mask
-        with open(directory / "mask.jsonl", "r") as f:
-            mask = [json.loads(line) for line in f]
-        deduper.mask = mask
+        # Load the mask if it exists
+        mask_path = directory / "mask.jsonl"
+        if mask_path.exists():
+            with open(mask_path, "r") as f:
+                mask = [json.loads(line) for line in f]
+            deduper.mask = mask
 
         # Load the LSH cache
         with open(directory / "lsh_cache.pkl", "rb") as f:
