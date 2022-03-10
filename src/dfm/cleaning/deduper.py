@@ -329,7 +329,9 @@ class Deduper:
                     batch_size = new_num_processed - num_processed
 
                     # Define parameters used in batch progress bars
-                    pbar_params = dict(total=batch_size, leave=False)
+                    pbar_params = dict(total=batch_size,
+                                       leave=False,
+                                       disable=(not self.verbose))
 
                     # Compute the fingerprint for the document
                     pbar_params['desc'] = 'Computing minhashes'
@@ -387,6 +389,12 @@ class Deduper:
                     pct_duplicated = 100 * duplicates / num_processed
                     desc = f"Deduplicating - {pct_duplicated:.2f}% near-duplicates found"
                     pbar.set_description(desc)
+
+        # Return final update
+        if self.verbose:
+            print('Finished deduplicating corpus.')
+            print(f"- {num_processed:,} documents processed")
+            print(f"- {pct_duplicated:.2f}% documents marked as duplicates")
 
 
 if __name__ == "__main__":
