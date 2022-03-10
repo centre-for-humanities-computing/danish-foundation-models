@@ -23,8 +23,7 @@ from unicodedata import normalize
 import re
 from tqdm.auto import tqdm
 import itertools as it
-
-from more_itertools import chunked
+import more_itertools as mit
 from joblib import Parallel, delayed
 import multiprocessing as mp
 import pickle
@@ -461,7 +460,7 @@ class Deduper:
             pickle.dump(config, f)
 
         #  Split the corpus into batches of `self.batch_size` documents
-        batches = chunked(corpus, self.batch_size)
+        batches = ichunked(corpus, self.batch_size)
 
         # Iterate over the corpus and store documents that are not duplicates
         duplicates = 0
