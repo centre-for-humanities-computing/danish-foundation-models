@@ -1,7 +1,7 @@
 """Tests for the deduplication module"""
 
 from dfm.cleaning import Deduper
-from dfm.cleaning.deduper_utils import get_shingles, normalization_func
+from dfm.cleaning.deduper_utils import get_shingles, default_normalization
 import tempfile
 from pathlib import Path
 import json
@@ -37,7 +37,7 @@ class TestDeduper:
     @pytest.fixture(scope="class")
     def shingle_params(self):
         yield dict(
-            normalization_func=normalization_func,
+            normalization_func=default_normalization,
             split_method="word_ngram",
             num_minhashes=128,
             random_seed=42,
