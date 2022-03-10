@@ -30,6 +30,84 @@ import multiprocessing as mp
 import pickle
 
 
+def _get_shingles(doc: str,
+                  normalization_func: Callable,
+                  split_method: str,
+                  ngram_size: int) -> List[str]:
+    """Extracts the shingles from a document.
+
+    Args:
+        doc (str):
+            The document to extract the shingles from.
+
+    Returns:
+        list of str:
+            The shingles extracted from the document.
+
+    Raises:
+        ValueError:
+            If `split_method` is not 'word_ngram', 'paragraph', 'none'
+            or None.
+    """
+    # Normalise document
+    doc = normalization_func(doc)
+
+    # Extract shingles from the document, depending on the `split_method`
+    if split_method == "word_ngram":
+        words = [word for word in doc.split(" ") if len(word) > 0]
+        max_word_idx = 1 + len(words) - ngram_size
+        shingles = [
+            " ".join(words[i : i + ngram_size]).strip()
+            for i in range(0, max_word_idx, ngram_stride)
+        ] or [doc]
+    elif split_method == "paragraph":
+        shingles = [p for p in doc.split("\n") if len(p) > 0]
+    elif split_method == "none" or split_method is None:
+        shingles = [doc]
+    else:
+        raise ValueError(f"Invalid split method: {split_method}")
+
+    return shingles
+
+def _get_minhash(doc: str,
+                 normalization_func: Callable,
+                 split_method: str,
+                 ngram_size: int,
+                 num_minhashes: int,
+                 random_seed: int) -> LeanMinHash:
+    """Returns a minhash fingerprint for the given document.
+
+    Args:
+        doc (str): The document to create the MinHash object for.
+
+    Returns:
+        LeanMinHash: The minhash fingerprint for the given document.
+
+    Raises:
+        ValueError:
+            If `split_method` is not 'word_ngram', 'paragraph', 'none'
+            or None.
+    """
+    # Extract shingles from the document, depending on the `split_method`
+    shingles = _get_shingles(doc,
+                             normalization_func=normalization_func,
+                             split_method=split_method,
+                             ngram_size=ngram_size)
+
+    # Initialise the fingerprint
+    minhash = MinHash(num_perm=num_minhashes, seed=random_seed)
+
+    # Add all the shingles to the fingerprint
+    minhash.update_batch([shingle.encode("utf-8") for shingle in shingles])
+
+    # Convert the fingerprint to a LeanMinHash fingerprint, to save memory
+    # and increase performance
+    minhash = LeanMinHash(minhash, seed=random_seed)
+
+    # Return the fingerprint
+    return minhash
+
+
 def _default_normalization(doc: str) -> str:
     """NFKC normalise document and remove punctuation
 
@@ -392,58 +470,62 @@ class Deduper:
             desc="Deduplicating", total=num_docs, disable=(not self.verbose)
         )
         with tqdm(batches, **pbar_params) as pbar:
-            for batch in pbar:
 
-                # Compute the fingerprint for the document
-                with Parallel(n_jobs=self.n_jobs) as parallel:
-                    fn = delayed(self._get_minhash)
+            # Initialise the multiprocessing
+            with Parallel(n_jobs=self.n_jobs) as parallel:
+                fn = delayed(_get_minhash)
+
+                # Iterate over the batches
+                for batch in pbar:
+
+                    # Compute the fingerprint for the document
                     minhashes = parallel(fn(doc) for _, doc in batch)
 
-                # Iterate over the minhashes
-                for (doc_idx, doc), minhash in zip(batch, minhashes):
+                    # Iterate over the minhashes
+                    for (doc_idx, doc), minhash in zip(batch, minhashes):
 
-                    # If the document is not a near-duplicate candidate then
-                    # store in the LSH cache and append it to the JSONL output
-                    # file
-                    candidates = self.lsh_cache.query(minhash)
-                    if len(candidates) == 0:
+                        # If the document is not a near-duplicate candidate then
+                        # store in the LSH cache and append it to the JSONL output
+                        # file
+                        candidates = self.lsh_cache.query(minhash)
+                        if len(candidates) == 0:
 
-                        # Insert the document into the LSH cache
-                        self.lsh_cache.insert(doc_idx, minhash)
+                            # Insert the document into the LSH cache
+                            self.lsh_cache.insert(doc_idx, minhash)
 
-                        # Store the LSH cache to disk
-                        with lsh_cache_path.open("wb") as f:
-                            pickle.dump(self.lsh_cache, f)
+                            # Store the LSH cache to disk
+                            with lsh_cache_path.open("wb") as f:
+                                pickle.dump(self.lsh_cache, f)
 
-                        # Store the non-duplicate document in the JSONL output
-                        self._store_document(
-                            id=doc_idx, text=doc, output_path=output_path
-                        )
+                            # Store the non-duplicate document in the JSONL output
+                            self._store_document(
+                                id=doc_idx, text=doc, output_path=output_path
+                            )
 
-                        # Add the current document to the Boolean mask
-                        mask_entry = dict(id=doc_idx, duplicate=False)
-                        self.mask.append(mask_entry)
+                            # Add the current document to the Boolean mask
+                            mask_entry = dict(id=doc_idx, duplicate=False)
+                            self.mask.append(mask_entry)
 
-                    # Otherwise, increment the number of duplicate documents
-                    else:
-                        duplicates += 1
+                        # Otherwise, increment the number of duplicate documents
+                        else:
+                            duplicates += 1
 
-                        # Add the current document to the Boolean mask
-                        mask_entry = dict(id=doc_idx, duplicate=True)
-                        self.mask.append(mask_entry)
+                            # Add the current document to the Boolean mask
+                            mask_entry = dict(id=doc_idx, duplicate=True)
+                            self.mask.append(mask_entry)
 
-                    # Store the Boolean mask to disk
-                    if store_mask:
-                        self._store_document(output_path=mask_path, **mask_entry)
+                        # Store the Boolean mask to disk
+                        if store_mask:
+                            self._store_document(output_path=mask_path, **mask_entry)
 
-                # Update the number of documents processed
-                num_processed += len(batch)
+                    # Update the number of documents processed
+                    num_processed += len(batch)
 
-                # Update the progress bar
-                pbar.update(len(batch))
-                pct_duplicated = 100 * duplicates / num_processed
-                desc = f"Deduplicating - {pct_duplicated:.2f}% near-duplicates found"
-                pbar.set_description(desc)
+                    # Update the progress bar
+                    pbar.update(len(batch))
+                    pct_duplicated = 100 * duplicates / num_processed
+                    desc = f"Deduplicating - {pct_duplicated:.2f}% near-duplicates found"
+                    pbar.set_description(desc)
 
 
 if __name__ == "__main__":
