@@ -321,6 +321,9 @@ class Deduper:
                                      num_minhashes=self.num_minhashes,
                                      random_seed=self.random_seed))
 
+                # Define parameters used in batch progress bars
+                pbar_params = dict(total=self.batch_size, leave=False)
+
                 # Iterate over the batches
                 for batch in pbar:
 
@@ -329,41 +332,45 @@ class Deduper:
                     batch, batch_copy = it.tee(batch)
 
                     # Compute the fingerprint for the document
-                    with tqdm(batch, total=self.batch_size, leave=False) as pb:
-                        minhashes = parallel(fn(doc) for _, doc in pb)
+                    with tqdm(batch, **pbar_params) as batch_pbar:
+                        minhashes = parallel(fn(doc) for _, doc in batch_pbar)
 
                     # Iterate over the minhashes
-                    for (doc_idx, doc), minhash in zip(batch_copy, minhashes):
+                    with tqdm(batch_copy, **pbar_params) as batch_pbar:
+                        for (idx, doc), minhash in zip(batch_pbar, minhashes):
 
-                        # If the document is not a near-duplicate candidate then
-                        # store in the LSH cache and append it to the JSONL output
-                        # file
-                        candidates = self.lsh_cache.query(minhash)
-                        if len(candidates) == 0:
+                            # If the document is not a near-duplicate candidate
+                            # then store in the LSH cache and append it to the
+                            # JSONL output file
+                            candidates = self.lsh_cache.query(minhash)
+                            if len(candidates) == 0:
 
-                            # Insert the document into the LSH cache
-                            self.lsh_cache.insert(doc_idx, minhash)
+                                # Insert the document into the LSH cache
+                                self.lsh_cache.insert(idx, minhash)
 
-                            # Store the non-duplicate document in the JSONL output
-                            self._store_document(
-                                id=doc_idx, text=doc, output_path=output_path
-                            )
+                                # Store the non-duplicate document in the JSONL
+                                # output
+                                self._store_document(id=idx,
+                                                     text=doc,
+                                                     output_path=output_path)
 
-                            # Add the current document to the Boolean mask
-                            mask_entry = dict(id=doc_idx, duplicate=False)
-                            self.mask.append(mask_entry)
+                                # Add the current document to the Boolean mask
+                                mask_entry = dict(id=idx, duplicate=False)
+                                self.mask.append(mask_entry)
 
-                        # Otherwise, increment the number of duplicate documents
-                        else:
-                            duplicates += 1
+                            # Otherwise, increment the number of duplicate
+                            # documents
+                            else:
+                                duplicates += 1
 
-                            # Add the current document to the Boolean mask
-                            mask_entry = dict(id=doc_idx, duplicate=True)
-                            self.mask.append(mask_entry)
+                                # Add the current document to the Boolean mask
+                                mask_entry = dict(id=idx, duplicate=True)
+                                self.mask.append(mask_entry)
 
-                        # Store the Boolean mask to disk
-                        if store_mask:
-                            self._store_document(output_path=mask_path, **mask_entry)
+                            # Store the Boolean mask to disk
+                            if store_mask:
+                                self._store_document(output_path=mask_path,
+                                                     **mask_entry)
 
                     # Store the LSH cache to disk
                     with lsh_cache_path.open("wb") as f:
