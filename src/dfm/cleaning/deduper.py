@@ -484,7 +484,8 @@ class Deduper:
                 for batch in pbar:
 
                     # Compute the fingerprint for the document
-                    minhashes = parallel(fn(doc) for _, doc in batch)
+                    with tqdm(batch, total=self.batch_size, leave=False) as pb:
+                        minhashes = parallel(fn(doc) for _, doc in pb)
 
                     # Iterate over the minhashes
                     for (doc_idx, doc), minhash in zip(batch, minhashes):
@@ -524,10 +525,10 @@ class Deduper:
                         pickle.dump(self.lsh_cache, f)
 
                     # Update the number of documents processed
-                    num_processed += len(batch)
+                    num_processed += self.batch_size
 
                     # Update the progress bar
-                    pbar.update(len(batch))
+                    pbar.update(self.batch_size)
                     pct_duplicated = 100 * duplicates / num_processed
                     desc = f"Deduplicating - {pct_duplicated:.2f}% near-duplicates found"
                     pbar.set_description(desc)
