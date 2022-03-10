@@ -324,10 +324,12 @@ class Deduper:
                     batch, batch_copy = it.tee(batch)
 
                     # Compute the fingerprint for the document
+                    pbar_params['desc'] = 'Computing minhashes'
                     with tqdm(batch, **pbar_params) as batch_pbar:
                         minhashes = parallel(fn(doc) for _, doc in batch_pbar)
 
                     # Iterate over the minhashes
+                    pbar_params['desc'] = 'Deduplicating batch'
                     with tqdm(batch_copy, **pbar_params) as batch_pbar:
                         for (idx, doc), minhash in zip(batch_pbar, minhashes):
 
