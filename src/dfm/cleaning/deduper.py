@@ -294,10 +294,12 @@ class Deduper:
 
     def deduplicate(
         self,
-        corpus: Union[Dataset,
-                      IterableDataset,
-                      Iterable[Tuple[Union[str, int], str]],
-                      Iterable[Dict[str, Union[str, int]]]],
+        corpus: Union[
+            Dataset,
+            IterableDataset,
+            Iterable[Tuple[Union[str, int], str]],
+            Iterable[Dict[str, Union[str, int]]],
+        ],
         output_dir: Union[str, Path] = "deduplicated",
         overwrite: bool = False,
         store_mask: bool = False,
@@ -330,8 +332,7 @@ class Deduper:
 
         # If the corpus is a Dataset or IterableDataset then convert it to an
         # iterable of tuples
-        if (isinstance(corpus, Dataset) or
-                isinstance(corpus, IterableDataset)):
+        if isinstance(corpus, Dataset) or isinstance(corpus, IterableDataset):
             corpus = (
                 (sample["id"], sample["text"])
                 for sample in corpus
