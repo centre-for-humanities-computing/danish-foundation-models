@@ -393,8 +393,8 @@ class Deduper:
         # Return final update
         if self.verbose:
             print('Finished deduplicating corpus.')
-            print(f"- {num_processed:,} documents processed")
-            print(f"- {pct_duplicated:.2f}% documents marked as duplicates")
+            print(f"- {num_processed:,} documents processed.")
+            print(f"- {pct_duplicated:.2f}% documents marked as duplicates.")
 
 
 if __name__ == "__main__":

@@ -11,14 +11,24 @@ import re
 
 
 def get_shingles(doc: str,
-                  normalization_func: Callable,
-                  split_method: str,
-                  ngram_size: int) -> List[str]:
+                 normalization_func: Callable,
+                 split_method: str,
+                 ngram_size: int,
+                 ngram_stride: int) -> List[str]:
     """Extracts the shingles from a document.
 
     Args:
         doc (str):
             The document to extract the shingles from.
+        normalization_func (Callable):
+            The function to normalize the document with.
+        split_method (str):
+            The method to split the document into shingles.
+            Can be 'word_ngram', 'paragraph', 'none' or None.
+        ngram_size (int):
+            The size of the ngrams to use.
+        ngram_stride (int):
+            The stride of the ngrams to use.
 
     Returns:
         list of str:
@@ -51,15 +61,17 @@ def get_shingles(doc: str,
 
 
 def get_minhash(doc: str,
-                 normalization_func: Callable,
-                 split_method: str,
-                 ngram_size: int,
-                 num_minhashes: int,
-                 random_seed: int) -> LeanMinHash:
+                normalization_func: Callable,
+                split_method: str,
+                ngram_size: int,
+                ngram_stride: int,
+                num_minhashes: int,
+                random_seed: int) -> LeanMinHash:
     """Returns a minhash fingerprint for the given document.
 
     Args:
-        doc (str): The document to create the MinHash object for.
+        doc (str):
+            The document to create the MinHash object for.
 
     Returns:
         LeanMinHash: The minhash fingerprint for the given document.
@@ -73,7 +85,8 @@ def get_minhash(doc: str,
     shingles = get_shingles(doc,
                             normalization_func=normalization_func,
                             split_method=split_method,
-                            ngram_size=ngram_size)
+                            ngram_size=ngram_size,
+                            ngram_stride=ngram_stride)
 
     # Initialise the fingerprint
     minhash = MinHash(num_perm=num_minhashes, seed=random_seed)
