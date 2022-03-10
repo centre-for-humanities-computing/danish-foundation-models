@@ -313,15 +313,20 @@ class Deduper:
                                      num_minhashes=self.num_minhashes,
                                      random_seed=self.random_seed))
 
-                # Define parameters used in batch progress bars
-                pbar_params = dict(total=self.batch_size, leave=False)
-
                 # Iterate over the batches
                 for batch in pbar:
 
                     # Create a copy of the batch to ensure that we're not
                     # modifying the original
                     batch, batch_copy = it.tee(batch)
+
+                    # Compute size of the batch
+                    new_num_processed = num_processed + self.batch_size
+                    new_num_processed = min(new_num_processed, num_docs)
+                    batch_size = new_num_processed - num_processed
+
+                    # Define parameters used in batch progress bars
+                    pbar_params = dict(total=batch_size, leave=False)
 
                     # Compute the fingerprint for the document
                     pbar_params['desc'] = 'Computing minhashes'
@@ -372,9 +377,6 @@ class Deduper:
 
                     # Update the number of documents processed, and compute the
                     # number of documents in the batch
-                    new_num_processed = num_processed + self.batch_size
-                    new_num_processed = min(new_num_processed, num_docs)
-                    batch_size = new_num_processed - num_processed
                     num_processed = new_num_processed
 
                     # Update the progress bar
