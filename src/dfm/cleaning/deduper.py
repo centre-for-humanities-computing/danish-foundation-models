@@ -535,7 +535,7 @@ if __name__ == "__main__":
 
     #  Deduplicate the test dataset
     deduper = Deduper(split_method=args.split_method, n_jobs=args.n_jobs)
-    deduper.deduplicate(corpus, id_column='doc_id', output_dir=output_dir)
+    deduper.deduplicate(corpus, id_column="doc_id", output_dir=output_dir)
 
     # *** Time taken to deduplicate DAGW with 16 cores, by `split_method` ***
     #   - 'none': ~3.5 minutes (found 24.75% duplicates)
