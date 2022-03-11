@@ -220,7 +220,7 @@ class Deduper:
         store_lsh_cache_to_disk: bool = True,
         store_config_to_disk: bool = True,
         return_generator: bool = False,
-    ):
+    ) -> Union[Iterable, None]:
         """Removes duplicate documents from the corpus.
 
         Args:
@@ -248,6 +248,11 @@ class Deduper:
             return_generator (bool, optional):
                 Whether to return a generator which yields the mask. Defaults
                 to False.
+
+        Returns:
+            Iterable or None:
+                If `return_generator` is True, then a generator which yields
+                a dictionary with keys `id` and `duplicate`. Otherwise, None.
 
         Raises:
             FileExistsError:
