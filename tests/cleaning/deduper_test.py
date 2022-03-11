@@ -1,7 +1,7 @@
 """Tests for the deduplication module"""
 
 from dfm.cleaning import Deduper
-from dfm.cleaning.deduper_utils import get_shingles, default_normalization
+from dfm.cleaning.deduper_utils import get_minhash, get_shingles, default_normalization
 import tempfile
 from pathlib import Path
 import json
@@ -37,6 +37,17 @@ class TestDeduper:
     @pytest.fixture(scope="class")
     def shingle_params(self):
         yield dict(normalization_func=default_normalization, split_method="word_ngram")
+
+    @pytest.fixture(scope="class")
+    def minhash_params(self):
+        yield dict(
+            normalization_func=default_normalization,
+            split_method="word_ngram",
+            ngram_size=1,
+            ngram_stride=1,
+            num_minhashes=128,
+            random_seed=42,
+        )
 
     def deduper(self, **kwargs):
         default_test_args = dict(ngram_size=1, random_seed=42, verbose=False)
@@ -185,16 +196,16 @@ class TestDeduper:
         for key, val in config.items():
             assert val == getattr(deduper, key)
 
-    def test_load_from_disk(self):
+    def test_load_from_disk(self, minhash_params):
         corpus = ["hej med dig min ven", "hej med dig min ven", "farvel du gamle"]
         corpus = list(enumerate(corpus))
         with tempfile.TemporaryDirectory() as temp:
 
             # Create a deduper loaded from disk, and a different new one
             deduper = self.deduper(split_method="paragraph")
-            deduper.deduplicate(corpus,
-                                output_dir=temp, overwrite=True,
-                                store_mask=True)
+            deduper.deduplicate(
+                corpus, output_dir=temp, overwrite=True, store_mask=True
+            )
             loaded_deduper = Deduper.load_from_disk(temp)
             new_deduper = self.deduper()
 
@@ -207,6 +218,6 @@ class TestDeduper:
             assert new_deduper.mask != deduper.mask
 
             # Test that the loaded LSH cache works as intended
-            minhash = deduper._get_minhash(corpus[0])
+            minhash = get_minhash(corpus[0], **minhash_params)
             assert len(loaded_deduper.lsh_cache.query(minhash)) > 0
             assert len(new_deduper.lsh_cache.query(minhash)) == 0
