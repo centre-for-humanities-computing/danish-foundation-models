@@ -218,6 +218,6 @@ class TestDeduper:
             assert new_deduper.mask != deduper.mask
 
             # Test that the loaded LSH cache works as intended
-            minhash = get_minhash(corpus[0], **minhash_params)
+            minhash = get_minhash(corpus[0][1], **minhash_params)
             assert len(loaded_deduper.lsh_cache.query(minhash)) > 0
             assert len(new_deduper.lsh_cache.query(minhash)) == 0
