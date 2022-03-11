@@ -42,7 +42,7 @@ class TestDeduper:
     def minhash_params(self):
         yield dict(
             normalization_func=default_normalization,
-            split_method="word_ngram",
+            split_method="paragraph",
             ngram_size=1,
             ngram_stride=1,
             num_minhashes=128,
