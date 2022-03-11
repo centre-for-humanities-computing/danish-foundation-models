@@ -332,8 +332,7 @@ class Deduper:
         # If the corpus is a Dataset or IterableDataset then convert it to an
         # iterable of tuples
         if isinstance(corpus, Dataset) or isinstance(corpus, IterableDataset):
-            corpus = ((sample[id_column], sample[text_column])
-                      for sample in corpus)
+            corpus = ((sample[id_column], sample[text_column]) for sample in corpus)
 
         # Otherwise we check if the corpus is an iterable of dictionaries, in
         # which case we also convert it to an iterable of tuples
@@ -347,8 +346,7 @@ class Deduper:
             # If the first element of the corpus is a dictionary then we
             # convert the corpus to an iterable of tuples
             if isinstance(sample, dict):
-                corpus = ((sample[id_column], sample[text_column])
-                          for sample in corpus)
+                corpus = ((sample[id_column], sample[text_column]) for sample in corpus)
 
         # Ensure that `output_dir` is a Path object
         output_dir = Path(output_dir)
@@ -362,10 +360,12 @@ class Deduper:
                 raise FileExistsError(f"Output directory {output_dir} already exists.")
 
         # Create the output directory
-        if (store_corpus_to_disk or
-                store_lsh_cache_to_disk or
-                store_lsh_cache_to_disk or
-                store_config_to_disk):
+        if (
+            store_corpus_to_disk
+            or store_lsh_cache_to_disk
+            or store_lsh_cache_to_disk
+            or store_config_to_disk
+        ):
             output_dir.mkdir(parents=True)
 
         # Set up paths
@@ -530,12 +530,14 @@ if __name__ == "__main__":
 
     #  Deduplicate the test dataset
     deduper = Deduper(split_method=args.split_method, n_jobs=args.n_jobs)
-    deduper.deduplicate(corpus,
-                        output_dir=output_dir,
-                        store_mask_to_disk=False,
-                        store_corpus_to_disk=False,
-                        store_config_to_disk=False,
-                        store_lsh_cache_to_disk=False)
+    deduper.deduplicate(
+        corpus,
+        output_dir=output_dir,
+        store_mask_to_disk=False,
+        store_corpus_to_disk=False,
+        store_config_to_disk=False,
+        store_lsh_cache_to_disk=False,
+    )
 
     # *** Time taken to deduplicate DAGW with 16 cores, by `split_method` ***
     #   - 'none': ~3.5 minutes (found 24.75% duplicates)
