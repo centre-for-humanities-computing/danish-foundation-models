@@ -204,7 +204,7 @@ class TestDeduper:
             # Create a deduper loaded from disk, and a different new one
             deduper = self.deduper(split_method="paragraph")
             deduper.deduplicate(
-                corpus, output_dir=temp, overwrite=True, store_mask=True
+                corpus, output_dir=temp, overwrite=True
             )
             loaded_deduper = Deduper.load_from_disk(temp)
             new_deduper = self.deduper()
