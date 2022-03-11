@@ -93,6 +93,7 @@ class Deduper:
         n_jobs: int = -1,
         random_seed: int = 42,
         normalization_func: Callable[[str], str] = default_normalization,
+        save_mask: bool = True,
         verbose: bool = True,
     ):
         self.split_method = "none" if split_method is None else split_method
@@ -105,14 +106,17 @@ class Deduper:
         self.random_seed = random_seed
         self.normalization_func = normalization_func
         self.verbose = verbose
-        self.mask = list()
+        self.save_mask = save_mask
+        if save_mask:
+            self.mask = list()
         self.lsh_cache = MinHashLSH(
             threshold=self.similarity_threshold, num_perm=self.num_minhashes
         )
 
     def reset(self):
         """Reset the deduplicator, removing the mask and the LSH cache"""
-        self.mask = list()
+        if self.save_mask:
+            self.mask = list()
         self.lsh_cache = MinHashLSH(
             threshold=self.similarity_threshold, num_perm=self.num_minhashes
         )
@@ -207,28 +211,116 @@ class Deduper:
             Iterable[Tuple[Union[str, int], str]],
             Iterable[Dict[str, Union[str, int]]],
         ],
+        id_column: str = "id",
+        text_column: str = "text",
         output_dir: Union[str, Path] = "deduplicated",
         overwrite: bool = False,
-        store_mask: bool = False,
+        store_corpus_to_disk: bool = True,
+        store_mask_to_disk: bool = True,
+        store_lsh_cache_to_disk: bool = True,
+        store_config_to_disk: bool = True,
+        return_generator: bool = False,
     ):
-        """Removes duplicate documents from the corpus and stores it to disk.
+        """Removes duplicate documents from the corpus.
 
         Args:
             corpus (Dataset, IterableDataset, iter of tuples or dicts):
-                The corpus to deduplicate. If it is a Dataset or
-                IterableDataset then it must have an `id` column and a `text`
-                column. If it is an iterable of tuples then the first entry
-                must be the document id and the second entry must be the
-                document text. If it is an iterable of dicts then the keys must
-                be `id` and `text`. The document ID in all cases can be either
-                an integer or a string.
+                The corpus to deduplicate.
+            id_column (str, optional):
+                The name of the column in the corpus that contains the document
+                IDs. Defaults to 'id'.
+            text_column (str, optional):
+                The name of the column in the corpus that contains the document
+                texts. Defaults to 'text'.
             output_dir (str or Path, optional):
                 The name of the output directory. Defaults to 'deduplicated'.
             overwrite (bool, optional):
                 Whether to overwrite the output file if it already exists.
                 Defaults to False.
-            store_mask (bool, optional):
-                Whether to store the mask to disk. Defaults to False.
+            store_corpus_to_disk (bool, optional):
+                Whether to store the corpus to disk. Defaults to True.
+            store_mask_to_disk (bool, optional):
+                Whether to store the mask to disk. Defaults to True.
+            store_lsh_cache_to_disk (bool, optional):
+                Whether to store the LSH cache to disk. Defaults to True.
+            store_config_to_disk (bool, optional):
+                Whether to store the configuration to disk. Defaults to True.
+            return_generator (bool, optional):
+                Whether to return a generator which yields the mask. Defaults
+                to False.
+
+        Raises:
+            FileExistsError:
+                If the output file already exists and `overwrite` is False.
+        """
+        iterable = self._deduplicate(
+            corpus=corpus,
+            id_column=id_column,
+            text_column=text_column,
+            output_dir=output_dir,
+            overwrite=overwrite,
+            store_corpus_to_disk=store_corpus_to_disk,
+            store_mask_to_disk=store_mask_to_disk,
+            store_lsh_cache_to_disk=store_lsh_cache_to_disk,
+            store_config_to_disk=store_config_to_disk,
+            return_generator=return_generator,
+        )
+        if return_generator:
+            return iterable
+        else:
+            for _ in iterable:
+                pass
+
+    def _deduplicate(
+        self,
+        corpus: Union[
+            Dataset,
+            IterableDataset,
+            Iterable[Tuple[Union[str, int], str]],
+            Iterable[Dict[str, Union[str, int]]],
+        ],
+        id_column: str = "id",
+        text_column: str = "text",
+        output_dir: Union[str, Path] = "deduplicated",
+        overwrite: bool = False,
+        store_corpus_to_disk: bool = True,
+        store_mask_to_disk: bool = True,
+        store_lsh_cache_to_disk: bool = True,
+        store_config_to_disk: bool = True,
+        return_generator: bool = False,
+    ) -> Iterable:
+        """Helper function for the `deduplicate` method.
+
+        Args:
+            corpus (Dataset, IterableDataset, iter of tuples or dicts):
+                The corpus to deduplicate.
+            id_column (str, optional):
+                The name of the column in the corpus that contains the document
+                IDs. Defaults to 'id'.
+            text_column (str, optional):
+                The name of the column in the corpus that contains the document
+                texts. Defaults to 'text'.
+            output_dir (str or Path, optional):
+                The name of the output directory. Defaults to 'deduplicated'.
+            overwrite (bool, optional):
+                Whether to overwrite the output file if it already exists.
+                Defaults to False.
+            store_corpus_to_disk (bool, optional):
+                Whether to store the corpus to disk. Defaults to True.
+            store_mask_to_disk (bool, optional):
+                Whether to store the mask to disk. Defaults to True.
+            store_lsh_cache_to_disk (bool, optional):
+                Whether to store the LSH cache to disk. Defaults to True.
+            store_config_to_disk (bool, optional):
+                Whether to store the configuration to disk. Defaults to True.
+            return_generator (bool, optional):
+                Whether to return a generator which yields the mask. Defaults
+                to False.
+
+        Yields:
+            dict or None:
+                A dictionary with keys `id` and `duplicate` if
+                `return_generator` is True, and otherwise None.
 
         Raises:
             FileExistsError:
@@ -240,7 +332,8 @@ class Deduper:
         # If the corpus is a Dataset or IterableDataset then convert it to an
         # iterable of tuples
         if isinstance(corpus, Dataset) or isinstance(corpus, IterableDataset):
-            corpus = ((sample["id"], sample["text"]) for sample in corpus)
+            corpus = ((sample[id_column], sample[text_column])
+                      for sample in corpus)
 
         # Otherwise we check if the corpus is an iterable of dictionaries, in
         # which case we also convert it to an iterable of tuples
@@ -254,7 +347,8 @@ class Deduper:
             # If the first element of the corpus is a dictionary then we
             # convert the corpus to an iterable of tuples
             if isinstance(sample, dict):
-                corpus = ((sample["id"], sample["text"]) for sample in corpus)
+                corpus = ((sample[id_column], sample[text_column])
+                          for sample in corpus)
 
         # Ensure that `output_dir` is a Path object
         output_dir = Path(output_dir)
@@ -268,7 +362,11 @@ class Deduper:
                 raise FileExistsError(f"Output directory {output_dir} already exists.")
 
         # Create the output directory
-        output_dir.mkdir(parents=True)
+        if (store_corpus_to_disk or
+                store_lsh_cache_to_disk or
+                store_lsh_cache_to_disk or
+                store_config_to_disk):
+            output_dir.mkdir(parents=True)
 
         # Set up paths
         output_path = output_dir / "deduplicated_corpus.jsonl"
@@ -277,9 +375,10 @@ class Deduper:
         config_path = output_dir / "config.pkl"
 
         # Store the deduper config to disk
-        config = self.get_config()
-        with config_path.open("wb") as f:
-            pickle.dump(config, f)
+        if store_config_to_disk:
+            config = self.get_config()
+            with config_path.open("wb") as f:
+                pickle.dump(config, f)
 
         #  Split the corpus into batches of `self.batch_size` documents
         batches = mit.ichunked(corpus, self.batch_size)
@@ -297,6 +396,8 @@ class Deduper:
 
             # Initialise the multiprocessing
             with Parallel(n_jobs=self.n_jobs) as parallel:
+
+                # Define the function that will be called in parallel
                 fn = delayed(
                     partial(
                         get_minhash,
@@ -347,32 +448,40 @@ class Deduper:
 
                                 # Store the non-duplicate document in the JSONL
                                 # output
-                                self._store_document(
-                                    id=idx, text=doc, output_path=output_path
-                                )
+                                if store_corpus_to_disk:
+                                    self._store_document(
+                                        id=idx, text=doc, output_path=output_path
+                                    )
 
-                                # Add the current document to the Boolean mask
+                                # Compute the mask for the document
                                 mask_entry = dict(id=idx, duplicate=False)
-                                self.mask.append(mask_entry)
 
                             # Otherwise, increment the number of duplicate
                             # documents
                             else:
                                 duplicates += 1
 
-                                # Add the current document to the Boolean mask
+                                # Compute the mask for the document
                                 mask_entry = dict(id=idx, duplicate=True)
+
+                            # Add the mask to the mask attribute
+                            if self.save_mask:
                                 self.mask.append(mask_entry)
 
-                            # Store the Boolean mask to disk
-                            if store_mask:
+                            # Yield the mask
+                            if return_generator:
+                                yield mask_entry
+
+                            # Store the mask to disk
+                            if store_mask_to_disk:
                                 self._store_document(
                                     output_path=mask_path, **mask_entry
                                 )
 
                     # Store the LSH cache to disk
-                    with lsh_cache_path.open("wb") as f:
-                        pickle.dump(self.lsh_cache, f)
+                    if store_lsh_cache_to_disk:
+                        with lsh_cache_path.open("wb") as f:
+                            pickle.dump(self.lsh_cache, f)
 
                     # Update the number of documents processed, and compute the
                     # number of documents in the batch
@@ -421,7 +530,12 @@ if __name__ == "__main__":
 
     #  Deduplicate the test dataset
     deduper = Deduper(split_method=args.split_method, n_jobs=args.n_jobs)
-    deduper.deduplicate(corpus, output_dir=output_dir)
+    deduper.deduplicate(corpus,
+                        output_dir=output_dir,
+                        store_mask_to_disk=False,
+                        store_corpus_to_disk=False,
+                        store_config_to_disk=False,
+                        store_lsh_cache_to_disk=False)
 
     # *** Time taken to deduplicate DAGW with 16 cores, by `split_method` ***
     #   - 'none': ~3.5 minutes (found 24.75% duplicates)
