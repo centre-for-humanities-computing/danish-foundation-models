@@ -526,18 +526,11 @@ if __name__ == "__main__":
         "DDSC/partial-danish-gigaword-no-twitter",
         streaming=args.streaming,
         split="train",
-    ).rename_column("doc_id", "id")
+    )
 
     #  Deduplicate the test dataset
     deduper = Deduper(split_method=args.split_method, n_jobs=args.n_jobs)
-    deduper.deduplicate(
-        corpus,
-        output_dir=output_dir,
-        store_mask_to_disk=False,
-        store_corpus_to_disk=False,
-        store_config_to_disk=False,
-        store_lsh_cache_to_disk=False,
-    )
+    deduper.deduplicate(corpus, id_column='doc_id', output_dir=output_dir)
 
     # *** Time taken to deduplicate DAGW with 16 cores, by `split_method` ***
     #   - 'none': ~3.5 minutes (found 24.75% duplicates)
