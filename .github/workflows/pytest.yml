@@ -19,9 +19,9 @@ jobs:
                 python-version: '3.9'
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -31,14 +31,16 @@ jobs:
         pip install -r requirements.txt
     - name: Run and write pytest
       run: |
-        python ./dev/pytest-coverage/run_coverage.py
+        pip install --editable .
+        python -m  pytest --cov=src/dfm --cov-report term-missing | tee pytest-coverage.txt
+
 
   pytest-coverage:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python 3.9
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: 3.9
     - name: Install dependencies
@@ -48,12 +50,13 @@ jobs:
         pip install -r requirements.txt
     - name: Run and write pytest
       run: |
-        python ./dev/pytest-coverage/run_coverage.py
+        pip install --editable .
+        python -m  pytest --cov=src/dfm --cov-report term-missing | tee pytest-coverage.txt
     - name: Pytest coverage comment
       id: coverage-comment
-      uses: MishaKav/pytest-coverage-comment@v1.0
+      uses: MishaKav/pytest-coverage-comment@v1.1.20
       with:
-        pytest-coverage-path: ./dev/pytest-coverage/pytest-coverage.txt
+        pytest-coverage-path: ./pytest-coverage.txt
 
     - name: Check the output coverage
       run: |

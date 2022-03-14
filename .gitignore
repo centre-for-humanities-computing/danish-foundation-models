@@ -133,12 +133,23 @@ dmypy.json
 
 # data files
 **/*.jsonl
+
 *.csv
 
 # MacOS
 .DS_Store
+=======
+*.ndjson
+
+# MacOS
+.DS_Store
+
+# vs code
+.vscode/*
+
+# Profiling
+*.prof
 
 #wandb
 wandb/*
-
 models/*

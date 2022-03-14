@@ -18,6 +18,7 @@ ndjson==0.3.1
 ## data cleaning
 spacy>=3.1.4,<=3.3.0
 datasketch~=1.5.6
+google==3.0.0  # safesearch filtering
 more_itertools~=8.12.0
 
 # utility
@@ -25,7 +26,9 @@ wasabi~=0.8.2
 pydantic~=1.8.2
 
 # testing
-pytest~=6.2.5
+pytest>=6.2.5
+pytest-lazy-fixture>=0.6.3
+pytest-cov>=2.8.1
 
 # format
 black==22.1.0
