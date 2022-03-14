@@ -1,22 +1,70 @@
 """Tests for the deduplication module"""
 
 from dfm.cleaning import Deduper
+from dfm.cleaning.deduper_utils import get_minhash, get_shingles, default_normalization
 import tempfile
 from pathlib import Path
 import json
 import re
+import pytest
+
+
+def word_shape(doc: str) -> str:
+    """Aggressive normalization function used in unit tests.
+
+    Args:
+        doc (str): The document to normalize.
+
+    Returns:
+        str: The normalized document.
+    """
+    return re.sub("[A-Z]", "X", re.sub("[^A-Z ]", "x", doc))
+
+
+def identity_fn(doc: str) -> str:
+    """Identity function used in unit tests.
+
+    Args:
+        doc (str): The document to normalize.
+
+    Returns:
+        str: The normalized document.
+    """
+    return doc
 
 
 class TestDeduper:
+    @pytest.fixture(scope="class")
+    def shingle_params(self):
+        yield dict(normalization_func=default_normalization, split_method="word_ngram")
+
+    @pytest.fixture(scope="class")
+    def minhash_params(self):
+        yield dict(
+            normalization_func=default_normalization,
+            split_method="paragraph",
+            ngram_size=1,
+            ngram_stride=1,
+            num_minhashes=128,
+            random_seed=42,
+        )
+
     def deduper(self, **kwargs):
         default_test_args = dict(ngram_size=1, random_seed=42, verbose=False)
         return Deduper(**dict(default_test_args, **kwargs))
 
     def dedup(self, corpus, **kwargs):
-        temp = tempfile.NamedTemporaryFile()
-        deduper = self.deduper(**kwargs)
-        deduper.deduplicate(corpus, output_fname=temp.name, overwrite=True)
-        return [json.loads(line)["text"] for line in Path(temp.name).open("r")]
+
+        # Add a document ID to the corpus, if it isn't there already
+        if isinstance(corpus, list) and isinstance(corpus[0], str):
+            corpus = list(enumerate(corpus))
+
+        # Deduplicate the corpus and return it
+        with tempfile.TemporaryDirectory() as temp:
+            deduper = self.deduper(**kwargs)
+            deduper.deduplicate(corpus, output_dir=temp, overwrite=True)
+            deduped_corpus = Path(temp) / "deduplicated_corpus.jsonl"
+            return [json.loads(line)["text"] for line in deduped_corpus.open("r")]
 
     def miss_percentage(self, corpus=None, iterations=100, **kwargs):
         corpus = corpus or [
@@ -89,20 +137,18 @@ class TestDeduper:
         ]
 
     def test_no_normalization(self):
-        identity = lambda doc: doc
         assert self.dedup(
             [
                 "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
                 "Der kom en soldat marcherende hen ad landevejen!\n én. to? én; to?",
             ],
-            normalization_func=identity,
+            normalization_func=identity_fn,
         ) == [
             "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
             "Der kom en soldat marcherende hen ad landevejen!\n én. to? én; to?",
         ]
 
     def test_aggresive_normalization(self):
-        word_shape = lambda doc: re.sub("[A-Z]", "X", re.sub("[^A-Z ]", "x", doc))
         assert self.dedup(
             [
                 "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
@@ -126,14 +172,50 @@ class TestDeduper:
         assert miss >= 20
         assert miss <= 30
 
-    def test_2_ngram_shingles(self):
-        shingles = self.deduper(ngram_size=2)._get_shingles("Hej med dig Kim")
+    def test_2_ngram_shingles(self, shingle_params):
+        shingles = get_shingles(
+            "Hej med dig Kim", ngram_size=2, ngram_stride=1, **shingle_params
+        )
         assert shingles == ["Hej med", "med dig", "dig Kim"]
 
-    def test_3_ngram_shingles(self):
-        shingles = self.deduper(ngram_size=3)._get_shingles("Hej med dig Kim")
+    def test_3_ngram_shingles(self, shingle_params):
+        shingles = get_shingles(
+            "Hej med dig Kim", ngram_size=3, ngram_stride=1, **shingle_params
+        )
         assert shingles == ["Hej med dig", "med dig Kim"]
 
-    def test_double_stride_shingles(self):
-        shingles = self.deduper(ngram_stride=2)._get_shingles("Hej med dig Kim")
+    def test_double_stride_shingles(self, shingle_params):
+        shingles = get_shingles(
+            "Hej med dig Kim", ngram_size=1, ngram_stride=2, **shingle_params
+        )
         assert shingles == ["Hej", "dig"]
+
+    def test_get_config(self):
+        deduper = self.deduper()
+        config = deduper.get_config()
+        for key, val in config.items():
+            assert val == getattr(deduper, key)
+
+    def test_load_from_disk(self, minhash_params):
+        corpus = ["hej med dig min ven", "hej med dig min ven", "farvel du gamle"]
+        corpus = list(enumerate(corpus))
+        with tempfile.TemporaryDirectory() as temp:
+
+            # Create a deduper loaded from disk, and a different new one
+            deduper = self.deduper(split_method="paragraph")
+            deduper.deduplicate(corpus, output_dir=temp, overwrite=True)
+            loaded_deduper = Deduper.load_from_disk(temp)
+            new_deduper = self.deduper()
+
+            # Test that the loaded config is the same as the original
+            assert loaded_deduper.get_config() == deduper.get_config()
+            assert new_deduper.get_config() != deduper.get_config()
+
+            # Test that the loaded mask is the same as the original
+            assert loaded_deduper.mask == deduper.mask
+            assert new_deduper.mask != deduper.mask
+
+            # Test that the loaded LSH cache works as intended
+            minhash = get_minhash(corpus[0][1], **minhash_params)
+            assert len(loaded_deduper.lsh_cache.query(minhash)) > 0
+            assert len(new_deduper.lsh_cache.query(minhash)) == 0
