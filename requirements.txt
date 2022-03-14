@@ -1,15 +1,12 @@
 wandb~=0.12.9
 
 # models
-transformers~=4.16.2
+transformers~=4.16.0
 torch~=1.10.2
 protobuf==3.19.4
 
 # tokenizers
 tokenizers==0.10.1
-
-# dataset descriptino
-dacy==1.3.0
 
 # data
 datasets~=1.17.0
@@ -19,6 +16,9 @@ ndjson==0.3.1
 spacy>=3.1.4,<=3.3.0
 datasketch~=1.5.6
 more_itertools~=8.12.0
+
+# dataset description
+dacy==1.3.0
 
 # utility
 wasabi~=0.8.2
