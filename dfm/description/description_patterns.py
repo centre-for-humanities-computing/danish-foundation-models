@@ -1,3 +1,6 @@
+from typing import Dict, List
+
+
 occupation_pattern_list = set(
     [
         "revisor",
@@ -442,3 +445,41 @@ danish_adult_words = set(
         "xxx",
     ]
 )
+
+
+def get_muslim_name_patterns() -> List[Dict[str, list]]:
+    """Gets a list of all muslim first names in Denmark from DaCy, and converts to a list of lowercase spacy patterns.
+
+    Returns:
+        List[Dict[str, list]]: list of lowercase spacy match patterns
+    """
+    from dfm.description.matchcounter import MatchCounter
+    from dacy.datasets import muslim_names
+
+    muslim_names_list = [name.lower() for name in muslim_names()["first_name"]]
+
+    return MatchCounter.term_list_to_lowercase_match_patterns(
+        term_list=muslim_names_list, label="muslim_names"
+    )
+
+
+def get_gender_name_patterns() -> List[Dict[str, list]]:
+    """Gets a list of all gendered first names in Denmark from DaCy, and converts to a list of lowercase spacy patterns.
+
+    Returns:
+        List[Dict[str, list]]: list of lowercase spacy match patterns
+    """
+    from dacy.datasets import female_names, male_names
+    from dfm.description.matchcounter import MatchCounter
+
+    female_names_list = [name.lower() for name in female_names()["first_name"]]
+    female_names_patterns = MatchCounter.term_list_to_lowercase_match_patterns(
+        female_names_list, label="female_names"
+    )
+
+    male_names_list = [name.lower() for name in male_names()["first_name"]]
+    male_name_patterns = MatchCounter.term_list_to_lowercase_match_patterns(
+        male_names_list, label="male_names"
+    )
+
+    return female_names_patterns + male_name_patterns

@@ -4,13 +4,18 @@ from spacy.language import Language
 from spacy.matcher import Matcher
 from spacy.tokens import Doc
 
-from typing import Iterable, Optional
+from typing import Dict, Iterable, List, Optional
 
 
 class MatchCounter:
-    """Class of utility functions for counting spacy matches"""
+    """Class for counting matches in a text corpus.
 
-    def __init__(self, match_patterns: list, nlp: Language):
+    Args:
+        match_patterns (List[Dict[str, list]): list of lowercase spacy match patterns
+        nlp (Language): The spacy language to use
+    """
+
+    def __init__(self, match_patterns: List[Dict[str, list]], nlp: Language):
         self.nlp = nlp
         self.matcher_objects = self.gen_matcher_objects_from_pattern_list(
             match_patterns
@@ -18,10 +23,22 @@ class MatchCounter:
 
     @staticmethod
     def term_list_to_lowercase_match_patterns(
-        term_list: list, label: Optional[str] = None, label_prefix: str = ""
-    ) -> list:
-        """
-        Takes a list of terms and creates a list of SpaCy patterns in the shape {"label": [{"LOWER": "term"}]}
+        term_list: List[str],
+        label_prefix: Optional[str] = "",
+        label: Optional[str] = None,
+    ) -> List[str]:
+        """Takes a list of strings and converts it to a list of spacy match patterns
+
+        Args:
+            term_list (List[str]): List of terms.
+            label_prefix (Optional[str], optional): Prefix for the label. Helpful when aggregating.
+                E.g. you want your occupations to be prefixed with "occu_" for later processing, like "occu_nurse", "occu_doctor" etc.
+                Defaults to "".
+            label (Optional[str], optional): Label for the spacy match patterns. Helpful when aggregating, e.g. you'd like to count all your male names in a "male names" variable.
+                Defaults to None, indicating each pattern will be labeled by its term.
+
+        Returns:
+            List[str]: Spacy match patterns in the shape {"label": [{"LOWER": "term"}]}
         """
         out_list = []
 
@@ -85,10 +102,14 @@ class MatchCounter:
 
         return dict(counts)
 
-    def count(self, texts: Iterable[str]) -> dict:
-        """
-        Takes an iterable of texts and processes them into a dictionary with
-        {match_label (str): match_counts (list of ints)}
+    def count(self, texts: Iterable[str]) -> Dict[str, List[int]]:
+        """Generates counts from the match patterns in the MatchCounter object.
+
+        Args:
+            texts (Iterable[str]): The texts to count matches in.
+
+        Returns:
+            dict: Counts for match_labels like {label1: [1,2,3], label2: [4,5,6]}
         """
 
         docs = self.nlp.pipe(texts)
