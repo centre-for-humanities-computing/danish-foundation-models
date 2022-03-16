@@ -133,19 +133,11 @@ dmypy.json
 
 # data files
 **/*.jsonl
-
+*.ndjson
 *.csv
 
 # MacOS
 .DS_Store
-=======
-*.ndjson
-
-# MacOS
-.DS_Store
-
-# vs code
-.vscode/*
 
 # Profiling
 *.prof

@@ -8,50 +8,23 @@ import spacy
 
 sys.path.append(".")
 
-from dfm.description.description_pattern_lists import (
+from dfm.description.description_patterns import (
     female_gendered_terms,
     male_gendered_terms,
     occupation_pattern_list,
     danish_adult_words,
+    get_muslim_name_patterns,
+    get_gender_name_patterns,
 )
 
-from matchcounter import MatchCounter
+from dfm.description.matchcounter import MatchCounter
 
 
 def remove_irrelevant_columns(ds):
     return ds.remove_columns(["text", "doc_id", "LICENSE", "uri", "date_built"])
 
 
-def get_muslim_name_patterns() -> list:
-    from dacy.datasets import muslim_names
-
-    muslim_names_list = [name.lower() for name in muslim_names()["first_name"]]
-
-    return MatchCounter.term_list_to_lowercase_match_patterns(
-        term_list=muslim_names_list, label="muslim_names"
-    )
-
-
-def get_gender_name_patterns() -> list:
-    """
-    Creates a list of SpaCy patterns in the shape {"[col_name]": [{"LOWER": "[pattern]"}]}
-    """
-    from dacy.datasets import female_names, male_names
-
-    female_names_list = [name.lower() for name in female_names()["first_name"]]
-    female_names_patterns = MatchCounter.term_list_to_lowercase_match_patterns(
-        female_names_list, label="female_names"
-    )
-
-    male_names_list = [name.lower() for name in male_names()["first_name"]]
-    male_name_patterns = MatchCounter.term_list_to_lowercase_match_patterns(
-        male_names_list, label="male_names"
-    )
-
-    return female_names_patterns + male_name_patterns
-
-
-if __name__ == "__main__":
+def create_patterns():
     any_token_pattern = [{"tokens": [{"TEXT": {"REGEX": ".+"}}]}]
 
     # Religion
@@ -75,8 +48,8 @@ if __name__ == "__main__":
         {"female_pronoun": [{"LOWER": "hun"}]},
     ]
 
+    # Gendered terms
     # List is a partial translation of Rae et al. 2022, p. 95
-
     male_gendered_term_patterns = MatchCounter.term_list_to_lowercase_match_patterns(
         male_gendered_terms, label="male_gendered_terms"
     )
@@ -85,18 +58,17 @@ if __name__ == "__main__":
     )
 
     # Occupations
+    # List is a partial translation of Rae et al. 2022, p. 95
     occupation_patterns = MatchCounter.term_list_to_lowercase_match_patterns(
         occupation_pattern_list, label_prefix="occu_"
     )
-    # List is a partial translation of Rae et al. 2022, p. 95
 
     # Adult words
     adult_patterns = MatchCounter.term_list_to_lowercase_match_patterns(
         danish_adult_words, label_prefix="porn_"
     )
 
-    # Execution
-    combined_patterns = (
+    return (
         any_token_pattern
         + religion_patterns
         + muslim_name_patterns
@@ -108,6 +80,10 @@ if __name__ == "__main__":
         + adult_patterns
     )
 
+
+if __name__ == "__main__":
+    all_patterns = create_patterns()
+
     ds = load_dataset("DDSC/partial-danish-gigaword-no-twitter")
     ds_sharded = ds.shuffle()["train"].shard(
         num_shards=100, index=0
@@ -116,7 +92,7 @@ if __name__ == "__main__":
     nlp = spacy.blank("da")
     nlp.max_length = 50000000
 
-    MatchCounter = MatchCounter(match_patterns=combined_patterns, nlp=nlp)
+    MatchCounter = MatchCounter(match_patterns=all_patterns, nlp=nlp)
 
     start_time = time.time()
 
@@ -129,7 +105,10 @@ if __name__ == "__main__":
 
     print(f"\n\n--- Execution time was {time.time() - start_time} seconds ---")
 
-    if not os.path.exists("csv"):
-        os.makedirs("csv")
+    from pathlib import Path
+
+    save_path = os.path.join("csv")
+    save_path = Path(save_path)  # format as path
+    save_path.mkdir(parents=False, exist_ok=True)  # only create if needed
 
     remove_irrelevant_columns(dgw_processed).to_csv("csv/output_100.csv")
