@@ -12,35 +12,21 @@ References:
         (Cat. No. 97TB100171). IEEE, 1997.
 """
 
-from datasketch import MinHash, LeanMinHash, MinHashLSH
+from datasketch import MinHashLSH
 from datasets.arrow_dataset import Dataset
 from datasets.iterable_dataset import IterableDataset
-from typing import Union, Iterable, Optional, List, Callable
+from typing import Union, Iterable, Optional, Callable, Dict, Tuple
 from pathlib import Path
 import shutil
 import json
-from unicodedata import normalize
-import re
 from tqdm.auto import tqdm
-
-from more_itertools import chunked
+import itertools as it
+import more_itertools as mit
 from joblib import Parallel, delayed
 import multiprocessing as mp
 import pickle
-
-
-def _default_normalization(doc: str) -> str:
-    """NFKC normalise document and remove punctuation
-
-    Args:
-        doc (str): The document to normalize.
-
-    Returns:
-        str: The normalized document.
-    """
-    doc = normalize("NFKC", doc)
-    doc = re.sub(r"[\.\,\:\;\!\?\(\)\[\]\{\}]", " ", doc)
-    return re.sub(" +", " ", doc)
+from functools import partial
+from .deduper_utils import get_minhash, default_normalization
 
 
 class Deduper:
@@ -65,10 +51,8 @@ class Deduper:
             Defaults to 0.8.
         num_minhashes (int, optional):
             The number of MinHash functions to use. Defaults to 128.
-        batch_size (int or None, optional):
-            The number of documents to process at a time. If None then it is
-            set to 10,000 if `split_method` is 'paragraph', 'none' or None,
-            and 1,000 if `split_method` is 'word_ngram'. Defaults to None.
+        batch_size (int, optional):
+            The number of documents to process at a time.  Defaults to 100_000.
         n_jobs (int, optional):
             The number of parallel jobs to use. If set to -1 then all available
             cores are used. Defaults to -1.
@@ -105,10 +89,11 @@ class Deduper:
         ngram_stride: int = 1,
         similarity_threshold: float = 0.8,
         num_minhashes: int = 128,
-        batch_size: Optional[int] = None,
+        batch_size: int = 100_000,
         n_jobs: int = -1,
         random_seed: int = 42,
-        normalization_func: Callable[[str], str] = _default_normalization,
+        normalization_func: Callable[[str], str] = default_normalization,
+        save_mask: bool = True,
         verbose: bool = True,
     ):
         self.split_method = "none" if split_method is None else split_method
@@ -116,31 +101,22 @@ class Deduper:
         self.ngram_stride = ngram_stride
         self.similarity_threshold = similarity_threshold
         self.num_minhashes = num_minhashes
+        self.batch_size = batch_size
         self.n_jobs = mp.cpu_count() if n_jobs == -1 else n_jobs
         self.random_seed = random_seed
         self.normalization_func = normalization_func
         self.verbose = verbose
-        self.mask = list()
+        self.save_mask = save_mask
+        if save_mask:
+            self.mask = list()
         self.lsh_cache = MinHashLSH(
             threshold=self.similarity_threshold, num_perm=self.num_minhashes
         )
 
-        if batch_size is None:
-            if self.split_method in ["paragraph", "none"] or self.split_method is None:
-                self.batch_size = 10_000
-            elif self.split_method == "word_ngram":
-                self.batch_size = 1_000
-            else:
-                raise ValueError(
-                    f"Invalid split_method: {self.split_method}. "
-                    "Valid values are 'word_ngram', 'paragraph', 'none' and None."
-                )
-        else:
-            self.batch_size = batch_size
-
     def reset(self):
         """Reset the deduplicator, removing the mask and the LSH cache"""
-        self.mask = list()
+        if self.save_mask:
+            self.mask = list()
         self.lsh_cache = MinHashLSH(
             threshold=self.similarity_threshold, num_perm=self.num_minhashes
         )
@@ -176,10 +152,12 @@ class Deduper:
         # Create the Deduper
         deduper = cls(**config)
 
-        # Load the mask
-        with open(directory / "mask.jsonl", "r") as f:
-            mask = [json.loads(line) for line in f]
-        deduper.mask = mask
+        # Load the mask if it exists
+        mask_path = directory / "mask.jsonl"
+        if mask_path.exists():
+            with open(mask_path, "r") as f:
+                mask = [json.loads(line) for line in f]
+            deduper.mask = mask
 
         # Load the LSH cache
         with open(directory / "lsh_cache.pkl", "rb") as f:
@@ -208,72 +186,6 @@ class Deduper:
         )
         return config
 
-    def _get_shingles(self, doc: str) -> List[str]:
-        """Extracts the shingles from a document.
-
-        Args:
-            doc (str):
-                The document to extract the shingles from.
-
-        Returns:
-            list of str:
-                The shingles extracted from the document.
-
-        Raises:
-            ValueError:
-                If `self.split_method` is not 'word_ngram', 'paragraph', 'none'
-                or None.
-        """
-        # Normalise document
-        doc = self.normalization_func(doc)
-
-        # Extract shingles from the document, depending on the `split_method`
-        if self.split_method == "word_ngram":
-            words = [word for word in doc.split(" ") if len(word) > 0]
-            max_word_idx = 1 + len(words) - self.ngram_size
-            shingles = [
-                " ".join(words[i : i + self.ngram_size]).strip()
-                for i in range(0, max_word_idx, self.ngram_stride)
-            ] or [doc]
-        elif self.split_method == "paragraph":
-            shingles = [p for p in doc.split("\n") if len(p) > 0]
-        elif self.split_method == "none" or self.split_method is None:
-            shingles = [doc]
-        else:
-            raise ValueError(f"Invalid split method: {self.split_method}")
-
-        return shingles
-
-    def _get_minhash(self, doc: str) -> LeanMinHash:
-        """Returns a minhash fingerprint for the given document.
-
-        Args:
-            doc (str): The document to create the MinHash object for.
-
-        Returns:
-            LeanMinHash: The minhash fingerprint for the given document.
-
-        Raises:
-            ValueError:
-                If `self.split_method` is not 'word_ngram', 'paragraph', 'none'
-                or None.
-        """
-        # Extract shingles from the document, depending on the `split_method`
-        shingles = self._get_shingles(doc)
-
-        # Initialise the fingerprint
-        minhash = MinHash(num_perm=self.num_minhashes, seed=self.random_seed)
-
-        # Add all the shingles to the fingerprint
-        minhash.update_batch([shingle.encode("utf-8") for shingle in shingles])
-
-        # Convert the fingerprint to a LeanMinHash fingerprint, to save memory
-        # and increase performance
-        minhash = LeanMinHash(minhash, seed=self.random_seed)
-
-        # Return the fingerprint
-        return minhash
-
     def _store_document(self, output_path: Union[str, Path], **kwargs):
         """Appends the document to a JSONL file.
 
@@ -293,37 +205,153 @@ class Deduper:
 
     def deduplicate(
         self,
-        corpus: Union[Dataset, IterableDataset, Iterable[str]],
+        corpus: Union[
+            Dataset,
+            IterableDataset,
+            Iterable[Tuple[Union[str, int], str]],
+            Iterable[Dict[str, Union[str, int]]],
+        ],
+        id_column: str = "id",
+        text_column: str = "text",
         output_dir: Union[str, Path] = "deduplicated",
         overwrite: bool = False,
-    ):
-        """Removes duplicate documents from the corpus and stores it to disk.
+        store_corpus_to_disk: bool = True,
+        store_mask_to_disk: bool = True,
+        store_lsh_cache_to_disk: bool = True,
+        store_config_to_disk: bool = True,
+        return_generator: bool = False,
+    ) -> Union[Iterable, None]:
+        """Removes duplicate documents from the corpus.
 
         Args:
-            corpus (Dataset, IterableDataset or iterable of strings):
-                The corpus to deduplicate. If `corpus` is a Dataset, it must
-                have a `text` column.
+            corpus (Dataset, IterableDataset, iter of tuples or dicts):
+                The corpus to deduplicate.
+            id_column (str, optional):
+                The name of the column in the corpus that contains the document
+                IDs. Defaults to 'id'.
+            text_column (str, optional):
+                The name of the column in the corpus that contains the document
+                texts. Defaults to 'text'.
             output_dir (str or Path, optional):
                 The name of the output directory. Defaults to 'deduplicated'.
             overwrite (bool, optional):
                 Whether to overwrite the output file if it already exists.
                 Defaults to False.
+            store_corpus_to_disk (bool, optional):
+                Whether to store the corpus to disk. Defaults to True.
+            store_mask_to_disk (bool, optional):
+                Whether to store the mask to disk. Defaults to True.
+            store_lsh_cache_to_disk (bool, optional):
+                Whether to store the LSH cache to disk. Defaults to True.
+            store_config_to_disk (bool, optional):
+                Whether to store the configuration to disk. Defaults to True.
+            return_generator (bool, optional):
+                Whether to return a generator which yields the mask. Defaults
+                to False.
+
+        Returns:
+            Iterable or None:
+                If `return_generator` is True, then a generator which yields
+                a dictionary with keys `id` and `duplicate`. Otherwise, None.
 
         Raises:
             FileExistsError:
                 If the output file already exists and `overwrite` is False.
         """
+        iterable = self._deduplicate(
+            corpus=corpus,
+            id_column=id_column,
+            text_column=text_column,
+            output_dir=output_dir,
+            overwrite=overwrite,
+            store_corpus_to_disk=store_corpus_to_disk,
+            store_mask_to_disk=store_mask_to_disk,
+            store_lsh_cache_to_disk=store_lsh_cache_to_disk,
+            store_config_to_disk=store_config_to_disk,
+            return_generator=return_generator,
+        )
+        if return_generator:
+            return iterable
+        else:
+            for _ in iterable:
+                pass
 
+    def _deduplicate(
+        self,
+        corpus: Union[
+            Dataset,
+            IterableDataset,
+            Iterable[Tuple[Union[str, int], str]],
+            Iterable[Dict[str, Union[str, int]]],
+        ],
+        id_column: str = "id",
+        text_column: str = "text",
+        output_dir: Union[str, Path] = "deduplicated",
+        overwrite: bool = False,
+        store_corpus_to_disk: bool = True,
+        store_mask_to_disk: bool = True,
+        store_lsh_cache_to_disk: bool = True,
+        store_config_to_disk: bool = True,
+        return_generator: bool = False,
+    ) -> Iterable:
+        """Helper function for the `deduplicate` method.
+
+        Args:
+            corpus (Dataset, IterableDataset, iter of tuples or dicts):
+                The corpus to deduplicate.
+            id_column (str, optional):
+                The name of the column in the corpus that contains the document
+                IDs. Defaults to 'id'.
+            text_column (str, optional):
+                The name of the column in the corpus that contains the document
+                texts. Defaults to 'text'.
+            output_dir (str or Path, optional):
+                The name of the output directory. Defaults to 'deduplicated'.
+            overwrite (bool, optional):
+                Whether to overwrite the output file if it already exists.
+                Defaults to False.
+            store_corpus_to_disk (bool, optional):
+                Whether to store the corpus to disk. Defaults to True.
+            store_mask_to_disk (bool, optional):
+                Whether to store the mask to disk. Defaults to True.
+            store_lsh_cache_to_disk (bool, optional):
+                Whether to store the LSH cache to disk. Defaults to True.
+            store_config_to_disk (bool, optional):
+                Whether to store the configuration to disk. Defaults to True.
+            return_generator (bool, optional):
+                Whether to return a generator which yields the mask. Defaults
+                to False.
+
+        Yields:
+            dict or None:
+                A dictionary with keys `id` and `duplicate` if
+                `return_generator` is True, and otherwise None.
+
+        Raises:
+            FileExistsError:
+                If the output file already exists and `overwrite` is False.
+        """
         # Register number of documents in the corpus
         num_docs = len(corpus) if hasattr(corpus, "__len__") else None
 
-        # Convert corpus to an iterable of strings if a Dataset is given
+        # If the corpus is a Dataset or IterableDataset then convert it to an
+        # iterable of tuples
         if isinstance(corpus, Dataset) or isinstance(corpus, IterableDataset):
-            corpus = (
-                sample["text"]
-                for doc_idx, sample in enumerate(corpus)
-                if doc_idx not in [i for i, _ in self.mask]
-            )
+            corpus = ((sample[id_column], sample[text_column]) for sample in corpus)
+
+        # Otherwise we check if the corpus is an iterable of dictionaries, in
+        # which case we also convert it to an iterable of tuples
+        else:
+
+            # Create a copy of the corpus to ensure that we're not modifying
+            # the original, and extract the first element of the copy.
+            corpus, corpus_copy = it.tee(corpus)
+            sample = next(corpus_copy)
+
+            # If the first element of the corpus is a dictionary then we
+            # convert the corpus to an iterable of tuples
+            if isinstance(sample, dict):
+                corpus = ((sample[id_column], sample[text_column]) for sample in corpus)
 
         # Ensure that `output_dir` is a Path object
         output_dir = Path(output_dir)
@@ -337,7 +365,13 @@ class Deduper:
                 raise FileExistsError(f"Output directory {output_dir} already exists.")
 
         # Create the output directory
-        output_dir.mkdir(parents=True)
+        if (
+            store_corpus_to_disk
+            or store_lsh_cache_to_disk
+            or store_lsh_cache_to_disk
+            or store_config_to_disk
+        ):
+            output_dir.mkdir(parents=True)
 
         # Set up paths
         output_path = output_dir / "deduplicated_corpus.jsonl"
@@ -346,70 +380,132 @@ class Deduper:
         config_path = output_dir / "config.pkl"
 
         # Store the deduper config to disk
-        config = self.get_config()
-        with config_path.open("wb") as f:
-            pickle.dump(config, f)
+        if store_config_to_disk:
+            config = self.get_config()
+            with config_path.open("wb") as f:
+                pickle.dump(config, f)
 
         #  Split the corpus into batches of `self.batch_size` documents
-        batches = chunked(enumerate(corpus), self.batch_size)
+        batches = mit.ichunked(corpus, self.batch_size)
 
         # Iterate over the corpus and store documents that are not duplicates
         duplicates = 0
+        num_processed = 0
         pbar_params = dict(
-            desc="Deduplicating", total=num_docs, disable=(not self.verbose)
+            desc="Deduplicating",
+            total=num_docs,
+            disable=(not self.verbose),
+            leave=False,
         )
         with tqdm(batches, **pbar_params) as pbar:
-            for batch in pbar:
 
-                # Compute the fingerprint for the document
-                with Parallel(n_jobs=self.n_jobs) as parallel:
-                    fn = delayed(self._get_minhash)
-                    minhashes = parallel(fn(doc) for _, doc in batch)
+            # Initialise the multiprocessing
+            with Parallel(n_jobs=self.n_jobs) as parallel:
 
-                # Iterate over the minhashes
-                for (doc_idx, doc), minhash in zip(batch, minhashes):
+                # Define the function that will be called in parallel
+                fn = delayed(
+                    partial(
+                        get_minhash,
+                        normalization_func=self.normalization_func,
+                        split_method=self.split_method,
+                        ngram_size=self.ngram_size,
+                        ngram_stride=self.ngram_stride,
+                        num_minhashes=self.num_minhashes,
+                        random_seed=self.random_seed,
+                    )
+                )
 
-                    # If the document is not a near-duplicate candidate then
-                    # store in the LSH cache and append it to the JSONL output
-                    # file
-                    candidates = self.lsh_cache.query(minhash)
-                    if len(candidates) == 0:
+                # Iterate over the batches
+                for batch in pbar:
 
-                        # Insert the document into the LSH cache
-                        self.lsh_cache.insert(doc_idx, minhash)
+                    # Create a copy of the batch to ensure that we're not
+                    # modifying the original
+                    batch, batch_copy = it.tee(batch)
 
-                        # Store the LSH cache to disk
+                    # Compute size of the batch
+                    new_num_processed = num_processed + self.batch_size
+                    new_num_processed = min(new_num_processed, num_docs)
+                    batch_size = new_num_processed - num_processed
+
+                    # Define parameters used in batch progress bars
+                    pbar_params = dict(
+                        total=batch_size, leave=False, disable=(not self.verbose)
+                    )
+
+                    # Compute the fingerprint for the document
+                    pbar_params["desc"] = "Computing minhashes"
+                    with tqdm(batch, **pbar_params) as batch_pbar:
+                        minhashes = parallel(fn(doc) for _, doc in batch_pbar)
+
+                    # Iterate over the minhashes
+                    pbar_params["desc"] = "Deduplicating batch"
+                    with tqdm(batch_copy, **pbar_params) as batch_pbar:
+                        for (idx, doc), minhash in zip(batch_pbar, minhashes):
+
+                            # If the document is not a near-duplicate candidate
+                            # then store in the LSH cache and append it to the
+                            # JSONL output file
+                            candidates = self.lsh_cache.query(minhash)
+                            if len(candidates) == 0:
+
+                                # Insert the document into the LSH cache
+                                self.lsh_cache.insert(idx, minhash)
+
+                                # Store the non-duplicate document in the JSONL
+                                # output
+                                if store_corpus_to_disk:
+                                    self._store_document(
+                                        id=idx, text=doc, output_path=output_path
+                                    )
+
+                                # Compute the mask for the document
+                                mask_entry = dict(id=idx, duplicate=False)
+
+                            # Otherwise, increment the number of duplicate
+                            # documents
+                            else:
+                                duplicates += 1
+
+                                # Compute the mask for the document
+                                mask_entry = dict(id=idx, duplicate=True)
+
+                            # Add the mask to the mask attribute
+                            if self.save_mask:
+                                self.mask.append(mask_entry)
+
+                            # Yield the mask
+                            if return_generator:
+                                yield mask_entry
+
+                            # Store the mask to disk
+                            if store_mask_to_disk:
+                                self._store_document(
+                                    output_path=mask_path, **mask_entry
+                                )
+
+                    # Store the LSH cache to disk
+                    if store_lsh_cache_to_disk:
                         with lsh_cache_path.open("wb") as f:
                             pickle.dump(self.lsh_cache, f)
 
-                        # Store the non-duplicate document in the JSONL output
-                        self._store_document(
-                            id=doc_idx, text=doc, output_path=output_path
-                        )
+                    # Update the number of documents processed, and compute the
+                    # number of documents in the batch
+                    num_processed = new_num_processed
 
-                        # Add the current document to the Boolean mask
-                        mask_entry = dict(id=doc_idx, duplicate=False)
-                        self.mask.append(mask_entry)
+                    # Update the progress bar
+                    pbar.update(batch_size)
+                    pct_duplicated = 100 * duplicates / num_processed
+                    desc = (
+                        f"Deduplicating - {pct_duplicated:.2f}% near-duplicates found"
+                    )
+                    pbar.set_description(desc)
 
-                    # Otherwise, increment the number of duplicate documents
-                    else:
-                        duplicates += 1
-
-                        # Add the current document to the Boolean mask
-                        mask_entry = dict(id=doc_idx, duplicate=True)
-                        self.mask.append(mask_entry)
-
-                    # Store the Boolean mask to disk
-                    self._store_document(output_path=mask_path, **mask_entry)
-
-                # Get the maximal doc_idx in the batch
-                max_doc_idx = max(doc_idx for doc_idx, _ in batch)
-
-                # Update the progress bar
-                pbar.update(len(batch))
-                pct_duplicated = 100 * duplicates / (1 + max_doc_idx)
-                desc = f"Deduplicating - {pct_duplicated:.2f}% near-duplicates found"
-                pbar.set_description(desc)
+        # Return final update
+        if self.verbose:
+            pct_duplicated = 100 * duplicates / num_docs
+            print("Finished deduplicating corpus.")
+            print(f"- {num_processed:,} documents processed.")
+            print(f"- {pct_duplicated:.2f}% documents marked as duplicates.")
 
 
 if __name__ == "__main__":
@@ -428,7 +524,7 @@ if __name__ == "__main__":
 
     # Remove the deduplicated corpus if it already exists
     if output_dir.exists():
-        output_dir.unlink()
+        shutil.rmtree(output_dir)
 
     # Load the test dataset
     corpus = load_dataset(
@@ -439,9 +535,9 @@ if __name__ == "__main__":
 
     #  Deduplicate the test dataset
     deduper = Deduper(split_method=args.split_method, n_jobs=args.n_jobs)
-    deduper.deduplicate(corpus, output_dir=output_dir)
+    deduper.deduplicate(corpus, id_column="doc_id", output_dir=output_dir)
 
     # *** Time taken to deduplicate DAGW with 16 cores, by `split_method` ***
     #   - 'none': ~3.5 minutes (found 24.75% duplicates)
     #   - 'paragraph': ~4 minutes (found 25.83% duplicates)
-    #   - 'word_ngram' with n == 13: ~16 minutes (found 31.49% duplicates)
+    #   - 'word_ngram' with n == 13: ~10 minutes (found 25.77% duplicates)
