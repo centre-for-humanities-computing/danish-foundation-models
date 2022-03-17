@@ -24,42 +24,12 @@ from datasets import load_dataset
 dfm_path = os.path.join("danish-foundation-models")
 sys.path.append(dfm_path)
 
-from src.dfm.cleaning import QualityFilter
+from src.dfm.cleaning import Deduper
 
 
 def filter_batch(batch, i):
     """check whether sample i should be included"""
     return batch["language"][i] in {"da"}
-
-
-def q_filter(batch):
-    """
-    Quality filter which takes in a hf datasets batch and and applies a quality
-    filter to all the texts which pass the filter_batch
-    """
-    qf = QualityFilter()
-    is_filtered = [filter_batch(batch, i) for i, _ in enumerate(batch["text"])]
-    texts = (t for t, is_f in zip(batch["text"], is_filtered) if is_f)
-
-    # apply q_filter
-    filter_gen = qf.describe_filter(texts, batch_size=1024)
-
-    
-    # merge with unfiltered texts
-    merge_filter = [next(filter_gen) if is_f else None for is_f in is_filtered]
-    batch["passed_quality_filter"] = [None if is_filtered_by is None else is_filtered_by == "passed filters"
-                                      for is_filtered_by in merge_filter]
-    
-    # add colums for specific filters
-    #   manually add max_chr_length as it is an exception handling filter
-    prev_filters = {None}
-    batch["filtered_by_max_chr_length"] = [None if is_f in prev_filters else is_f == "max_chr_length" for is_f in merge_filter]
-    prev_filters.add("max_chr_length")
-
-    for qfilter in qf.filters:
-        batch["filtered_by_" + qfilter]  = [None if is_f in prev_filters else is_f == qfilter for is_f in merge_filter]
-        prev_filters.add(qfilter)
-    return batch
 
 
 def batch(dataset: Iterable, batch_size: int) -> Iterable:
@@ -90,12 +60,12 @@ def batch(dataset: Iterable, batch_size: int) -> Iterable:
 def main(
     read_path: str,
     write_path: str,
-    n_process: int = 60,
+    n_process: int = 32,
 ) -> None:
-    Path(write_path).mkdir(exist_ok=True, parents=True)
 
-    path = os.path.join(read_path, "**", "*.parquet")
-    parquet_files = glob.glob(path, recursive=True)
+    deduper = Deduper()
+    path = os.path.join(read_path, "**", "*.jsonl")
+    jsonl_files = glob.glob(path, recursive=True)
 
     # create batches of files at time (approximately 10-30mb pr. file)
     batches = tqdm(list(batch(parquet_files, 64)))
@@ -124,8 +94,8 @@ def main(
 
 
 if __name__ == "__main__":
-    for year in [2006, 2007, 2009, 2010, 2016]:
-        read_path = os.path.join("/work", "netarchive", f"{year}_textcorpus.parquet")
+    for year in [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016]:
+        read_path = os.path.join("/work", "netarkivet-cleaned", f"{year}")
         write_path = os.path.join("/work", "netarkivet-cleaned", f"{year}")
         main(read_path, write_path)
         msg.good(f"Finished year {year}")
