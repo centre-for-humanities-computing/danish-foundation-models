@@ -27,7 +27,7 @@ from src.dfm.utils import batch
 
 def filter_batch(batch, i):
     """check whether sample i should be included"""
-    return batch["language"][i] in {"da"}
+    return batch["lang"][i] in {"da"}
 
 
 def q_filter(batch):
@@ -35,7 +35,31 @@ def q_filter(batch):
     Quality filter which takes in a hf datasets batch and and applies a quality
     filter to all the texts which pass the filter_batch
     """
-    qf = QualityFilter()
+    qf = QualityFilter(
+        min_stop_words=1,  # changed from 2
+        mean_word_length=(2, 14),
+        # extended from 3, 10 due to more variance in smaller texts
+        doc_length=(5, 10_000),  # changed from 50-100,000
+        alpha_ratio=0.6,
+        duplicate_lines_chr_fraction=0.2,
+        duplicate_paragraph_chr_fraction=0.2,
+        top_ngram_chr_fraction_thresholds=[0.20, 0.18, 0.16],
+        top_ngram_chr_fraction_range=(2, 4),
+        duplicate_n_gram_fraction_thresholds=[
+            0.25,
+            0.24,
+            0.23,
+            0.22,
+            0.21,
+            0.20,
+        ],
+        duplicate_n_gram_fraction_range=(5, 10),
+        ignore_filters=[
+            "symbol_2_word_hashtag",  # this is tweets # is common
+            "symbol_2_word_ellipsis",
+            "line_bullets_or_ellipsis",
+        ],
+    )
     is_filtered = [filter_batch(batch, i) for i, _ in enumerate(batch["text"])]
     texts = (t for t, is_f in zip(batch["text"], is_filtered) if is_f)
 
@@ -73,25 +97,20 @@ def main(
 ) -> None:
     Path(write_path).mkdir(exist_ok=True, parents=True)
 
-    path = os.path.join(read_path, "**", "*.parquet")
-    parquet_files = glob.glob(path, recursive=True)
+    path = os.path.join(read_path, "**", "*.ndjson")
+    json_files = glob.glob(path, recursive=True)
 
-    # create batches of files at time (approximately 10-30mb pr. file)
-    batches = tqdm(list(batch(parquet_files, 64)))
-
-    for i, p_files in enumerate(batches):
+    for i, j_files in enumerate(json_files):
         w_path = os.path.join(write_path, f"{i}.jsonl")
         if os.path.exists(w_path):
             msg.info(f"File {w_path} already exist, skipping")
             continue
 
         # load in batch
-        p_files = list(p_files)
-        dataset = load_dataset("parquet", data_files={"train": p_files})
+        dataset = load_dataset("json", data_files={"train": [j_files]})
         ds = dataset["train"]
 
         # apply quality filter to batch
-        ds = ds.rename_column("content", "text")
         ds = ds.map(
             q_filter,
             batched=True,
@@ -103,8 +122,7 @@ def main(
 
 
 if __name__ == "__main__":
-    for year in [2006, 2007, 2009, 2010, 2016]:
-        read_path = os.path.join("/work", "netarchive", f"{year}_textcorpus.parquet")
-        write_path = os.path.join("/work", "netarkivet-cleaned", f"{year}")
-        main(read_path, write_path)
-        msg.good(f"Finished year {year}")
+    read_path = os.path.join("/work", "twitter")
+    write_path = os.path.join("/work", "twitter-cleaned")
+    main(read_path, write_path)
+    msg.good(f"Finished Processing")

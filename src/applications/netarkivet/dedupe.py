@@ -99,4 +99,3 @@ if __name__ == "__main__":
         write_path = os.path.join("/work", "netarkivet-cleaned", f"{year}")
         main(read_path, write_path)
         msg.good(f"Finished year {year}")
-

@@ -77,6 +77,7 @@ This project uses compute resources supplied by [Ucloud](https://docs.cloud.sdu.
 - Dan Saattrup Nielsen
 - Malte Højmark-Bertelsen
 - Kasper Junge
+- Jens Dahl Møllerhøj
 - Rokas Maksevičius - Junior developer cleaning the netarkiv
 - Peter Bjerregaard Vahlstrup - the guy who makes sure data collections works
 - Kristoffer Nielbo - Supervisor
