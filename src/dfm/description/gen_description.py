@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+from typing import List
 from datasets import load_dataset
 
 
@@ -20,11 +21,12 @@ from dfm.description.description_patterns import (
 from dfm.description.match_counter import MatchCounter
 
 
-def remove_irrelevant_columns(ds):
-    return ds.remove_columns(["text", "doc_id", "LICENSE", "uri", "date_built"])
+def create_patterns() -> List:
+    """Generates the patterns we've selected for the present analyses.
 
-
-def create_patterns():
+    Returns:
+        List: List of spacy pattern containers.
+    """
     any_token_pattern = [{"tokens": [{"TEXT": {"REGEX": ".+"}}]}]
 
     # Religion
@@ -111,4 +113,8 @@ if __name__ == "__main__":
     save_path = Path(save_path)  # format as path
     save_path.mkdir(parents=False, exist_ok=True)  # only create if needed
 
-    remove_irrelevant_columns(dgw_processed).to_csv("csv/output_100.csv")
+    dgw_processed = dgw_processed.remove_columns(
+        ["text", "doc_id", "LICENSE", "uri", "date_built"]
+    )  # Remove irrelevant columns
+
+    dgw_processed.to_csv("csv/output_100.csv")
