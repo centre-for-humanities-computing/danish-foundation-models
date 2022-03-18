@@ -1,5 +1,8 @@
 from setuptools import setup
 from setuptools import find_packages
+
+import subprocess
+import sys
 import os
 
 path = os.path.join("src", "dfm", "about.py")
@@ -11,7 +14,15 @@ with open(path) as f:
             __version__ = l.split('"')[-2]
 
 
+def install_nodeps(package_name: str):
+    subprocess.check_call(
+        [sys.executable, "-m", "pip", "install", "--no-deps", package_name]
+    )
+
+
 def setup_package():
+    install_nodeps("dacy")
+
     setup(
         version=__version__,
         packages=find_packages(
