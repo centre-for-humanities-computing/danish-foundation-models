@@ -12,6 +12,7 @@ import glob
 import os
 import sys
 from pathlib import Path
+import multiprocessing
 
 from wasabi import msg
 
@@ -25,8 +26,8 @@ from src.dfm.utils import batch
 
 
 def filter_batch(batch, i):
-    """check whether sample i should be included"""
-    return batch["lang"][i] in {"da"}
+    """check whether sample i should be included. This does not filter anything"""
+    return True
 
 
 def q_filter(batch):
@@ -89,40 +90,62 @@ def q_filter(batch):
         prev_filters.add(qfilter)
     return batch
 
+def add_text_col(example: dict) -> dict:
+    """constructs text column to news article"""
+    example["text"] = ""
+    if example["Heading"].strip(" "):
+        example["text"] = example["Heading"]
+    if example["SubHeading"].strip(" "):
+        example["text"] += f'\n {example["SubHeading"]}'
+    # if example["PublishDate"]:
+    #     example["text"] += f'\n {example["PublishDate"]}'
+    # if example["Paragraph"].strip(" "):
+    #     example["text"] += f'\n\n {example["Paragraph"]}'
+    if example["BodyText"].strip(" "):
+        example["text"] += f'\n\n {example["BodyText"]}'
+    return example
+
 
 def main(
     read_path: str,
     write_path: str,
-    n_process: int = 60,
+    n_process: int = -1,
 ) -> None:
+    if n_process == -1:
+        n_process = multiprocessing.cpu_count() - 2
+
+    print("n_process:", n_process)
+
     Path(write_path).mkdir(exist_ok=True, parents=True)
 
     path = os.path.join(read_path, "**", "*.ndjson")
     json_files = glob.glob(path, recursive=True)
 
-    for i, j_files in enumerate(json_files):
-        w_path = os.path.join(write_path, f"{i}.jsonl")
-        if os.path.exists(w_path):
-            msg.info(f"File {w_path} already exist, skipping")
-            continue
+    w_path = os.path.join(write_path, f"infomedia_2000-2021.jsonl")
 
-        # load in batch
-        dataset = load_dataset("json", data_files={"train": [j_files]})
-        ds = dataset["train"]
+    # load in batch
+    dataset = load_dataset("json", data_files={"train": json_files})
+    ds = dataset["train"]
 
-        # apply quality filter to batch
-        ds = ds.map(
-            q_filter,
-            batched=True,
-            batch_size=1024,
-            num_proc=n_process,
-        )
-        msg.info(f"Writing {w_path} to disk")
-        ds.to_json(w_path)
+    print("adding text col")
+    ds = ds.map(add_text_col, num_proc=n_process)
+
+
+    # apply quality filter to batch
+    print("applying filter")
+    ds = ds.map(
+        q_filter,
+        batched=True,
+        batch_size=1024,
+        num_proc=n_process,
+    )
+    ds.shuffle()
+    msg.info(f"Writing {w_path} to disk")
+    ds.to_json(w_path)
 
 
 if __name__ == "__main__":
     read_path = os.path.join("/work", "hope-infomedia", "yearly")
-    write_path = os.path.join("/work", "twitter-cleaned")
+    write_path = os.path.join("/work", "hope-infomedia_cleaned")
     main(read_path, write_path)
     msg.good(f"Finished Processing")
