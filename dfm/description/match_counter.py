@@ -1,4 +1,5 @@
 from collections import defaultdict
+from xmlrpc.client import Boolean
 
 from spacy.language import Language
 from spacy.matcher import Matcher
@@ -17,15 +18,16 @@ class MatchCounter:
 
     def __init__(self, match_patterns: List[Dict[str, list]], nlp: Language):
         self.nlp = nlp
-        self.matcher_objects = self.gen_matcher_objects_from_pattern_list(
+        self.matcher_objects = self.create_matcher_objects_from_pattern_list(
             match_patterns
         )
 
     @staticmethod
-    def term_list_to_lowercase_match_patterns(
+    def term_list_to_spacy_match_patterns(
         term_list: List[str],
         label_prefix: Optional[str] = "",
         label: Optional[str] = None,
+        lowercase: Boolean = True,
     ) -> List[str]:
         """Takes a list of strings and converts it to a list of spacy match patterns
 
@@ -36,28 +38,38 @@ class MatchCounter:
                 Defaults to "".
             label (Optional[str], optional): Label for the spacy match patterns. Helpful when aggregating, e.g. you'd like to count all your male names in a "male names" variable.
                 Defaults to None, indicating each pattern will be labeled by its term.
+            lowercase (Boolean): Whether to match on lowercased tokens or not.
 
         Returns:
             List[str]: Spacy match patterns in the shape {"label": [{"LOWER": "term"}]}
         """
         out_list = []
 
+        attribute = "LOWER" if lowercase else "TEXT"
+
         for term in term_list:
             if label is None:
                 cur_label = label_prefix + term
-                out_list.append({cur_label: [{"LOWER": term}]})
             else:
                 cur_label = label_prefix + label
-                out_list.append({cur_label: [{"LOWER": term}]})
+
+            out_list.append({cur_label: [{attribute: term}]})
 
         return out_list
 
-    def gen_matcher_objects_from_pattern_list(
-        self, pattern_container_list: list
+    def create_matcher_objects_from_pattern_list(
+        self, pattern_container_list: List[Dict[str, List]]
     ) -> Matcher:
         """
         Generates matcher objects from a list of dictionaries with {matcher_label (str): pattern (list)}
         Pattern must conform to SpaCy pattern standards:
+
+        Args:
+            pattern_container_list (List[Dict[str, List]]): List of spacy pattern-containers in the shape of
+                {matcher_label (str): pattern (list)}
+
+        Returns:
+            Matcher: Spacy matcher object containing all the patterns from the arg
 
         Example:
             >>> pattern_container_list = [
@@ -65,13 +77,12 @@ class MatchCounter:
             >>>    {"atheism": [{"LOWER": {"REGEX": "atei.+"}}]},
             >>>    {"skøde": [{"LOWER": "skøde"}]},
             >>> ]
-            >>> match_counter.gen_matcher_objects_from_pattern_list(pattern_container_list)
+            >>> match_counter.create_matcher_objects_from_pattern_list(pattern_container_list)
         """
         matcher_object = Matcher(self.nlp.vocab)
 
         for pattern_container in pattern_container_list:
             pattern_label, subpattern_list = list(*pattern_container.items())
-
             matcher_object.add(pattern_label, [subpattern_list])
 
         return matcher_object
@@ -82,8 +93,7 @@ class MatchCounter:
 
         args:
             doc (Doc)
-            pattern_container_list (list): A list of dictionaries fitting SpaCy patterns
-            nlp: Language
+            matcher_object (Matcher): Object to count from
 
         returns:
             A dictionary of the format {pattern_label (str): count (int)}.

@@ -17,7 +17,7 @@ from dfm.description.description_patterns import (
     get_gender_name_patterns,
 )
 
-from dfm.description.matchcounter import MatchCounter
+from dfm.description.match_counter import MatchCounter
 
 
 def remove_irrelevant_columns(ds):
@@ -50,21 +50,21 @@ def create_patterns():
 
     # Gendered terms
     # List is a partial translation of Rae et al. 2022, p. 95
-    male_gendered_term_patterns = MatchCounter.term_list_to_lowercase_match_patterns(
+    male_gendered_term_patterns = MatchCounter.term_list_to_spacy_match_patterns(
         male_gendered_terms, label="male_gendered_terms"
     )
-    female_gendered_term_patterns = MatchCounter.term_list_to_lowercase_match_patterns(
+    female_gendered_term_patterns = MatchCounter.term_list_to_spacy_match_patterns(
         female_gendered_terms, label="female_gendered_terms"
     )
 
     # Occupations
     # List is a partial translation of Rae et al. 2022, p. 95
-    occupation_patterns = MatchCounter.term_list_to_lowercase_match_patterns(
+    occupation_patterns = MatchCounter.term_list_to_spacy_match_patterns(
         occupation_pattern_list, label_prefix="occu_"
     )
 
     # Adult words
-    adult_patterns = MatchCounter.term_list_to_lowercase_match_patterns(
+    adult_patterns = MatchCounter.term_list_to_spacy_match_patterns(
         danish_adult_words, label_prefix="porn_"
     )
 
