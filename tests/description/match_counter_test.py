@@ -1,6 +1,5 @@
-from cgitb import text
 import pytest
-from dfm.description import MatchCounter
+from src.dfm.description import MatchCounter
 import spacy
 
 
