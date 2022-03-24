@@ -21,6 +21,8 @@ def install_nodeps(package_name: str):
 
 
 def setup_package():
+    # custom install of DaCy where we only use install the requirements needed for the lookup tables:
+    # should not be necessary after: https://github.com/centre-for-humanities-computing/DaCy/pull/98
     install_nodeps("dacy")
 
     setup(
