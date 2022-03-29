@@ -21,7 +21,7 @@ more_itertools~=8.12.0
 # utility
 wasabi~=0.9.0
 pydantic~=1.8.2
-click~=7.1.2
+click~=8.0.4
 
 # testing
 pytest>=6.2.5
@@ -29,4 +29,4 @@ pytest-lazy-fixture>=0.6.3
 pytest-cov>=2.8.1
 
 # format
-black==21.12b0
+black==22.3.0
