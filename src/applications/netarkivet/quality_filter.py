@@ -103,7 +103,7 @@ def main(
 
 
 if __name__ == "__main__":
-    for year in [2006, 2007, 2009, 2010, 2016]:
+    for year in range(2006, 2017):
         read_path = os.path.join("/work", "netarchive", f"{year}_textcorpus.parquet")
         write_path = os.path.join("/work", "netarkivet-cleaned", f"{year}")
         main(read_path, write_path)
