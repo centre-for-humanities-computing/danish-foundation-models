@@ -18,4 +18,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: psf/black@21.12b0
+      - uses: psf/black@stable
+          version: "21.12b0"
