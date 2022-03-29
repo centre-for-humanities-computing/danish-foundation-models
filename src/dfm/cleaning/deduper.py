@@ -424,9 +424,7 @@ class Deduper:
 
                     # Compute size of the batch
                     new_num_processed = num_processed + self.batch_size
-                    if num_docs is None:
-                        new_num_processed = new_num_processed
-                    else:
+                    if num_docs is not None:
                         new_num_processed = min(new_num_processed, num_docs)
 
                     batch_size = new_num_processed - num_processed
