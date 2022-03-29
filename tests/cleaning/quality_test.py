@@ -4,6 +4,7 @@ from typing import List
 
 from dfm.cleaning import QualityFilter
 import pytest
+from pytest_lazyfixture import lazy_fixture
 
 
 class TestQualityFilter:
@@ -118,7 +119,7 @@ class TestQualityFilter:
     @pytest.mark.parametrize(
         "texts,expected",
         [
-            (pytest.lazy_fixture("bullets_texts"), False),
+            (lazy_fixture("bullets_texts"), False),
             (["56789okd23456789098765sds"], True),
         ],
     )
