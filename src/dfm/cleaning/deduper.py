@@ -424,7 +424,8 @@ class Deduper:
 
                     # Compute size of the batch
                     new_num_processed = num_processed + self.batch_size
-                    new_num_processed = min(new_num_processed, num_docs)
+                    if num_docs is not None:
+                        new_num_processed = min(new_num_processed, num_docs)
                     batch_size = new_num_processed - num_processed
 
                     # Define parameters used in batch progress bars
@@ -502,7 +503,7 @@ class Deduper:
 
         # Return final update
         if self.verbose:
-            pct_duplicated = 100 * duplicates / num_docs
+            pct_duplicated = 100 * duplicates / num_processed
             print("Finished deduplicating corpus.")
             print(f"- {num_processed:,} documents processed.")
             print(f"- {pct_duplicated:.2f}% documents marked as duplicates.")

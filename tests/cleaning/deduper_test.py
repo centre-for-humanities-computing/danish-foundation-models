@@ -79,6 +79,12 @@ class TestDeduper:
                 misses += 1
         return (100.0 * misses) / iterations
 
+    def test_stream(self):
+        corpus = iter([(0, 'hej med dig min ven'),
+                       (1, 'hej med dig'),
+                       (2, 'farvel du gamle')])
+        self.dedup(corpus) == ['hej med dig min ven', 'farvel du gamle']
+
     def test_removes_exact_duplicates(self):
         assert self.dedup(
             ["hej med dig min ven", "hej med dig min ven", "farvel du gamle"]
