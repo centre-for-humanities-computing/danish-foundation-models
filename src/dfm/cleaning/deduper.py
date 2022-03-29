@@ -360,15 +360,46 @@ class Deduper:
         # is False and otherwise delete the file
         if output_dir.exists():
             if overwrite:
+
+                # Delete the output directory
                 shutil.rmtree(output_dir)
+
+                # Create the output directory
+                output_dir.mkdir(parents=True)
+
+                # Store existing mask
+                if self.save_mask and store_mask_to_disk:
+                    mask_path = output_dir / "mask.jsonl"
+                    mask_str = '\n'.join(json.dumps(sample) for sample in self.mask)
+                    with mask_path.open("w") as f:
+                        f.write(mask_str)
+
+                # Store existing LSH cache
+                if store_lsh_cache_to_disk:
+                    lsh_cache_path = output_dir / "lsh_cache.pkl"
+                    with lsh_cache_path.open("wb") as f:
+                        pickle.dump(self.lsh_cache, f)
+
+                # Store existing configuration
+                if store_config_to_disk:
+                    config_path = output_dir / "config.pkl"
+                    config = self.get_config()
+                    with config_path.open("wb") as f:
+                        pickle.dump(config, f)
+
             else:
-                raise FileExistsError(f"Output directory {output_dir} already exists.")
+                raise FileExistsError(f"Output directory {output_dir} already exists."
+                                      "Please set `overwrite` to True to overwrite "
+                                      "the files. If you are loading an existing "
+                                      "Deduper from the directory then the previous "
+                                      "config, mask and LSH cache will still will "
+                                      "not be lost and will be stored in the directory.")
 
         # Create the output directory
         if (
             store_corpus_to_disk
             or store_lsh_cache_to_disk
-            or store_lsh_cache_to_disk
+            or store_mask_to_disk
             or store_config_to_disk
         ):
             output_dir.mkdir(parents=True)
