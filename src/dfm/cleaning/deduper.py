@@ -370,7 +370,7 @@ class Deduper:
                 # Store existing mask
                 if self.save_mask and store_mask_to_disk:
                     mask_path = output_dir / "mask.jsonl"
-                    mask_str = '\n'.join(json.dumps(sample) for sample in self.mask)
+                    mask_str = "\n".join(json.dumps(sample) for sample in self.mask)
                     with mask_path.open("w") as f:
                         f.write(mask_str)
 
@@ -388,12 +388,14 @@ class Deduper:
                         pickle.dump(config, f)
 
             else:
-                raise FileExistsError(f"Output directory {output_dir} already exists."
-                                      "Please set `overwrite` to True to overwrite "
-                                      "the files. If you are loading an existing "
-                                      "Deduper from the directory then the previous "
-                                      "config, mask and LSH cache will still will "
-                                      "not be lost and will be stored in the directory.")
+                raise FileExistsError(
+                    f"Output directory {output_dir} already exists."
+                    "Please set `overwrite` to True to overwrite "
+                    "the files. If you are loading an existing "
+                    "Deduper from the directory then the previous "
+                    "config, mask and LSH cache will still will "
+                    "not be lost and will be stored in the directory."
+                )
 
         # Create the output directory
         if (
