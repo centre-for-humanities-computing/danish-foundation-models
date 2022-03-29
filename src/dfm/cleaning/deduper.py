@@ -398,7 +398,7 @@ class Deduper:
                 )
 
         # Create the output directory
-        if (
+        if not output_dir.exists() and (
             store_corpus_to_disk
             or store_lsh_cache_to_disk
             or store_mask_to_disk
