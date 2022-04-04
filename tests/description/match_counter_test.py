@@ -47,7 +47,7 @@ class TestMatchCounter:
         ]
 
     def test_matcher_object_generation(self, regex_patterns, mc_basic):
-        matcher_objects = mc_basic.create_matcher_objects_from_pattern_list(
+        matcher_objects = mc_basic.create_matcher_object_from_pattern_list(
             pattern_container_list=regex_patterns
         )
 
@@ -66,13 +66,15 @@ class TestMatchCounter:
         assert counts == {"heks": [0, 1, 0], "soldat": [1, 0, 2]}
 
     def test_multiple_matches_under_same_label(self, nlp):
-        from dfm.description.description_patterns import christian_match_patterns
+        from dfm.description.description_patterns import (
+            get_religion_patterns,
+        )
 
-        mc = MatchCounter(match_patterns=christian_match_patterns, nlp=nlp)
+        mc = MatchCounter(match_patterns=get_religion_patterns(), nlp=nlp)
 
         texts = ["En kristen er en del af de kristne, og kristne tror på kristendommen"]
 
-        assert mc.count(texts) == {"kristen": [4]}
+        assert mc.count(texts)["christian"] == [4]
 
     def test_labelled_term_list_generation(self):
         labelled_term_list = [{"christian": ["christian", "christianity"]}]
