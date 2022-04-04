@@ -79,7 +79,7 @@ religion_labelled_match_patterns = [
 
 def get_religion_patterns():
     return MatchCounter.list_of_labelled_term_lists_to_spacy_match_patterns(
-        religion_labelled_match_patterns, prefix="rel_"
+        religion_labelled_match_patterns, label_prefix="rel_"
     )
 
 
@@ -109,7 +109,7 @@ occupation_labelled_match_patterns = [
         ]
     },
     {
-        "arkitekt:"[
+        "arkitekt": [
             "arkitekt",
             "arkitekten",
             "arkitekter",
@@ -497,7 +497,7 @@ occupation_labelled_match_patterns = [
 
 def get_occupation_patterns():
     return MatchCounter.list_of_labelled_term_lists_to_spacy_match_patterns(
-        occupation_labelled_match_patterns, prefix="occu_"
+        occupation_labelled_match_patterns, label_prefix="occu_"
     )
 
 

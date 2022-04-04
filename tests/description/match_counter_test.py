@@ -74,7 +74,7 @@ class TestMatchCounter:
 
         texts = ["En kristen er en del af de kristne, og kristne tror på kristendommen"]
 
-        assert mc.count(texts)["christian"] == [4]
+        assert mc.count(texts)["rel_christian"] == [4]
 
     def test_labelled_term_list_generation(self):
         labelled_term_list = [{"christian": ["christian", "christianity"]}]
