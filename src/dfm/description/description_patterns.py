@@ -5,7 +5,7 @@ from dfm.description import MatchCounter
 # * The person-noun singular (e.g. "kristen") and conjugated
 # * The adjective (e.g. kristent)
 # * The religion-noun singular (e.g. "kristendom") and conjugated
-religion_labelled_match_patterns = {
+religion_labelled_match_patterns = [
     {"muslim": ["muslim", "muslimen", "muslimer", "muslimerne", "muslimsk", "islam"]},
     {
         "christian": [
@@ -74,7 +74,7 @@ religion_labelled_match_patterns = {
             "atheismerne",
         ]
     },
-}
+]
 
 
 def get_religion_patterns():
