@@ -5,6 +5,7 @@ using parallelism and vectorisation.
 
 Author:
     Dan Saattrup Nielsen (saattrupdan@gmail.com)
+    Kenneth Enevoldsen (kennethcenevoldsen@gmail.com)
 
 References:
     [1] Broder, Andrei Z. "On the resemblance and containment of documents."
@@ -276,6 +277,71 @@ class Deduper:
             for _ in iterable:
                 pass
 
+    def save_to_disk(
+        self,
+        output_dir: Union[str, Path],
+        overwrite: bool = False,
+        store_mask_to_disk: bool = True,
+        store_lsh_cache_to_disk: bool = True,
+        store_config_to_disk: bool = True,
+    ) -> None:
+        """Save the Deduper to disk.
+
+        Args:
+            output_dir (str or Path, optional): The name of the output directory.
+            overwrite (bool, optional):
+                Whether to overwrite the output file if it already exists.
+                Defaults to False.
+            store_corpus_to_disk (bool, optional):
+                Whether to store the corpus to disk. Defaults to True.
+            store_mask_to_disk (bool, optional):
+                Whether to store the mask to disk. Defaults to True.
+            store_lsh_cache_to_disk (bool, optional):
+                Whether to store the LSH cache to disk. Defaults to True.
+            store_config_to_disk (bool, optional):
+                Whether to store the configuration to disk. Defaults to True.
+        """
+        # Ensure that `output_dir` is a Path object
+        output_dir = Path(output_dir)
+
+        # If the output file already exists then raise an error if `overwrite`
+        # is False and otherwise delete the file
+        if output_dir.exists() and not overwrite:
+            raise FileExistsError(
+                f"Output directory {output_dir} already exists."
+                "Please set `overwrite` to True to overwrite "
+                "the files. If you are loading an existing "
+                "Deduper from the directory then the previous "
+                "config, mask and LSH cache will still will "
+                "not be lost and will be stored in the directory."
+            )
+        elif output_dir.exists() and overwrite:
+            # Delete the output directory
+            shutil.rmtree(output_dir)
+
+        output_dir.mkdir(parents=True, exist_ok=True)
+    
+        # Store existing mask
+        if self.save_mask and store_mask_to_disk:
+            mask_path = output_dir / "mask.jsonl"
+            mask_str = "\n".join(json.dumps(sample) for sample in self.mask)
+            with open(mask_path, "w") as f:
+                f.write(mask_str)
+
+        # Store existing LSH cache
+        if store_lsh_cache_to_disk:
+            lsh_cache_path = output_dir / "lsh_cache.pkl"
+            with lsh_cache_path.open("wb") as f:
+                pickle.dump(self.lsh_cache, f)
+
+        # Store existing configuration
+        if store_config_to_disk:
+            config_path = output_dir / "config.pkl"
+            config = self.get_config()
+            with config_path.open("wb") as f:
+                pickle.dump(config, f)
+
+
     def _deduplicate(
         self,
         corpus: Union[
@@ -359,43 +425,13 @@ class Deduper:
         # If the output file already exists then raise an error if `overwrite`
         # is False and otherwise delete the file
         if output_dir.exists():
-            if overwrite:
-
-                # Delete the output directory
-                shutil.rmtree(output_dir)
-
-                # Create the output directory
-                output_dir.mkdir(parents=True)
-
-                # Store existing mask
-                if self.save_mask and store_mask_to_disk:
-                    mask_path = output_dir / "mask.jsonl"
-                    mask_str = "\n".join(json.dumps(sample) for sample in self.mask)
-                    with mask_path.open("w") as f:
-                        f.write(mask_str)
-
-                # Store existing LSH cache
-                if store_lsh_cache_to_disk:
-                    lsh_cache_path = output_dir / "lsh_cache.pkl"
-                    with lsh_cache_path.open("wb") as f:
-                        pickle.dump(self.lsh_cache, f)
-
-                # Store existing configuration
-                if store_config_to_disk:
-                    config_path = output_dir / "config.pkl"
-                    config = self.get_config()
-                    with config_path.open("wb") as f:
-                        pickle.dump(config, f)
-
-            else:
-                raise FileExistsError(
-                    f"Output directory {output_dir} already exists."
-                    "Please set `overwrite` to True to overwrite "
-                    "the files. If you are loading an existing "
-                    "Deduper from the directory then the previous "
-                    "config, mask and LSH cache will still will "
-                    "not be lost and will be stored in the directory."
-                )
+            self.save_to_disk(
+                output_dir,
+                overwrite,
+                store_mask_to_disk,
+                store_lsh_cache_to_disk,
+                store_config_to_disk,
+            )
 
         # Create the output directory
         if not output_dir.exists() and (
