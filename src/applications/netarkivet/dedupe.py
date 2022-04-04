@@ -8,7 +8,7 @@ Authors:
     Kenneth Enevoldsen
 
 """
-from typing import Iterable
+from typing import Iterable, List
 
 import glob
 import os
@@ -37,8 +37,8 @@ def filter_example(example, already_checked):
 def get_id_from_path(x):
     return int(os.path.split(x)[-1].split(".")[0])
 
-def create_paths():
-    for year in [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016]:
+def create_paths(years = [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016]):
+    for year in years:
         read_path = os.path.join("/work", "netarkivet-cleaned", f"{year}")
         path = os.path.join(read_path, "**", "*.jsonl")
         jsonl_files = glob.glob(path, recursive=True)
@@ -52,43 +52,40 @@ def create_paths():
 
 def create_text_gen(
     already_checked: set,
+    paths: Iterable[str]
 ):
     filter_example_ = partial(filter_example, already_checked = already_checked)
- 
-    paths = create_paths()
     
     for year, i, j_files in paths:
-        if isinstance(j_files, str):
-            j_files = [j_files]
 
-        dataset = load_dataset("json", data_files={"train": j_files})
-        ds = dataset["train"]      
-        ds = ds.add_column("id", [f"{year}_{i}_{id}" for id in range(len(ds))]) 
-        ds = ds.filter(filter_example_)
-        
-        for txt in zip(ds["id"], ds["text"]):
-            yield txt
+        with open(j_files) as f:
+            reader = ndjson.reader(f)
+
+            for id, website in enumerate(reader):
+                website["id"] = f"{year}_{i}_{id}"
+                if filter_example_(website):
+                    yield website["id"], website["text"]
 
 
 def main(
     dedupe_path: str,
-    n_process: int =-1,
 ) -> None:
-
-    if n_process == -1:
-        n_process = multiprocessing.cpu_count()
-
     if os.path.exists(dedupe_path):
         msg.info(f"Loading Deduper from {dedupe_path}")
         deduper = Deduper.load_from_disk(dedupe_path)
         already_checked = {d["id"] for d in deduper.mask}
     else:
-        deduper = Deduper(batch_size=2**20)
+        deduper = Deduper(batch_size=2**20) # potentially change to 2**23
         already_checked = set()
 
-    text_gen = create_text_gen(already_checked=already_checked)
-    deduper.deduplicate(text_gen, return_generator=False, overwrite=False, store_corpus_to_disk = False, 
-        store_mask_to_disk = True, store_lsh_cache_to_disk = True, store_config_to_disk = True, output_dir=dedupe_path)
+    for year in [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016]:
+        paths = create_paths(years = [year])
+        text_gen = create_text_gen(already_checked=already_checked, paths=paths)
+
+        dedupe_path_ =  os.path.join(dedupe_path, str(year))
+
+        deduper.deduplicate(text_gen, return_generator=False, overwrite=True, store_corpus_to_disk = False, 
+            store_mask_to_disk = True, store_lsh_cache_to_disk = True, store_config_to_disk = True, output_dir=dedupe_path_)
 
 
 
