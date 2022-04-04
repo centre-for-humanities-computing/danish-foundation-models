@@ -12,11 +12,12 @@ sys.path.append(".")
 from dfm.description.description_patterns import (
     get_religion_patterns,
     female_gendered_terms,
-    male_gendered_terms,
-    occupation_pattern_list,
-    danish_adult_words,
+    get_female_gendered_patterns,
+    get_male_gendered_patterns,
+    get_occupation_patterns,
     get_muslim_name_patterns,
     get_gender_name_patterns,
+    danish_adult_words,
 )
 
 from dfm.description.match_counter import MatchCounter
@@ -35,21 +36,6 @@ def create_patterns() -> List:
         {"female_pronoun": [{"LOWER": "hun"}]},
     ]
 
-    # Gendered terms
-    # List is a partial translation of Rae et al. 2022, p. 95
-    male_gendered_term_patterns = MatchCounter.term_list_to_spacy_match_patterns(
-        male_gendered_terms, label="male_gendered_terms"
-    )
-    female_gendered_term_patterns = MatchCounter.term_list_to_spacy_match_patterns(
-        female_gendered_terms, label="female_gendered_terms"
-    )
-
-    # Occupations
-    # List is a partial translation of Rae et al. 2022, p. 95
-    occupation_patterns = MatchCounter.term_list_to_spacy_match_patterns(
-        occupation_pattern_list, label_prefix="occu_"
-    )
-
     # Adult words
     adult_patterns = MatchCounter.term_list_to_spacy_match_patterns(
         danish_adult_words, label_prefix="porn_"
@@ -57,13 +43,13 @@ def create_patterns() -> List:
 
     return (
         any_token_pattern
+        + gender_pronoun_patterns
         + get_religion_patterns()
+        + get_occupation_patterns()
         + get_muslim_name_patterns()
         + get_gender_name_patterns()
-        + gender_pronoun_patterns
-        + male_gendered_term_patterns
-        + female_gendered_term_patterns
-        + occupation_patterns
+        + get_male_gendered_patterns()
+        + get_female_gendered_patterns()
         + adult_patterns
     )
 

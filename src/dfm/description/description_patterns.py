@@ -79,218 +79,429 @@ religion_labelled_match_patterns = [
 
 def get_religion_patterns():
     return MatchCounter.list_of_labelled_term_lists_to_spacy_match_patterns(
-        religion_labelled_match_patterns
+        religion_labelled_match_patterns, prefix="rel_"
     )
 
 
-occupation_pattern_list = set(
-    [
-        "revisor",
-        "revisoren",
-        "revisorer",
-        "revisorerne",
-        "administrator",
-        "administratoren",
-        "administratorer",
-        "administratorerne",
-        "analytiker",
-        "analytikeren",
-        "analytikere",
-        "analytikerne",
-        "arkitekt",
-        "arkitekten",
-        "arkitekter",
-        "arkitekterne",
-        "assistent",
-        "assistenten",
-        "assistenter",
-        "assistenterne",
-        "bager",
-        "bageren",
-        "bagere",
-        "bagerne",
-        "bartender",
-        "bartenderen",
-        "bartendere",
-        "bartenderne",
-        "ejendomsmægler",
-        "ejendomsmægleren",
-        "ejendomsmæglere",
-        "ejendomsmæglerne" "tømrer",
-        "tømreren",
-        "tømrere",
-        "tømrerne",
-        "kassemedarbejder",
-        "kassemedearbejderen",
-        "kassemedarbejdere",
-        "kassemedarbejderne",
-        "kok",
-        "kokken",
-        "kokke",
-        "kokkene",
-        "kemiker",
-        "kemikeren",
-        "kemikere",
-        "kemikerne",
-        "chef",
-        "chefen",
-        "chefer",
-        "cheferne",
-        "rengøringshjælp",
-        "rengøringshjælpen",
-        "rengøringshjælpere",
-        "rengøringshjælperne",
-        "ekspedient",
-        "ekspedienten",
-        "ekspedienter",
-        "ekspedienterne",
-        "terapeut",
-        "terapeuten",
-        "terapeuter",
-        "terapeuterne",
-        "advokat",
-        "advokaten",
-        "advokater",
-        "advokaterne",
-        "diætist",
-        "diætisten",
-        "diætister",
-        "diætisterne",
-        "læge",
-        "lægen",
-        "læger",
-        "lægerne",
-        "chauffør",
-        "chaufføren",
-        "chauffører",
-        "chaufførerne",
-        "redaktør",
-        "redatøren",
-        "redaktører",
-        "redaktørerne",
-        "elektriker",
-        "elektrikeren",
-        "elektrikere",
-        "elektrikerne",
-        "ingeniør",
-        "ingeniøren",
-        "ingeniører",
-        "ingeniørerne",
-        "landmand",
-        "landmanden",
-        "landmænd",
-        "landmændene",
-        "brandmand",
-        "brandmanden",
-        "brandmænd",
-        "brandmændene",
-        "vagt",
-        "vagten",
-        "vagter",
-        "vagterne",
-        "frisør",
-        "frisøren",
-        "frisører",
-        "frisørerne",
-        "instruktør",
-        "instruktøren",
-        "instruktører",
-        "instruktørerne",
-        "efterforsker",
-        "efterforskeren",
-        "efterforskere",
-        "efterforskerne",
-        "pedel",
-        "pedellen",
-        "pedeller",
-        "pedellerne",
-        "advokat",
-        "advokaten",
-        "advokater",
-        "advokaterne",
-        "bibliotekar",
-        "bibliotekaren",
-        "bibliotekarer",
-        "bibliotekarerne",
-        "mekaniker",
-        "makanikeren",
-        "mekanikere",
-        "mekanikerne",
-        "sygeplejerske",
-        "sygeplersken",
-        "sygeplejersker",
-        "sygeplejeskerne",
-        "politibetjent",
-        "politibetjenten",
-        "politibetjente",
-        "politibetjentene",
-        "maler",
-        "maleren",
-        "malerne",
-        "malere",
-        "ambulanceredder",
-        "ambulanceredderen",
-        "ambulancereddere",
-        "ambulanceredderne",
-        "ambulancebehandler",
-        "ambulancebehandleren",
-        "ambulancebehandlere",
-        "ambulancebehandlerne",
-        "patolog",
-        "patologen",
-        "patologer",
-        "patologerne",
-        "farmaceut",
-        "farmaceuten",
-        "farmaceuter",
-        "farmaceuterne",
-        "blikkenslager",
-        "blikkenslageren",
-        "blikkenslagere",
-        "blikkenslagerne",
-        "programmør",
-        "programmøren",
-        "programmører",
-        "programmørerne",
-        "psykolog",
-        "psykologen",
-        "psykologer",
-        "psykologerne",
-        "receptionist",
-        "receptionisten",
-        "receptionister",
-        "receptionisterne",
-        "sekretær",
-        "sekretæren",
-        "sekretærer",
-        "sekretærerne",
-        "kirurg",
-        "kirurgen",
-        "kirurger",
-        "kirurgerne",
-        "skrædder",
-        "skrædderen",
-        "skræddere",
-        "skrædderne",
-        "tekniker",
-        "teknikeren",
-        "teknikere",
-        "teknikerne",
-        "terapeut",
-        "terapeuten",
-        "terapeuter",
-        "terapeuterne",
-        "dyrlæge",
-        "dyrlægen",
-        "dyrlæger",
-        "dyrlægerne",
-        "forfatter",
-        "forfatteren",
-        "forfattere",
-        "forfatterne",
-    ]
-)
+occupation_labelled_match_patterns = [
+    {
+        "revisor": [
+            "revisor",
+            "revisoren",
+            "revisorer",
+            "revisorerne",
+        ],
+    },
+    {
+        "administrator": [
+            "administrator",
+            "administratoren",
+            "administratorer",
+            "administratorerne",
+        ]
+    },
+    {
+        "analytiker": [
+            "analytiker",
+            "analytikeren",
+            "analytikere",
+            "analytikerne",
+        ]
+    },
+    {
+        "arkitekt:"[
+            "arkitekt",
+            "arkitekten",
+            "arkitekter",
+            "arkitekterne",
+        ]
+    },
+    {
+        "assistent": [
+            "assistent",
+            "assistenten",
+            "assistenter",
+            "assistenterne",
+        ]
+    },
+    {
+        "bager": [
+            "bager",
+            "bageren",
+            "bagere",
+            "bagerne",
+        ]
+    },
+    {
+        "bartender": [
+            "bartender",
+            "bartenderen",
+            "bartendere",
+            "bartenderne",
+        ]
+    },
+    {
+        "ejendomsmægler": [
+            "ejendomsmægler",
+            "ejendomsmægleren",
+            "ejendomsmæglere",
+            "ejendomsmæglerne",
+        ]
+    },
+    {
+        "tømrer": [
+            "tømrer",
+            "tømreren",
+            "tømrere",
+            "tømrerne",
+        ]
+    },
+    {
+        "kassemedarbejder": [
+            "kassemedarbejder",
+            "kassemedearbejderen",
+            "kassemedarbejdere",
+            "kassemedarbejderne",
+        ]
+    },
+    {
+        "kok": [
+            "kok",
+            "kokken",
+            "kokke",
+            "kokkene",
+        ]
+    },
+    {
+        "kemiker": [
+            "kemiker",
+            "kemikeren",
+            "kemikere",
+            "kemikerne",
+        ]
+    },
+    {
+        "chef": [
+            "chef",
+            "chefen",
+            "chefer",
+            "cheferne",
+        ]
+    },
+    {
+        "rengøringshjælp": [
+            "rengøringshjælp",
+            "rengøringshjælpen",
+            "rengøringshjælpere",
+            "rengøringshjælperne",
+        ]
+    },
+    {
+        "ekspedient": [
+            "ekspedient",
+            "ekspedienten",
+            "ekspedienter",
+            "ekspedienterne",
+        ]
+    },
+    {
+        "terapeut": [
+            "terapeut",
+            "terapeuten",
+            "terapeuter",
+            "terapeuterne",
+        ]
+    },
+    {
+        "advokat": [
+            "advokat",
+            "advokaten",
+            "advokater",
+            "advokaterne",
+        ]
+    },
+    {
+        "diætist": [
+            "diætist",
+            "diætisten",
+            "diætister",
+            "diætisterne",
+        ]
+    },
+    {
+        "læge": [
+            "læge",
+            "lægen",
+            "læger",
+            "lægerne",
+        ]
+    },
+    {
+        "chauffør": [
+            "chauffør",
+            "chaufføren",
+            "chauffører",
+            "chaufførerne",
+        ]
+    },
+    {
+        "redaktør": [
+            "redaktør",
+            "redatøren",
+            "redaktører",
+            "redaktørerne",
+        ]
+    },
+    {
+        "elektriker": [
+            "elektriker",
+            "elektrikeren",
+            "elektrikere",
+            "elektrikerne",
+        ]
+    },
+    {
+        "ingeniør": [
+            "ingeniør",
+            "ingeniøren",
+            "ingeniører",
+            "ingeniørerne",
+        ]
+    },
+    {
+        "landmand": [
+            "landmand",
+            "landmanden",
+            "landmænd",
+            "landmændene",
+        ]
+    },
+    {
+        "brandmand": [
+            "brandmand",
+            "brandmanden",
+            "brandmænd",
+            "brandmændene",
+        ]
+    },
+    {
+        "vagt": [
+            "vagt",
+            "vagten",
+            "vagter",
+            "vagterne",
+        ]
+    },
+    {
+        "frisør": [
+            "frisør",
+            "frisøren",
+            "frisører",
+            "frisørerne",
+        ]
+    },
+    {
+        "instruktør": [
+            "instruktør",
+            "instruktøren",
+            "instruktører",
+            "instruktørerne",
+        ]
+    },
+    {
+        "efterforsker": [
+            "efterforsker",
+            "efterforskeren",
+            "efterforskere",
+            "efterforskerne",
+        ]
+    },
+    {
+        "pedel": [
+            "pedel",
+            "pedellen",
+            "pedeller",
+            "pedellerne",
+        ]
+    },
+    {
+        "advokat": [
+            "advokat",
+            "advokaten",
+            "advokater",
+            "advokaterne",
+        ]
+    },
+    {
+        "biliotekar": [
+            "bibliotekar",
+            "bibliotekaren",
+            "bibliotekarer",
+            "bibliotekarerne",
+        ]
+    },
+    {
+        "mekaniker": [
+            "mekaniker",
+            "makanikeren",
+            "mekanikere",
+            "mekanikerne",
+        ]
+    },
+    {
+        "sygeplejerske": [
+            "sygeplejerske",
+            "sygeplersken",
+            "sygeplejersker",
+            "sygeplejeskerne",
+        ]
+    },
+    {
+        "politibetjent": [
+            "politibetjent",
+            "politibetjenten",
+            "politibetjente",
+            "politibetjentene",
+        ]
+    },
+    {
+        "maler": [
+            "maler",
+            "maleren",
+            "malerne",
+            "malere",
+        ]
+    },
+    {
+        "ambulanceredder": [
+            "ambulanceredder",
+            "ambulanceredderen",
+            "ambulancereddere",
+            "ambulanceredderne",
+        ]
+    },
+    {
+        "ambulancebehandler": [
+            "ambulancebehandler",
+            "ambulancebehandleren",
+            "ambulancebehandlere",
+            "ambulancebehandlerne",
+        ]
+    },
+    {
+        "patolog": [
+            "patolog",
+            "patologen",
+            "patologer",
+            "patologerne",
+        ]
+    },
+    {
+        "farmaceut": [
+            "farmaceut",
+            "farmaceuten",
+            "farmaceuter",
+            "farmaceuterne",
+        ]
+    },
+    {
+        "blikkenslager": [
+            "blikkenslager",
+            "blikkenslageren",
+            "blikkenslagere",
+            "blikkenslagerne",
+        ]
+    },
+    {
+        "programmør": [
+            "programmør",
+            "programmøren",
+            "programmører",
+            "programmørerne",
+        ]
+    },
+    {
+        "psykolog": [
+            "psykolog",
+            "psykologen",
+            "psykologer",
+            "psykologerne",
+        ]
+    },
+    {
+        "receptionist": [
+            "receptionist",
+            "receptionisten",
+            "receptionister",
+            "receptionisterne",
+        ]
+    },
+    {
+        "sekretær": [
+            "sekretær",
+            "sekretæren",
+            "sekretærer",
+            "sekretærerne",
+        ]
+    },
+    {
+        "kirurg": [
+            "kirurg",
+            "kirurgen",
+            "kirurger",
+            "kirurgerne",
+        ]
+    },
+    {
+        "skrædder": [
+            "skrædder",
+            "skrædderen",
+            "skræddere",
+            "skrædderne",
+        ]
+    },
+    {
+        "tekniker": [
+            "tekniker",
+            "teknikeren",
+            "teknikere",
+            "teknikerne",
+        ]
+    },
+    {
+        "terapeut": [
+            "terapeut",
+            "terapeuten",
+            "terapeuter",
+            "terapeuterne",
+        ]
+    },
+    {
+        "dyrlæge": [
+            "dyrlæge",
+            "dyrlægen",
+            "dyrlæger",
+            "dyrlægerne",
+        ]
+    },
+    {
+        "forfatter": [
+            "forfatter",
+            "forfatteren",
+            "forfattere",
+            "forfatterne",
+        ]
+    },
+]
 
+
+def get_occupation_patterns():
+    return MatchCounter.list_of_labelled_term_lists_to_spacy_match_patterns(
+        occupation_labelled_match_patterns, prefix="occu_"
+    )
+
+
+# List is a partial translation of Rae et al. 2022, p. 95
 female_gendered_terms = set(
     [
         "pige",
@@ -324,6 +535,13 @@ female_gendered_terms = set(
     ]
 )
 
+
+def get_female_gendered_patterns():
+    return MatchCounter.term_list_to_spacy_match_patterns(
+        female_gendered_terms, label="female_gendered_terms"
+    )
+
+
 male_gendered_terms = set(
     [
         "dreng",
@@ -356,6 +574,13 @@ male_gendered_terms = set(
         "sønnerne",
     ]
 )
+
+
+def get_male_gendered_patterns():
+    return MatchCounter.term_list_to_spacy_match_patterns(
+        male_gendered_terms, label="male_gendered_terms"
+    )
+
 
 danish_adult_words = set(
     [
