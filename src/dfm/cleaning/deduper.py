@@ -320,7 +320,7 @@ class Deduper:
             shutil.rmtree(output_dir)
 
         output_dir.mkdir(parents=True, exist_ok=True)
-    
+
         # Store existing mask
         if self.save_mask and store_mask_to_disk:
             mask_path = output_dir / "mask.jsonl"
@@ -340,7 +340,6 @@ class Deduper:
             config = self.get_config()
             with config_path.open("wb") as f:
                 pickle.dump(config, f)
-
 
     def _deduplicate(
         self,
