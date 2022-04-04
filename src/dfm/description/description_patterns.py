@@ -1,5 +1,5 @@
 from typing import Dict, List
-from src.dfm.description import MatchCounter
+from dfm.description import MatchCounter
 
 # Terms for religions are:
 # * The person-noun singular (e.g. "kristen") and conjugated
