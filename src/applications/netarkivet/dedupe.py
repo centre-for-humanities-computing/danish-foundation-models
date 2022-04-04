@@ -26,7 +26,7 @@ from src.dfm.cleaning import Deduper
 
 def filter_batch(batch, i):
     """check whether sample i should be included"""
-    return batch["lang"][i] in {"da"} and batch["passed_quality_filter"] is True
+    return batch["lang"][i] in {"da"} and batch["passed_quality_filter"][i] is True
 
 
 def dedupe_batch(batch, deduper: Deduper):
