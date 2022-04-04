@@ -1,5 +1,5 @@
 """
-Applies quality filters to Netarkivet filtering based on language tags.
+Applies quality filters to tweets filtering on language tag.
 
 Dependent on:
     isn't dependent
@@ -12,6 +12,7 @@ import glob
 import os
 import sys
 from pathlib import Path
+import multiprocessing
 
 from tqdm import tqdm
 from wasabi import msg
@@ -22,7 +23,6 @@ dfm_path = os.path.join("danish-foundation-models")
 sys.path.append(dfm_path)
 
 from src.dfm.cleaning import QualityFilter
-from src.dfm.utils import batch
 
 
 def filter_batch(batch, i):
@@ -39,7 +39,7 @@ def q_filter(batch):
         min_stop_words=1,  # changed from 2
         mean_word_length=(2, 14),
         # extended from 3, 10 due to more variance in smaller texts
-        doc_length=(5, 10_000),  # changed from 50-100,000
+        doc_length=(10, 10_000),  # changed from 50-100,000
         alpha_ratio=0.6,
         duplicate_lines_chr_fraction=0.2,
         duplicate_paragraph_chr_fraction=0.2,
@@ -93,36 +93,38 @@ def q_filter(batch):
 def main(
     read_path: str,
     write_path: str,
-    n_process: int = 60,
+    n_process: int =-1,
 ) -> None:
+    if n_process == -1:
+        n_process = multiprocessing.cpu_count()
     Path(write_path).mkdir(exist_ok=True, parents=True)
 
     path = os.path.join(read_path, "**", "*.ndjson")
     json_files = glob.glob(path, recursive=True)
 
-    for i, j_files in enumerate(json_files):
-        w_path = os.path.join(write_path, f"{i}.jsonl")
-        if os.path.exists(w_path):
-            msg.info(f"File {w_path} already exist, skipping")
-            continue
 
-        # load in batch
-        dataset = load_dataset("json", data_files={"train": [j_files]})
-        ds = dataset["train"]
+    w_path = os.path.join(write_path, f"twitter_da_stopwords_2019-01-01_2021-04-30.jsonl")
+    if os.path.exists(w_path):
+        raise Exception(f"File {w_path} already exist")
+        
+    # load in batch
+    dataset = load_dataset("json", data_files={"train": json_files})
+    ds = dataset["train"]
 
-        # apply quality filter to batch
-        ds = ds.map(
-            q_filter,
-            batched=True,
-            batch_size=1024,
-            num_proc=n_process,
-        )
-        msg.info(f"Writing {w_path} to disk")
-        ds.to_json(w_path)
+    # apply quality filter to batch
+    ds = ds.map(
+        q_filter,
+        batched=True,
+        batch_size=1024,
+        num_proc=n_process,
+    )
+    ds.shuffle()
+    msg.info(f"Writing {w_path} to disk")
+    ds.to_json(w_path)
 
 
 if __name__ == "__main__":
-    read_path = os.path.join("/work", "twitter")
-    write_path = os.path.join("/work", "twitter-cleaned")
+    read_path = os.path.join("/work", "twitter_cleaned")
+    write_path = os.path.join("/work", "twitter_cleaned")
     main(read_path, write_path)
     msg.good(f"Finished Processing")
