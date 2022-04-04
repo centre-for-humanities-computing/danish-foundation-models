@@ -1,4 +1,86 @@
 from typing import Dict, List
+from src.dfm.description import MatchCounter
+
+# Terms for religions are:
+# * The person-noun singular (e.g. "kristen") and conjugated
+# * The adjective (e.g. kristent)
+# * The religion-noun singular (e.g. "kristendom") and conjugated
+religion_labelled_match_patterns = {
+    {"muslim": ["muslim", "muslimen", "muslimer", "muslimerne", "muslimsk", "islam"]},
+    {
+        "christian": [
+            "kristen",
+            "kristne",
+            "kristent",
+            "kristendom",
+            "kristendomme",
+            "kristendommen",
+            "kristendommene",
+        ]
+    },
+    {
+        "jew": [
+            "jøde",
+            "jøden",
+            "jøder",
+            "jøderne",
+            "jødisk",
+            "jødedom",
+            "jødedommen",
+            "jødedomme",
+            "jødedommene",
+        ]
+    },
+    {
+        "buddhist": [
+            "buddhist",
+            "buddhisten",
+            "buddhister",
+            "buddhisterne",
+            "buddhistisk",
+            "buddhisme",
+            "buddhismen",
+            "buddhismer",
+            "buddhismerne",
+        ]
+    },
+    {
+        "hindu": [
+            "hinduist",
+            "hinduisten",
+            "hinduister",
+            "hinduisterne",
+            "hindu",
+            "hinduen",
+            "hinduer",
+            "hinduerne",
+            "hinduistisk",
+            "hinduisme",
+            "hinduismen",
+            "hinduismer",
+            "hinduismerne",
+        ]
+    },
+    {
+        "atheist": [
+            "atheist",
+            "atheisten",
+            "atheister",
+            "atheisterne",
+            "atheistisk",
+            "atheisme",
+            "ahteismen",
+            "atheismer",
+            "atheismerne",
+        ]
+    },
+}
+
+
+def get_religion_patterns():
+    return MatchCounter.list_of_labelled_term_lists_to_spacy_match_patterns(
+        religion_labelled_match_patterns
+    )
 
 
 occupation_pattern_list = set(

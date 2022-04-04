@@ -10,6 +10,7 @@ import spacy
 sys.path.append(".")
 
 from dfm.description.description_patterns import (
+    get_religion_patterns,
     female_gendered_terms,
     male_gendered_terms,
     occupation_pattern_list,
@@ -28,22 +29,6 @@ def create_patterns() -> List:
         List: List of spacy pattern containers.
     """
     any_token_pattern = [{"tokens": [{"TEXT": {"REGEX": ".+"}}]}]
-
-    # Religion
-    religion_patterns = [
-        {"atheist": [{"LOWER": {"REGEX": "ath{0,1}eis.*"}}]},
-        {"buddhist": [{"LOWER": {"REGEX": "buddh{0,1}.*"}}]},
-        {"christian": [{"LOWER": {"REGEX": "kriste.*"}}]},
-        {"hindu": [{"LOWER": {"REGEX": "hindu.*"}}]},
-        {"muslim": [{"LOWER": {"REGEX": "muslim.*"}}]},
-        {"jew": [{"LOWER": {"REGEX": "jødi.*"}}]},
-        {"jew": [{"LOWER": {"REGEX": "(?!jødeskæg)jøde.*"}}]},  # Jødeskæg == Stueplante
-    ]
-
-    muslim_name_patterns = get_muslim_name_patterns()
-
-    # Genders
-    gender_name_patterns = get_gender_name_patterns()
 
     gender_pronoun_patterns = [
         {"male_pronoun": [{"LOWER": "han"}]},
@@ -72,9 +57,9 @@ def create_patterns() -> List:
 
     return (
         any_token_pattern
-        + religion_patterns
-        + muslim_name_patterns
-        + gender_name_patterns
+        + get_religion_patterns()
+        + get_muslim_name_patterns()
+        + get_gender_name_patterns()
         + gender_pronoun_patterns
         + male_gendered_term_patterns
         + female_gendered_term_patterns

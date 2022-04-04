@@ -1,5 +1,5 @@
 import pytest
-from src.dfm.description import MatchCounter
+from dfm.description import MatchCounter
 import spacy
 
 
@@ -64,6 +64,27 @@ class TestMatchCounter:
         counts = mc_basic.count(texts)
 
         assert counts == {"heks": [0, 1, 0], "soldat": [1, 0, 2]}
+
+    def test_multiple_matches_under_same_label(self, nlp):
+        from dfm.description.description_patterns import christian_match_patterns
+
+        mc = MatchCounter(match_patterns=christian_match_patterns, nlp=nlp)
+
+        texts = ["En kristen er en del af de kristne, og kristne tror på kristendommen"]
+
+        assert mc.count(texts) == {"kristen": [4]}
+
+    def test_labelled_term_list_generation(self):
+        labelled_term_list = [{"christian": ["christian", "christianity"]}]
+
+        output = MatchCounter.list_of_labelled_term_lists_to_spacy_match_patterns(
+            list_of_labelled_term_lists=labelled_term_list, lowercase=True
+        )
+
+        assert output == [
+            {"christian": [{"LOWER": "christian"}]},
+            {"christian": [{"LOWER": "christianity"}]},
+        ]
 
     def test_count_token_multipel_times(self, mc_basic):
         texts = ["En soldat er en soldat som en soldat er"]
