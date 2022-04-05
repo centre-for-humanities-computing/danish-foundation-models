@@ -288,7 +288,8 @@ class Deduper:
         """Save the Deduper to disk.
 
         Args:
-            output_dir (str or Path, optional): The name of the output directory.
+            output_dir (str or Path, optional):
+                The name of the output directory.
             overwrite (bool, optional):
                 Whether to overwrite the output file if it already exists.
                 Defaults to False.
@@ -425,11 +426,11 @@ class Deduper:
         # is False and otherwise delete the file
         if output_dir.exists():
             self.save_to_disk(
-                output_dir,
-                overwrite,
-                store_mask_to_disk,
-                store_lsh_cache_to_disk,
-                store_config_to_disk,
+                output_dir=output_dir,
+                overwrite=overwrite,
+                store_mask_to_disk=store_mask_to_disk,
+                store_lsh_cache_to_disk=store_lsh_cache_to_disk,
+                store_config_to_disk=store_config_to_disk,
             )
 
         # Create the output directory
