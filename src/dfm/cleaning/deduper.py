@@ -422,8 +422,8 @@ class Deduper:
         # Ensure that `output_dir` is a Path object
         output_dir = Path(output_dir)
 
-        # If the output file already exists then raise an error if `overwrite`
-        # is False and otherwise delete the file
+        # If the output file already exists call save to disk, either raising an error
+        # or overwriting existing files
         if output_dir.exists():
             self.save_to_disk(
                 output_dir=output_dir,
