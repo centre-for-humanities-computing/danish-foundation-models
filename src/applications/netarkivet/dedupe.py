@@ -70,22 +70,19 @@ def create_text_gen(
 def main(
     dedupe_path: str,
 ) -> None:
-    if os.path.exists(dedupe_path):
-        msg.info(f"Loading Deduper from {dedupe_path}")
-        deduper = Deduper.load_from_disk(dedupe_path)
-        already_checked = {d["id"] for d in deduper.mask}
-    else:
-        deduper = Deduper(batch_size=2**20) # potentially change to 2**23
-        already_checked = set()
+    load_from_path = None # os.path.join(dedupe_path, "2006")
 
-    for year in [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016]:
+    # [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016]:
+    for year in [2007, 2008, 2009]:
+        deduper = Deduper(batch_size=2**22) # potentially change to 2**23
         paths = create_paths(years = [year])
-        text_gen = create_text_gen(already_checked=already_checked, paths=paths)
+        text_gen = create_text_gen(already_checked=set(), paths=paths)
 
         dedupe_path_ =  os.path.join(dedupe_path, str(year))
 
-        deduper.deduplicate(text_gen, return_generator=False, overwrite=True, store_corpus_to_disk = False, 
-            store_mask_to_disk = True, store_lsh_cache_to_disk = True, store_config_to_disk = True, output_dir=dedupe_path_)
+        deduper.deduplicate(text_gen, return_generator=False, overwrite=False, store_corpus_to_disk = False, 
+            store_mask_to_disk = True, store_lsh_cache_to_disk = False, store_config_to_disk = False, output_dir=dedupe_path_)
+        # deduper.save_to_disk(output_dir=dedupe_path_, overwrite=True)
 
 
 
