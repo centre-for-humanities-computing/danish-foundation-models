@@ -1,8 +1,8 @@
 wandb~=0.12.9
 
 # models
-transformers~=4.16.2
-torch~=1.10.2
+transformers~=4.16.0
+torch>=1.6.0,<=1.11.0
 protobuf==3.19.4
 
 # tokenizers
@@ -17,6 +17,7 @@ spacy>=3.1.4,<=3.3.0
 datasketch~=1.5.6
 google==3.0.0  # safesearch filtering
 more_itertools~=8.12.0
+pandas>=1.0.0,<2.0.0
 
 # utility
 wasabi~=0.9.0
