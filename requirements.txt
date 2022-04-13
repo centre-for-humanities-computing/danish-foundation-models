@@ -6,7 +6,7 @@ torch>=1.6.0,<=1.11.0
 protobuf==3.19.4
 
 # tokenizers
-tokenizers==0.10.1
+tokenizers==0.12.1
 
 # data
 datasets~=1.17.0
