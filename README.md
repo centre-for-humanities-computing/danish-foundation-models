@@ -43,14 +43,14 @@ It is currently noticably missing webdata.
 
 ## Timeline:
 - [x] Dec.: first meeting
-- [ ] Jan.-Feb: start training of a candidate model of dataset excluding Netarkivet
-- [ ] Jan.-Feb.: Finalize on a collaborate method for training the models
-- [ ] Jan.: start cleaning netarkivet
-- [ ] Feb.: training of candidate model in each model category
-- [ ] 1st Mar.: Data cleaning done
-- [ ] Mar-Apr.: start training largest model
-- [ ] 1st Apr.: Larger call for project will language models
-- [ ] (undated): Fine-tune model on news and twitter
+- [x] Jan.-Feb.: building codebase for cleaning
+- [ ] Jan.-Mar.: building codebase for training
+- [ ] 15th Mar.: Data cleaning done
+- [ ] 1st Apr.: Dataset descriptions done
+- [ ] Mar.: start training of a candidate model
+- [ ] Apr.: training of model in each model category
+- [ ] Maj: start training largest possible model
+- [ ] 1st Maj: Larger call for project will language models
 
 # Wish to contribute
 DFM is considered a collaborate project for training and improving Danish Language models. If you wish to contribute don't hesitate to reach out using the discussion section or directly to the authors.
