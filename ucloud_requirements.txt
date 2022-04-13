@@ -5,7 +5,7 @@ wandb~=0.12.9
 transformers~=4.16.2
 --find-links https://download.pytorch.org/whl/torch_stable.html
 torch==1.10.2+cu113
-protobuf==3.19.4
+protobuf==3.20.0
 
 # data
 datasets~=1.17.0

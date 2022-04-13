@@ -3,7 +3,7 @@ wandb~=0.12.9
 # models
 transformers~=4.16.0
 torch>=1.6.0,<=1.11.0
-protobuf==3.19.4
+protobuf==3.20.0
 
 # tokenizers
 tokenizers==0.10.1
