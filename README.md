@@ -46,6 +46,7 @@ It is currently noticably missing webdata.
 - [x] Jan.-Feb.: building codebase for cleaning
 - [ ] Jan.-Mar.: building codebase for training
 - [ ] 15th Mar.: Data cleaning done
+- [ ] 1st Apr.: Dataset descriptions done
 - [ ] Mar.: start training of a candidate model
 - [ ] Apr.: training of model in each model category
 - [ ] Maj: start training largest possible model
