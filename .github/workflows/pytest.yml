@@ -32,7 +32,7 @@ jobs:
     - name: Run and write pytest
       run: |
         pip install --editable .
-        python -m  pytest --cov=src/dfm --cov-report term-missing | tee pytest-coverage.txt
+        pytest --cov=src/dfm --cov-report term-missing
 
 
   pytest-coverage:
@@ -51,7 +51,8 @@ jobs:
     - name: Run and write pytest
       run: |
         pip install --editable .
-        python -m  pytest --cov=src/dfm --cov-report term-missing | tee pytest-coverage.txt
+        set -o pipefail
+        pytest --cov=src/dfm --cov-report term-missing | tee pytest-coverage.txt
     - name: Pytest coverage comment
       id: coverage-comment
       uses: MishaKav/pytest-coverage-comment@v1.1.20
