@@ -5,13 +5,8 @@ from typing import List
 from datasets import load_dataset
 
 
-import spacy
-
-sys.path.append(".")
-
 from dfm.description.description_patterns import (
     get_religion_patterns,
-    female_gendered_terms,
     get_female_gendered_patterns,
     get_male_gendered_patterns,
     get_occupation_patterns,
@@ -55,6 +50,8 @@ def create_patterns() -> List:
 
 
 if __name__ == "__main__":
+    from pathlib import Path
+
     all_patterns = create_patterns()
 
     ds = load_dataset("DDSC/partial-danish-gigaword-no-twitter")
@@ -77,8 +74,6 @@ if __name__ == "__main__":
     )
 
     print(f"\n\n--- Execution time was {time.time() - start_time} seconds ---")
-
-    from pathlib import Path
 
     save_path = os.path.join("csv")
     save_path = Path(save_path)  # format as path
