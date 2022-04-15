@@ -1,7 +1,7 @@
 """Tests for the deduplication module"""
 
-from dfm.cleaning import Deduper
-from dfm.cleaning.deduper_utils import get_minhash, get_shingles, default_normalization
+from src.dfm.cleaning import Deduper
+from src.dfm.cleaning.deduper_utils import get_minhash, get_shingles, default_normalization
 import tempfile
 from pathlib import Path
 import json
