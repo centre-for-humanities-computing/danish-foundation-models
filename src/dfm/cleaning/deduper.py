@@ -64,6 +64,17 @@ class Deduper:
             ignore insignificant differences. Needs to be pickleable.
         verbose (bool, optional):
             Print progress to stdout. Defaults to True.
+        cache_batch_limit: (int, optional):
+            The maximum number of batches to store in the lsh cache.
+            If set to 0 no maximum is imposed.
+            If set to a positive integer, and the maximum cache size is reached,
+            the algorithm will continue to run but will no longer store
+            hashes to the cache. Once all batches have been processed, 
+            the algorithm will be rewind to the position from which the cache
+            limit was reached, clear its cache, and continue processing.
+            Notice that this results in a runtime of O(n^2/2), so n
+            (total_number_of_batches / cache_batch_limit) should be kept relatively
+            for reasonable performance small.
 
     Attributes:
         split_method (str): The splitting method for extracting shingles.
@@ -76,6 +87,7 @@ class Deduper:
         random_seed (int): The random seed to use for the MinHash functions.
         normalization_func (Callable): The function used for normalization.
         verbose (bool): Print progress to stdout.
+        cache_batch_limit (init): The maximum number of batches to store in the lsh cache.
 
     References:
         [1] Broder, Andrei Z. "On the resemblance and containment of documents."
@@ -96,6 +108,7 @@ class Deduper:
         normalization_func: Callable[[str], str] = default_normalization,
         save_mask: bool = True,
         verbose: bool = True,
+        cache_batch_limit: int = 0
     ):
         self.split_method = "none" if split_method is None else split_method
         self.ngram_size = ngram_size
@@ -108,11 +121,10 @@ class Deduper:
         self.normalization_func = normalization_func
         self.verbose = verbose
         self.save_mask = save_mask
+        self.cache_batch_limit = cache_batch_limit
         if save_mask:
             self.mask = list()
-        self.lsh_cache = MinHashLSH(
-            threshold=self.similarity_threshold, num_perm=self.num_minhashes
-        )
+        self.lsh_cache = None
 
     def reset(self):
         """Reset the deduplicator, removing the mask and the LSH cache"""
@@ -454,8 +466,8 @@ class Deduper:
             with config_path.open("wb") as f:
                 pickle.dump(config, f)
 
-        #  Split the corpus into batches of `self.batch_size` documents
-        batches = mit.ichunked(corpus, self.batch_size)
+        # Split the corpus into batches of `self.batch_size` documents
+        batches = mit.seekable(mit.ichunked(corpus, self.batch_size))
 
         # Iterate over the corpus and store documents that are not duplicates
         duplicates = 0
@@ -466,109 +478,145 @@ class Deduper:
             disable=(not self.verbose),
             leave=False,
         )
-        with tqdm(batches, **pbar_params) as pbar:
 
-            # Initialise the multiprocessing
-            with Parallel(n_jobs=self.n_jobs) as parallel:
+        # Start the algorithm from the first batch
+        batch_start_idx = 0
 
-                # Define the function that will be called in parallel
-                fn = delayed(
-                    partial(
-                        get_minhash,
-                        normalization_func=self.normalization_func,
-                        split_method=self.split_method,
-                        ngram_size=self.ngram_size,
-                        ngram_stride=self.ngram_stride,
-                        num_minhashes=self.num_minhashes,
-                        random_seed=self.random_seed,
+        # The algorithm will be re-run until `finished` has seen set to True
+        finished = False
+
+        while not finished:
+            # Clear the cache
+            self.lsh_cache = MinHashLSH(
+                threshold=self.similarity_threshold, num_perm=self.num_minhashes
+            )
+            cache_full = False
+
+            # Jump the batch from which the algorithm should start
+            batch_idx = batch_start_idx
+            batches.seek(batch_idx)
+            print("The algorithm has been (re)run.")
+
+            with tqdm(batches, **pbar_params) as pbar:
+
+                # Initialise the multiprocessing
+                with Parallel(n_jobs=self.n_jobs) as parallel:
+
+                    # Define the function that will be called in parallel
+                    fn = delayed(
+                        partial(
+                            get_minhash,
+                            normalization_func=self.normalization_func,
+                            split_method=self.split_method,
+                            ngram_size=self.ngram_size,
+                            ngram_stride=self.ngram_stride,
+                            num_minhashes=self.num_minhashes,
+                            random_seed=self.random_seed,
+                        )
                     )
-                )
 
-                # Iterate over the batches
-                for batch in pbar:
+                    # Iterate over the batches
+                    for batch in pbar:
+                        print("BATCH IDX", batch_idx)
 
-                    # Create a copy of the batch to ensure that we're not
-                    # modifying the original
-                    batch, batch_copy = it.tee(batch)
+                        # Create a copy of the batch to ensure that we're not
+                        # modifying the original
+                        batch, batch_copy = it.tee(batch)
 
-                    # Compute size of the batch
-                    new_num_processed = num_processed + self.batch_size
-                    if num_docs is not None:
-                        new_num_processed = min(new_num_processed, num_docs)
-                    batch_size = new_num_processed - num_processed
+                        # Compute size of the batch
+                        new_num_processed = num_processed + self.batch_size
+                        if num_docs is not None:
+                            new_num_processed = min(new_num_processed, num_docs)
+                        batch_size = new_num_processed - num_processed
 
-                    # Define parameters used in batch progress bars
-                    pbar_params = dict(
-                        total=batch_size, leave=False, disable=(not self.verbose)
-                    )
+                        # Define parameters used in batch progress bars
+                        pbar_params = dict(
+                            total=batch_size, leave=False, disable=(not self.verbose)
+                        )
 
-                    # Compute the fingerprint for the document
-                    pbar_params["desc"] = "Computing minhashes"
-                    with tqdm(batch, **pbar_params) as batch_pbar:
-                        minhashes = parallel(fn(doc) for _, doc in batch_pbar)
+                        # Compute the fingerprint for the document
+                        pbar_params["desc"] = "Computing minhashes"
+                        with tqdm(batch, **pbar_params) as batch_pbar:
+                            minhashes = parallel(fn(doc) for _, doc in batch_pbar)
 
-                    # Iterate over the minhashes
-                    pbar_params["desc"] = "Deduplicating batch"
-                    with tqdm(batch_copy, **pbar_params) as batch_pbar:
-                        for (idx, doc), minhash in zip(batch_pbar, minhashes):
+                        # Iterate over the minhashes
+                        pbar_params["desc"] = "Deduplicating batch"
+                        with tqdm(batch_copy, **pbar_params) as batch_pbar:
+                            for (idx, doc), minhash in zip(batch_pbar, minhashes):
 
-                            # If the document is not a near-duplicate candidate
-                            # then store in the LSH cache and append it to the
-                            # JSONL output file
-                            candidates = self.lsh_cache.query(minhash)
-                            if len(candidates) == 0:
+                                # If the document is not a near-duplicate candidate
+                                # then store in the LSH cache and append it to the
+                                # JSONL output file
+                                candidates = self.lsh_cache.query(minhash)
+                                if len(candidates) == 0:
 
-                                # Insert the document into the LSH cache
-                                self.lsh_cache.insert(idx, minhash)
+                                    # Insert the document into the LSH cache
+                                    if not cache_full:
+                                        self.lsh_cache.insert(idx, minhash)
 
-                                # Store the non-duplicate document in the JSONL
-                                # output
-                                if store_corpus_to_disk:
+                                    # Store the non-duplicate document in the JSONL
+                                    # output
+                                    if store_corpus_to_disk:
+                                        self._store_document(
+                                            id=idx, text=doc, output_path=output_path
+                                        )
+
+                                    # Compute the mask for the document
+                                    mask_entry = dict(id=idx, duplicate=False)
+
+                                # Otherwise, increment the number of duplicate
+                                # documents
+                                else:
+                                    duplicates += 1
+
+                                    # Compute the mask for the document
+                                    mask_entry = dict(id=idx, duplicate=True)
+
+                                # Add the mask to the mask attribute
+                                if self.save_mask:
+                                    self.mask.append(mask_entry)
+
+                                # Yield the mask
+                                if return_generator:
+                                    yield mask_entry
+
+                                # Store the mask to disk
+                                if store_mask_to_disk:
                                     self._store_document(
-                                        id=idx, text=doc, output_path=output_path
+                                        output_path=mask_path, **mask_entry
                                     )
 
-                                # Compute the mask for the document
-                                mask_entry = dict(id=idx, duplicate=False)
+                        # Store the LSH cache to disk
+                        if store_lsh_cache_to_disk:
+                            with lsh_cache_path.open("wb") as f:
+                                pickle.dump(self.lsh_cache, f)
 
-                            # Otherwise, increment the number of duplicate
-                            # documents
-                            else:
-                                duplicates += 1
+                        # Update the number of documents processed, and compute the
+                        # number of documents in the batch
+                        num_processed = new_num_processed
 
-                                # Compute the mask for the document
-                                mask_entry = dict(id=idx, duplicate=True)
+                        # Update the progress bar
+                        pbar.update(batch_size)
+                        pct_duplicated = 100 * duplicates / num_processed
+                        desc = (
+                            f"Deduplicating - {pct_duplicated:.2f}% near-duplicates found"
+                        )
+                        pbar.set_description(desc)
+                        batch_idx += 1
 
-                            # Add the mask to the mask attribute
-                            if self.save_mask:
-                                self.mask.append(mask_entry)
+                        # Check if cache limit has been reached
+                        if not cache_full:
+                            if batch_idx == self.batch_size:
+                                # We are finished once we reach the final batch without having reached the cache limit
+                                finished = True
+                            elif self.cache_batch_limit != 0 and batch_idx - batch_start_idx >= self.cache_batch_limit:
+                                # If the cache_batch_limit is 0, we do not detect for cache overflows.
+                                # If the cache_batch_limit has been reached, we mark the current location
+                                # as the index for which to rewind.
+                                print("Cache has reached maximum number of batches.")
+                                batch_start_idx = batch_idx
+                                cache_full = True
 
-                            # Yield the mask
-                            if return_generator:
-                                yield mask_entry
-
-                            # Store the mask to disk
-                            if store_mask_to_disk:
-                                self._store_document(
-                                    output_path=mask_path, **mask_entry
-                                )
-
-                    # Store the LSH cache to disk
-                    if store_lsh_cache_to_disk:
-                        with lsh_cache_path.open("wb") as f:
-                            pickle.dump(self.lsh_cache, f)
-
-                    # Update the number of documents processed, and compute the
-                    # number of documents in the batch
-                    num_processed = new_num_processed
-
-                    # Update the progress bar
-                    pbar.update(batch_size)
-                    pct_duplicated = 100 * duplicates / num_processed
-                    desc = (
-                        f"Deduplicating - {pct_duplicated:.2f}% near-duplicates found"
-                    )
-                    pbar.set_description(desc)
 
         # Return final update
         if self.verbose:

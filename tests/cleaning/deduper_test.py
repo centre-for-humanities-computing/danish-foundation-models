@@ -225,3 +225,22 @@ class TestDeduper:
             minhash = get_minhash(corpus[0][1], **minhash_params)
             assert len(loaded_deduper.lsh_cache.query(minhash)) > 0
             assert len(new_deduper.lsh_cache.query(minhash)) == 0
+
+    def test_naive_memory(self):
+        self.dedup(
+            [
+                "Hej",
+                "Med",
+                "Dig",
+                "Min",
+                "Ven",
+                "én, to, tre! én, to, tre!",
+                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
+                "Er kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
+            ],
+            batch_size = 3,
+            verbose = True,
+            cache_batch_limit = 1,
+            split_method="word_ngram",
+            ngram_size=5,
+        )
