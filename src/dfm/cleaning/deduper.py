@@ -466,8 +466,6 @@ class Deduper:
             with config_path.open("wb") as f:
                 pickle.dump(config, f)
 
-        # Split the corpus into batches of `self.batch_size` documents
-        batches = mit.seekable(mit.ichunked(corpus, self.batch_size))
 
         # Iterate over the corpus and store documents that are not duplicates
         duplicates = 0
@@ -485,7 +483,13 @@ class Deduper:
         # The algorithm will be re-run until `finished` has seen set to True
         finished = False
 
+        print("Starting...")
+
         while not finished:
+            # Split the corpus into batches of `self.batch_size` documents
+            corpus, corpus_copy = it.tee(corpus)
+            batches = mit.seekable(mit.ichunked(corpus_copy, self.batch_size))
+
             # Clear the cache
             self.lsh_cache = MinHashLSH(
                 threshold=self.similarity_threshold, num_perm=self.num_minhashes
@@ -543,6 +547,7 @@ class Deduper:
                         pbar_params["desc"] = "Deduplicating batch"
                         with tqdm(batch_copy, **pbar_params) as batch_pbar:
                             for (idx, doc), minhash in zip(batch_pbar, minhashes):
+                                print(doc)
 
                                 # If the document is not a near-duplicate candidate
                                 # then store in the LSH cache and append it to the
@@ -606,16 +611,18 @@ class Deduper:
 
                         # Check if cache limit has been reached
                         if not cache_full:
-                            if batch_idx == self.batch_size:
-                                # We are finished once we reach the final batch without having reached the cache limit
-                                finished = True
-                            elif self.cache_batch_limit != 0 and batch_idx - batch_start_idx >= self.cache_batch_limit:
+                            if self.cache_batch_limit != 0 and batch_idx - batch_start_idx >= self.cache_batch_limit:
                                 # If the cache_batch_limit is 0, we do not detect for cache overflows.
                                 # If the cache_batch_limit has been reached, we mark the current location
                                 # as the index for which to rewind.
                                 print("Cache has reached maximum number of batches.")
                                 batch_start_idx = batch_idx
                                 cache_full = True
+
+            if not cache_full:
+                print("batch_idx", batch_idx)
+                # We are finished once we reach the final batch without having reached the cache limit
+                finished = True
 
 
         # Return final update

@@ -226,21 +226,14 @@ class TestDeduper:
             assert len(loaded_deduper.lsh_cache.query(minhash)) > 0
             assert len(new_deduper.lsh_cache.query(minhash)) == 0
 
-    def test_naive_memory(self):
-        self.dedup(
-            [
-                "Hej",
-                "Med",
-                "Dig",
-                "Min",
-                "Ven",
-                "én, to, tre! én, to, tre!",
-                "Der kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-                "Er kom en soldat marcherende hen ad landevejen:\n én, to! én, to!",
-            ],
-            batch_size = 3,
-            verbose = True,
-            cache_batch_limit = 1,
-            split_method="word_ngram",
-            ngram_size=5,
-        )
+    def test_naive_memory1(self):
+        assert self.dedup([ "A", "B", "C", "D", "E", "F", "G", "G" ], batch_size = 3, cache_batch_limit = 1) == [ "A", "B", "C", "D", "E", "F", "G", ]
+
+    def test_naive_memory2(self):
+        corpus = list(enumerate([ "A", "B", "C", "C" ]))
+        with tempfile.TemporaryDirectory() as temp:
+            deduper = self.deduper(split_method="paragraph")
+            g = deduper.deduplicate(corpus, output_dir=temp, overwrite=True, return_generator=True)
+            for i in g:
+                print(i)
+
