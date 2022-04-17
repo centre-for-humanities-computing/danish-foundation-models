@@ -413,7 +413,7 @@ class Deduper:
             sample = next(corpus)
             # and add it back in
             corpus = it.chain([sample], corpus)
-            
+
             # If the first element of the corpus is a dictionary then we
             # convert the corpus to an iterable of tuples
             if isinstance(sample, dict):
