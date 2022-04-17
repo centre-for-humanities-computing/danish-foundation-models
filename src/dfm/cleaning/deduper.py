@@ -409,10 +409,11 @@ class Deduper:
         # which case we also convert it to an iterable of tuples
         else:
 
-            # Create a copy of the corpus to ensure that we're not modifying
-            # the original, and extract the first element of the copy.
-            corpus, corpus_copy = it.tee(corpus)
-            sample = next(corpus_copy)
+            # extract the first element of the corpus
+            corpus = iter(corpus)
+            sample = next(corpus)
+            # and add it back in
+            corpus = it.chain([sample], corpus)
 
             # If the first element of the corpus is a dictionary then we
             # convert the corpus to an iterable of tuples
