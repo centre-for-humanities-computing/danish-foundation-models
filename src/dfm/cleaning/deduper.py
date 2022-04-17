@@ -410,6 +410,7 @@ class Deduper:
         else:
 
             # extract the first element of the corpus
+            corpus = iter(corpus)
             sample = next(corpus)
             # and add it back in
             corpus = it.chain([sample], corpus)
