@@ -612,3 +612,9 @@ if __name__ == "__main__":
     #   - 'none': ~3.5 minutes (found 24.75% duplicates)
     #   - 'paragraph': ~4 minutes (found 25.83% duplicates)
     #   - 'word_ngram' with n == 13: ~10 minutes (found 25.77% duplicates)
+
+    import psutil  
+    from psutil._common import bytes2human
+    mem_usage = psutil.virtual_memory()
+    print('- RAM memory % used:', mem_usage[2])
+    print('- Total memory used', bytes2human(mem_usage.used))
