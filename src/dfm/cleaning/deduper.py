@@ -27,7 +27,7 @@ from joblib import Parallel, delayed
 import multiprocessing as mp
 import pickle
 from functools import partial
-from .deduper_utils import get_minhash, default_normalization
+from dfm.cleaning.deduper_utils import get_minhash, default_normalization
 
 
 class Deduper:
