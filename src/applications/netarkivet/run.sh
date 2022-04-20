@@ -9,8 +9,8 @@ python content_filtering/filter_domains.py
 # Quality filter
 python quality_filter.py
 
+# Deduplication
+python dedupe.py
+
 # Desc. stats
 python content_filtering/desc_stats.py
-
-
-

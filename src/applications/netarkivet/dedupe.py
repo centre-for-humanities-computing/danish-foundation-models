@@ -2,13 +2,12 @@
 Applies quality filters to Netarkivet filtering based on language tags.
 
 Dependent on:
-    isn't dependent
+    src/applications/netarkivet/quality_filter.py
 
 Authors:
     Kenneth Enevoldsen
 
 """
-from memory_profiler import profile
 
 from typing import Iterable, List
 
@@ -24,12 +23,10 @@ from tqdm import tqdm
 from wasabi import msg
 import ndjson
 
+import psutil  
+from psutil._common import bytes2human
 
-dfm_path = os.path.join("danish-foundation-models")
-sys.path.append(dfm_path)
-
-from src.dfm.cleaning import Deduper
-from src.dfm.utils import batch
+from dfm.cleaning import Deduper
 
 
 def filter_example(example, already_checked):
@@ -68,37 +65,24 @@ def create_text_gen(
                     yield website["id"], website["text"]
 
 
-fp=open('memory_profiler_main.log','w+')
-
-@profile(stream=fp)
 def main(
     dedupe_path: str,
 ) -> None:
-    # [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016]:
-    for n_hash, split_method in [(64, "paragraph"), 
-                                #(64, "word_ngram"), (16, "word_ngram"), (32, "word_ngram")
-                                ]:
-        for year in [2014]:
-            # paths = create_paths(years = [year])
-            paths = [(0, year, "/work/netarkivet-cleaned/2014_test.jsonl"), (1, year, "/work/netarkivet-cleaned/2014_test2.jsonl")]
-            for i, batch_paths in enumerate(batch(paths, batch_size=10)):
-                deduper = Deduper(batch_size=2**19, num_minhashes=n_hash, split_method=split_method)
-                dedupe_path_ = os.path.join(dedupe_path, f"{year}_b{i}")
-                text_gen = create_text_gen(already_checked=set(), paths=batch_paths)
+    for year in [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016]:
+        paths = create_paths(years = [year])
+        deduper = Deduper(batch_size=2**19, num_minhashes=64)
+        dedupe_path_ = os.path.join(dedupe_path, f"{year}")
+        text_gen = create_text_gen(already_checked=set(), paths=paths)
 
-                deduper.deduplicate(text_gen, return_generator=False, 
-                    overwrite=True, # TODO CHANGE TO FALSE
-                    store_corpus_to_disk = False, 
-                    store_mask_to_disk = True, store_lsh_cache_to_disk = False, store_config_to_disk = False, output_dir=dedupe_path_)
+        deduper.deduplicate(text_gen, return_generator=False, 
+            overwrite=False,
+            store_corpus_to_disk = False, 
+            store_mask_to_disk = True, store_lsh_cache_to_disk = False, store_config_to_disk = False, output_dir=dedupe_path_)
 
-                import psutil  
-                from psutil._common import bytes2human
-                mem_usage = psutil.virtual_memory()
-                print('- RAM memory % used:', mem_usage[2])
-                print('- Total memory used', bytes2human(mem_usage.used))
-                print(n_hash, split_method)
-                # Getting % usage of virtual_memory ( 3rd field)
-                # deduper.save_to_disk(output_dir=dedupe_path_, overwrite=True)
+        # print metadata
+        mem_usage = psutil.virtual_memory()
+        print('- RAM memory % used:', mem_usage[2])
+        print('- Total memory used', bytes2human(mem_usage.used))
 
 
 

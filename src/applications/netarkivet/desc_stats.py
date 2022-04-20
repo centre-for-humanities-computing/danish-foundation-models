@@ -1,13 +1,13 @@
 """
 Combines counter derived from count_domains_netarkivet.py to create descriptive statistic from netarkivet.
 
-Author:
-    Kenneth Enevoldsen
-
-
 Dependent on:
     count_domains_netarkivet.py 
+
+Author:
+    Kenneth Enevoldsen
 """
+
 from typing import List
 
 import os
