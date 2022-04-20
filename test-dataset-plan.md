@@ -9,7 +9,7 @@ transparent performance descriptions of the trained models. Such transparency
 would mean that anyone who is looking for a language model to finetune on their
 dataset can immediately see whether the model works well on their domain/task.
 
-## Tasks
+## Tasks
 
 As mentioned above, we want the test dataset to contain an equal amount of
 data from each of the following tasks:
