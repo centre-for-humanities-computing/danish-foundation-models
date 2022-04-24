@@ -14,17 +14,18 @@ dataset can immediately see whether the model works well on their domain/task.
 As mentioned above, we want the test dataset to contain an equal amount of
 data from each of the following tasks:
 
-- Danish web data (Netarkivet)
-- Danish social media data (HOPE Twitter, Reddit-da and Hestenettet from Danish
-  Gigaword)
+- Danish web data (OSCAR-da)
+- Danish social media data (HOPE Twitter and Reddit-da)
 - Danish legal data (Retsinformation and Skat.dk, both from Danish Gigaword)
+- Danish clinical data (PSYCOP project)
 - Danish wiki data (Danish Wikipedia and lex.dk)
 - Danish news data (DaNews)
 - Danish books (Gutenberg, Danish literature, WikiBooks and WikiSource, all
   from Danish Gigaword)
 - Danish spontaneous text (OpenSubtitles and Spontaneous Speech, both from
   Danish Gigaword)
-- Danish dialectal data (Botxt and Sønderjysk, both from Danish Gigaword)
+- Danish dialectal data (Botxt, from Danish Gigaword)
+- Danish speeches (FTSpeech)
 
 We would also like to test separately on other languages, to see how well it
 has understood these. These only appear as separate test scores and are not
