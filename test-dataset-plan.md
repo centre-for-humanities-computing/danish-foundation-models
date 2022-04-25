@@ -1,4 +1,4 @@
-# DadsBench: DAnish Domain-Specific language modelling Benchmark (DadsBench) v.1
+# DadsBench: *Da*nish *d*omain-*s*pecific language modelling *Bench*mark v.1
 
 We want the test dataset to contain an equal amount of data split into various
 tasks, described below.
@@ -15,7 +15,7 @@ As mentioned above, we want the test dataset to contain an equal amount of
 data from each of the following tasks:
 
 - Danish web data (OSCAR-da)
-- Danish Reddit-da (Reddit-da)
+- Danish Reddit data (Reddit-da)
 - Danish Twitter data (Twitter, General Discussions from DAGW)
 - Danish legal data (Retsinformation and Skat.dk, both from Danish Gigaword)
 - Danish clinical data (PSYCOP,  Electronic psychiatric records)
