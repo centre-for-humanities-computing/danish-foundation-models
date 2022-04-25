@@ -54,7 +54,7 @@ The performance over the dataset is measured using perplexity. Each part is eval
 | Legal | Retsinformation & Skat.dk | ✅ | 25 000 |
 | Clinical | PSYCOP project |  | 25 000 |
 | Wiki | Danish Wikipedia | ✅ | 25 000 |
-| News | DaNews |✅ | 25 000 |
+| News | DaNews | ✅ | 25 000 |
 | Books | Gutenberg, Danish literature, WikiBooks and WikiSource | ✅ | 25 000 |
 | Spontaneous speech | OpenSubtitles and Spontaneous Speech | ✅ | 25 000 |
 | Dialects | Botxt | ✅ | 25 000 |
