@@ -61,7 +61,7 @@ The performance over the dataset is measured using perplexity. Each part is eval
 | Speeches | FTSpeech | ✅ | 25 000 |  
 | **Sum** (sum open-souce) |  |  | 275 000 (225 000) |
 
-## Non-danish Test Set
+## Non-Danish Test Set
 
 | Language                 | Domain | Dataset  | Open Source | Tokens |
 | ------ | ---| -------- | ---- | ------ |
