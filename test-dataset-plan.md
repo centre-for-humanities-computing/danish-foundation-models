@@ -15,7 +15,8 @@ As mentioned above, we want the test dataset to contain an equal amount of
 data from each of the following tasks:
 
 - Danish web data (OSCAR-da)
-- Danish social media data (Twitter, General Discussions from DAGW and Reddit-da)
+- Danish Reddit-da (Reddit-da)
+- Danish Twitter data (Twitter, General Discussions from DAGW)
 - Danish legal data (Retsinformation and Skat.dk, both from Danish Gigaword)
 - Danish clinical data (PSYCOP,  Electronic psychiatric records)
 - Danish wiki data (Danish Wikipedia and lex.dk)
@@ -49,7 +50,7 @@ The performance over the dataset is measured using perplexity. Each part is eval
 | Domain | Dataset  | Open Source | Tokens |
 | ------ | -------- | ---- | ------ |
 | Web    | OSCAR-da | ✅   | 25 000 |
-| Social media | Reddit-da,  Twitter, General Discussions  | ✅  | 25 000 |
+| Social media | Reddit-da | ✅  | 25 000 |
 | Social media |  Twitter, General Discussions | (only tweet ids) | 25 000 |
 | Legal | Retsinformation & Skat.dk | ✅ | 25 000 |
 | Clinical | PSYCOP project |  | 25 000 |
