@@ -15,7 +15,7 @@ As mentioned above, we want the test dataset to contain an equal amount of
 data from each of the following tasks:
 
 - Danish web data (OSCAR-da)
-- Danish social media data (HOPE Twitter and Reddit-da)
+- Danish social media data (Twitter, General Discussions from DAGW and Reddit-da)
 - Danish legal data (Retsinformation and Skat.dk, both from Danish Gigaword)
 - Danish clinical data (PSYCOP,  Electronic Healthcare records from psychiatri from the Central Denmark Region)
 - Danish wiki data (Danish Wikipedia and lex.dk)
