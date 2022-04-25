@@ -1,4 +1,4 @@
-# DadsBench: DAnish Domain-Specific language modelling Benchmark (DadsBench)
+# DadsBench: DAnish Domain-Specific language modelling Benchmark (DadsBench) v.1
 
 We want the test dataset to contain an equal amount of data split into various
 tasks, described below.
