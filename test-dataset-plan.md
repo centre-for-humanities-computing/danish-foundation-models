@@ -33,7 +33,7 @@ included in any aggregated test score of the model. To keep these scores
 comparable, they have all been taken from the same
 [OSCAR](https://ids-pub.bsz-bw.de/frontdoor/index/index/docId/9021) dataset.
 
-- English data ([OSCAR-en](https://huggingface.co/datasets/oscar/viewer/unshuffled_deduplicated_en/train)
+- English data ([OSCAR-en](https://huggingface.co/datasets/oscar/viewer/unshuffled_deduplicated_en/train))
 - Norwegian Bokmål data ([OSCAR-nb](https://huggingface.co/datasets/oscar/viewer/unshuffled_deduplicated_no/train))
 - Norwegian Nynorsk data ([OSCAR-nn](https://huggingface.co/datasets/oscar/viewer/unshuffled_deduplicated_nn/train))
 - Swedish data ([OSCAR-sv](https://huggingface.co/datasets/oscar/viewer/unshuffled_deduplicated_sv/train))
