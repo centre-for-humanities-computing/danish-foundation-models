@@ -40,7 +40,7 @@ comparable, they have all been taken from the same
 - Icelandic data ([OSCAR-is](https://huggingface.co/datasets/oscar/viewer/unshuffled_deduplicated_is/train))
 
 ### The dataset:
-The DadsBench dataset consist of two main datasets. The Danish  set and a non-danish set consisting of example Non-danish set intended to model the generalizability of the model to adjacent languages.
+The DadsBench dataset consists of two parts: Domain-specific Danish texts, as well as web data in languages similar to Danish, where the non-Danish part is intended to evaluate the model's generalisation capabilities to adjacent languages.
 The performance over the dataset is measures using perplexity which is calcuted pr. subset then averages across domain and then across each of the two subset resulting in two scores, one for Danish and one non-Danish languages.
 
 ## Danish Test Set
