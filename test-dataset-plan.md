@@ -41,7 +41,7 @@ comparable, they have all been taken from the same
 
 ### The dataset:
 The DadsBench dataset consists of two parts: Domain-specific Danish texts, as well as web data in languages similar to Danish, where the non-Danish part is intended to evaluate the model's generalisation capabilities to adjacent languages.
-The performance over the dataset is measures using perplexity which is calcuted pr. subset then averages across domain and then across each of the two subset resulting in two scores, one for Danish and one non-Danish languages.
+The performance over the dataset is measured using perplexity. Each part is evaluated using a weighted average of the perplexities of the individual domains within the part, and the final performance is then a weighted average of the scores of each of the two parts.
 
 ## Danish Test Set
 
