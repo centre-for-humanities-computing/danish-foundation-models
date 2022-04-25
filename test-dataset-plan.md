@@ -56,7 +56,7 @@ The performance over the dataset is measured using perplexity. Each part is eval
 | Wiki | Danish Wikipedia | ✅ | 25 000 |
 | News | DaNews |✅ | 25 000 |
 | Books | Gutenberg, Danish literature, WikiBooks and WikiSource | ✅ | 25 000 |
-| spontaneous speech | OpenSubtitles and Spontaneous Speech |✅ | 25 000 |
+| Spontaneous speech | OpenSubtitles and Spontaneous Speech | ✅ | 25 000 |
 | Dialects | Botxt | ✅ | 25 000 |
 | Speeches | FTSpeech | ✅ | 25 000 |  
 | **Sum** (sum open-souce) |  |  | 275 000 (225 000) |
