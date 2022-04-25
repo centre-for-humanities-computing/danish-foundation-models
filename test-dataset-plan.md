@@ -59,8 +59,7 @@ The performance over the dataset is measures using perplexity which is calcuted 
 | spontaneous speech | OpenSubtitles and Spontaneous Speech |✅ | 25 000 |
 | Dialects | Botxt |✅ | 25 000 |
 | Speeches | FTSpeech | ✅ | 25 000 |  
-| Clinical | PSYCOP |  | 25 000 |
-| **Sum** (sum open-souce) |  |  | 300 000 (250 000) |
+| **Sum** (sum open-souce) |  |  | 275 000 (225 000) |
 
 ## Non-danish Test Set
 
