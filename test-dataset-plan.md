@@ -1,4 +1,4 @@
-# DadsBench: *Da*nish *d*omain-*s*pecific language modelling *Bench*mark v.1
+# DadsBench: **Da**nish **d**omain-**s**pecific language modelling **Bench**mark v.1
 
 We want the test dataset to contain an equal amount of data split into various
 tasks, described below.
