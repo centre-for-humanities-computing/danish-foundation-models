@@ -228,8 +228,6 @@ class DFMTrainer:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "config_path", help="Path to a yaml config file."
-    )
+    parser.add_argument("config_path", help="Path to a yaml config file.")
     args = parser.parse_args()
     main(args)
