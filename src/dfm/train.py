@@ -34,7 +34,7 @@ from dfm.modelling.model_types import MODEL_TYPES
 def main(args):
     """Main function for running the training script."""
     trainer = DFMTrainer(
-        pretraining_config_path=args.config_path,
+        pretraining_config_path=args.config,
     )
     trainer.train()
 
@@ -228,6 +228,6 @@ class DFMTrainer:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("config_path", help="Path to a yaml config file.")
+    parser.add_argument("--config", help="Path to a yaml config file.")
     args = parser.parse_args()
     main(args)
