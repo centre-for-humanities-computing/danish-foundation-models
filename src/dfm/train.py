@@ -1,16 +1,19 @@
-"""Training script for training masked language models with sweeps
+"""
+Training script for training masked language models with sweeps
 
 Authors:
     Lasse Hansen
     Malte Højmark-Bertelsen
 
 ```bash 
-PYTHONPATH="." python dfm/train.py --path_to_config_file
+pip install -e .
+python dfm/train.py --config tests/test_configs/pretrain_config.yaml
 ```
 """
 
 from dataclasses import dataclass
 from typing import List, Optional, Union
+import argparse
 
 from transformers import (
     AutoConfig,
@@ -28,10 +31,10 @@ from dfm.modelling.utils import read_yaml
 from dfm.modelling.model_types import MODEL_TYPES
 
 
-def main():
+def main(args):
     """Main function for running the training script."""
     trainer = DFMTrainer(
-        pretraining_config_path="tests/test_configs/pretrain_config.yaml",
+        pretraining_config_path=args.config_path,
     )
     trainer.train()
 
@@ -224,4 +227,9 @@ class DFMTrainer:
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "config_path", help="Path to a yaml config file."
+    )
+    args = parser.parse_args()
+    main(args)
