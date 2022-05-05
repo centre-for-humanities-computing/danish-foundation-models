@@ -2,17 +2,13 @@
 Applies quality filters to tweets filtering on language tag.
 
 Dependent on:
-    isn't dependent
+    src/applications/nopenews/quality_filter.py
 
 Authors:
     Kenneth Enevoldsen
 """
 
-import glob
 import os
-import sys
-from pathlib import Path
-import multiprocessing
 from functools import partial
 
 from tqdm import tqdm
@@ -20,10 +16,7 @@ from wasabi import msg
 
 from datasets import load_from_disk
 
-dfm_path = os.path.join("danish-foundation-models")
-sys.path.append(dfm_path)
-
-from src.dfm.cleaning import Deduper
+from dfm.cleaning import Deduper
 
 
 def filter_batch(batch, i):
@@ -32,7 +25,7 @@ def filter_batch(batch, i):
 
 
 
-def dedupe(batch, deduper: Deduper):
+def dedupe(batch, deduper: Deduper, dedupe_path: str):
     """
     """
     is_filtered = [filter_batch(batch, i) for i, _ in enumerate(batch["text"])]
@@ -40,8 +33,13 @@ def dedupe(batch, deduper: Deduper):
 
     texts = list(texts)
     # apply deduper
-    dedupe_gen = deduper.deduplicate(texts, return_generator=True, overwrite=False, store_corpus_to_disk = False, 
-            store_mask_to_disk = False, store_lsh_cache_to_disk = False, store_config_to_disk = False)
+    dedupe_gen = deduper.deduplicate(texts, return_generator=True, 
+            overwrite=False,
+            store_corpus_to_disk = False, 
+            store_mask_to_disk = True,
+            store_lsh_cache_to_disk = False,
+            store_config_to_disk = False,
+            output_dir=dedupe_path)
     
     def __extract_is_duplicate(mask):
         return mask["duplicate"]
@@ -53,19 +51,16 @@ def dedupe(batch, deduper: Deduper):
 
 def main(
     path,
-    n_process: int =-1,
 ) -> None:
-    if n_process == -1:
-        n_process = multiprocessing.cpu_count()
 
-    deduper = Deduper(ngram_size=10)
+    deduper = Deduper()
     
     msg.info("Loading Dataset")
     ds = load_from_disk(path)
     ds = ds.add_column("id", list(range(len(ds))))  # create custom id col
 
     msg.info("Starting deduping")
-    deduper = partial(dedupe, deduper=deduper)
+    deduper = partial(dedupe, deduper=deduper, dedupe_path = os.path.join(path, "deduplicated"))
     # dedupe dataset
     ds = ds.map(
         deduper,
