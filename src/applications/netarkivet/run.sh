@@ -1,16 +1,27 @@
-# Logs of what have been run an in what order
+# What have been run and in what order.
 
 echo "Starting Filtering"
 
 # Domain filter
-python content_filtering/count_domains_netarkivet.py
-python content_filtering/filter_domains.py
+python3 content_filtering/count_domains_netarkivet.py
+python3 content_filtering/filter_domains.py
 
 # Quality filter
-python quality_filter.py
+python3 quality_filter.py
 
 # Deduplication
-python dedupe.py
+python3 dedupe.py
 
-# Desc. stats
-python content_filtering/desc_stats.py
+echo "Create descriptive stats"
+
+python3 desc_stats.py
+python3 create_metadata_csv.py
+python3 extract_summary_statistics.py
+
+# update dataset with metadata column
+python3 add_is_duplicate_column.py
+
+echo "Create descriptive stats"
+python3 apply_filters.py
+
+
