@@ -14,9 +14,6 @@ jobs:
         matrix:
             os: [macos-latest, windows-latest, ubuntu-latest]
             python-version: ['3.9', '3.8', '3.7']
-            exclude:
-              - os: ubuntu-latest
-                python-version: '3.9'
 
     steps:
     - uses: actions/checkout@v3
@@ -58,8 +55,10 @@ jobs:
       uses: MishaKav/pytest-coverage-comment@v1.1.25
       with:
         pytest-coverage-path: ./pytest-coverage.txt
+        github-token: ${{ secrets.PYTEST_COVERAGE }}
 
     - name: Check the output coverage
+      if: ${{ github.event_name == 'push' }}
       run: |
         echo "Coverage Report - ${{ steps.coverage-comment.outputs.coverage }}"
         echo "Coverage Color - ${{ steps.coverage-comment.outputs.color }}"
