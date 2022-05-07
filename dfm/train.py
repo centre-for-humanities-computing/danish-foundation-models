@@ -12,21 +12,21 @@ PYTHONPATH="." python dfm/train.py --path_to_config_file
 from dataclasses import dataclass
 from typing import List, Optional, Union
 
+from datasets import interleave_datasets
 from transformers import (
     AutoConfig,
     AutoModelForPreTraining,
-    Trainer,
-    TrainingArguments,
     AutoTokenizer,
     DataCollatorForLanguageModeling,
+    Trainer,
+    TrainingArguments,
 )
-from datasets import interleave_datasets
 
 from dfm.data.load import dfm_load_dataset
 from dfm.modelling.data_collators import DataCollatorForSeq2SeqMaskLanguageModeling
+from dfm.modelling.model_types import MODEL_TYPES
 from dfm.modelling.preprocess import preprocess_dataset
 from dfm.modelling.utils import read_yaml
-from dfm.modelling.model_types import MODEL_TYPES
 
 
 def main():

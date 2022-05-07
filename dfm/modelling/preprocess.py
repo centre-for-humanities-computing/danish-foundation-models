@@ -1,13 +1,14 @@
 """Data preprocessing script for Danish Foundation Models """
 
-from typing import Union
 from functools import partial
+from typing import Union
+
+from datasets import DatasetDict
 from datasets.arrow_dataset import Dataset
+from dfm.data.load import dfm_load_dataset
 from transformers import AutoTokenizer, BatchEncoding
 from transformers.tokenization_utils_base import PreTrainedTokenizerBase
 from transformers.tokenization_utils_fast import PreTrainedTokenizerFast
-from dfm.data.load import dfm_load_dataset
-from datasets import DatasetDict
 
 
 def main():
@@ -16,9 +17,9 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained("Maltehb/danish-bert-botxo")
 
     ds = dfm_load_dataset("DDSC/reddit-da")
-    ds["train"] = ds["train"].select(range(1000))
-    ds["test"] = ds["test"].select(range(1000))
-    ds["val"] = ds["val"].select(range(1000))
+    ds["train"] = ds["train"].select(range(2))
+    ds["test"] = ds["test"].select(range(2))
+    ds["val"] = ds["val"].select(range(2))
 
     ds = preprocess_dataset(ds, tokenizer)
 
