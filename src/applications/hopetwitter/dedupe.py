@@ -20,10 +20,7 @@ from wasabi import msg
 
 from datasets import load_dataset
 
-dfm_path = os.path.join("danish-foundation-models")
-sys.path.append(dfm_path)
-
-from src.dfm.cleaning import Deduper
+from dfm.cleaning import Deduper
 
 
 def filter_batch(batch, i):
@@ -34,6 +31,7 @@ def filter_batch(batch, i):
 
 def dedupe(batch, deduper: Deduper):
     """
+    dedupe a huggingface batch
     """
     is_filtered = [filter_batch(batch, i) for i, _ in enumerate(batch["text"])]
     texts = (t for t, is_f in zip(zip(batch["id"], batch["text"]), is_filtered) if is_f)
@@ -64,7 +62,7 @@ def main(
     path = os.path.join(read_path, "**", "*.jsonl")
     json_files = glob.glob(path, recursive=True)
 
-    w_path = os.path.join(write_path, f"twitter_da_stopwords_2019-01-01_2021-04-30")
+    w_path = os.path.join(write_path, f"twitter_da_stopwords_2019-01-01_2021-04-30.arrow")
     deduper = Deduper(ngram_size=10)
     
     dataset = load_dataset("json", data_files={"train": json_files})

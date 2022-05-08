@@ -9,3 +9,8 @@ python src/applications/hopetwitter/quality_filter.py
 rm /work/twitter_cleaned/*_flatten.ndjson
 
 echo "Deduplicate Tweets"
+python src/applications/hopetwitter/dedupe.py
+
+echo "Apply filter"
+python src/applications/hopetwitter/dedupe.py
+

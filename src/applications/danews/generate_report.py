@@ -12,6 +12,11 @@ from datetime import datetime
 from datasets import load_from_disk
 from pathlib import Path
 
+def word_count(batch):
+    nlp = spacy.blank("da")
+    batch["n_tokens"] = [len(doc) for doc in nlp.pipe(batch["text"])]
+    return batch
+
 print("Loading dataset")
 path = Path("/work/hope-infomedia_cleaned/infomedia_2000-2021")
 news = load_from_disk(path)
