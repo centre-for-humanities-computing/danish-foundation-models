@@ -1,4 +1,12 @@
-…
+"""
+Applies quality filters to DaNews
+
+Dependent on:
+    isn't dependent
+
+Authors:
+    Kenneth Enevoldsen
+"""
 
 import glob
 import os
@@ -14,7 +22,6 @@ dfm_path = os.path.join("danish-foundation-models")
 sys.path.append(dfm_path)
 
 from src.dfm.cleaning import QualityFilter
-from src.dfm.utils import batch
 
 
 def filter_batch(batch, i):
