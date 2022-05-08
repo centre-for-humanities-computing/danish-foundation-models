@@ -25,7 +25,7 @@ ds = ds.map(word_count, batched = True, batch_size=1024*2*2, num_proc=16)
 n_docs = len(ds)
 reddit = ds.filter(lambda b: b["source"] == "reddit-da")
 n_reddit_docs = len(reddit)
-reddit_tokens = len(reddit["n_tokens"])
+reddit_tokens = sum(reddit["n_tokens"])
 n_categories = len(set(ds["source"]))
 n_tokens_ = ds["n_tokens"]
 is_duplicate_ = ds["is_13_gram_duplicate"]
