@@ -90,6 +90,7 @@ def q_filter(batch):
         prev_filters.add(qfilter)
     return batch
 
+
 def add_text_col(example: dict) -> dict:
     """constructs text column to news article"""
     example["text"] = ""
@@ -129,7 +130,6 @@ def main(
 
     print("adding text col")
     ds = ds.map(add_text_col, num_proc=n_process)
-
 
     # apply quality filter to batch
     print("applying filter")

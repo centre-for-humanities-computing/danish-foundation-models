@@ -12,10 +12,12 @@ from datetime import datetime
 from datasets import load_from_disk
 from pathlib import Path
 
+
 def word_count(batch):
     nlp = spacy.blank("da")
     batch["n_tokens"] = [len(doc) for doc in nlp.pipe(batch["text"])]
     return batch
+
 
 print("Loading dataset")
 path = Path("/work/hope-infomedia_cleaned/infomedia_2000-2021")
@@ -23,7 +25,7 @@ news = load_from_disk(path)
 
 # TODO: fiks
 print("Add n_tokens column")
-news = news.map(word_count, batched = True, batch_size=1024*2*2, num_proc=16)
+news = news.map(word_count, batched=True, batch_size=1024 * 2 * 2, num_proc=16)
 
 # Add description
 print("Creating metadata")
@@ -38,13 +40,15 @@ n_sources = len(set(sources))
 print("\tExtracting duplicate counts")
 n_tokens_ = news["n_tokens"]
 n_tokens = sum(n_tokens_)
-is_duplicate_ =  news["is_duplicate"]
-n_clean_tokens = sum(n_tok for n_tok, is_dup in zip(n_tokens_, is_duplicate_) if is_dup is False)
+is_duplicate_ = news["is_duplicate"]
+n_clean_tokens = sum(
+    n_tok for n_tok, is_dup in zip(n_tokens_, is_duplicate_) if is_dup is False
+)
 n_non_duplicates = sum([1 for is_dup in is_duplicate_ if is_dup is False])
 n_duplicates = sum([1 for is_dup in is_duplicate_ if is_dup is True])
 n_docs = len(news)
 print("\tExtracting number of low-quality text")
-passed_quality_filter = news["passed_quality_filter"] 
+passed_quality_filter = news["passed_quality_filter"]
 n_low_quality = sum(1 for is_good in passed_quality_filter if is_good is False)
 
 news.info.description = f"""
@@ -184,7 +188,9 @@ References:
 
 news.info.version = "1.0.0"
 news.info.citation = "If you wish to cite this work please see our GitHub page for an up to date citation: https://github.com/centre-for-humanities-computing/danish-foundation-models"
-news.info.homepage = "https://github.com/centre-for-humanities-computing/danish-foundation-models"
+news.info.homepage = (
+    "https://github.com/centre-for-humanities-computing/danish-foundation-models"
+)
 
 # write markdown file
 print("\tWriting markdown file")
@@ -215,9 +221,11 @@ news.save_to_disk(save_path)
 
 
 # write meta file
-news_sub = news.remove_columns([c for c in news.features.keys() if c not in {"n_tokens", "is_duplicate", "passed_quality_filter", "Source"}])
+news_sub = news.remove_columns(
+    [
+        c
+        for c in news.features.keys()
+        if c not in {"n_tokens", "is_duplicate", "passed_quality_filter", "Source"}
+    ]
+)
 news_sub.to_csv("news_meta.csv")
-    
-    
-    
-    
