@@ -11,7 +11,11 @@ DanAvis20 (or danavis) were excluded due to preprocessing desribed in
 (Derczynski et al., 2021, v1 on arvix: https://arxiv.org/pdf/2005.03521v1.pdf) including 
 shuffling of sentences, pseudonymization of prober names and the replacement of infrequent
 content wordswith statistical cognates, which could lead sentences such as 
-"Der er skilsmissesager i forsikringsselskabet".
+"Der er skilsmissesager i forlion
+
+lllion
+
+llsikringsselskabet".
 Additionally DAGW_DFM includes addtionally the reddit-da dataset (hf citation), which include
 Reddit post derived from (NCC) which includes
 a total 1908887 tokens over 1908887 documents.
