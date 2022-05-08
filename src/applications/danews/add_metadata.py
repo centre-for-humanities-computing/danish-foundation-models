@@ -1,5 +1,6 @@
 """
-Add description to dataset and generate documentation report from dataset description.
+Add description to dataset and generate an outline to a datasheet describing the
+dataset.
 
 Dependent on:
     src/applications/danews/dedupe.py
@@ -88,7 +89,7 @@ derived from tabloid media or  mainstream news.
 
 **How many instances are there in total (of each type, if appropriate)?**
 
-The dataset consist of {n_docs} documents where {n_duplicates}
+The dataset consist of {n_docs} documents where {n_docs-n_duplicates}
 ({n_duplicates/n_docs:.2f}%) are left after filtering. 
 
 **Does the dataset contain all possible instances or is it a sample (not necessarily
