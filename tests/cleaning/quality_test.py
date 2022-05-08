@@ -209,7 +209,6 @@ class TestQualityFilter:
         [
             ("jeg er glad, men også noglegange sur måske hvertfald." * 10, False),
             ("jeg er glad, men også noglegange sur...", True),
-            (text, True),
         ],
     )
     def test_duplicate_ngram_chr_fraction(
