@@ -1,12 +1,4 @@
-"""
-Applies quality filters to Netarkivet filtering based on language tags.
-
-Dependent on:
-    isn't dependent
-
-Authors:
-    Kenneth Enevoldsen
-"""
+…
 
 import glob
 import os

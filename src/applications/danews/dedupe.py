@@ -11,9 +11,7 @@ Authors:
 import os
 from functools import partial
 
-from tqdm import tqdm
 from wasabi import msg
-
 from datasets import load_from_disk
 
 from dfm.cleaning import Deduper
@@ -80,4 +78,4 @@ def main(
 if __name__ == "__main__":
     path = os.path.join("/work", "hope-infomedia_cleaned", "infomedia_2000-2021")
     main(path)
-    msg.good(f"Finished Processing")
+    msg.good("Finished Processing")
