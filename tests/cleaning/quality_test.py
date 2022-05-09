@@ -180,14 +180,14 @@ class TestQualityFilter:
     @pytest.mark.parametrize(
         "text, expected",
         [
-            ("Jeg er jeg er jeg, JeG ER, jeg er", False), 
+            ("Jeg er jeg er jeg, JeG ER, jeg er", False),
             ("jeg er glad, men også noglegange sur...", True),
         ],
     )
     def test_top_ngram_chr_fraction(self, quality_filter, text: str, expected: bool):
         filter_func = quality_filter.filters["top_ngram_chr_fraction"]
         nlp = quality_filter.nlp
-        assert filter_func(nlp(text)) is expected  
+        assert filter_func(nlp(text)) is expected
 
     @pytest.mark.parametrize(
         "text,expected",
