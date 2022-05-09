@@ -23,7 +23,6 @@ print("Loading dataset")
 path = Path("/work/hope-infomedia_cleaned/infomedia_2000-2021")
 news = load_from_disk(path)
 
-# TODO: fiks
 print("Add n_tokens column")
 news = news.map(word_count, batched=True, batch_size=1024 * 2 * 2, num_proc=16)
 
