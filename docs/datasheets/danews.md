@@ -18,6 +18,8 @@ quality filtering and deduplication.
 
 ## Datasheet
 
+Following the recommendation and framework of [5] we add the following datasheet. 
+
 ### Motivation
 
 **For what purpose was the dataset created? Who created the dataset? Who funded the
@@ -182,3 +184,5 @@ https://github.com/centre-for-humanities-computing/danish-foundation-models
 - [4] Nielbo, K. L., Baglini, R. B., Vahlstrup, P. B., Enevoldsen, K. C., Bechmann, A.,
         & Roepstorff, A. (2021, January). News information decoupling: An information
         signature of catastrophes in legacy news media. https://eadh2020-2021.org/
+- [5] T. Gebru, J. Morgenstern, B. Vecchione, J. W. Vaughan, H. Wallach, H. Daumé III,
+        and K. Crawford. Datasheets for datasets. arXiv preprint arXiv:1803.09010, 2018.
