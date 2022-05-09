@@ -9,25 +9,26 @@
 
 ---
 
-DaNews consist of articles from Danish news and tabloid media from the period
-01/12/2000 to 30/04/2021. It consists of ~25 million articles across 1362 news
+DaNews consist of articles from Danish news and tabloid media from 1 December 2000 to 
+30 April 2021. It consists of ~25 million articles across 1362 news
 sources. Note that newspapers, such as Politiken with multiple outlets, e.g. physically
 and online, are counted as multiple sources.
 DaNews consists of 9.29 billion tokens of which 8.67 Billion (0.93\%) were left after
 quality filtering and deduplication.
 
-## Datasheet:
+## Datasheet
 
-### Motivation:
+### Motivation
 
 **For what purpose was the dataset created? Who created the dataset? Who funded the
 creation of the dataset?**
 
-The dataset was created for pre-training Danish language models by a team of researchers
-at Center for Humanities Computing Aarhus (CHCAA) using a codebase jointly developed
-with partners from industry and industry, including KMD, Ekstra Bladet, Briston
-University and Deepdivr. For more on collaborators on this project see
-the [GitHub repository](https://github.com/centre-for-humanities-computing/danish-foundation-models
+The dataset was created with the purpise of pre-training Danish language models. It was
+created by a team of researchers at Center for Humanities Computing Aarhus (CHCAA) using
+a codebase jointly developed with partners from industry and industry, including KMD,
+Ekstra Bladet, Bristol University and Deepdivr. For more on collaborators on this
+project see the
+[GitHub repository](https://github.com/centre-for-humanities-computing/danish-foundation-models
 ).
 
 **Any other comments?**
@@ -54,17 +55,22 @@ period across the sources.
 
 **If the dataset is a sample from a larger set, what was the sampling strategy?**
 
-The dataset is not a sample, but the cleaned section of the dataset is sample.
+The dataset is not a sample, but _is_ filtered of the dataset, see 
+Preprocessing/cleaning/labeling for more on this.
 
 **Who was involved in the data collection process?**
 
 A team of researchers at Center for Humanities Computing Aarhus (CHCAA) obtained this
-dataset in a collaboration with Infomedia.
+dataset in a using the Infomedia API and would like to thanks the dataset owners for
+access to their articles.
+
 
 **Over what timeframe was the data collected?**
-The dataset includes articles from the period 01/12/2000 to 30/04/2021.
+The dataset includes articles from 1 December 2000 to 
+30 April 2021.
 
 **Were any ethical review processes conducted?**
+
 No.
 
 ## Preprocessing/cleaning/labeling
@@ -73,7 +79,7 @@ No.
 (e.g., discretization or bucketing, tokenization, part-of-speech tagging, 
 SIFT feature extraction, removal of instances, processing of missing values)?**
 
-DaNews have been filtered for quality using a series of heuristic filters and removing
+DaNews has been filtered using a series of heuristic filters as well as removing
 repetitious texts. Following the filtering, DaNews is deduplicated to remove exact and
 near-duplicates.
 
@@ -81,6 +87,7 @@ A total of 2 338 728 (0.09%) were considered low quality and 1 048 815 (0.04%) d
 were considered near-duplicates.
 
 ## Quality Filter:
+
 For the quality filtering DaNews applies a filter akin to [2] which filters text which
 does not:
 
@@ -102,25 +109,31 @@ SpaCy v.3.1.4.
 of the text, respectively.
 
 ## Deduplication
+
 The deduplication removed all documents with a 13-gram similarity higher than 80%
 following the MinHash algorithm [1] using 128 permutations. The MinHash algorithm is a
 probabilistic data structure for approximating the Jaccard similarity between two sets.
 
 **Is the software used to preprocess/clean/label the instances available?**
+
 Yes, the scripts are available
 [here](https://github.com/centre-for-humanities-computing/danish-foundation-models/tree/main/src/application/danews). 
-Which used version 0.0.2 of the
+the scripts use version 0.0.2 of the
 [dfm package](https://github.com/centre-for-humanities-computing/danish-foundation-models). 
 
 ## Uses
+
 **Has the dataset been used for any tasks already?**
+
 Yes, the dataset has been used to pre-train Danish language models.
 Parts of the dataset have also been used in [3] and [4]
 
 **Is there a repository that links to any or all papers or systems that use the dataset?**
+
 No.
 
 **What (other) tasks could the dataset be used for?**
+
 The scale of the dataset makes it suitable for NLP tasks such as language modelling.
 Similarly, the structure of the articles makes it a suitable dataset for training text
 summerization models.
@@ -128,16 +141,17 @@ summerization models.
 **Is there anything about the composition of the dataset or the way it was collected and
 preprocessed/cleaned/labeled that might impact future uses?**
 
-This dataset is static and thus does not evolve over time with the language, thus will
-become increasingly outdated over time.
+This dataset is static and thus does not evolve over time with the language. 
+A consequence of this is that it will become increasingly outdated over time.
 
 
 **Are there tasks for which the dataset should not be used?**
 
 This dataset contains Danish articles and thus should not be used for non-Danish
 language task.
+
 As the writers of the content are predominantly journalists, it reflects a certain
-social demographic unlikely to reflect the Danish language as a whole.
+writing style which is unlikely to reflect the Danish language as a whole.
 
 ## Distribution
 
