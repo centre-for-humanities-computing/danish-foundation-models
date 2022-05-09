@@ -26,8 +26,8 @@ Following the recommendation and framework of [5] we add the following datasheet
 creation of the dataset?**
 
 The dataset was created with the purpose of pre-training Danish language models. It was
-created by a team of researchers at Center for Humanities Computing Aarhus (CHCAA) using
-a codebase jointly developed with partners from industry and industry, including KMD,
+created by a team of researchers at the Center for Humanities Computing Aarhus (CHCAA) using
+a codebase jointly developed with partners from academia and industry, including KMD,
 Ekstra Bladet, Bristol University and Deepdivr. For more on collaborators on this
 project see the
 [GitHub repository](https://github.com/centre-for-humanities-computing/danish-foundation-models
@@ -88,7 +88,7 @@ description, explaining why this information is missing (e.g., because it was
 unavailable). This does not include intentionally removed information, but might
 include, e.g., redacted text.**
 
-The team of researchers at Center for Humanities Computing Aarhus (CHCAA) have not
+The team of researchers at the Humanities Computing Aarhus (CHCAA) have not
 removed any information from the instances.
 
 **Are relationships between individual instances made explicit (e.g., users’ movie
@@ -129,7 +129,7 @@ Articles often describe content which is considered offensive, insulting or thre
 **What mechanisms or procedures were used to collect the data (e.g., hardware
 apparatuses or sensors, manual human curation, software programs, software APIs)?**
 
-A team of researchers at Center for Humanities Computing Aarhus (CHCAA) obtained this
+A team of researchers at the Center for Humanities Computing Aarhus (CHCAA) obtained this
 dataset using the Infomedia API.
 
 **If the dataset is a sample from a larger set, what was the sampling strategy?**
@@ -139,8 +139,8 @@ Preprocessing/cleaning/labeling for more on this.
 
 **Who was involved in the data collection process?**
 
-A team of researchers at Center for Humanities Computing Aarhus (CHCAA) obtained this
-dataset using the Infomedia API and would like to thanks the dataset owners for
+A team of researchers at the Center for Humanities Computing Aarhus (CHCAA) obtained this
+dataset using the Infomedia API and would like to thank the dataset owners for
 access to their articles.
 
 **Over what timeframe was the data collected?**
@@ -163,11 +163,11 @@ DaNews has been filtered using a series of heuristic filters as well as removing
 repetitious texts. Following the filtering, DaNews is deduplicated to remove exact and
 near-duplicates.
 
-A total of 2,338,728 (9%) were considered low-quality and 1,048,815 (4%) documents
-were considered near-duplicates.
+Of all documents, 2,338,728 (9%) were filtered based due to low-quality and 1,048,815
+(4%) because they were near-duplicates.
 
-For the quality filtering, DaNews applies a filter akin to [2] which filters text which
-does not:
+For the quality filtering, DaNews applies a filter akin to [2] which contains text
+that:
 
 - Contain at least 2 Danish stopwords. For the stopword list we use the one used in
 SpaCy v.3.1.4.
