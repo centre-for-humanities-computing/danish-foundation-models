@@ -10,10 +10,10 @@
 ---
 
 DaNews consist of articles from Danish news and tabloid media from 1 December 2000 to 
-30 April 2021. It consists of ~25 million articles across 1362 news
+30 April 2021. It consists of ~25 million articles across 1,362 news
 sources. Note that newspapers, such as Politiken with multiple outlets, e.g. physically
 and online, are counted as multiple sources.
-DaNews consists of 9.29 billion tokens of which 8.67 Billion (0.93\%) were left after
+DaNews consists of 9.29 billion tokens of which 8.67 Billion (93\%) were left after
 quality filtering and deduplication.
 
 ## Datasheet
@@ -46,7 +46,7 @@ Instances of the dataset are Danish articles derived from Danish tabloids or new
 
 **How many instances are there in total (of each type, if appropriate)?**
 
-The dataset consists of 25 874 862 documents and 24 826 047 (0.96%) documents in the 
+The dataset consists of 25 874 862 documents and 24 826 047 (96%) documents in the 
 filtered dataset.
 
 **Does the dataset contain all possible instances or is it a sample (not necessarily
@@ -57,17 +57,18 @@ period across the sources.
 
 **If the dataset is a sample from a larger set, what was the sampling strategy?**
 
-The dataset is not a sample, but _is_ filtered of the dataset, see 
+The dataset is not a sample, but _is_ a filtered version of the full dataset, see
 Preprocessing/cleaning/labeling for more on this.
 
 **Who was involved in the data collection process?**
 
 A team of researchers at Center for Humanities Computing Aarhus (CHCAA) obtained this
-dataset in a using the Infomedia API and would like to thanks the dataset owners for
+dataset using the Infomedia API and would like to thanks the dataset owners for
 access to their articles.
 
 
 **Over what timeframe was the data collected?**
+
 The dataset includes articles from 1 December 2000 to 
 30 April 2021.
 
@@ -85,10 +86,10 @@ DaNews has been filtered using a series of heuristic filters as well as removing
 repetitious texts. Following the filtering, DaNews is deduplicated to remove exact and
 near-duplicates.
 
-A total of 2 338 728 (0.09%) were considered low quality and 1 048 815 (0.04%) documents
+A total of 2,338,728 (9%) were considered low-quality and 1,048,815 (4%) documents
 were considered near-duplicates.
 
-## Quality Filter:
+## Quality Filter
 
 For the quality filtering, DaNews applies a filter akin to [2] which filters text which
 does not:
@@ -96,8 +97,8 @@ does not:
 - Contain at least 2 Danish stopwords. For the stopword list we use the one used in
 SpaCy v.3.1.4.
 - Have a mean word length between 3 and 10.
-- Have a token length between 50 and 100 000.
-- Have less than 5 000 000 characters.
+- Have a token length between 50 and 100,000.
+- Have less than 5,000,000 characters.
 - Have less than 60% of words containing an alphabetic character.
 - Have a symbol to word ratio lower than 10% for hashtags and ellipsis.
 - Have less than 90% of lines starting with a bullet point.
@@ -112,7 +113,7 @@ of the text, respectively.
 
 ## Deduplication
 
-The deduplication removed all documents with a 13-gram similarity higher than 80%
+The deduplication removed all documents with a 13-gram Jaccard similarity higher than 80%
 following the MinHash algorithm [1] using 128 permutations. The MinHash algorithm is a
 probabilistic data structure for approximating the Jaccard similarity between two sets.
 
@@ -138,7 +139,7 @@ No.
 
 The scale of the dataset makes it suitable for NLP tasks such as language modelling.
 Similarly, the structure of the articles makes it a suitable dataset for training text
-summerization models.
+summarisation models.
 
 **Is there anything about the composition of the dataset or the way it was collected and
 preprocessed/cleaned/labeled that might impact future uses?**
@@ -150,7 +151,7 @@ A consequence of this is that it will become increasingly outdated over time.
 **Are there tasks for which the dataset should not be used?**
 
 This dataset contains Danish articles and thus should not be used for non-Danish
-language task.
+language tasks.
 
 As the writers of the content are predominantly journalists, it reflects a certain
 writing style which is unlikely to reflect the Danish language as a whole.
@@ -164,6 +165,7 @@ No.
 
 
 ### Citation
+
 If you wish to cite this work please see our GitHub page for an up to date citation:
 https://github.com/centre-for-humanities-computing/danish-foundation-models
 
