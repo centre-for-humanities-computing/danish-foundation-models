@@ -13,7 +13,7 @@ DaNews consist of articles from Danish news and tabloid media from 1 December 20
 30 April 2021. It consists of ~25 million articles across 1,362 news
 sources. Note that newspapers, such as Politiken with multiple outlets, e.g. physically
 and online, are counted as multiple sources.
-DaNews consists of 9.29 billion tokens of which 8.67 Billion (93\%) were left after
+DaNews consists of 9.29 billion tokens of which 8.67 Billion (93%) were left after
 quality filtering and deduplication.
 
 ## Datasheet
@@ -25,7 +25,7 @@ Following the recommendation and framework of [5] we add the following datasheet
 **For what purpose was the dataset created? Who created the dataset? Who funded the
 creation of the dataset?**
 
-The dataset was created with the purpise of pre-training Danish language models. It was
+The dataset was created with the purpose of pre-training Danish language models. It was
 created by a team of researchers at Center for Humanities Computing Aarhus (CHCAA) using
 a codebase jointly developed with partners from industry and industry, including KMD,
 Ekstra Bladet, Bristol University and Deepdivr. For more on collaborators on this
@@ -46,14 +46,91 @@ Instances of the dataset are Danish articles derived from Danish tabloids or new
 
 **How many instances are there in total (of each type, if appropriate)?**
 
-The dataset consists of 25 874 862 documents and 24 826 047 (96%) documents in the 
-filtered dataset.
+There are 25,874,862 documents in the unfiltered dataset, with 24,826,047 (96%) remaining
+after filtering.
 
 **Does the dataset contain all possible instances or is it a sample (not necessarily
 random) of instances from a larger set?**
 
 Prior to filtering DaNews dataset contains all digitized news articles from the given
 period across the sources.
+
+**What data does each instance consist of? “Raw” data (e.g., unprocessed text or images)
+or features? In either case, please provide a description.**
+
+Each instance constist of the following columns
+```
+'ArticleUrl', 'Heading', 'SubHeading', 'Lead', 'Paragraph', 'PublishDate', 'BodyText', 
+'Captions', 'Authors', 'Source', 'WordCount', 'ArticleId', 'PageIds', 'Section', 'text'
+```
+
+Where we constructed the columns `text` column by joining the `Heading`, `SubHeading`
+using newline. If the textfield is empty it is ignored and no newline is added. The we
+join the resulting string with the `BodyText` using two newlines.
+
+During the quality filtering we add the following indicator columns:
+```
+'passed_quality_filter', 'filtered_by_max_chr_length', 'filtered_by_doc_length', 
+'filtered_by_mean_word_length', 'filtered_by_alpha_ratio', 'filtered_by_stop_word', 
+'filtered_by_symbol_2_word_hashtag', 'filtered_by_symbol_2_word_ellipsis',
+'filtered_by_line_bullets_or_ellipsis', 'filtered_by_duplicate_lines_chr_fraction',
+'filtered_by_duplicate_paragraph_chr_fraction', 'filtered_by_top_ngram_chr_fraction',
+'filtered_by_duplicate_ngram_chr_fraction', 'is_duplicate'
+```
+
+**Is there a label or target associated with each instance? If so, please provide a
+description.**
+
+No.
+
+**Is any information missing from individual instances? If so, please provide a
+description, explaining why this information is missing (e.g., because it was
+unavailable). This does not include intentionally removed information, but might
+include, e.g., redacted text.**
+
+The team of researchers at Center for Humanities Computing Aarhus (CHCAA) have not
+removed any information from the instances.
+
+**Are relationships between individual instances made explicit (e.g., users’ movie
+ratings, social network links)? If so, please describe how these relationships are made
+explicit.**
+
+The metadata columns, denote the relationship between articles including date of
+publication, sections, and authors.
+
+
+**Are there recommended data splits (e.g., training, development/validation, testing)?
+If so, please provide a description of these splits, explaining the rationale behind
+them.**
+
+There is not splits performed on this dataset.
+
+**Are there any errors, sources of noise, or redundancies in the dataset? If so, please
+provide a description.**
+
+News sources can publish their content both in an online and printed format which would
+lead to similar instances in the dataset. To alleviate this redundancy by removing
+near-duplicates (see Preprocessing/cleaning/labeling).
+
+**Is the dataset self-contained, or does it link to or otherwise rely on external
+resources (e.g., websites, tweets, other datasets)?**
+
+Articles are intended to tell a self-contained story, but can include external
+references such as tweets or website urls.
+
+
+**Does the dataset contain data that, if viewed directly, might be offensive, insulting,
+threatening, or might otherwise cause anxiety?**
+
+Articles often describe content which is considered offensive, insulting or threatening. 
+
+## Collection Process
+
+**What mechanisms or procedures were used to collect the data (e.g., hardware
+apparatuses or sensors, manual human curation, software programs, software APIs)?**
+
+A team of researchers at Center for Humanities Computing Aarhus (CHCAA) obtained this
+dataset using the Infomedia API.
 
 **If the dataset is a sample from a larger set, what was the sampling strategy?**
 
@@ -66,7 +143,6 @@ A team of researchers at Center for Humanities Computing Aarhus (CHCAA) obtained
 dataset using the Infomedia API and would like to thanks the dataset owners for
 access to their articles.
 
-
 **Over what timeframe was the data collected?**
 
 The dataset includes articles from 1 December 2000 to 
@@ -75,6 +151,7 @@ The dataset includes articles from 1 December 2000 to
 **Were any ethical review processes conducted?**
 
 No.
+
 
 ## Preprocessing/cleaning/labeling
 
@@ -88,8 +165,6 @@ near-duplicates.
 
 A total of 2,338,728 (9%) were considered low-quality and 1,048,815 (4%) documents
 were considered near-duplicates.
-
-## Quality Filter
 
 For the quality filtering, DaNews applies a filter akin to [2] which filters text which
 does not:
@@ -110,8 +185,6 @@ SpaCy v.3.1.4.
   - Where the top 2-4 grams constitute less than 20%, 18%, 16%, respectively, of the text. 
   - Where the duplicate 5-10 grams constitute less than 25%, 24%, 23%, 22%, 21%, 20%
 of the text, respectively.
-
-## Deduplication
 
 The deduplication removed all documents with a 13-gram Jaccard similarity higher than 80%
 following the MinHash algorithm [1] using 128 permutations. The MinHash algorithm is a
