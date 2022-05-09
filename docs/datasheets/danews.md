@@ -88,22 +88,22 @@ were considered near-duplicates.
 
 ## Quality Filter:
 
-For the quality filtering DaNews applies a filter akin to [2] which filters text which
+For the quality filtering, DaNews applies a filter akin to [2] which filters text which
 does not:
 
 - Contain at least 2 Danish stopwords. For the stopword list we use the one used in
 SpaCy v.3.1.4.
-- Have a mean word length between 3-10.
-- Have a token length between 50-100 000.
+- Have a mean word length between 3 and 10.
+- Have a token length between 50 and 100 000.
 - Have less than 5 000 000 characters.
 - Have less than 60% of words containing an alphabetic character.
 - Have a symbol to word ratio lower than 10% for hashtags and ellipsis.
 - Have less than 90% of lines starting with a bullet point.
 - have less than 30% of lines ending with an ellipsis.
 
-- Have low high degree of repitiuous text:
-  - Less than 20% duplicate lines.
-  - Less than 20% duplicate paragraphs.
+- Have low high degree of repetitious text:
+  - Have less than 20% of characters contained within duplicate lines.
+  - Have less than 20% of characters contained within duplicate paragraphs.
   - Where the top 2-4 grams constitute less than 20%, 18%, 16%, respectively, of the text. 
   - Where the duplicate 5-10 grams constitute less than 25%, 24%, 23%, 22%, 21%, 20%
 of the text, respectively.
