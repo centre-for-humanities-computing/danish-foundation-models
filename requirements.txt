@@ -9,11 +9,11 @@ protobuf==3.20.1
 tokenizers==0.10.1
 
 # data
-datasets~=2.1.0
+datasets>=2.0.0,<2.1.0
 ndjson==0.3.1
 
 ## data cleaning
-spacy>=3.1.4,<=3.3.0
+spacy>=3.1.4,<3.3.0
 datasketch>=1.5.6,<1.6.0
 google==3.0.0  # safesearch filtering
 more_itertools~=8.12.0
@@ -31,3 +31,4 @@ pytest-cov>=2.8.1
 
 # format
 black==22.3.0
+

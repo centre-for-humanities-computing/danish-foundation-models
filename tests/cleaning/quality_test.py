@@ -3,6 +3,7 @@
 from typing import List
 
 from dfm.cleaning import QualityFilter
+from numpy import True_
 import pytest
 from pytest_lazyfixture import lazy_fixture
 
@@ -67,39 +68,8 @@ class TestQualityFilter:
         return tweet_texts + [long_text] + [bullets_texts]
 
     @pytest.fixture(scope="class")
-    def stop_words(self):
-        return set(
-            [
-                "er",
-                "jeg",
-                "det",
-                "du",
-                "ikke",
-                "at",
-                "en",
-                "og",
-                "har",
-                "vi",
-                "til",
-                "på",
-                "hvad",
-                "mig",
-                "med",
-                "de",
-                "for",
-                "den",
-                "så",
-                "der",
-                "dig",
-                "han",
-                "kan",
-                "af",
-            ]
-        )
-
-    @pytest.fixture(scope="class")
     def quality_filter(self):
-        return QualityFilter()
+        return QualityFilter(top_ngram_min_count=1)
 
     @pytest.mark.parametrize(
         "text,expected",
@@ -108,13 +78,8 @@ class TestQualityFilter:
             ("56789okd23456789098765sds", False),
         ],
     )
-    def test_stop_words(self, quality_filter, stop_words, text: str, expected: bool):
-        assert (
-            quality_filter.stop_word(
-                quality_filter.nlp(text), n=2, stop_words=stop_words
-            )
-            is expected
-        )
+    def test_stop_words(self, quality_filter, text: str, expected: bool):
+        assert quality_filter.stop_word(quality_filter.nlp(text), n=2) is expected
 
     @pytest.mark.parametrize(
         "texts,expected",
@@ -127,7 +92,11 @@ class TestQualityFilter:
         for t in texts:
             assert (
                 quality_filter.line_bullets_or_ellipsis(
-                    quality_filter.nlp(t), max_p_bullets=0.5, max_p_ellipsis=1
+                    quality_filter.nlp(t),
+                    max_p_bullets=0.5,
+                    max_p_ellipsis=1,
+                    min_bullets=0,
+                    min_ellipsis=0,
                 )
                 is expected
             )
@@ -142,6 +111,8 @@ class TestQualityFilter:
                 quality_filter.nlp(text),
                 max_p_bullets=1.0,
                 max_p_ellipsis=0.5,
+                min_bullets=0,
+                min_ellipsis=0,
             )
             is expected
         )
@@ -179,28 +150,6 @@ class TestQualityFilter:
         assert sum(quality_filter.filtered.values()) == (len(all_texts) - 1)
 
     @pytest.mark.parametrize(
-        "text, expected", [("jeg er glad", True), ("jeg er glad\n" * 4, False)]
-    )
-    def test_duplicate_line_fraction(self, quality_filter, text: str, expected: bool):
-        filter_func = quality_filter.filters["duplicate_line_fraction"]
-        nlp = quality_filter.nlp
-        assert filter_func(nlp(text)) is expected
-
-    @pytest.mark.parametrize(
-        "text, expected",
-        [
-            ("jeg er glad\n" * 11, True),
-            ("jeg er glad\n\n" * 4, False),
-        ],
-    )
-    def test_duplicate_paragraph_fraction(
-        self, quality_filter, text: str, expected: bool
-    ):
-        filter_func = quality_filter.filters["duplicate_paragraph_fraction"]
-        nlp = quality_filter.nlp
-        assert filter_func(nlp(text)) is expected
-
-    @pytest.mark.parametrize(
         "text, expected",
         [
             ("dasdsadasdasdddddddddd\njeg er glad\n" * 2, False),
@@ -232,7 +181,7 @@ class TestQualityFilter:
         "text, expected",
         [
             ("Jeg er jeg er jeg, JeG ER, jeg er", False),
-            ("jeg er glad, men også noglegange sur...", False),
+            ("jeg er glad, men også noglegange sur...", True),
         ],
     )
     def test_top_ngram_chr_fraction(self, quality_filter, text: str, expected: bool):
