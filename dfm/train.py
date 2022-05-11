@@ -12,9 +12,13 @@ PYTHONPATH="." python dfm/train.py --path_to_config_file
 from dataclasses import dataclass
 from typing import List, Optional, Union
 
+import torch
 from datasets import interleave_datasets
+from torch.utils.data import DataLoader
+from tqdm import tqdm
 from transformers import (
     AutoConfig,
+    AutoModelForMaskedLM,
     AutoModelForPreTraining,
     AutoTokenizer,
     DataCollatorForLanguageModeling,
@@ -22,7 +26,7 @@ from transformers import (
     TrainingArguments,
 )
 
-from dfm.data.load import dfm_load_dataset
+from dfm.data.load import dfm_load_dataset, loaders
 from dfm.modelling.data_collators import DataCollatorForSeq2SeqMaskLanguageModeling
 from dfm.modelling.model_types import MODEL_TYPES
 from dfm.modelling.preprocess import preprocess_dataset
@@ -32,7 +36,7 @@ from dfm.modelling.utils import read_yaml
 def main():
     """Main function for running the training script."""
     trainer = DFMTrainer(
-        pretraining_config_path="tests/test_configs/pretrain_config_seq2seq.yaml",
+        pretraining_config_path="tests/test_configs/pretrain_config_autoencoding.yaml",
     )
     trainer.train()
 
@@ -47,14 +51,14 @@ class DataArguments:
 
     Args:
             dataset_names (list(str)): List of names of the datasets wanted to be used in training.
-            interleave (bool): Whether to interleave datasets.
+            interleave_datasets (bool): Whether to interleave datasets.
             interleave_probabilities (list(bool)): The different interleave probabilties.
             num_proc (int): How many cores to run the preprocessing with.
             mlm_probability (float): The masking probability.
     """
 
     dataset_names: List[str]
-    interleave: bool
+    interleave_datasets: bool
     interleave_probabilities: List[float]
     num_proc: int
     mlm_probability: float
@@ -140,7 +144,7 @@ class DFMTrainer:
         self.model_args = ModelArguments.from_yaml(self.pretraining_config_path)
 
         self.dataset_names = self.data_args.dataset_names
-        self.interleave = self.data_args.interleave
+        self.interleave = self.data_args.interleave_datasets
         self.interleave_probabilities = self.data_args.interleave_probabilities
 
         self.model_type = self.model_args.model_type
@@ -172,27 +176,41 @@ class DFMTrainer:
         )
 
         # Load and preprocess datasets
-        datasets = [dfm_load_dataset(d) for d in self.dataset_names]
-        datasets = [
+        dataset_loaders = [loaders.get(d) for d in self.dataset_names]
+        # datasets = [dfm_load_dataset(d) for d in self.dataset_names]
+        train_datasets = [d(streaming=True)["train"] for d in dataset_loaders]
+        eval_datasets = [d(streaming=True)["validation"] for d in dataset_loaders]
+        test_datasets = [d(streaming=True)["test"] for d in dataset_loaders]
+
+        train_datasets = [
             preprocess_dataset(d, tokenizer=tokenizer, num_proc=self.data_args.num_proc)
-            for d in datasets
+            for d in train_datasets
         ]
-        train_datasets = [d["train"] for d in datasets]
-        eval_datasets = [d["val"] for d in datasets]
+        eval_datasets = [
+            preprocess_dataset(d, tokenizer=tokenizer, num_proc=self.data_args.num_proc)
+            for d in eval_datasets
+        ]
+        test_datasets = [
+            preprocess_dataset(d, tokenizer=tokenizer, num_proc=self.data_args.num_proc)
+            for d in test_datasets
+        ]
 
         # Interleave
-        train_datasets = interleave_datasets(
-            train_datasets, probabilities=self.interleave_probabilities
-        )
-        eval_datasets = interleave_datasets(
-            eval_datasets, probabilities=self.interleave_probabilities
-        )
+        if self.data_args.interleave_datasets:
+            train_datasets = interleave_datasets(
+                train_datasets, probabilities=self.interleave_probabilities
+            )
+            eval_datasets = interleave_datasets(
+                eval_datasets, probabilities=self.interleave_probabilities
+            )
 
+        train_datasets.with_format("torch")
         # Data collator
         if self.model_type == "autoencoding":
             # Data Collator
             data_collator = DataCollatorForLanguageModeling(
-                tokenizer=tokenizer, mlm_probability=self.data_args.mlm_probability
+                tokenizer=tokenizer,
+                mlm_probability=self.data_args.mlm_probability,
             )
 
         elif self.model_type == "seq2seq":
@@ -213,7 +231,7 @@ class DFMTrainer:
         model = AutoModelForPreTraining.from_config(HF_config)
 
         # Training args
-        training_args = TrainingArguments(**self.training_args)
+        training_args = TrainingArguments(**self.training_args, report_to="none")
 
         trainer = Trainer(
             model=model,
@@ -223,8 +241,27 @@ class DFMTrainer:
             data_collator=data_collator,
         )
 
-        # Train
+        Train
         trainer.train(resume_from_checkpoint=resume_from_checkpoint)
+
+        dataloader = DataLoader(train_datasets, collate_fn=data_collator)
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        model = AutoModelForMaskedLM.from_pretrained(self.model_name)
+        model.train().to(device)
+        optimizer = torch.optim.AdamW(params=model.parameters(), lr=1e-5)
+        for epoch in range(3):
+            train_datasets.set_epoch(epoch)
+            for i, batch in enumerate(tqdm(dataloader, total=5)):
+                if i == 5:
+                    break
+                batch = {k: v.to(device) for k, v in batch.items()}
+                outputs = model(**batch)
+                loss = outputs[0]
+                loss.backward()
+                optimizer.step()
+                optimizer.zero_grad()
+                if i % 10 == 0:
+                    print(f"loss: {loss}")
 
 
 if __name__ == "__main__":

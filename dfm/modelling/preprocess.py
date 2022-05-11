@@ -43,16 +43,14 @@ def preprocess_dataset(
     """
 
     # Only use text columns
-    for key in dataset.keys():
-        cols = dataset[key].column_names
-        cols.remove("text")
-        dataset[key] = dataset[key].remove_columns(cols)
+    # for key in dataset.keys():
+    #     cols = dataset[key].column_names
+    #     cols.remove("text")
+    #     dataset[key] = dataset[key].remove_columns(cols)
 
     # Tokenize texts
     tokenize_func_ = partial(tokenize_func, tokenizer=tokenizer)
-    dataset = dataset.map(
-        tokenize_func_, batched=True, num_proc=num_proc, remove_columns=["text"]
-    )
+    dataset = dataset.map(tokenize_func_, batched=True, remove_columns="text")
 
     # Group texts into blocks of `block_size`.
     group_texts_ = partial(group_texts, block_size=block_size)
@@ -60,12 +58,7 @@ def preprocess_dataset(
         group_texts_,
         batched=True,
         batch_size=1000,
-        num_proc=num_proc,
     )
-
-    # Shuffle dataset
-    # Should probably be done prior to this stage.
-    dataset.shuffle()
 
     return dataset
 

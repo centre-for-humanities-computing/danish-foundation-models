@@ -1,6 +1,6 @@
 data_arguments:
-    dataset_names: ["DDSC/reddit-da", "DDSC/dkhate"]
-    interleave: true
+    dataset_names: ["wikitext_v1"]
+    interleave_datasets: true
     interleave_probabilities: [0.5, 0.5]
     num_proc: 6
     mlm_probability: 0.15
@@ -8,7 +8,6 @@ data_arguments:
 model_arguments:
     model_type: "seq2seq"
     model_name: "t5-small"
-    
 
 training_arguments:
     learning_rate: 0.0005

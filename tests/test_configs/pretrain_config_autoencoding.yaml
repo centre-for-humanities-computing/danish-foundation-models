@@ -1,14 +1,13 @@
 data_arguments:
-    dataset_names: ["DDSC/reddit-da", "DDSC/dkhate"]
-    interleave: true
+    dataset_names: ["wikitext_v1"]
+    interleave_datasets: true
     interleave_probabilities: [0.5, 0.5]
     num_proc: 6
     mlm_probability: 0.15
 
 model_arguments:
     model_type: "autoencoding"
-    model_name: "Maltehb/aelaectra-danish-electra-small-cased"
-    
+    model_name: "Maltehb/danish-bert-botxo"
 
 training_arguments:
     learning_rate: 0.0005
@@ -16,6 +15,6 @@ training_arguments:
     do_eval: true
     push_to_hub: false
     fp16: true
-    num_train_epochs: 15
-    evaluation_strategy: "epoch"
+    max_steps: 15
+    evaluation_strategy: "steps"
     output_dir: "models123"
