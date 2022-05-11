@@ -3,28 +3,30 @@ Loading scripts for HF type datasets
 """
 import os
 import sys
-from typing import Union, List
+from typing import List, Union
+
+import catalogue
 from datasets import (
-    load_dataset,
-    interleave_datasets,
     Dataset,
-    IterableDataset,
-    Features,
-    Value,
     DatasetDict,
+    Features,
+    IterableDataset,
+    Value,
+    interleave_datasets,
+    load_dataset,
 )
-from wasabi import msg
 from dfm.data.utils import to_datetime
+from wasabi import msg
 
 # Removed import below untill fixed.
 # from text_dedup import min_hash_deduper, duplicate_filter
 
+loaders = catalogue.create("dfm", "loaders")
 
-def load_tweets(dedupe=False) -> Union[Dataset, IterableDataset]:
+
+@loaders.register("tweets_v1")
+def load_tweets() -> Union[Dataset, IterableDataset]:
     """Dataloader for tweets from the HOPE project.
-
-    Args:
-        dedupe (bool, optional): Whether to deplicate tweets or not. Defaults to False.
 
     Returns:
         Union[Dataset, IterableDataset]: A Hugging Face dataset for HOPE tweets.
@@ -40,13 +42,12 @@ def load_tweets(dedupe=False) -> Union[Dataset, IterableDataset]:
     ds = dataset["train"]
 
     ds = ds.map(to_datetime)
-    if dedupe:
-        ds = ds.map(min_hash_deduper, batched=True, batch_size=50_000)
-        ds = ds.map(duplicate_filter, batched=True, batch_size=50_000)
+
     os.chdir(cwd)
     return ds
 
 
+@loaders.register("news_v1")
 def load_news() -> Union[Dataset, IterableDataset]:
     """Dataloader for news.
 
@@ -80,6 +81,7 @@ def load_news() -> Union[Dataset, IterableDataset]:
     return ds
 
 
+@loaders.register("dagw_v1")
 def load_dagw(
     filter_danavis: bool = True, streaming: bool = False
 ) -> Union[Dataset, IterableDataset]:
@@ -117,6 +119,7 @@ def load_dagw(
     return ds
 
 
+@loaders.register("reddit-da_v1")
 def load_reddit(streaming=False) -> Union[Dataset, IterableDataset]:
     """Dataloader for Danish reddit data.
 
@@ -127,10 +130,26 @@ def load_reddit(streaming=False) -> Union[Dataset, IterableDataset]:
         Union[Dataset, IterableDataset]: A Hugging Face dataset for Danish reddit data.
     """
     dataset = load_dataset("DDSC/reddit-da", streaming=streaming)
-    ds = dataset["train"]
-    return ds
+
+    return dataset
 
 
+@loaders.register("wikitext_v1")
+def load_wiki_en(streaming=False) -> Union[Dataset, IterableDataset]:
+    """Dataloader for English wiki data.
+
+    Args:
+        streaming (bool, optional): Whether to stream the dataset. Defaults to False.
+
+    Returns:
+        Union[Dataset, IterableDataset]: A Hugging Face dataset for Danish reddit data.
+    """
+    dataset = load_dataset("wikitext", "wikitext-2-v1", streaming=streaming)
+
+    return dataset
+
+
+@loaders.register("lex_v1")
 def load_lexdk(streaming: bool = False) -> Union[Dataset, IterableDataset]:
     """Load the Lex.dk dataset as a Hugging Face Dataset object.
 
@@ -154,6 +173,11 @@ def load_lexdk(streaming: bool = False) -> Union[Dataset, IterableDataset]:
     return load_dataset(
         path="dfm/data/lexdk", features=features, streaming=streaming, split="train"
     )
+
+
+@loaders.register("nat_v1")
+def load_nat():
+    pass
 
 
 def load_tokenizer_ds() -> Dataset:
@@ -201,6 +225,20 @@ def load_tokenizer_ds() -> Dataset:
     msg.info(f"Limiting dataset to {n} samples.")
     ds = ds.take(n)
     return ds
+
+
+@loaders.register("dkhate_v1")
+def load_dkhate(streaming: bool = False):
+    """Dataloader for DKhate.
+
+    Args:
+        streaming (bool, optional): Whether to stream the dataset. Defaults to False.
+
+    Returns:
+        Union[Dataset, IterableDataset]: A Hugging Face dataset for Danish reddit data.
+    """
+    dataset = load_dataset("DDSC/reddit-da", streaming=streaming)
+    return dataset
 
 
 def load_dfm_dataset(dataset: str, **kwargs) -> Dataset:
