@@ -55,6 +55,9 @@ from transformers import (
 )
 
 
+import wandb
+
+
 MODEL_CONFIG_CLASSES = list(FLAX_MODEL_FOR_MASKED_LM_MAPPING.keys())
 MODEL_TYPES = tuple(conf.model_type for conf in MODEL_CONFIG_CLASSES)
 
@@ -371,6 +374,13 @@ def write_eval_metric(summary_writer, eval_metrics, step):
 
 
 if __name__ == "__main__":
+    wandb.init(
+        project="danish_foundation_models",
+        tags=["mlm", "flax"],
+        group="mlm",
+        sync_tensorboard=True,
+    )
+
     # See all possible arguments in src/transformers/training_args.py
     # or by passing the --help flag to this script.
     # We now keep distinct sets of args, for a cleaner separation of concerns.
