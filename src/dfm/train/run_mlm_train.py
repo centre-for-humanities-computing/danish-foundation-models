@@ -336,10 +336,9 @@ def advance_iter_and_group_samples(train_iterator, num_samples, max_seq_length):
         tokenized_samples = next(train_iterator)
         i += len(tokenized_samples["input_ids"])
 
-        # concatenate tokenized samples to list (excluding "id" and "text")
+        # concatenate tokenized samples to list
         samples = {
-            k: samples[k] + tokenized_samples[k]
-            for k in ["input_ids", "attention_mask", "special_tokens_mask"]
+            k: samples[k] + tokenized_samples[k] for k in tokenized_samples.keys()
         }
 
     # Concatenated tokens are split to lists of length `max_seq_length`.
@@ -445,6 +444,7 @@ if __name__ == "__main__":
             streaming=True,
             split="train",
         )
+        column_names = next(iter(dataset)).keys()
 
     if model_args.config_name:
         config = AutoConfig.from_pretrained(
@@ -488,6 +488,7 @@ if __name__ == "__main__":
         tokenize_function,
         batched=True,
     )
+    tokenized_datasets.remove_columns(dataset.features.keys())
 
     shuffle_seed = training_args.seed
     tokenized_datasets = tokenized_datasets.shuffle(
