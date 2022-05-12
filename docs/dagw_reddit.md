@@ -1,5 +1,5 @@
 
-# DFM_DAGW
+# DAGW$_{DFM}$
 
 *Version*: 1.0.0
 
@@ -8,7 +8,7 @@
 *license*: See the respective dataset
 
 
-$DAGW_{DFM}$ is a variant of Danish Gigaword [3] which excludes the sections containing
+DAGW$_{DFM}$ is a variant of Danish Gigaword [3] which excludes the sections containing
 tweets and modified news contained in danavis20. Twitter were excluded as an it was a
 sample of an dataset whiich was available to the authors. DanAvis20 (or danavis) were
 excluded due to preprocessing desribed in [3] (version 1 on 
@@ -17,17 +17,17 @@ pseudonymization of prober names and the replacement of infrequent content words
 statistical cognates, which could lead sentences such as *"Der er skilsmissesager i
 forsikringsselskabet"*.
 
-Additionally $DAGW_{DFM}$ includes addtionally the [reddit-da](https://huggingface.co/datasets/DDSC/reddit-da) dataset, which includes 
-1,908,887 documents. The $DAGW_{DFM}$, have had low-quality text removed using a series
+Additionally DAGW$_{DFM}$ includes addtionally the [reddit-da](https://huggingface.co/datasets/DDSC/reddit-da) dataset, which includes 
+1,908,887 documents. The DAGW$_{DFM}$, have had low-quality text removed using a series
 of heuristic filters and removing repetitious texts. Following the filtering
-$DAGW_{DFM}$ is deduplicated to remove exact and near-duplicates. For more on data 
+DAGW$_{DFM}$ is deduplicated to remove exact and near-duplicates. For more on data 
 cleaning see section on post processing.
 
-Before filtering $DAGW_{DFM}$ includes a total of 1,310,789,818 tokens afterwards
+Before filtering DAGW$_{DFM}$ includes a total of 1,310,789,818 tokens afterwards
 includes 833,664,528 (0.64%).
 
 # Dataset information
-as $DAGW_{DFM}$ is a composite dataset consisting of Danish gigaword and 
+as DAGW$_{DFM}$ is a composite dataset consisting of Danish gigaword and 
 [reddit-da](https://huggingface.co/datasets/DDSC/reddit-da). Thus this dataset will not
 contain a datasheet for more information we recommend checking the documentation of the
 respective datasets.
@@ -36,7 +36,7 @@ respective datasets.
 **For what purpose was the dataset created? Who created the dataset? Who funded the
 creation of the dataset?**
 
-$DAGW_{DFM}$, with the purpose of pre-training Danish language models by a team of
+DAGW$_{DFM}$, with the purpose of pre-training Danish language models by a team of
 researchers at Center for Humanities Computing Aarhus (CHCAA) using a codebase jointly
 developed with partners from industry and academia e.g. KMD, Ekstra Bladet, deepdivr,
 and Bristol University.For more on collaborators on this project see
@@ -47,7 +47,7 @@ the [GitHub repository](https://github.com/centre-for-humanities-computing/danis
 
 ### Quality Filter:
 
-For the quality filtering $DAGW_{DFM}$ applies a filter akin to [2] which filters
+For the quality filtering DAGW$_{DFM}$ applies a filter akin to [2] which filters
 text which does not:
 
 - Contain at least 2 Danish stopwords. For the stopword list we use the one used in 
