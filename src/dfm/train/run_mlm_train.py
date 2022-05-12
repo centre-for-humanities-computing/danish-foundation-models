@@ -1,21 +1,20 @@
-#!/usr/bin/env python
-# coding=utf-8
-# Copyright 2021 The HuggingFace Team All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 """
-Fine-tuning the library models for masked language modeling (BERT, ALBERT, RoBERTa...) with whole word masking on a
-text file or a dataset.
+Copyright 2021 The HuggingFace Team All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Fine-tuning the library models for masked language modeling (BERT, ALBERT, RoBERTa...)
+with whole word masking on a text file or a dataset.
 
 Here is the full list of checkpoints on the hub that can be fine-tuned by this script:
 https://huggingface.co/models?filter=fill-mask
@@ -27,11 +26,9 @@ import time
 from collections import defaultdict
 from dataclasses import dataclass, field
 
-# You can also adapt this script on your own masked language modeling task. Pointers for this are left as comments.
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
-import datasets
 import numpy as np
 from datasets import load_dataset
 from tqdm import tqdm
@@ -56,12 +53,6 @@ from transformers import (
     is_tensorboard_available,
     set_seed,
 )
-
-
-if datasets.__version__ <= "1.8.0":
-    raise ValueError(
-        "Make sure to upgrade `datasets` to a version >= 1.9.0 to use dataset streaming"
-    )
 
 
 MODEL_CONFIG_CLASSES = list(FLAX_MODEL_FOR_MASKED_LM_MAPPING.keys())
@@ -123,7 +114,7 @@ class ModelArguments:
 @dataclass
 class DataTrainingArguments:
     """
-    Arguments pertaining to what data we are going to input our model for training and eval.
+    Arguments pretaining to what data we are going to input our model for training and eval.
     """
 
     dataset_name: Optional[str] = field(
@@ -240,8 +231,8 @@ class DataTrainingArguments:
 @flax.struct.dataclass
 class FlaxDataCollatorForLanguageModeling:
     """
-    Data collator used for language modeling. Inputs are dynamically padded to the maximum length of a batch if they
-    are not all of the same length.
+    Data collator used for language modeling. Inputs are dynamically padded to the
+    maximum length of a batch if they are not all of the same length.
 
     Args:
         tokenizer (:class:`~transformers.PreTrainedTokenizer` or :class:`~transformers.PreTrainedTokenizerFast`):
@@ -586,7 +577,6 @@ if __name__ == "__main__":
 
         def loss_fn(params):
             labels = batch.pop("labels")
-
             logits = state.apply_fn(
                 **batch, params=params, dropout_rng=dropout_rng, train=True
             )[0]
@@ -598,9 +588,7 @@ if __name__ == "__main__":
                 * label_mask
             )
 
-            # take average
-            loss = loss.sum() / label_mask.sum()
-
+            loss = loss.sum() / label_mask.sum()  # take average
             return loss
 
         grad_fn = jax.value_and_grad(loss_fn)
@@ -612,7 +600,6 @@ if __name__ == "__main__":
             {"loss": loss, "learning_rate": linear_decay_lr_schedule_fn(state.step)},
             axis_name="batch",
         )
-
         return new_state, metrics, new_dropout_rng
 
     # Create parallel version of the train step
@@ -621,7 +608,6 @@ if __name__ == "__main__":
     # Define eval fn
     def eval_step(params, batch):
         labels = batch.pop("labels")
-
         logits = model(**batch, params=params, train=False)[0]
 
         # compute loss, ignore padded input tokens
@@ -641,7 +627,6 @@ if __name__ == "__main__":
             "normalizer": label_mask.sum(),
         }
         metrics = jax.lax.psum(metrics, axis_name="batch")
-
         return metrics
 
     p_eval_step = jax.pmap(eval_step, "batch", donate_argnums=(0,))
