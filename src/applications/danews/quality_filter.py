@@ -1,5 +1,5 @@
 """
-Applies quality filters to Netarkivet filtering based on language tags.
+Applies quality filters to DaNews
 
 Dependent on:
     isn't dependent
@@ -22,7 +22,6 @@ dfm_path = os.path.join("danish-foundation-models")
 sys.path.append(dfm_path)
 
 from src.dfm.cleaning import QualityFilter
-from src.dfm.utils import batch
 
 
 def filter_batch(batch, i):
@@ -129,7 +128,6 @@ def main(
 
     print("adding text col")
     ds = ds.map(add_text_col, num_proc=n_process)
-
 
     # apply quality filter to batch
     print("applying filter")
