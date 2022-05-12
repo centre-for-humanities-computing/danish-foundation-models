@@ -374,12 +374,6 @@ def write_eval_metric(summary_writer, eval_metrics, step):
 
 
 if __name__ == "__main__":
-    wandb.init(
-        project="danish_foundation_models",
-        tags=["mlm", "flax"],
-        group="mlm",
-        sync_tensorboard=True,
-    )
 
     # See all possible arguments in src/transformers/training_args.py
     # or by passing the --help flag to this script.
@@ -396,6 +390,14 @@ if __name__ == "__main__":
         )
     else:
         model_args, data_args, training_args = parser.parse_args_into_dataclasses()
+
+    wandb.init(
+        project="danish_foundation_models",
+        config=parser.parse_args(),
+        tags=["mlm", "flax"],
+        group="mlm",
+        sync_tensorboard=True,
+    )
 
     if (
         os.path.exists(training_args.output_dir)
