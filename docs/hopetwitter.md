@@ -1,7 +1,10 @@
 
 # HopeTwitter
+
 *Version*: 1.0.0
+
 *Homepage*: https://github.com/centre-for-humanities-computing/danish-foundation-models
+
 *license*: Not publicly available.
 
 HopeTwitter consist of tweets collected from the Twitter API using a stopword list
@@ -12,9 +15,13 @@ and low-quality text have been removed using a series of heuristic filters and r
 Following the filtering HopeTwitter_c is deduplicated to remove exact and near-duplicates. For more on data cleaning
 see section on post processing.
 HopeTwitter includes a total of 973892120 tokens and HopeTwitter_c includes 482528271 (0.50%).
+
 ## Datasheet:
+
 ### Motivation:
+
 **For what purpose was the dataset created? Who created the dataset? Who funded the creation of the dataset? **
+
 HopeTwitter was initially collected with the intention of social media monitoring during the COVID-19 pandemic, but the cleaned
 version, HopeTwitter_c, was created for pre-training Danish language models by a team of researchers at Center for Humanities
 Computing Aarhus (CHCAA) using a codebase jointly developed with partners from industry (e.g. KMD, Ekstra Bladet) and other
@@ -22,21 +29,32 @@ research institutions (e.g. Briston University, Alexandra Institute). For more o
 the [GitHub repository](https://github.com/centre-for-humanities-computing/danish-foundation-models
 ).
 **Any other comments?**
+
 No.
+
 ## Composition
+
 **What do the instances that comprise the dataset represent (e.g., documents, photos, people, countries)?**
+
 HopeTwitter consist of all tweets containing at least one of the following stopwords collected through the Twitter API. 
 See "If the dataset is a sample from a larger set, what was the sampling strategy?".
 HopeTwitter_c filters HopeTwitter by removing non-Danish tweets as determined by metadata and further removed low-quality, repitious text and near-duplicated.
+
 **How many instances are there in total (of each type, if appropriate)?**
+
 The dataset consist of 32499019 documents where 14399284 (0.44%) were considered duplicates. 
+
 **Does the dataset contain all possible instances or is it a sample (not necessarily random) of instances from a larger set?**
+
 No. It does not contain all instances of Danish Twitter as there is likely some "Danish" tweets such as exclamations and links
 which does not include a stopword.
+
 **If the dataset is a sample from a larger set, what was the sampling strategy?**
+
 Tweets are streamed continuously using queried a set of the highest 
 frequency scandinavian-specific words from Danish, Norwegian (Bokmål) and Swedish. 
 Resulting the following list:
+
 ```
 aften, aldrig, alltid, altid, andet, arbejde, bedste, behöver, behøver, beklager, berätta, betyr, blev, blevet, blir, blitt, blive, bliver, 
 bruge, burde, bättre, båe, bør, deim, deires, ditt, drar, drepe, dykk, dykkar, där, död, döda, død, døde, efter, elsker, endnu, faen, fandt, 
@@ -52,30 +70,48 @@ sådan, såg, sånn, tager, tiden, tilbage, tilbake, tillbaka, titta, trenger, t
 ursäkta, uten, varför, varit, varte, veldig, venner, verkligen, vidste, vilken, virkelig, visste, väg, väl, väldigt, vän, vår, våra, våre, væk, vær, 
 være, været, älskar, åh, år, åt, över
 ```
+
 **Who was involved in the data collection process?**
+
 A team of researchers at Center for Humanities
-Computing Aarhus (CHCAA), and Rebekah Baglini, school of communcation and culture at Aarhus university.
+Computing Aarhus (CHCAA), including Kristoffer Nielbo, and Peter Bjerregaard Vahlstrup in collaboration with Rebekah Baglini, at school of communcation and culture at Aarhus university.
+
 **Over what timeframe was the data collected?**
-The dataset include articles from the period 2019-01-01_2021-04-30.
+
+The dataset include tweets from the period 2019-01-01_2021-04-30.
+
 **Were any ethical review processes conducted?**
-XXX
+
+No.
+
 ## Preprocessing/cleaning/labeling
+
 **Was any preprocessing/Cleaning/Labeling of the data done 
 (e.g., discretization or bucketing, tokenization, part-of-speech tagging, 
 SIFT feature extraction, removal of instances, processing of missing values)?**
+
 We filter tweets that are not in Danish. We remove low-quality text and deduplicate documents based on their 
 document-level n-gram similarity. The full pre-processing details are given in the post processing section.
+
 **Is the software used to preprocess/clean/label the instances available?**
+
 Yes, the script are avaiable [here](https://github.com/centre-for-humanities-computing/danish-foundation-models/tree/main/src/application/hopetwitter). 
 Which used version 0.0.1 of the [dfm package](https://github.com/centre-for-humanities-computing/danish-foundation-models). 
+
 ## Uses
+
 **Has the dataset been used for any tasks already?**
+
 Yes, the dataset has been used to pre-train Danish language models.
-Parts of the dataset have also been used in
-XXX
-XXX
+Parts of the dataset have also been used in:
+HOPE reports (https://hope-project.au.dk/#/reports)
+Ridiculing the “tinfoil hats:” Citizen responses to COVID-19 misinformation in the Danish facemask debate on Twitter | HKS Misinformation Review
+
 **Is there a repository that links to any or all papers or systems that use the dataset?**
-No.
+
+There is a website for the HOPE project for which the dataset was initially collected; hope-au.dk.
+This website contains report and articles regarding the dataset.
+
 **What (other) tasks could the dataset be used for?**
 The scale of the dataset makes it suitable for NLP tasks such as language modelling.
 Similarly, one could imagine using the conversation structure could be used to train conversational chatbots.

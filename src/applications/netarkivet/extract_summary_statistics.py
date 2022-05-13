@@ -14,6 +14,7 @@ n_passed_quality_filter = 0
 n_tokens = 0
 n_sites = 0
 n_tokens_clean = 0
+n_not_duplicates = 0
 
 def split_mask(mask, year_file):
     current_year = None
@@ -70,7 +71,7 @@ for year in range(2006, 2017):
         n_tokens += sum(ds["n_tokens"])
         n_sites += len(ds)
         n_clean_tokens_ = [n_tokens for n_tokens, is_dup in zip(ds["n_tokens"], ds["is_duplicate"]) if is_dup is False]
-        n_not_duplicates = len(n_clean_tokens_)
+        n_not_duplicates += len(n_clean_tokens_)
         n_tokens_clean += sum(n_clean_tokens_)
         
 

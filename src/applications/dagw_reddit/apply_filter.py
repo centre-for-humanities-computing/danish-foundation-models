@@ -7,17 +7,6 @@ import os
 from wasabi import msg
 from datasets import load_from_disk
 
-def filter(batch):
-        i = 0
-        while i < len(batch):
-                if batch["is_duplicate"][i] is not False:
-                        for k in batch:
-                                batch[k].pop(i)
-                else:
-                        i += 1
-        return batch
-
-
 if __name__ == "__main__":
         path = os.path.join("/work", "dagw-clean", "dfm_dagw_reddit.arrow")
 

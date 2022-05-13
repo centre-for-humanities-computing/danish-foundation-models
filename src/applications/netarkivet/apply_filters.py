@@ -1,14 +1,16 @@
 """
-Apply deduplication and quality filter to NetArkivet TextCorpus.
+Apply deduplication and quality filter to NetArkivet Text Corpus (NAT).
 """
 from typing import Iterable, Optional, List, Union
 from pathlib import Path
 import glob
 import random
 from contextlib import ExitStack
+import os
 
 import ndjson
 from datasets import load_from_disk
+from wasabi import msg
 
 
 def shuffle_buffer(x: Iterable, buffer_size: int) -> Iterable:
@@ -94,8 +96,14 @@ def apply_filter(dataset = Iterable[dict], columns_to_keep = ["text"]) -> Iterab
 
 
 def main(netarkivet_path = Path("/work/netarkivet-cleaned"), write_folder=Path("/work/netarkivet-cleaned"), buffer_size=1_000_000):
-    for year in range(2006, 20017):
+    for year in range(2006, 2017):
+        msg.info(f"starting year: {year}")
         path = netarkivet_path / str(year) / "*.jsonl"
+        write_path = write_folder / f"{year}_deduplicated_filtered.jsonl"
+        if os.path.exists(write_path):
+            msg.warn(f"\tFile already exists - skipping: {write_path}")
+            continue
+
         jsonl_files = glob.glob(str(path))
 
         json_gen = jsonl_merge(jsonl_files, sample=True, buffer_size = buffer_size)
@@ -103,8 +111,8 @@ def main(netarkivet_path = Path("/work/netarkivet-cleaned"), write_folder=Path("
         json = next(json_gen)
         json_gen_filtered = apply_filter(json_gen)
 
-        write_path = write_folder / f"{year}_deduplicated_filtered.jsonl"
         
+        msg.info("\tWriting to disk")
         with open(write_path, "w") as f:
             writer = ndjson.writer(f)
             for json in json_gen_filtered:

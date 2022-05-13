@@ -1,11 +1,10 @@
 """
 Add is_duplicate column to NetArkivet Textcorpus (NAT)
 
-2006-2017 Running
-2008-2011 Running
-2011-2013 Running
-2013-2015 Running
-2015-2017 Running
+2009-2015 Running
+
+2006, 2007, 2008, 2009, 2011, 2012, 2013 2014, 2015, 2016 Complete
+
 
 python3 danish-foundation-models/src/applications/netarkivet/add_is_duplicate_column.py
 """
@@ -17,7 +16,7 @@ from datasets import load_dataset
 from wasabi import msg
 
 def main(netarkivet_path = Path("/work/netarkivet-cleaned")):
-    for year in range(2006, 2017):
+    for year in range(2010, 2011):
         msg.info(f"At year: {year}")
         year_path = netarkivet_path / str(year) / "*.jsonl"
         jsonl_files = glob.glob(str(year_path))
