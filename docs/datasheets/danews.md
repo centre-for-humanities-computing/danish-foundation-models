@@ -242,7 +242,7 @@ No.
 If you wish to cite this work please see our GitHub page for an up to date citation:
 https://github.com/centre-for-humanities-computing/danish-foundation-models
 
-### References:
+# References:
 
 - [1] Broder, Andrei Z. "On the resemblance and containment of documents."
         Proceedings. Compression and Complexity of SEQUENCES 1997
