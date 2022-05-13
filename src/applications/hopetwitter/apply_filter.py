@@ -5,8 +5,22 @@ apply filters to twitter dataset.
 import os
 
 from wasabi import msg
-from datasets import load_from_disk
+from datasets import load_from_disk, load_dataset, DatasetDict
 
+
+def test_split_ntokens(dataset, n_tokens: int, n_tokens_col = "n_tokens"):
+        """assumed dataset is shuffled"""
+        test_indices = []
+        test_tok = 0
+        for i, sample in  enumerate(dataset):
+                test_tok += sample[n_tokens_col]
+                test_indices.append(i)
+                if test_tok > n_tokens:
+                        break
+        test = dataset.select(test_indices)
+        test_indices = set(test_indices)
+        ds_ = dataset.filter(lambda example, idx: idx not in test_indices, with_indices=True, num_proc=32)
+        return test, ds_
 
 if __name__ == "__main__":
         path = os.path.join("/work", "twitter_cleaned", "twitter_da_stopwords_2019-01-01_2021-04-30.arrow")
@@ -14,18 +28,34 @@ if __name__ == "__main__":
         msg.info(f"loading: {path}")
         ds = load_from_disk(path)
 
-        ds_filtered = ds.filter(lambda example: example["is_duplicate"] is False, num_proc=16)
-        assert len(set(ds_filtered["is_duplicate"])) == 1
-
-        # write dataset with added metadata
-        save_path = os.path.join("/work", "twitter_cleaned", f"twitter_da_stopwords_2019-01-01_2021-04-30_filtered_v{ds.version}.arrow")
-        msg.info(f"Saving to disk: {save_path}")
-        ds_filtered.save_to_disk(save_path)
-
-        ds_filtered = ds_filtered.shuffle()
+        meta = load_dataset("csv", data_files="/work/twitter_cleaned/twitter_meta.csv", split="train")
         
+        assert len(meta) == len(ds)
+        ds = ds.add_column("n_tokens", meta["n_tokens"])
+        # ds is already shuffled during dedupe
+        
+        test, ds_ = test_split_ntokens(ds, 25_000)
+        assert len(ds_) == (len(ds) - len(test))
+        val, train = test_split_ntokens(ds_, 25_000)
+        assert len(train) == (len(ds_) - len(val))
 
-        # write dataset with added metadata
-        save_path = os.path.join("/work", "twitter_cleaned", f"twitter_da_stopwords_2019-01-01_2021-04-30_filtered_v{ds.version}.jsonl")
+        dataset = DatasetDict({"train": train, "test": test, "validation": val})
+
+        # write dataset
+        save_path = os.path.join("/work", "twitter_cleaned", f"twitter_da_stopwords_2019-01-01_2021-04-30_filtered_w_splits_v1.0.0.arrow")
         msg.info(f"Saving to disk: {save_path}")
-        ds_filtered.to_json(save_path)
+        dataset.save_to_disk(str(save_path))
+
+        # write jsonl splits
+        msg.info(f"Writing jsonl splits to disk")
+        save_path = os.path.join("/work", "twitter_cleaned", f"twitter_da_stopwords_2019-01-01_2021-04-30_v{ds.version}_test.jsonl")
+        test.to_json(str(save_path))
+        save_path = os.path.join("/work", "twitter_cleaned", f"twitter_da_stopwords_2019-01-01_2021-04-30_v{ds.version}_val.jsonl")
+        val.to_json(str(save_path))
+
+        train_filtered = train.filter(lambda example: example["is_duplicate"] is False, num_proc=32)
+        assert len(set(train_filtered["is_duplicate"])) == 1
+        save_path = os.path.join("/work", "twitter_cleaned", f"twitter_da_stopwords_2019-01-01_2021-04-30_filtered_v{ds.version}_train.jsonl")
+        train_filtered.to_json(str(save_path))
+
+
