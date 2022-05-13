@@ -49,12 +49,12 @@ if __name__ == "__main__":
 
         # write jsonl splits
         msg.info(f"Saving jsonl to disk")
-        save_path_json = Path("/work") / "hope-infomedia_cleaned" / f"infomedia_2000-2021_filtered_v{ds.version}_test.jsonl"
+        save_path_json = Path("/work") / "hope-infomedia_cleaned" / f"infomedia_2000-2021_filtered_v1.0.0_test.jsonl"
         test.to_json(str(save_path_json))
-        save_path_json = Path("/work") / "hope-infomedia_cleaned" / f"infomedia_2000-2021_filtered_v{ds.version}_val.jsonl"
+        save_path_json = Path("/work") / "hope-infomedia_cleaned" / f"infomedia_2000-2021_filtered_v1.0.0_val.jsonl"
         val.to_json(str(save_path_json))
 
-        save_path_json = Path("/work") / "hope-infomedia_cleaned" / f"infomedia_2000-2021_filtered_v{ds.version}_train.jsonl"
+        save_path_json = Path("/work") / "hope-infomedia_cleaned" / f"infomedia_2000-2021_filtered_v1.0.0_train.jsonl"
         train_filtered = train.filter(lambda example: example["is_duplicate"] is False, num_proc=32)
         assert len(set(train_filtered["is_duplicate"])) == 1
         train_filtered.to_json(str(save_path_json))
