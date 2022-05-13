@@ -9,24 +9,29 @@ from datasets import load_from_disk, load_dataset, DatasetDict
 
 def __test_split_ntokens(dataset, n_tokens: int, category: set, n_tokens_col = "n_tokens"):
         """assumed dataset is shuffled"""
+        print(f"Started category: {category}")
         test_indices = []
         test_tok = 0
+        found_all = False
         for i, sample in  enumerate(dataset):
                 if sample["source"] not in category:
                         continue
                 test_tok += sample[n_tokens_col]
                 test_indices.append(i)
                 if test_tok > n_tokens:
+                        found_all = True
                         break
+        if found_all is False:
+                print(f"WARNING: did not find all on category {category}")
         return test_indices
 
 def test_split(dataset, n_tokens_pr_cat: int=25_000):
         reddit_test_indices = __test_split_ntokens(dataset, n_tokens_pr_cat, category={"reddit-da"})
-        legal_test_indices = __test_split_ntokens(dataset, n_tokens_pr_cat, category={"retsinformation", "skat.dk"})
-        spont_speech_test_indices = __test_split_ntokens(dataset, n_tokens_pr_cat, category={"spontanousspeech", "opensubtitles"})
+        legal_test_indices = __test_split_ntokens(dataset, n_tokens_pr_cat, category={"retsinformationdk", "skat"})
+        spont_speech_test_indices = __test_split_ntokens(dataset, n_tokens_pr_cat, category={"spont", "opensub"})
         bornholmsk_test_indices = __test_split_ntokens(dataset, n_tokens_pr_cat, category={"botxt"})
-        books_test_indices = __test_split_ntokens(dataset, n_tokens_pr_cat, category={"gutenburg", "wikibooks", "wikisource", "danish_litterature"})
-        wiki_test_indices = __test_split_ntokens(dataset, n_tokens_pr_cat, category={"wikpedia"})
+        books_test_indices = __test_split_ntokens(dataset, n_tokens_pr_cat, category={"gutenberg", "wikibooks", "wikisource", "adl"})
+        wiki_test_indices = __test_split_ntokens(dataset, n_tokens_pr_cat, category={"wiki"})
         test_indices = reddit_test_indices + legal_test_indices + spont_speech_test_indices + bornholmsk_test_indices + books_test_indices + wiki_test_indices
         test = dataset.select(test_indices)
         test_indices = set(test_indices)
@@ -43,9 +48,8 @@ if __name__ == "__main__":
         # create dataset splits
         test, ds_ = test_split(ds, n_tokens_pr_cat=25_000)
         assert len(ds_) == (len(ds) - len(test))
-        val, train = test_split_ntokens(ds_, n_tokens_pr_cat=25_000)
+        val, train = test_split(ds_, n_tokens_pr_cat=25_000)
         assert len(train) == (len(ds_) - len(val))
-
 
         dataset = DatasetDict({"train": train, "test": test, "validation": val})
 
