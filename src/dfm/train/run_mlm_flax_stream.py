@@ -437,13 +437,15 @@ if __name__ == "__main__":
     # 'text' is found. You can easily tweak this behavior (see below).
     if data_args.dataset_name is not None:
         # Downloading and loading a dataset from the hub.
-        dataset = load_dataset(
-            data_args.dataset_name,
-            data_args.dataset_config_name,
-            cache_dir=model_args.cache_dir,
-            streaming=True,
-            split="train",
-        )
+        ### TODO: replace
+        from dfm.data.load_datasets import load_danews, load_dagw_dfm, load_hopetwitter, load_nat
+
+        columns_to_keep = ["text", "source"]
+        danews = load_danews(columns_to_keep=columns_to_keep)["train"]
+        dagw_dfm = load_dagw_dfm(columns_to_keep=columns_to_keep)["train"]
+        hopetwitter = load_hopetwitter(columns_to_keep = columns_to_keep)["train"]
+        nat = load_nat(columns_to_keep=columns_to_keep)["train"]
+        dataset = interleave_datasets([danews, dagw_dfm, hopetwitter, nat], probabilities=[0.10, 0.20, 0.20, 0.50])
         column_names = next(iter(dataset)).keys()
 
     if model_args.config_name:
@@ -459,6 +461,8 @@ if __name__ == "__main__":
         logger.warning("You are instantiating a new config instance from scratch.")
 
     if model_args.tokenizer_name:
+        # TODO: add load based on name
+        # 
         tokenizer = AutoTokenizer.from_pretrained(
             model_args.tokenizer_name,
             cache_dir=model_args.cache_dir,
@@ -488,7 +492,7 @@ if __name__ == "__main__":
         tokenize_function,
         batched=True,
     )
-    tokenized_datasets.remove_columns(dataset.features.keys())
+    tokenized_datasets.remove_columns(column_names)
 
     shuffle_seed = training_args.seed
     tokenized_datasets = tokenized_datasets.shuffle(
