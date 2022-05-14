@@ -145,3 +145,5 @@ dmypy.json
 #wandb
 wandb/*
 models/*
+src/applications/train/train_tokenizer_experiment.py
+src/applications/train/train_tokenizer.py

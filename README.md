@@ -63,6 +63,53 @@ pip install "jax[cuda11_cudnn82]" -f https://storage.googleapis.com/jax-releases
 # see https://stackoverflow.com/questions/57689387/equivalent-for-find-links-in-setup-py
 ```
 
+Run the training script
+```
+python3 src/dfm/train/run_mlm_flax_stream.py 
+    --output_dir=/work/models/debertav2_small 
+    --model_type="debertav2"
+    --config_name=/work/models/debertav2_small
+    --tokenizer_name=/work/models/tokenizers/tokenizers.json
+    --dataset_name="oscar"
+    --dataset_config_name="unshuffled_deduplicated_en"
+    --max_seq_length="128"
+    --per_device_train_batch_size="128"
+    --per_device_eval_batch_size="128"
+    --learning_rate="3e-4"
+    --warmup_steps="1000"
+    --overwrite_output_dir
+    --adam_beta1="0.9"
+    --adam_beta2="0.98"
+    --num_train_steps="10000"
+    --num_eval_samples="5000"
+    --logging_steps="250"
+    --eval_steps="1000"
+    --push_to_hub
+```
+
+```
+python3 /work/danish-foundation-models/src/dfm/train/run_mlm_flax_stream.py \
+    --output_dir=/work/48847/debertav2_small \
+    --model_type="debertav2" \
+    --config_name=/work/48847/debertav2_small \
+    --tokenizer_name=/work/48847/tokenizers/tokenizers.json \
+    --dataset_name="oscar" \
+    --dataset_config_name="unshuffled_deduplicated_en" \
+    --max_seq_length="128" \
+    --per_device_train_batch_size="128" \
+    --per_device_eval_batch_size="128" \
+    --learning_rate="3e-4" \
+    --warmup_steps="1000" \
+    --overwrite_output_dir \
+    --adam_beta1="0.9" \
+    --adam_beta2="0.98" \
+    --num_train_steps="10000" \
+    --num_eval_samples="5000" \
+    --logging_steps="250" \
+    --eval_steps="1000" \
+    --push_to_hub 
+```
+
 # Wish to contribute
 DFM is considered a collaborate project for training and improving Danish Language models. If you wish to contribute don't hesitate to reach out using the discussion section or directly to the authors.
 
