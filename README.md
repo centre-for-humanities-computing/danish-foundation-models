@@ -52,6 +52,17 @@ It is currently noticably missing webdata.
 - [ ] Maj: start training largest possible model
 - [ ] 1st Maj: Larger call for project will language models
 
+# How to train on UCloud
+
+To setup to train in UCloud select the instance Coder CUDA v1.64.2 and install dependencies using:
+
+```
+pip install -e .[ucloud_gpu]
+pip install "jax[cuda11_cudnn82]" -f https://storage.googleapis.com/jax-releases/jax_releases.html
+# impossible to specify in setup.cfg:
+# see https://stackoverflow.com/questions/57689387/equivalent-for-find-links-in-setup-py
+```
+
 # Wish to contribute
 DFM is considered a collaborate project for training and improving Danish Language models. If you wish to contribute don't hesitate to reach out using the discussion section or directly to the authors.
 
