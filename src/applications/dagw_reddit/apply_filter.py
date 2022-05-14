@@ -60,12 +60,12 @@ if __name__ == "__main__":
 
         # write jsonl splits
         msg.info(f"Saving jsonl to disk")
-        save_path_json = Path("/work") / "dagw-clean" / "dagw_reddit_v1.0.0_test.arrow" 
+        save_path_json = Path("/work") / "dagw-clean" / "dagw_reddit_v1.0.0_test.jsonl" 
         test.to_json(str(save_path_json))
-        save_path_json = Path("/work") / "dagw-clean" / "dagw_reddit_v1.0.0_val.arrow" 
+        save_path_json = Path("/work") / "dagw-clean" / "dagw_reddit_v1.0.0_val.jsonl" 
         val.to_json(str(save_path_json))
-        train_filtered = train.filter(lambda example: example["is_13_gram_duplicate"] is False, num_proc=32)
-        assert len(set(train_filtered["is_13_gram_duplicate"])) == 1
-        save_path_json = Path("/work") / "dagw-clean" / "dagw_reddit_filtered_v1.0.0_train.arrow" 
+        train_filtered = train.filter(lambda example: example["is_13_gram_duplicate"] is not None and example["is_13_gram_duplicate"]["duplicate"] is False, num_proc=32)
+        assert len(set([i["duplicate"] for i in train_filtered["is_13_gram_duplicate"]])) == 1
+        save_path_json = Path("/work") / "dagw-clean" / "dagw_reddit_filtered_v1.0.0_train.jsonl" 
         train_filtered.to_json(str(save_path_json))
 
