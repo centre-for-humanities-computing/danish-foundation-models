@@ -206,7 +206,7 @@ def load_dcc_v1(
     danews_val = Path(path_to_danews) / "infomedia_2000-2021_v1.0.0_val.jsonl"
     twitter_test = Path(path_to_hopetwitter) / "twitter_da_stopwords_2019-01-01_2021-04-30_v1.0.0_test.jsonl"
     twitter_val = Path(path_to_hopetwitter) / "twitter_da_stopwords_2019-01-01_2021-04-30_v1.0.0_val.jsonl"
-    data_files = {"test": [str(dagw_test), str(danews), str(twitter_test)], 
+    data_files = {"test": [str(dagw_test), str(danews_test), str(twitter_test)], 
                   "validation": [str(dagw_val), str(danews_val), str(twitter_val)]
     }
     dcc_test_val = load_dataset("json", data_files =data_files, streaming=True)
