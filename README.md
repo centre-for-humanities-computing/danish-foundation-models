@@ -70,70 +70,98 @@ pip install -e .[ucloud_gpu]
 Create model repository
 ```
 huggingface-cli login
-huggingface-cli repo create dfm-debertav2-small
+huggingface-cli repo create dfm-bert-base
 ```
 
 Next we clone the model repository to add the tokenizer and model files.
 ```
 cd  /work/models/transformers
-git clone https://huggingface.co/<your-username>/dfm-debertav2-small
+git clone https://huggingface.co/<your-username>/dfm-bert-base
 ```
 
 To ensure that all tensorboard traces will be uploaded correctly, we need to track them. You can run the following command inside your model repo to do so.
 ```
-cd dfm-debertav2-small
+cd dfm-bert-base
 git lfs track "*tfevents*"
 cd ..
 ```
-
 We will need to move the config from the DFM repository to the model repository:
-```
-cp /work/danish-foundation-models/configs/config_small.json ./dfm-debertav2-small/config.json
+
+```python
+from transformers import BertTokenizerFast, BertConfig
+
+model_dir = "./dfm-bert-base"
+
+tokenizer = BertTokenizerFast.from_pretrained("Maltehb/danish-bert-botxo")
+config = BertConfig.from_pretrained("Maltehb/danish-bert-botxo")
+
+tokenizer.save_pretrained(model_dir)
+config.save_pretrained(model_dir)
 ```
 
+<!-- 
+Using a custom config:
+```
+cp /work/danish-foundation-models/configs/debertav2-config_small.json ./dfm-debertav2-small/config.json
+```
 Similar for the tokenizer:
-
 ```
 cp /work/models/tokenizers/dfm_tokenizer/unigram_5000000_docs_128000_tokens/tokenizer.json ./dfm-debertav2-small
 ```
+-->
+To allow for comparison we with the Danish BERT by botXO (now renamed Certainly.io). 
+We try to keep as many training similar to the parameters of the original implementation.
+With changes to batch size and maximum training sequence (to 512).
+Where BotXO doesn't report its training parameters we use those of reported in the BERT paper.
 
-Run the training script
+<!--
+Botxo BERT hyperparameters:
+```
+Batch size: 1280
+Max predictions per training sentence: 20
+Max training sentence length: 256
+Probability of masking word in training sentence: 0.15
+Learning rate: 2e-5
+Training steps: 1.000.000
+A custom BPE vocabulary of 32.000 tokens.
+```
+-->
+
 ```
 python3 /work/danish-foundation-models/src/applications/train/run_mlm_flax_stream.py \
-    --output_dir=/work/models/transformers/dfm-debertav2-small \
-    --model_type="debertav2" \
-    --config_name=/work/models/transformers/dfm-debertav2-small \
-    --tokenizer_name=/work/models/transformers/dfm-debertav2-small \
-    --dataset_name="dcc-v1" \
-    --max_seq_length="128" \
-    --per_device_train_batch_size="128" \
-    --per_device_eval_batch_size="128" \
-    --learning_rate="3e-4" \
-    --warmup_steps="1000" \
+    --output_dir=/work/models/transformers/dfm-bert-base \
+    --model_type=bert \
+    --config_name=/work/models/transformers/dfm-bert-base \
+    --tokenizer_name=/work/models/transformers/dfm-bert-base \
+    --dataset_name=dcc-v1 \
+    --max_seq_length=512 \
+    --per_device_train_batch_size=128 \
+    --per_device_eval_batch_size=128 \
+    --learning_rate=2e-5 \
+    --warmup_steps=10000 \
     --overwrite_output_dir \
-    --adam_beta1="0.9" \
-    --adam_beta2="0.98" \
-    --num_train_steps="10000" \
-    --num_eval_samples="5000" \
-    --logging_steps="250" \
-    --eval_steps="1000" \
-    --push_to_hub 
+    --adam_beta1=0.9 \
+    --adam_beta2=0.999 \
+    --num_train_steps=10000000 \
+    --num_eval_samples=10000 \
+    --logging_steps=500 \
+    --eval_steps=10000 \
+    --weight_decay=0.01 \ 
+    --push_to_hub
 ```
 
-```
-python3  /work/danish-foundation-models/src/applications/train/run_mlm_pytorch_stream.py \
-    --model_name_or_path roberta-base \
-    --dataset_name wikitext \
-    --dataset_config_name wikitext-2-raw-v1 \
-    --per_device_train_batch_size 8 \
-    --per_device_eval_batch_size 8 \
-    --do_train \
-    --do_eval \
-    --max_seq_length 512 \
-    --output_dir /tmp/test-mlm
-```
+
+
 **TODO**: 
-Tune batch size, tune eval step, tune_max_train steps, ...
+- Tune batch size (larger gpu cluster)
+- [ ] tune eval step
+- [ ] tune_max_train steps
+- [ ] remove duplicates from config and script
+- [ ] check hyperparemeters of original BERT
+- [ ] is tokenization cut or extended?
+
+add: L2 weight decay of 0.01, 
+
 
 # Wish to contribute
 DFM is considered a collaborate project for training and improving Danish Language models. If you wish to contribute don't hesitate to reach out using the discussion section or directly to the authors.
