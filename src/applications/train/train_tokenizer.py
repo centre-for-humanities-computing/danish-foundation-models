@@ -18,41 +18,15 @@ dataset = interleave_datasets([danews, dagw_dfm, hopetwitter, nat], probabilitie
 msg.info("Started unigram training tokenizer")
 t_config = TokenizerConfig(
     tokenizer_type = "unigram",
-    vocab_size = 55000,
+    vocab_size = 128000,
     lower_case = False,
     sentence_piece = True,
     add_prefix_space = True,
     byte_level = False)
-tokenizer = train_tokenizer(corpus = dataset.take(500_000), config=t_config, save_tokenizer=True, output_dir="ucloud-setup/dfm_tokenizer/unigram_500000")
+tokenizer = train_tokenizer(
+    corpus = dataset.take(5_000_000), 
+    config=t_config,
+    save_tokenizer=True,
+    output_dir="ucloud-setup/dfm_tokenizer/unigram_5000000_docs_128000_tokens"
+)   
 msg.good("Finished unigram training tokenizer")
-
-msg.info("Started bpe training tokenizer")
-t_config = TokenizerConfig(
-    tokenizer_type = "bpe",
-    vocab_size = 55000,
-    lower_case = False,
-    sentence_piece = False,
-    add_prefix_space = False,
-    byte_level = False)
-tokenizer = train_tokenizer(corpus = dataset.take(100_000), config=t_config, save_tokenizer=True, output_dir="ucloud-setup/dfm_tokenizer/bpe")
-msg.good("Finished bpe training tokenizer")
-
-msg.info("Started wordpiece training tokenizer")
-t_config = TokenizerConfig(
-    tokenizer_type = "wordpiece",
-    vocab_size = 55000,
-    lower_case = False,
-    sentence_piece = False,
-    add_prefix_space = False,
-    byte_level = False)
-tokenizer = train_tokenizer(corpus = dataset.take(100_000), config=t_config, save_tokenizer=True, output_dir="ucloud-setup/dfm_tokenizer/wordpiece")
-msg.good("Finished wordpiece training tokenizer")
-# load tokenizer
-# from tokenizers import Tokenizer
-# tokenizer = Tokenizer.from_file("/work/ucloud-setup/dfm_tokenizer/tokenizer.json")
-# texts = [t["text"] for t in dataset.take(100_000)]
-# t = tokenizer.encode_batch(texts, add_special_tokens=False)
-# sum([len([id for id in i.ids if id]) for i in t])/100_000
-# 249.8751*100_000 # 24 987 510
-# 249.8751*1_000_000
-
