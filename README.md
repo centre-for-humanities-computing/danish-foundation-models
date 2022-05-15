@@ -56,45 +56,55 @@ It is currently noticably missing webdata.
 
 To setup to train in UCloud select the instance Coder CUDA v1.64.2 and install dependencies using:
 
+<!-- Add which folder to mount -->
+
 ```
-pip install -e .[ucloud_gpu]
 pip install "jax[cuda11_cudnn82]" -f https://storage.googleapis.com/jax-releases/jax_releases.html
 # impossible to specify in setup.cfg:
 # see https://stackoverflow.com/questions/57689387/equivalent-for-find-links-in-setup-py
+
+# install dfm
+pip install -e .[ucloud_gpu]
+```
+
+Create model repository
+```
+huggingface-cli login
+huggingface-cli repo create dfm-debertav2-small
+```
+
+Next we clone the model repository to add the tokenizer and model files.
+```
+cd  /work/models/transformers
+git clone https://huggingface.co/<your-username>/dfm-debertav2-small
+```
+
+To ensure that all tensorboard traces will be uploaded correctly, we need to track them. You can run the following command inside your model repo to do so.
+```
+cd dfm-debertav2-small
+git lfs track "*tfevents*"
+cd ..
+```
+
+We will need to move the config from the DFM repository to the model repository:
+```
+cp /work/danish-foundation-models/configs/config_small.json ./dfm-debertav2-small/config.json
+```
+
+Similar for the tokenizer:
+
+```
+cp /work/models/tokenizers/dfm_tokenizer/unigram_5000000_docs_128000_tokens/tokenizer.json ./dfm-debertav2-small
 ```
 
 Run the training script
 ```
-python3 src/dfm/train/run_mlm_flax_stream.py 
-    --output_dir=/work/models/debertav2_small 
-    --model_type="debertav2"
-    --config_name=/work/models/debertav2_small
-    --tokenizer_name=/work/models/tokenizers/tokenizers.json
-    --dataset_name="oscar"
-    --dataset_config_name="unshuffled_deduplicated_en"
-    --max_seq_length="128"
-    --per_device_train_batch_size="128"
-    --per_device_eval_batch_size="128"
-    --learning_rate="3e-4"
-    --warmup_steps="1000"
-    --overwrite_output_dir
-    --adam_beta1="0.9"
-    --adam_beta2="0.98"
-    --num_train_steps="10000"
-    --num_eval_samples="5000"
-    --logging_steps="250"
-    --eval_steps="1000"
-    --push_to_hub
-```
-
-```
-python3 /work/danish-foundation-models/src/dfm/train/run_mlm_flax_stream.py \
-    --output_dir=/work/48847/debertav2_small \
+python3 /work/danish-foundation-models/src/applications/train/run_mlm_flax_stream.py \
+    --output_dir=/work/models/transformers/dfm-debertav2-small \
     --model_type="debertav2" \
-    --config_name=/work/48847/debertav2_small \
-    --tokenizer_name=/work/48847/tokenizers/tokenizers.json \
-    --dataset_name="oscar" \
-    --dataset_config_name="unshuffled_deduplicated_en" \
+    --config_name=/work/models/transformers/dfm-debertav2-small \
+    --tokenizer_name=/work/models/transformers/dfm-debertav2-small \
+    --dataset_name="dcc-v1" \
     --max_seq_length="128" \
     --per_device_train_batch_size="128" \
     --per_device_eval_batch_size="128" \
@@ -109,6 +119,21 @@ python3 /work/danish-foundation-models/src/dfm/train/run_mlm_flax_stream.py \
     --eval_steps="1000" \
     --push_to_hub 
 ```
+
+```
+python3  /work/danish-foundation-models/src/applications/train/run_mlm_pytorch_stream.py \
+    --model_name_or_path roberta-base \
+    --dataset_name wikitext \
+    --dataset_config_name wikitext-2-raw-v1 \
+    --per_device_train_batch_size 8 \
+    --per_device_eval_batch_size 8 \
+    --do_train \
+    --do_eval \
+    --max_seq_length 512 \
+    --output_dir /tmp/test-mlm
+```
+**TODO**: 
+Tune batch size, tune eval step, tune_max_train steps, ...
 
 # Wish to contribute
 DFM is considered a collaborate project for training and improving Danish Language models. If you wish to contribute don't hesitate to reach out using the discussion section or directly to the authors.
