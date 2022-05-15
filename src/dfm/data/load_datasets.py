@@ -11,6 +11,7 @@ from datasets import (
     IterableDatasetDict,
     load_from_disk,
     interleave_datasets,
+    concatenate_datasets
 )
 
 HOPETWITTER_PATH = Path("/work") / "twitter_cleaned"
@@ -180,3 +181,33 @@ def load_nat(
     if columns_to_keep:
         nat = keep_columns(nat, columns_to_keep)
     return nat
+
+def load_dcc_v1(
+    probabilities=[0.10, 0.20, 0.20, 0.50],
+    path_to_hopetwitter: Union[str, Path]=HOPETWITTER_PATH,
+    path_to_dagw: Union[str, Path]=DAGW_DFM_PATH,
+    path_to_danews: Union[str, Path]=DANEWS_PATH,
+    path_to_nat: Union[str, Path]=NAT_PATH
+):
+    columns_to_keep = ["text", "source"]
+    danews = load_danews(columns_to_keep=columns_to_keep, path_to_danews=path_to_danews)
+    dagw_dfm = load_dagw_dfm(columns_to_keep=columns_to_keep, path_to_dagw=path_to_dagw)
+    hopetwitter = load_hopetwitter(columns_to_keep = columns_to_keep, path_to_hopetwitter=path_to_hopetwitter)
+    nat = load_nat(columns_to_keep=columns_to_keep, path_to_nat=path_to_nat)
+    train = interleave_datasets([danews["train"], dagw_dfm["train"], hopetwitter["train"], nat["train"]], probabilities=probabilities)
+    # Note: NAT does not include a test, val set
+    # val = concatenate_datasets([danews["validation"], dagw_dfm["validation"], hopetwitter["validation"]])
+    # test = concatenate_datasets([danews["test"], dagw_dfm["test"], hopetwitter["test"]])
+
+    # as concatenate_datasets is not yet implemented for IterableDatasets:
+    dagw_test = Path(path_to_dagw) / "dagw_reddit_v1.0.0_test.jsonl"
+    dagw_val = Path(path_to_dagw) / "dagw_reddit_v1.0.0_val.jsonl"
+    danews_test = Path(path_to_danews) / "infomedia_2000-2021_v1.0.0_test.jsonl"
+    danews_val = Path(path_to_danews) / "infomedia_2000-2021_v1.0.0_val.jsonl"
+    twitter_test = Path(path_to_hopetwitter) / "twitter_da_stopwords_2019-01-01_2021-04-30_v1.0.0_test.jsonl"
+    twitter_val = Path(path_to_hopetwitter) / "twitter_da_stopwords_2019-01-01_2021-04-30_v1.0.0_val.jsonl"
+    data_files = {"test": [str(dagw_test), str(danews), str(twitter_test)], 
+                  "validation": [str(dagw_val), str(danews_val), str(twitter_val)]
+    }
+    dcc_test_val = load_dataset("json", data_files =data_files, streaming=True)
+    return IterableDatasetDict({"train": train, "validation": dcc_test_val["validation"], "test": dcc_test_val["test"]})
