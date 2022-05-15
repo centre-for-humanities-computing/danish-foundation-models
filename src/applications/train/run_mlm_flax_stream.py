@@ -30,7 +30,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
-from datasets import load_dataset
+from datasets import load_dataset, interleave_datasets
 from tqdm import tqdm
 
 import flax
@@ -56,7 +56,7 @@ from transformers import (
 
 
 import wandb
-
+from dfm.data.load_datasets import load_dcc_v1
 
 MODEL_CONFIG_CLASSES = list(FLAX_MODEL_FOR_MASKED_LM_MAPPING.keys())
 MODEL_TYPES = tuple(conf.model_type for conf in MODEL_CONFIG_CLASSES)
@@ -119,17 +119,11 @@ class DataTrainingArguments:
     """
     Arguments pretaining to what data we are going to input our model for training and eval.
     """
-
     dataset_name: Optional[str] = field(
-        default=None,
+        default="dcc-v1",
         metadata={"help": "The name of the dataset to use (via the datasets library)."},
     )
-    dataset_config_name: Optional[str] = field(
-        default=None,
-        metadata={
-            "help": "The configuration name of the dataset to use (via the datasets library)."
-        },
-    )
+
     train_file: Optional[str] = field(
         default=None, metadata={"help": "The input training data file (a text file)."}
     )
@@ -436,17 +430,19 @@ if __name__ == "__main__":
     # For CSV/JSON files, this script will use the column called 'text' or the first column if no column called
     # 'text' is found. You can easily tweak this behavior (see below).
     if data_args.dataset_name is not None:
-        # Downloading and loading a dataset from the hub.
-        ### TODO: replace
-        from dfm.data.load_datasets import load_danews, load_dagw_dfm, load_hopetwitter, load_nat
+        if data_args.dataset_name == "dcc-v1":
+            dataset = load_dcc_v1(probabilities=[0.10, 0.20, 0.20, 0.50])
+            columns_names = ["text", "source"]
+        else:
+            # Downloading and loading a dataset from the hub.
+            dataset = load_dataset(
+                data_args.dataset_name,
+                data_args.dataset_config_name,
+                cache_dir=model_args.cache_dir,
+                streaming=True,
+                split="train",
+            )
 
-        columns_to_keep = ["text", "source"]
-        danews = load_danews(columns_to_keep=columns_to_keep)["train"]
-        dagw_dfm = load_dagw_dfm(columns_to_keep=columns_to_keep)["train"]
-        hopetwitter = load_hopetwitter(columns_to_keep = columns_to_keep)["train"]
-        nat = load_nat(columns_to_keep=columns_to_keep)["train"]
-        dataset = interleave_datasets([danews, dagw_dfm, hopetwitter, nat], probabilities=[0.10, 0.20, 0.20, 0.50])
-        column_names = next(iter(dataset)).keys()
 
     if model_args.config_name:
         config = AutoConfig.from_pretrained(
@@ -501,13 +497,13 @@ if __name__ == "__main__":
 
     has_tensorboard = is_tensorboard_available()
     if has_tensorboard and jax.process_index() == 0:
-        try:
-            from flax.metrics.tensorboard import SummaryWriter
-        except ImportError as ie:
-            has_tensorboard = False
-            logger.warning(
-                f"Unable to display metrics through TensorBoard because some package are not installed: {ie}"
-            )
+        #try:
+        from flax.metrics.tensorboard import SummaryWriter
+        #except ImportError as ie:
+        #    has_tensorboard = False
+        #    logger.warning(
+        #        f"Unable to display metrics through TensorBoard because some package are not installed: {ie}"
+        #    )
 
         summary_writer = SummaryWriter(log_dir=Path(training_args.output_dir))
 
