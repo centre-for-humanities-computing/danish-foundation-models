@@ -40,6 +40,7 @@ def keep_columns(
 def load_hopetwitter(
         path_to_hopetwitter: Union[str, Path]=HOPETWITTER_PATH, 
         columns_to_keep: Optional[List[str]]=None, 
+        repeats: int=1,
         **kwargs
     ) -> IterableDatasetDict:
     """
@@ -60,7 +61,7 @@ def load_hopetwitter(
     test = path_to_hopetwitter / "twitter_da_stopwords_2019-01-01_2021-04-30_v1.0.0_test.jsonl"
     val = path_to_hopetwitter / "twitter_da_stopwords_2019-01-01_2021-04-30_v1.0.0_val.jsonl"
     train = path_to_hopetwitter / "twitter_da_stopwords_2019-01-01_2021-04-30_filtered_v1.0.0_train.jsonl"
-    data_files = {"train": [str(train)], "test": [str(test)], "validation": [str(val)]}
+    data_files = {"train": [str(train)]*repeats, "test": [str(test)], "validation": [str(val)]}
     hopetwitter = load_dataset("json", data_files=data_files, streaming=True)
 
     _add_source = partial(__add_source, source = "hopetwitter")
@@ -75,6 +76,7 @@ def load_hopetwitter(
 def load_dagw_dfm(
         path_to_dagw: Union[str, Path]=DAGW_DFM_PATH,
         columns_to_keep: Optional[List[str]]=None,
+        repeats: int=1,
         **kwargs
     ) -> IterableDatasetDict:
     """
@@ -95,7 +97,7 @@ def load_dagw_dfm(
     test = path_to_dagw / "dagw_reddit_v1.0.0_test.jsonl"
     val = path_to_dagw / "dagw_reddit_v1.0.0_val.jsonl"
     train = path_to_dagw / "dagw_reddit_filtered_v1.0.0_train.jsonl"
-    data_files = {"train": [str(train)], "test": [str(test)], "validation": [str(val)]}
+    data_files = {"train": [str(train)]*repeats, "test": [str(test)], "validation": [str(val)]}
     dagw = load_dataset("json", data_files=data_files, streaming=True)
     
     next(iter(dagw["train"]))
@@ -109,6 +111,7 @@ def load_dagw_dfm(
 def load_danews(
         path_to_danews: Union[str, Path]=DANEWS_PATH,
         columns_to_keep: Optional[List[str]]=None,
+        repeats: int=1,
         **kwargs
     ) -> IterableDatasetDict:
     """
@@ -129,7 +132,7 @@ def load_danews(
     test = path_to_danews / "infomedia_2000-2021_v1.0.0_test.jsonl"
     val = path_to_danews / "infomedia_2000-2021_v1.0.0_val.jsonl"
     train = path_to_danews / "infomedia_2000-2021_filtered_v1.0.0_train.jsonl"
-    data_files = {"train": [str(train)], "test": [str(test)], "validation": [str(val)]}
+    data_files = {"train": [str(train)]*repeats, "test": [str(test)], "validation": [str(val)]}
     danews = load_dataset("json", data_files=data_files, streaming=True)
     
     _add_source = partial(__add_source, source = "danews")
@@ -145,7 +148,8 @@ def load_nat(
         years: Iterable[int]=range(2006, 2017), 
         probabilities: Optional[List[float]] = None, 
         seed: Optional[int] = None,
-        columns_to_keep: Optional[List[str]]=None, 
+        columns_to_keep: Optional[List[str]]=None,
+        repeats: int=10,
         **kwargs
     ) -> IterableDatasetDict:
     """
@@ -170,7 +174,7 @@ def load_nat(
     for year in years:
         train_path = path_to_nat / f"{year}_deduplicated_filtered.jsonl"
         train_paths.append(str(train_path))
-    datasets = [load_dataset("json", data_files={"train": path}, streaming=True, split="train", **kwargs) 
+    datasets = [load_dataset("json", data_files={"train": [path]*repeats}, streaming=True, split="train", **kwargs) 
                 for path in train_paths]
     nat = interleave_datasets(datasets=datasets, probabilities=probabilities, seed=seed)
     nat = IterableDatasetDict({"train": nat})
@@ -190,10 +194,10 @@ def load_dcc_v1(
     path_to_nat: Union[str, Path]=NAT_PATH
 ):
     columns_to_keep = ["text", "source"]
-    danews = load_danews(columns_to_keep=columns_to_keep, path_to_danews=path_to_danews)
-    dagw_dfm = load_dagw_dfm(columns_to_keep=columns_to_keep, path_to_dagw=path_to_dagw)
-    hopetwitter = load_hopetwitter(columns_to_keep = columns_to_keep, path_to_hopetwitter=path_to_hopetwitter)
-    nat = load_nat(columns_to_keep=columns_to_keep, path_to_nat=path_to_nat)
+    danews = load_danews(columns_to_keep=columns_to_keep, path_to_danews=path_to_danews, repeats=1_000_000)
+    dagw_dfm = load_dagw_dfm(columns_to_keep=columns_to_keep, path_to_dagw=path_to_dagw, repeats=1_000_000)
+    hopetwitter = load_hopetwitter(columns_to_keep = columns_to_keep, path_to_hopetwitter=path_to_hopetwitter, repeats=1_000_000)
+    nat = load_nat(columns_to_keep=columns_to_keep, path_to_nat=path_to_nat, repeats=1_000_000)
     train = interleave_datasets([danews["train"], dagw_dfm["train"], hopetwitter["train"], nat["train"]], probabilities=probabilities)
     # Note: NAT does not include a test, val set
     # val = concatenate_datasets([danews["validation"], dagw_dfm["validation"], hopetwitter["validation"]])
