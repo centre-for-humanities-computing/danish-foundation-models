@@ -30,7 +30,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
-from datasets import load_dataset, interleave_datasets
+from datasets import load_dataset
 from tqdm import tqdm
 
 import flax
@@ -351,20 +351,6 @@ def advance_iter_and_group_samples(train_iterator, num_samples, max_seq_length):
     return grouped_samples
 
 
-def write_train_metric(summary_writer, train_metrics, train_time, step):
-    summary_writer.scalar("train_time", train_time, step)
-
-    train_metrics = get_metrics(train_metrics)
-    for key, vals in train_metrics.items():
-        tag = f"train_{key}"
-        for i, val in enumerate(vals):
-            summary_writer.scalar(tag, val, step - len(vals) + i + 1)
-
-
-def write_eval_metric(summary_writer, eval_metrics, step):
-    for metric_name, value in eval_metrics.items():
-        summary_writer.scalar(f"eval_{metric_name}", value, step)
-
 
 if __name__ == "__main__":
 
@@ -389,7 +375,7 @@ if __name__ == "__main__":
         config=parser.parse_args(),
         tags=["mlm", "flax"],
         group="mlm",
-        sync_tensorboard=True,
+        # sync_tensorboard=True,
     )
 
     if (
@@ -432,7 +418,7 @@ if __name__ == "__main__":
     if data_args.dataset_name is not None:
         if data_args.dataset_name == "dcc-v1":
             dataset = load_dcc_v1(probabilities=[0.10, 0.20, 0.20, 0.50])
-            columns_names = ["text", "source"]
+            dataset = dataset["train"]
         else:
             # Downloading and loading a dataset from the hub.
             dataset = load_dataset(
@@ -442,6 +428,7 @@ if __name__ == "__main__":
                 streaming=True,
                 split="train",
             )
+        column_names = list(next(iter(dataset)).keys())
 
 
     if model_args.config_name:
@@ -487,25 +474,14 @@ if __name__ == "__main__":
     tokenized_datasets = dataset.map(
         tokenize_function,
         batched=True,
+        remove_columns=column_names
     )
-    tokenized_datasets.remove_columns(column_names)
 
     shuffle_seed = training_args.seed
     tokenized_datasets = tokenized_datasets.shuffle(
         buffer_size=data_args.shuffle_buffer_size, seed=shuffle_seed
     )
 
-    has_tensorboard = is_tensorboard_available()
-    if has_tensorboard and jax.process_index() == 0:
-        #try:
-        from flax.metrics.tensorboard import SummaryWriter
-        #except ImportError as ie:
-        #    has_tensorboard = False
-        #    logger.warning(
-        #        f"Unable to display metrics through TensorBoard because some package are not installed: {ie}"
-        #    )
-
-        summary_writer = SummaryWriter(log_dir=Path(training_args.output_dir))
 
     # Data collator
     # This one will take care of randomly masking the tokens.
@@ -569,7 +545,7 @@ if __name__ == "__main__":
         }
         return traverse_util.unflatten_dict(flat_mask)
 
-    # create adam optimizer
+    # create adam summar
     adamw = optax.adamw(
         learning_rate=linear_decay_lr_schedule_fn,
         b1=training_args.adam_beta1,
@@ -693,12 +669,14 @@ if __name__ == "__main__":
         train_metrics.append(train_metric)
 
         if step % training_args.logging_steps == 0 and step > 0:
+            train_time += time.time() - train_start
+            wandb.log({"step": step, 
+                       "train_loss": train_metric['loss'].mean(),
+                       "learning_rate": train_metric['learning_rate'].mean(),
+                       "train_time": train_time})
             steps.write(
                 f"Step... ({step} | Loss: {train_metric['loss'].mean()}, Learning Rate: {train_metric['learning_rate'].mean()})"
             )
-            train_time += time.time() - train_start
-            if has_tensorboard and jax.process_index() == 0:
-                write_train_metric(summary_writer, train_metrics, train_time, step)
             train_metrics = []
 
         # ======================== Evaluating ==============================
@@ -728,9 +706,10 @@ if __name__ == "__main__":
 
             # Update progress bar
             steps.desc = f"Step... ({step + 1}/{num_train_steps} | Loss: {eval_metrics['loss']}, Acc: {eval_metrics['accuracy']})"
-
-            if has_tensorboard and jax.process_index() == 0:
-                write_eval_metric(summary_writer, eval_metrics, step)
+            wandb.log({"step": step + 1, 
+                       "eval_loss": eval_metrics['loss'],
+                       "eval_accuracy": eval_metrics['accuracy'],
+                       "train_time": train_time})
             eval_metrics = []
 
             # save checkpoint after each epoch and push checkpoint to the hub
