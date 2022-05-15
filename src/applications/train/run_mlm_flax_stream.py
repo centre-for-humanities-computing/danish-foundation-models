@@ -51,7 +51,7 @@ from transformers import (
     TensorType,
     TrainingArguments,
     is_tensorboard_available,
-    set_seed,
+    set_seed
 )
 
 
@@ -370,14 +370,6 @@ if __name__ == "__main__":
     else:
         model_args, data_args, training_args = parser.parse_args_into_dataclasses()
 
-    wandb.init(
-        project="danish_foundation_models",
-        config=parser.parse_args(),
-        tags=["mlm", "flax"],
-        group="mlm",
-        # sync_tensorboard=True,
-    )
-
     if (
         os.path.exists(training_args.output_dir)
         and os.listdir(training_args.output_dir)
@@ -633,6 +625,13 @@ if __name__ == "__main__":
     max_seq_length = min(data_args.max_seq_length, tokenizer.model_max_length)
     eval_samples = advance_iter_and_group_samples(
         training_iter, data_args.num_eval_samples, max_seq_length
+    )
+
+    wandb.init(
+        project="danish_foundation_models",
+        config=parser.parse_args(),
+        tags=["mlm", "flax", config.model_type],
+        group="mlm",
     )
 
     steps = tqdm(range(num_train_steps), desc="Training...", position=0)
