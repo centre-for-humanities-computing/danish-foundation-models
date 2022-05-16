@@ -127,7 +127,7 @@ A custom BPE vocabulary of 32.000 tokens.
 ```
 -->
 
-```
+```bash
 python3 /work/danish-foundation-models/src/applications/train/run_mlm_flax_stream.py \
     --output_dir=/work/models/transformers/dfm-bert-base \
     --model_type=bert \
@@ -135,32 +135,45 @@ python3 /work/danish-foundation-models/src/applications/train/run_mlm_flax_strea
     --tokenizer_name=/work/models/transformers/dfm-bert-base \
     --dataset_name=dcc-v1 \
     --max_seq_length=512 \
-    --per_device_train_batch_size=128 \
-    --per_device_eval_batch_size=128 \
+    --per_device_train_batch_size=48 \
+    --per_device_eval_batch_size=48 \
     --learning_rate=2e-5 \
     --warmup_steps=10000 \
     --overwrite_output_dir \
     --adam_beta1=0.9 \
     --adam_beta2=0.999 \
-    --num_train_steps=10000000 \
-    --num_eval_samples=10000 \
+    --num_train_steps=1500000 \
+    --num_eval_samples=50000 \
     --logging_steps=500 \
-    --eval_steps=10000 \
-    --weight_decay=0.01 \ 
-    --push_to_hub
+    --eval_steps=20000 \
+    --push_to_hub \
+    --weight_decay=0.01
 ```
+- running with 90% works with batch size = 4. Seems to work, but GPU utilization 42 %
+- disabling os.environ['XLA_PYTHON_CLIENT_MEM_FRACTION']='.90' and running again. This shouldn't really do anything. Also works just fine
+- Increasing batch size to 16 (from 4): works just fine
+- Increasing batch size to 32: works just fine
+2*32*512*2,68 tokens pr. second
+32 000 000 000/(2*32*512*2,68) seconds to go through 32 B tokens (what they used for t5)
+32000000000/(2*32*512*2,68)/60/60/24=4.2 days to train 1 BERT-base on 2 A100 
 
+- Increasing batch size to 64: OOM error
+- decreasing batch size to 48: Works
+32000000000/(2*48*512*2,00)/60/60/24=3.8 days to train 1 BERT-base on 2 A100 
+- Increasign batch to 56: OOM
+- decreasing to 52: OOM
+- Using batch size 48, change to 4 GPUs: work
 
+32000000000/(4*32*512*1,76)/60/60/24=3.2 days
 
 **TODO**: 
 - Tune batch size (larger gpu cluster)
 - [ ] tune eval step
 - [ ] tune_max_train steps
-- [ ] remove duplicates from config and script
-- [ ] check hyperparemeters of original BERT
-- [ ] is tokenization cut or extended?
 
-add: L2 weight decay of 0.01, 
+num_eval_samples = 50000
+
+
 
 
 # Wish to contribute
