@@ -187,17 +187,17 @@ def load_nat(
     return nat
 
 def load_dcc_v1(
-    probabilities=[0.10, 0.20, 0.20, 0.50],
+    probabilities=[0.06, 0.06, 0.03, 0.85],
     path_to_hopetwitter: Union[str, Path]=HOPETWITTER_PATH,
     path_to_dagw: Union[str, Path]=DAGW_DFM_PATH,
     path_to_danews: Union[str, Path]=DANEWS_PATH,
     path_to_nat: Union[str, Path]=NAT_PATH
 ):
     columns_to_keep = ["text", "source"]
-    danews = load_danews(columns_to_keep=columns_to_keep, path_to_danews=path_to_danews, repeats=1_000_000)
-    dagw_dfm = load_dagw_dfm(columns_to_keep=columns_to_keep, path_to_dagw=path_to_dagw, repeats=1_000_000)
-    hopetwitter = load_hopetwitter(columns_to_keep = columns_to_keep, path_to_hopetwitter=path_to_hopetwitter, repeats=1_000_000)
-    nat = load_nat(columns_to_keep=columns_to_keep, path_to_nat=path_to_nat, repeats=1_000_000)
+    danews = load_danews(columns_to_keep=columns_to_keep, path_to_danews=path_to_danews, repeats=1_000)
+    dagw_dfm = load_dagw_dfm(columns_to_keep=columns_to_keep, path_to_dagw=path_to_dagw, repeats=1_000)
+    hopetwitter = load_hopetwitter(columns_to_keep = columns_to_keep, path_to_hopetwitter=path_to_hopetwitter, repeats=1_000)
+    nat = load_nat(columns_to_keep=columns_to_keep, path_to_nat=path_to_nat, repeats=100)
     train = interleave_datasets([danews["train"], dagw_dfm["train"], hopetwitter["train"], nat["train"]], probabilities=probabilities)
     # Note: NAT does not include a test, val set
     # val = concatenate_datasets([danews["validation"], dagw_dfm["validation"], hopetwitter["validation"]])
