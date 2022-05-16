@@ -25,7 +25,7 @@ of heuristic filters. Following filtering,
 DAGW$_{DFM}$ is deduplicated to remove exact and near-duplicates. For more on data 
 cleaning, see the section on post processing.
 
-DAGW$_{DFM}$ included a a total of 1,310,789,818 tokens before filtering, and833,664,528 (0.64%) after.
+DAGW$_{DFM}$ included a a total of 1,310,789,818 tokens before filtering, and 833,664,528 (0.64%) after.
 
 # Dataset information
 As DAGW$_{DFM}$ is a composite dataset consisting of Danish gigaword and 
@@ -55,7 +55,7 @@ DAGW$_{DFM}$ applies a filter akin to [2]. It keeps documents which:
 - Have a mean word length between 3 and 10.
 - Have a token length between 50 and 100,000.
 - Contain fewer than 5,000,000 characters.
-- Among all words, at least 70% have at least one alphabetic character.
+- Among all words, at least 60% have at least one alphabetic character.
 - Have a symbol to word ratio lower than 10% for hashtags and ellipsis.
 - Have fewer than 90% of lines starting with a bullet point.
 - Have fewer than 30% of lines ending with an ellipsis.
