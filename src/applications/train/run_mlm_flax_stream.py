@@ -19,8 +19,9 @@ with whole word masking on a text file or a dataset.
 Here is the full list of checkpoints on the hub that can be fine-tuned by this script:
 https://huggingface.co/models?filter=fill-mask
 """
-import logging
 import os
+os.environ["TOKENIZERS_PARELLISM"] = "true"
+import logging
 import sys
 import time
 from collections import defaultdict
@@ -29,13 +30,11 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
-import numpy as np
-from datasets import load_dataset
-from tqdm import tqdm
-
-import flax
 import jax
 import jax.numpy as jnp
+import numpy as np
+
+import flax
 import optax
 from flax import jax_utils, traverse_util
 from flax.training import train_state
@@ -53,9 +52,11 @@ from transformers import (
     is_tensorboard_available,
     set_seed
 )
-
+from datasets import load_dataset
+from tqdm import tqdm
 
 import wandb
+
 from dfm.data.load_datasets import load_dcc_v1
 
 MODEL_CONFIG_CLASSES = list(FLAX_MODEL_FOR_MASKED_LM_MAPPING.keys())
@@ -409,7 +410,7 @@ if __name__ == "__main__":
     # 'text' is found. You can easily tweak this behavior (see below).
     if data_args.dataset_name is not None:
         if data_args.dataset_name == "dcc-v1":
-            dataset = load_dcc_v1(probabilities=[0.10, 0.20, 0.20, 0.50])
+            dataset = load_dcc_v1(probabilities=[0.06, 0.06, 0.03, 0.85])
             dataset = dataset["train"]
         else:
             # Downloading and loading a dataset from the hub.
