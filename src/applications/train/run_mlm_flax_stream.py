@@ -20,7 +20,6 @@ Here is the full list of checkpoints on the hub that can be fine-tuned by this s
 https://huggingface.co/models?filter=fill-mask
 """
 import os
-os.environ["TOKENIZERS_PARELLISM"] = "true"
 import logging
 import sys
 import time

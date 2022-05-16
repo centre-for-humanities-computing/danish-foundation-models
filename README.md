@@ -143,9 +143,9 @@ python3 /work/danish-foundation-models/src/applications/train/run_mlm_flax_strea
     --adam_beta1=0.9 \
     --adam_beta2=0.999 \
     --num_train_steps=1500000 \
-    --num_eval_samples=50000 \
+    --num_eval_samples=5000 \
     --logging_steps=500 \
-    --eval_steps=20000 \
+    --eval_steps=10000 \
     --push_to_hub \
     --weight_decay=0.01
 ```
