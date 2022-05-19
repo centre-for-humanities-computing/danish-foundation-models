@@ -2,19 +2,20 @@ import os
 import sys
 import time
 from typing import List
+
+import spacy
 from datasets import load_dataset
-
-
 from dfm.description.description_patterns import (
-    get_religion_patterns,
-    get_female_gendered_patterns,
-    get_male_gendered_patterns,
-    get_occupation_patterns,
-    get_muslim_name_patterns,
-    get_gender_name_patterns,
     danish_adult_words,
+    get_female_gendered_patterns,
+    get_gender_name_patterns,
+    get_male_gendered_patterns,
+    get_muslim_name_patterns,
+    get_negative_word_patterns,
+    get_occupation_patterns,
+    get_positive_word_patterns,
+    get_religion_patterns,
 )
-
 from dfm.description.match_counter import MatchCounter
 
 
@@ -45,6 +46,8 @@ def create_patterns() -> List:
         + get_gender_name_patterns()
         + get_male_gendered_patterns()
         + get_female_gendered_patterns()
+        + get_positive_word_patterns()
+        + get_negative_word_patterns()
         + adult_patterns
     )
 
@@ -56,7 +59,7 @@ if __name__ == "__main__":
 
     ds = load_dataset("DDSC/partial-danish-gigaword-no-twitter")
     ds_sharded = ds.shuffle()["train"].shard(
-        num_shards=100, index=0
+        num_shards=10000, index=0
     )  # Work on 1/100th of DGW
 
     nlp = spacy.blank("da")

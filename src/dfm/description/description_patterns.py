@@ -1,4 +1,5 @@
 from typing import Dict, List
+
 from dfm.description import MatchCounter
 
 # Terms for religions are:
@@ -760,8 +761,8 @@ def get_muslim_name_patterns() -> List[Dict[str, list]]:
     Returns:
         List[Dict[str, list]]: list of lowercase spacy match patterns
     """
-    from dfm.description.match_counter import MatchCounter
     from dacy.datasets import muslim_names
+    from dfm.description.match_counter import MatchCounter
 
     muslim_names_list = [name.lower() for name in muslim_names()["first_name"]]
 
@@ -790,3 +791,55 @@ def get_gender_name_patterns() -> List[Dict[str, list]]:
     )
 
     return female_names_patterns + male_name_patterns
+
+
+def get_positive_word_patterns() -> List[Dict[str, list]]:
+    """Loads a list of word- and sentiment pairs from "da_lexicon_afinn_v1.txt", splits it by tabs, then sorts them into lists depending on whether the sentiment is positive or negative.
+
+    Returns:
+        List[Dict[str, list]]: list of lowercase spacy patterns
+    """
+    import pathlib
+
+    from dfm.description.match_counter import MatchCounter
+
+    path = pathlib.Path(__file__).parent / "da_lexicon_afinn_v1.txt"
+
+    with open(path, "r") as f:
+        lines = f.readlines()
+
+    lines = [line.split("\t") for line in lines]
+
+    positive_words = [line[0] for line in lines if int(line[1]) > 0]
+
+    positive_patterns = MatchCounter.term_list_to_spacy_match_patterns(
+        positive_words, label="positive_words"
+    )
+
+    return positive_patterns
+
+
+def get_negative_word_patterns() -> List[Dict[str, list]]:
+    """Loads a list of word- and sentiment pairs from "da_lexicon_afinn_v1.txt", splits it by tabs, then sorts them into lists depending on whether the sentiment is positive or negative.
+
+    Returns:
+        List[Dict[str, list]]: list of lowercase spacy patterns
+    """
+    import pathlib
+
+    from dfm.description.match_counter import MatchCounter
+
+    path = pathlib.Path(__file__).parent / "da_lexicon_afinn_v1.txt"
+
+    with open(path, "r") as f:
+        lines = f.readlines()
+
+    lines = [line.split("\t") for line in lines]
+
+    negative_words = [line[0] for line in lines if int(line[1]) < 0]
+
+    negative_patterns = MatchCounter.term_list_to_spacy_match_patterns(
+        negative_words, label="negative_words"
+    )
+
+    return negative_patterns
