@@ -1,14 +1,18 @@
 library(tidyverse)
 library(kableExtra)
 
-# consider transposing this table
 data_desc = tribble(
-  ~Dataset, ~"# Tokens (Billions)", ~"# Tokens after filtering (Billions)", ~"Low-Quality Documents", ~"Duplicate Documents", ~"Open Source",
+  ~Dataset, ~"# Tokens (Billions)", ~"# Tokens after filtering (Billions)", ~"% Low-Quality Documents", ~"% Duplicate Documents", ~"Open Source",
   "DaNews", 9.29                  , 8.67                                  , 0.09                    , 0.04                  , "No",
   "HopeTwitter", 0.97             , 0.48                                  , 0.09                    , 0.33                  , "No",
   "Netarkivet Text", 864.7        , 134                                   , 0.27                    , 0.68                  , "No",
   "DAGW_{DFM}", 1.31              , 0.83                                  , NA                      , NA                    , "Yes",
 )
+
+# transposing table
+names = data_desc$Dataset
+data_desc=as.data.frame(t(data_desc[,1:length(names)+2]))
+colnames(data_desc) = names
 
 
 preprocessing_thresholds = tribble(
@@ -48,11 +52,35 @@ deduplication_table %>%
   kbl(, booktabs = T, caption = "Deduplication Parameters", format="latex")
 
 preprocessing_thresholds %>%  
-  kbl(, booktabs = T, caption = "Quality filtering thresholds", format="latex")
+  kbl(, booktabs = T, caption = "Quality filtering thresholds", format="latex") %>% 
+  pack_rows("Heuristic Filters", 1, 9) %>%
+  pack_rows("Repititious text removal", 10, 20) %>% 
+  kable_styling(latex_options = c("scale_down"))
 
 data_desc %>% select(-`Open Source`)  %>% 
   kbl(, booktabs = T, caption = "Dataset overview", , linesep="", format="latex") %>% 
-  kable_styling(latex_options = c("scale_down"))
+  kable_styling() #latex_options = c("scale_down"))
 
+
+
+
+tokenization_table = tribble(
+~"Subword segmentation", ~"Documents", ~"Vocabulary", ~"Precision", ~"Recall", ~"f1-score", ~"f2-score", ~"Jaccard-index",
+"Unigram",               "1x",       55000,         0.72,         0.65,      0.68,       0.66,        0.52,
+"BPE",       "1x", 55000,  0.76, 0.58, 0.66, 0.61, 0.49,
+"Wordpiece", "1x", 55000,  0.67, 0.58, 0.62, 0.60, 0.45,
+"Unigram",   "5x", 55000,  0.71, 0.65, 0.68, 0.66, 0.52,
+"Unigram",   "1x", 128000, 0.76, 0.52, 0.62, 0.55, 0.45,
+"Unigram",   "1x", 32000,  0.68, 0.75, 0.72, 0.74, 0.56
+)
+caption="Performance of subword segmentation algorithms on annotated Danish compound splits. 
+Documents denote the amount of training documents, with 1x indicate 100.000 documents. 
+Group 1 compares the algorithm and Group 2 examines the influence of vocabulary size and training parameters."
+tokenization_table %>% 
+  kbl(, booktabs = T, caption = caption, linesep="", format="latex") %>% 
+  add_header_above(c(" ", "Training parameters" = 2, "Performance metric" = 5)) %>%
+  pack_rows("Group 1", 1, 3) %>%
+  pack_rows("Group 2", 4, 6) %>% 
+  kable_styling(latex_options = c("scale_down"))
 
 
