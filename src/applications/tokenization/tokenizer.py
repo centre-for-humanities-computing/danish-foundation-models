@@ -139,6 +139,38 @@ for i in [
     ]:
         print(f"\t{k}: {result_[k]:.2f}")
 
+
+interfixes = zip(*[gold_splits[i] for i, (word, comp) in enumerate(sammensatte_ord.items()) if ["s"] in comp]
+words, compounds = zip(*sammensatte_ord.items())
+compounds = [[c for subcomp in compound for c in subcomp] for compound in compounds]
+gold_splits = [set(cumlength(comp[:-1])) for comp in compounds]
+
+
+interfix_word = [word for i, (word, comp) in enumerate(sammensatte_ord.items()) if ["s"] in comp]
+interfix_word
+for i in [
+    "UNIGRAM",
+    "BPE",
+    "WORDPIECE",
+    "UNIGRAM_500000_docs",
+    "UNIGRAM_128000_tokens",
+    "UNIGRAM_32000_tokens",
+]:
+    tokenizer = Tokenizer.from_file(f"/Users/au561649/Downloads/tokenizer_{i}.json")
+    tokenizer = PreTrainedTokenizerFast(tokenizer_object=tokenizer)
+    result_ = validate_tokenizer(tokenizer, interfix_gold, words=interfix_word)
+
+    print(i)
+    for k in [
+        "precision",
+        "recall",
+        "f1-score",
+        "f2-score",
+        "jaccard-index",
+    ]:
+        print(f"\t{k}: {result_[k]:.2f}")
+gold_splits
+
 # good splits not accounted for
 # word | gold splits | model splits | Correct split |
 # aborttilhænger  |  ['abort', 'tilhænger']  |  ['abort', '##til', '##hænger']  |  [True, False]
