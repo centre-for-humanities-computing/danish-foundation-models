@@ -145,3 +145,7 @@ dmypy.json
 #wandb
 wandb/*
 models/*
+
+# R lang.
+.Rproj.user
+*.Rproj
