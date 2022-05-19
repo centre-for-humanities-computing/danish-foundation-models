@@ -191,7 +191,8 @@ def load_nat(
             None in which case all columns are kept.
         years (Iterable[int]): A list of years to include.
         probabilities (Optional[List[float]], optional): Interleave probabilites of
-            years. Default to None, denoting equal probabilites.
+            years, i.e. the probability of sampling a from given year for each sample.
+            Default to None, denoting equal probabilites.
         n_training_repeats (int, optional): Number of times to repeat the dataset.
             Defaults to 10, indicating that each year is repeated 10 times is not
             repeated.
