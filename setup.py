@@ -35,5 +35,6 @@ def setup_package():
     )
     install_nodeps("dacy")
 
+
 if __name__ == "__main__":
     setup_package()
