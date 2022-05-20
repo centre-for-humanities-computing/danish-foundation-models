@@ -282,36 +282,41 @@ def load_dcc(
             "Version {version} is not available. Available versions"
             + f": {versions_options}"
         )
+    datasets = {}
 
-    danews = load_danews(
+    datasets["danews"] = load_danews(
         columns_to_keep=columns_to_keep,
         path_to_danews=path_to_danews,
         n_training_repeats=n_training_repeats["danews"],
         **kwargs,
     )
-    dagw_dfm = load_dagw_dfm(
+    datasets["dagw_dfm"] = load_dagw_dfm(
         columns_to_keep=columns_to_keep,
         path_to_dagw=path_to_dagw,
         n_training_repeats=n_training_repeats["dagw_dfm"],
         **kwargs,
     )
-    hopetwitter = load_hopetwitter(
+    datasets["hopetwitter"] = load_hopetwitter(
         columns_to_keep=columns_to_keep,
         path_to_hopetwitter=path_to_hopetwitter,
         n_training_repeats=n_training_repeats["hopetwitter"],
         **kwargs,
     )
-    nat = load_nat(
+    datasets["nat"] = load_nat(
         columns_to_keep=columns_to_keep,
         path_to_nat=path_to_nat,
         n_training_repeats=n_training_repeats["nat"],
         **kwargs,
     )
+
     probabilities = [
-        probabilities[k] for k in ["danews", "dagw_dfm", "hopetwitter", "dfm"]
+        probabilities[k] for k in ["danews", "dagw_dfm", "hopetwitter", "nat"]
+    ]
+    train_datasets = [
+        datasets[k]["train"] for k in ["danews", "dagw_dfm", "hopetwitter", "nat"]
     ]
     train = interleave_datasets(
-        [danews["train"], dagw_dfm["train"], hopetwitter["train"], nat["train"]],
+        train_datasets,
         probabilities=probabilities,
         **kwargs,
     )
