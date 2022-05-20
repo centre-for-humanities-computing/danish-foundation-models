@@ -55,6 +55,8 @@ def load_hopetwitter(
             Defaults to "/work/twitter_cleaned".
         columns_to_keep (Optional[List[str]], optional): Columns to keep. Default to None
             in which case all columns are kept.
+        n_training_repeats (int, optional): Number of times to repeat the dataset.
+            Defaults to 1, indicating that the dataset is not repeated.
         kwargs: arguments to be passed forward to load_dataset
 
     Returns:
@@ -255,7 +257,7 @@ def load_dcc(
     Loads Danish collosal corpus (DCC) version 1.
 
     Args:
-        probabilities (Optional[List[float]], optional): Interleave probabilites of the
+        probabilities (Optional[Dict[str, float], optional): Interleave probabilites of the
             subdatasets. Defualts to {"danews": 0.06, "dagw_dfm": 0.06, "hopetwitter":
             0.03, "nat": 0.85}.
         n_training_repeats (Dict[str, int], optional): Number of times to repeat the
