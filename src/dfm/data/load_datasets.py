@@ -308,13 +308,16 @@ def load_dcc(
         n_training_repeats=n_training_repeats["nat"],
         **kwargs,
     )
+    
+    dataset_names = ["danews", "dagw_dfm", "hopetwitter", "nat"]
 
     probabilities = [
-        probabilities[k] for k in ["danews", "dagw_dfm", "hopetwitter", "nat"]
+        probabilities[k] for k in dataset_names
     ]
     train_datasets = [
-        datasets[k]["train"] for k in ["danews", "dagw_dfm", "hopetwitter", "nat"]
+        datasets[k]["train"] for k in dataset_names
     ]
+    
     train = interleave_datasets(
         train_datasets,
         probabilities=probabilities,
