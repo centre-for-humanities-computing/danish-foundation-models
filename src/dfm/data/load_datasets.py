@@ -279,8 +279,8 @@ def load_dcc(
     versions_options = ["1.0.0"]
     if version != "1.0.0":
         raise ValueError(
-            "Version {version} is not available. Available version"
-            + f" include: {versions_options}"
+            "Version {version} is not available. Available versions"
+            + f": {versions_options}"
         )
 
     danews = load_danews(
