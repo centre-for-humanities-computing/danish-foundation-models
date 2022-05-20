@@ -2,11 +2,11 @@
 Datasets loaders for DFM datasets.
 """
 
-from typing import Dict, Union, Iterable, List, Optional
-from pathlib import Path
 from functools import partial
+from pathlib import Path
+from typing import Dict, Iterable, List, Optional, Union
 
-from datasets import load_dataset, interleave_datasets, DatasetDict, IterableDatasetDict
+from datasets import DatasetDict, IterableDatasetDict, interleave_datasets, load_dataset
 
 HOPETWITTER_PATH = Path("/work") / "twitter_cleaned"
 DAGW_DFM_PATH = Path("/work") / "dagw-clean"
@@ -250,7 +250,7 @@ def load_dcc(
     path_to_dagw: Union[str, Path] = DAGW_DFM_PATH,
     path_to_danews: Union[str, Path] = DANEWS_PATH,
     path_to_nat: Union[str, Path] = NAT_PATH,
-    columns_to_keep: List(str) = ["text", "source"],
+    columns_to_keep: List[str] = ["text", "source"],
     **kwargs,
 ):
     """
@@ -309,12 +309,11 @@ def load_dcc(
         **kwargs,
     )
 
-    probabilities = [
-        probabilities[k] for k in ["danews", "dagw_dfm", "hopetwitter", "nat"]
-    ]
-    train_datasets = [
-        datasets[k]["train"] for k in ["danews", "dagw_dfm", "hopetwitter", "nat"]
-    ]
+    dataset_names = ["danews", "dagw_dfm", "hopetwitter", "nat"]
+
+    probabilities = [probabilities[k] for k in dataset_names]
+    train_datasets = [datasets[k]["train"] for k in dataset_names]
+
     train = interleave_datasets(
         train_datasets,
         probabilities=probabilities,
