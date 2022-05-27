@@ -162,10 +162,6 @@ class DataTrainingArguments:
             "than this will be truncated. Default to the max input length of the model."
         },
     )
-    preprocessing_num_workers: Optional[int] = field(
-        default=None,
-        metadata={"help": "The number of processes to use for the preprocessing."},
-    )
     mlm_probability: float = field(
         default=0.15,
         metadata={"help": "Ratio of tokens to mask for masked language modeling loss"},
@@ -655,7 +651,6 @@ if __name__ == "__main__":
             samples = advance_iter_and_group_samples(
                 training_iter, train_batch_size, max_seq_length
             )
-
         # process input samples
         model_inputs = data_collator(samples)
 
