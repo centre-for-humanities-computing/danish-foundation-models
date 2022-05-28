@@ -60,7 +60,7 @@ from dfm.data.load_datasets import load_dcc_v1
 
 MODEL_CONFIG_CLASSES = list(FLAX_MODEL_FOR_MASKED_LM_MAPPING.keys())
 MODEL_TYPES = tuple(conf.model_type for conf in MODEL_CONFIG_CLASSES)
-
+TRAINING_SAMPLES = 0
 
 @dataclass
 class ModelArguments:
@@ -122,6 +122,10 @@ class DataTrainingArguments:
     dataset_name: Optional[str] = field(
         default="dcc-v1",
         metadata={"help": "The name of the dataset to use (via the datasets library)."},
+    )
+    skip_n_training_samples: Optional[str] = field(
+        default=0,
+        metadata={"help": "How many training samples to skip. Defaults to 0. Useful for restarting runs."},
     )
 
     train_file: Optional[str] = field(
@@ -318,12 +322,15 @@ def advance_iter_and_group_samples(train_iterator, num_samples, max_seq_length):
     The training iterator is advanced so that after groupifying the samples,
     `num_samples` of length `max_seq_length` are returned.
     """
+    global TRAINING_SAMPLES
     num_total_tokens = max_seq_length * num_samples
     samples = defaultdict(list)
 
     i = 0
     while i < num_total_tokens:
         tokenized_samples = next(train_iterator)
+        TRAINING_SAMPLES += 1  # log training iterator
+        
         i += len(tokenized_samples["input_ids"])
 
         # concatenate tokenized samples to list
@@ -469,8 +476,13 @@ if __name__ == "__main__":
     tokenized_datasets = tokenized_datasets.shuffle(
         buffer_size=data_args.shuffle_buffer_size, seed=shuffle_seed
     )
-
-
+    if data_args.skip_n_training_samples:
+        # skipping locks the order preventing future shuffles
+        print(f"Skipping {data_args.skip_n_training_samples} training samples.")
+        tokenized_datasets_ = tokenized_datasets.skip(data_args.skip_n_training_samples)
+    else:
+        tokenized_datasets_ = tokenized_datasets
+    
     # Data collator
     # This one will take care of randomly masking the tokens.
     data_collator = FlaxDataCollatorForLanguageModeling(
@@ -616,7 +628,7 @@ if __name__ == "__main__":
     train_metrics = []
     eval_metrics = []
 
-    training_iter = iter(tokenized_datasets)
+    training_iter = iter(tokenized_datasets_)
 
     max_seq_length = min(data_args.max_seq_length, tokenizer.model_max_length)
     eval_samples = advance_iter_and_group_samples(
@@ -703,7 +715,8 @@ if __name__ == "__main__":
             wandb.log({"step": step + 1, 
                        "eval_loss": eval_metrics['loss'],
                        "eval_accuracy": eval_metrics['accuracy'],
-                       "train_time": train_time})
+                       "train_time": train_time,
+                       "training_samples": TRAINING_SAMPLES})
             eval_metrics = []
 
             # save checkpoint after each epoch and push checkpoint to the hub
