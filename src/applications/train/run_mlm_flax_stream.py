@@ -61,6 +61,7 @@ from dfm.data.load_datasets import load_dcc_v1
 MODEL_CONFIG_CLASSES = list(FLAX_MODEL_FOR_MASKED_LM_MAPPING.keys())
 MODEL_TYPES = tuple(conf.model_type for conf in MODEL_CONFIG_CLASSES)
 TRAINING_SAMPLES = 0
+TRAINING_DOCS = 0
 
 @dataclass
 class ModelArguments:
@@ -123,9 +124,13 @@ class DataTrainingArguments:
         default="dcc-v1",
         metadata={"help": "The name of the dataset to use (via the datasets library)."},
     )
-    skip_n_training_samples: Optional[str] = field(
+    skip_n_training_samples: Optional[int] = field(
         default=0,
         metadata={"help": "How many training samples to skip. Defaults to 0. Useful for restarting runs."},
+    )
+    skip_n_training_docs: Optional[int] = field(
+        default=0,
+        metadata={"help": "How many training docs to skip. Defaults to 0. Useful for restarting runs."},
     )
 
     train_file: Optional[str] = field(
@@ -425,6 +430,15 @@ if __name__ == "__main__":
             )
         column_names = list(next(iter(dataset)).keys())
 
+    # log training samples (including those which are skipped.)
+    def log_dataset_function(examples):
+        global TRAINING_DOCS
+        TRAINING_DOCS += len(examples[data_args.text_column_name])
+        return examples
+    dataset = dataset.map(log_dataset_function, batched=True)
+
+    if data_args.skip_n_training_docs:
+        dataset = dataset.skip(data_args.skip_n_training_docs)
 
     if model_args.config_name:
         config = AutoConfig.from_pretrained(
@@ -663,6 +677,7 @@ if __name__ == "__main__":
             samples = advance_iter_and_group_samples(
                 training_iter, train_batch_size, max_seq_length
             )
+
         # process input samples
         model_inputs = data_collator(samples)
 
@@ -679,7 +694,9 @@ if __name__ == "__main__":
             wandb.log({"step": step, 
                        "train_loss": train_metric['loss'].mean(),
                        "learning_rate": train_metric['learning_rate'].mean(),
-                       "train_time": train_time})
+                       "train_time": train_time,
+                       "training_samples": TRAINING_SAMPLES,
+                       "training_docs": TRAINING_DOCS})
             steps.write(
                 f"Step... ({step} | Loss: {train_metric['loss'].mean()}, Learning Rate: {train_metric['learning_rate'].mean()})"
             )
@@ -716,7 +733,8 @@ if __name__ == "__main__":
                        "eval_loss": eval_metrics['loss'],
                        "eval_accuracy": eval_metrics['accuracy'],
                        "train_time": train_time,
-                       "training_samples": TRAINING_SAMPLES})
+                       "training_samples": TRAINING_SAMPLES,
+                       "training_docs": TRAINING_DOCS})
             eval_metrics = []
 
             # save checkpoint after each epoch and push checkpoint to the hub
