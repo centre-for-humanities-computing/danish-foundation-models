@@ -15,8 +15,8 @@ tweets from 2019-01-01 to 2021-04-30.
 
 HopeTwitter, have been filtered to only include Danish tweets. Similarly, HopeTwitter
 have had low-quality tweets have removed and then deduplicated to remove exact and
-near-duplicates. For more on data cleaning see section on 
-Preprocessing/cleaning/labeling.
+near-duplicates. For more on data cleaning see section;
+*"Preprocessing/cleaning/labeling"*.
 
 HopeTwitter includes a total of 0.97 billion tokens before filtering and includes 0.48
 billion (50%) after.
