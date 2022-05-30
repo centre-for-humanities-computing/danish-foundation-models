@@ -77,7 +77,7 @@ No.
 If so, please provide a description of these splits, explaining the rationale behind
 them.**
 
-There is not splits performed on this dataset.
+No splits are performed on this dataset.
 
 
 **If the dataset is a sample from a larger set, what was the sampling strategy?**
