@@ -33,10 +33,10 @@ Following the recommendation and framework of [3] we add the following datasheet
 creation of the dataset? **
 
 HopeTwitter was initially collected as a part of the
-[HOPE project](https://hope-project.dk/#/) examining societal behaviour during the
-covid-19 pandemic. Following HopeTwitter was cleaned for pre-training Danish language
+[HOPE project](https://hope-project.dk/#/), examining societal behaviour during the
+COVID-19 pandemic. Next, HopeTwitter was cleaned in preparation for pre-training Danish language
 models by a team of researchers at Center for Humanities Computing Aarhus 
-([CHCAA](https://chcaa.io/#/)) using
+([CHCAA](https://chcaa.io/#/)), using
 a codebase jointly developed with partners from academia and industry, including KMD,
 Ekstra Bladet, Bristol University and Deepdivr. For more on collaborators on this
 project see the
