@@ -65,8 +65,8 @@ duplicates.
 **Does the dataset contain all possible instances or is it a sample (not necessarily
 random) of instances from a larger set?**
 
-No. It does not contain all instances of Danish Twitter as there is likely some "Danish"
-tweets such as exclamations and links which does not include a stopword.
+No. It does not contain all instances of Danish Twitter as there are likely some Danish
+tweets which does not include a stopword.
 
 **Is there a label or target associated with each instance? If so, please provide a
 description.**
