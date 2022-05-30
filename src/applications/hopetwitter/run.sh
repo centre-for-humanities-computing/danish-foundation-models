@@ -16,5 +16,3 @@ python src/applications/hopetwitter/add_metadata.py
 
 echo "Apply filter"
 python src/applications/hopetwitter/apply_filter.py
-
-
