@@ -2,6 +2,7 @@ import os
 import time
 from typing import List
 
+import spacy
 from datasets import load_dataset
 from dfm.description.description_patterns import (
     danish_adult_words,
