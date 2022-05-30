@@ -111,8 +111,8 @@ være, været, älskar, åh, år, åt, över
 
 **Who was involved in the data collection process?**
 
-A team of researchers at Center for Humanities
-Computing Aarhus (CHCAA), including Kristoffer Nielbo, and Peter Bjerregaard Vahlstrup in collaboration with Rebekah Baglini, at school of communcation and culture at Aarhus university.
+A team of researchers at the Center for Humanities
+Computing Aarhus (CHCAA), including Kristoffer Nielbo and Peter Bjerregaard Vahlstrup, in collaboration with Rebekah Baglini, at the School of Communcation and Culture at Aarhus university.
 
 ###### NOTE: take from version on ucloud
 
