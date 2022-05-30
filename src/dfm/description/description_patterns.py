@@ -539,7 +539,7 @@ female_gendered_terms = set(
 
 def get_female_gendered_patterns():
     return MatchCounter.term_list_to_spacy_match_patterns(
-        female_gendered_terms, label="female_gendered_terms"
+        female_gendered_terms, label="gender_female_terms"
     )
 
 
@@ -579,7 +579,7 @@ male_gendered_terms = set(
 
 def get_male_gendered_patterns():
     return MatchCounter.term_list_to_spacy_match_patterns(
-        male_gendered_terms, label="male_gendered_terms"
+        male_gendered_terms, label="gender_male_terms"
     )
 
 
@@ -767,7 +767,7 @@ def get_muslim_name_patterns() -> List[Dict[str, list]]:
     muslim_names_list = [name.lower() for name in muslim_names()["first_name"]]
 
     return MatchCounter.term_list_to_spacy_match_patterns(
-        term_list=muslim_names_list, label="muslim_names"
+        term_list=muslim_names_list, label="rel_muslim_names"
     )
 
 
@@ -782,12 +782,12 @@ def get_gender_name_patterns() -> List[Dict[str, list]]:
 
     female_names_list = [name.lower() for name in female_names()["first_name"]]
     female_names_patterns = MatchCounter.term_list_to_spacy_match_patterns(
-        female_names_list, label="female_names"
+        female_names_list, label="gender_female_names"
     )
 
     male_names_list = [name.lower() for name in male_names()["first_name"]]
     male_name_patterns = MatchCounter.term_list_to_spacy_match_patterns(
-        male_names_list, label="male_names"
+        male_names_list, label="gender_male_names"
     )
 
     return female_names_patterns + male_name_patterns
