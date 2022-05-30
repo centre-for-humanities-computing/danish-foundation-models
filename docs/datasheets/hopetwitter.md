@@ -119,7 +119,7 @@ Computing Aarhus (CHCAA), including Kristoffer Nielbo and Peter Bjerregaard Vahl
 
 **Over what timeframe was the data collected?**
 
-The dataset include tweets from the period 2019-01-01 to 2021-04-30.
+The dataset includes tweets from the period 2019-01-01 to 2021-04-30.
 
 **Were any ethical review processes conducted?**
 
