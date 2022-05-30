@@ -204,7 +204,7 @@ it possible to extend the dataset by a continual collection of tweets.
 HopeTwitter Danish tweet and thus should not be used for non-Danish language task.
 
 As the writers of the content is predominantly journalists, politicians, influencers,
-and academics it reflect a certain social group which is unlikely to reflect Danish
+and academics, it reflects a certain social group which is unlikely to reflect Danish
 population as a whole.
 
 ## Distribution
