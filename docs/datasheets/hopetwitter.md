@@ -59,7 +59,7 @@ what was the sampling strategy?" for the stopword list.
 
 **How many instances are there in total (of each type, if appropriate)?**
 
-The dataset consist of 32,499,019 documents where 14,399,284 (0.44%) were considered
+The dataset consist of 32,499,019 documents where 14,399,284 (44%) were considered
 duplicates. 
 
 **Does the dataset contain all possible instances or is it a sample (not necessarily
