@@ -9,8 +9,8 @@
 
 ---
 
-HopeTwitter consist of tweets collected from the Twitter API using a stopword list
-and consists of 32.5 million tweets across 538,398 unique users. HopeTwitter include
+HopeTwitter consists of tweets collected from the Twitter API using a stopword list
+and consists of 32.5 million tweets across 538,398 unique users. HopeTwitter includes
 tweets from 2019-01-01 to 2021-04-30.
 
 HopeTwitter, have been filtered to only include Danish tweets. Similarly, HopeTwitter
