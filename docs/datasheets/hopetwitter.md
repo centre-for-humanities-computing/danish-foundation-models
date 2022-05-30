@@ -180,9 +180,7 @@ and in [4].
 
 **Is there a repository that links to any or all papers or systems that use the dataset?**
 
-There is a website for the HOPE project for which the dataset was initially collected; 
-https://hope-project.au.dk. This website contains report and articles regarding the
-dataset.
+There is [a website](https://hope-project.au.dk) for the HOPE project for which the dataset was initially collected. This website contains report and articles regarding the dataset.
 
 **What (other) tasks could the dataset be used for?**
 
