@@ -53,7 +53,7 @@ No.
 **What do the instances that comprise the dataset represent (e.g., documents, photos,
 people, countries)?**
 
-HopeTwitter consist of tweets containing at least one of series of stopwords
+HopeTwitter consists of tweets containing at least one of a series of stopwords,
 collected through the Twitter API. See "If the dataset is a sample from a larger set,
 what was the sampling strategy?" for the stopword list.
 
