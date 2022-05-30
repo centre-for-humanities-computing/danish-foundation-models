@@ -1,4 +1,4 @@
-# Logs of what have been run an in what order
+# Logs of what has been run an in what order
 
 echo "Preprocessing Twitter to be readable by HF datasets"
 python src/applications/hopetwitter/flatten_ndjson.py
