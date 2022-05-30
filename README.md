@@ -166,13 +166,69 @@ python3 /work/danish-foundation-models/src/applications/train/run_mlm_flax_strea
 
 32000000000/(4*32*512*1,76)/60/60/24=3.2 days
 
-**TODO**: 
-- Tune batch size (larger gpu cluster)
-- [ ] tune eval step
-- [ ] tune_max_train steps
+to restart model training, set model path, set warmup steps to 0 and set the learning rate.
+```bash
+python3 /work/danish-foundation-models/src/applications/train/run_mlm_flax_stream.py \
+    --output_dir=/work/models/transformers/dfm-bert-base \
+    --model_name_or_path=/work/models/transformers/dfm-bert-base \
+    --config_name=/work/models/transformers/dfm-bert-base \
+    --tokenizer_name=/work/models/transformers/dfm-bert-base \
+    --dataset_name=dcc-v1 \
+    --max_seq_length=512 \
+    --per_device_train_batch_size=40 \
+    --per_device_eval_batch_size=40 \
+    --learning_rate=0.00001810 \
+    --warmup_steps=1 \
+    --overwrite_output_dir \
+    --adam_beta1=0.9 \
+    --adam_beta2=0.999 \
+    --num_train_steps=1240000 \
+    --num_eval_samples=5000 \
+    --logging_steps=500 \
+    --eval_steps=10000 \
+    --push_to_hub \
+    --weight_decay=0.01 \
+    --skip_n_training_docs=22333000 \
+    --seed=6
+```
+num train steps: 1500000-120000-140000
+learning rate: 0.00001817
+train samples/steps 154.43 - i.e. skip:
+154*140000=21.560.000
+train samples roughly corresponds to docs in hour case, so:
+21560000
+22333000
 
-num_eval_samples = 50000
+Logs:
+- 29 may: starting conducting logs.
+- 29 may: After having restarted it after faithful out experience that the process hangs, we switched to version 0.3.12 of JAX and reran the scripts. This reason for this switch is that previously GPUs ran without issues for multiple days.
+    - Seems like the issue is caused by UCloud putting an app to sleep, sometimes reopening it starts the script again. I (KCE) have sent a ticket to UCloud. 
+- 30 may: Script went to sleep again, using a TMUX instance did not resolve the issue. I (KCE) have reached out to Kristoffer, planning a meeting later today. Restarting training from aburd leaf 78 using;
 
+```bash
+python3 /work/danish-foundation-models/src/applications/train/run_mlm_flax_stream.py \
+    --output_dir=/work/models/transformers/dfm-bert-base \
+    --model_name_or_path=/work/models/transformers/dfm-bert-base \
+    --config_name=/work/models/transformers/dfm-bert-base \
+    --tokenizer_name=/work/models/transformers/dfm-bert-base \
+    --dataset_name=dcc-v1 \
+    --max_seq_length=512 \
+    --per_device_train_batch_size=46 \
+    --per_device_eval_batch_size=46 \
+    --learning_rate=0.00001775 \
+    --warmup_steps=1 \
+    --overwrite_output_dir \
+    --adam_beta1=0.9 \
+    --adam_beta2=0.999 \
+    --num_train_steps=1240000 \
+    --num_eval_samples=5000 \
+    --logging_steps=500 \
+    --eval_steps=10000 \
+    --push_to_hub \
+    --weight_decay=0.01 \
+    --skip_n_training_docs=25984000 \
+    --seed=6
+```
 
 
 
