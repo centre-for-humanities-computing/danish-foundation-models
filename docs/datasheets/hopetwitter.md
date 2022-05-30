@@ -161,7 +161,6 @@ following the MinHash algorithm [1] using 128 permutations. The MinHash algorith
 probabilistic data structure for approximating the Jaccard similarity between two sets.
 
 
-
 **Is the software used to preprocess/clean/label the instances available?**
 
 Yes, the scripts are available
