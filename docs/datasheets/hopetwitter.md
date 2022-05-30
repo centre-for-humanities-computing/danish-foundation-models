@@ -201,7 +201,7 @@ it possible to extend the dataset by a continual collection of tweets.
 
 **Are there tasks for which the dataset should not be used?**
 
-HopeTwitter Danish tweet and thus should not be used for non-Danish language task.
+HopeTwitter contains Danish tweets and thus should not be used for non-Danish language tasks.
 
 As the writers of the content is predominantly journalists, politicians, influencers,
 and academics, it reflects a certain social group which is unlikely to reflect Danish
