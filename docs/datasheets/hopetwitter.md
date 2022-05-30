@@ -19,15 +19,15 @@ near-duplicates. For more on data cleaning see section on
 Preprocessing/cleaning/labeling.
 
 HopeTwitter includes a total of 0.97 billion tokens before filtering and includes 0.48
-billion (0.50%) after.
+billion (50%) after.
 
 
 
-## Datasheet:
+## Datasheet
 
 Following the recommendation and framework of [3] we add the following datasheet. 
 
-### Motivation:
+### Motivation
 
 **For what purpose was the dataset created? Who created the dataset? Who funded the 
 creation of the dataset? **
