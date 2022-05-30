@@ -114,7 +114,6 @@ være, været, älskar, åh, år, åt, över
 A team of researchers at the Center for Humanities
 Computing Aarhus (CHCAA), including Kristoffer Nielbo and Peter Bjerregaard Vahlstrup, in collaboration with Rebekah Baglini, at the School of Communcation and Culture at Aarhus university.
 
-###### NOTE: take from version on ucloud
 
 
 **Over what timeframe was the data collected?**
