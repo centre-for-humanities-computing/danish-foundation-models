@@ -83,8 +83,8 @@ No splits are performed on this dataset.
 **If the dataset is a sample from a larger set, what was the sampling strategy?**
 
 Tweets are streamed continuously using queried a set of the highest 
-frequency scandinavian-specific words from Danish, Norwegian (Bokmål) and Swedish. 
-Resulting the following list:
+frequency Scandinavian-specific keywords from Danish, Norwegian (Bokmål) and Swedish,
+resulting in the following list:
 ```
 aften, aldrig, alltid, altid, andet, arbejde, bedste, behöver, behøver, beklager,
 berätta, betyr, blev, blevet, blir, blitt, blive, bliver, bruge, burde, bättre, båe
