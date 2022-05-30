@@ -136,8 +136,8 @@ Firstly, HopeTwitter had non-Danish tweets removed, after which a series of
 heuristic filters were applied, including the removal of repetitious texts. Following the filtering,
 HopeTwitter was deduplicated, removing both exact duplicates and near-duplicates.
 
-Of all documents, 3,023,427 (0.09%) were filtered based due to low-quality and
-14,399,284 (0.33%) because they were near-duplicates.
+Of all documents, 3,023,427 (9%) were filtered due to low-quality and
+14,399,284 (33%) because they were near-duplicates.
 
 For the quality filtering, HopeTwitter applies a filter akin to [2] which contains text
 that:
