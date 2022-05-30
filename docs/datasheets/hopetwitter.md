@@ -156,7 +156,6 @@ SpaCy v.3.1.4.
   - Where the duplicate 5-10 grams constitute less than 25%, 24%, 23%, 22%, 21%, 20%
 of the text, respectively.
 
-
 The deduplication removed all documents with a 10-gram Jaccard similarity higher than 80%
 following the MinHash algorithm [1] using 128 permutations. The MinHash algorithm is a
 probabilistic data structure for approximating the Jaccard similarity between two sets.
