@@ -434,6 +434,10 @@ if __name__ == "__main__":
     def log_dataset_function(examples):
         global TRAINING_DOCS
         TRAINING_DOCS += len(examples[data_args.text_column_name])
+        # TODO remove:
+        if TRAINING_DOCS < 21560000 and TRAINING_DOCS % 100000 == 0:
+            print("TRAINING_DOCS:", TRAINING_DOCS, "- DOCS left to skip:", 21560000-TRAINING_DOCS)
+        # until here
         return examples
     dataset = dataset.map(log_dataset_function, batched=True)
 
