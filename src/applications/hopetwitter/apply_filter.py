@@ -1,5 +1,5 @@
 """
-apply filters to twitter dataset.
+Apply filters to the Twitter dataset.
 
 Dependent on:
     src/applications/hopetwitter/add_metadata.py

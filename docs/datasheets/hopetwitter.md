@@ -33,10 +33,10 @@ Following the recommendation and framework of [3] we add the following datasheet
 creation of the dataset? **
 
 HopeTwitter was initially collected as a part of the
-[HOPE project](https://hope-project.dk/#/) examining societal behaviour during the
-covid-19 pandemic. Following HopeTwitter was cleaned for pre-training Danish language
+[HOPE project](https://hope-project.dk/#/), examining societal behaviour during the
+COVID-19 pandemic. Next, HopeTwitter was cleaned in preparation for pre-training Danish language
 models by a team of researchers at Center for Humanities Computing Aarhus 
-([CHCAA](https://chcaa.io/#/)) using
+([CHCAA](https://chcaa.io/#/)), using
 a codebase jointly developed with partners from academia and industry, including KMD,
 Ekstra Bladet, Bristol University and Deepdivr. For more on collaborators on this
 project see the
@@ -53,20 +53,20 @@ No.
 **What do the instances that comprise the dataset represent (e.g., documents, photos,
 people, countries)?**
 
-HopeTwitter consist of tweets containing at least one of series of stopwords
+HopeTwitter consists of tweets containing at least one of a series of stopwords,
 collected through the Twitter API. See "If the dataset is a sample from a larger set,
 what was the sampling strategy?" for the stopword list.
 
 **How many instances are there in total (of each type, if appropriate)?**
 
-The dataset consist of 32,499,019 documents where 14,399,284 (0.44%) were considered
+The dataset consist of 32,499,019 documents where 14,399,284 (44%) were considered
 duplicates. 
 
 **Does the dataset contain all possible instances or is it a sample (not necessarily
 random) of instances from a larger set?**
 
-No. It does not contain all instances of Danish Twitter as there is likely some "Danish"
-tweets such as exclamations and links which does not include a stopword.
+No. It does not contain all instances of Danish Twitter as there are likely some Danish
+tweets which does not include a stopword.
 
 **Is there a label or target associated with each instance? If so, please provide a
 description.**
@@ -77,14 +77,14 @@ No.
 If so, please provide a description of these splits, explaining the rationale behind
 them.**
 
-There is not splits performed on this dataset.
+No splits are performed on this dataset.
 
 
 **If the dataset is a sample from a larger set, what was the sampling strategy?**
 
 Tweets are streamed continuously using queried a set of the highest 
-frequency scandinavian-specific words from Danish, Norwegian (Bokmål) and Swedish. 
-Resulting the following list:
+frequency Scandinavian-specific keywords from Danish, Norwegian (Bokmål) and Swedish,
+resulting in the following list:
 ```
 aften, aldrig, alltid, altid, andet, arbejde, bedste, behöver, behøver, beklager,
 berätta, betyr, blev, blevet, blir, blitt, blive, bliver, bruge, burde, bättre, båe
@@ -111,15 +111,15 @@ være, været, älskar, åh, år, åt, över
 
 **Who was involved in the data collection process?**
 
-A team of researchers at Center for Humanities
-Computing Aarhus (CHCAA), including Kristoffer Nielbo, and Peter Bjerregaard Vahlstrup in collaboration with Rebekah Baglini, at school of communcation and culture at Aarhus university.
+A team of researchers at the Center for Humanities
+Computing Aarhus (CHCAA), including Kristoffer Nielbo and Peter Bjerregaard Vahlstrup, in collaboration with Rebekah Baglini, at the School of Communcation and Culture at Aarhus university.
 
 ###### NOTE: take from version on ucloud
 
 
 **Over what timeframe was the data collected?**
 
-The dataset include tweets from the period 2019-01-01 to 2021-04-30.
+The dataset includes tweets from the period 2019-01-01 to 2021-04-30.
 
 **Were any ethical review processes conducted?**
 
@@ -132,12 +132,12 @@ No
 SIFT feature extraction, removal of instances, processing of missing values)?**
 
 
-HopeTwitter have first had Danish tweets removed before being filtered using a series of
-heuristic filters as well as removing repetitious texts. Following the filtering,
-HopeTwitter is deduplicated to remove exact and near-duplicates.
+Firstly, HopeTwitter had non-Danish tweets removed, after which a series of
+heuristic filters were applied, including the removal of repetitious texts. Following the filtering,
+HopeTwitter was deduplicated, removing both exact duplicates and near-duplicates.
 
-Of all documents, 3,023,427 (0.09%) were filtered based due to low-quality and
-14,399,284 (0.33%) because they were near-duplicates.
+Of all documents, 3,023,427 (9%) were filtered due to low-quality and
+14,399,284 (33%) because they were near-duplicates.
 
 For the quality filtering, HopeTwitter applies a filter akin to [2] which contains text
 that:
@@ -156,18 +156,16 @@ SpaCy v.3.1.4.
   - Where the duplicate 5-10 grams constitute less than 25%, 24%, 23%, 22%, 21%, 20%
 of the text, respectively.
 
-
 The deduplication removed all documents with a 10-gram Jaccard similarity higher than 80%
 following the MinHash algorithm [1] using 128 permutations. The MinHash algorithm is a
 probabilistic data structure for approximating the Jaccard similarity between two sets.
 
 
-
 **Is the software used to preprocess/clean/label the instances available?**
 
 Yes, the scripts are available
-[here](https://github.com/centre-for-humanities-computing/danish-foundation-models/tree/main/src/application/danews). 
-the scripts use version 0.0.2 of the
+[here](https://github.com/centre-for-humanities-computing/danish-foundation-models/tree/main/src/application/danews).
+The scripts use version 0.0.2 of the
 [dfm package](https://github.com/centre-for-humanities-computing/danish-foundation-models). 
 
 
@@ -182,9 +180,7 @@ and in [4].
 
 **Is there a repository that links to any or all papers or systems that use the dataset?**
 
-There is a website for the HOPE project for which the dataset was initially collected; 
-https://hope-project.au.dk. This website contains report and articles regarding the
-dataset.
+There is [a website](https://hope-project.au.dk) for the HOPE project for which the dataset was initially collected. This website contains report and articles regarding the dataset.
 
 **What (other) tasks could the dataset be used for?**
 
@@ -201,10 +197,10 @@ it possible to extend the dataset by a continual collection of tweets.
 
 **Are there tasks for which the dataset should not be used?**
 
-HopeTwitter Danish tweet and thus should not be used for non-Danish language task.
+HopeTwitter contains Danish tweets and thus should not be used for non-Danish language tasks.
 
 As the writers of the content is predominantly journalists, politicians, influencers,
-and academics it reflect a certain social group which is unlikely to reflect Danish
+and academics, it reflects a certain social group which is unlikely to reflect Danish
 population as a whole.
 
 ## Distribution
