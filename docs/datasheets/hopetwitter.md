@@ -164,8 +164,8 @@ probabilistic data structure for approximating the Jaccard similarity between tw
 **Is the software used to preprocess/clean/label the instances available?**
 
 Yes, the scripts are available
-[here](https://github.com/centre-for-humanities-computing/danish-foundation-models/tree/main/src/application/danews). 
-the scripts use version 0.0.2 of the
+[here](https://github.com/centre-for-humanities-computing/danish-foundation-models/tree/main/src/application/danews).
+The scripts use version 0.0.2 of the
 [dfm package](https://github.com/centre-for-humanities-computing/danish-foundation-models). 
 
 
