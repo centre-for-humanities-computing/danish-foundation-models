@@ -200,6 +200,14 @@ train samples roughly corresponds to docs in hour case, so:
 22333000
 
 Logs:
+
+- may 26: After noble-dew-60 stops training Dan ran a subset of scandeval obtaining the scores;
+```
+dfm-bert:
+    dane: 60.87 ± 2.08
+    angry-tweets: 42.16 ± 1.65
+    scala-da: 16.27 ± 5.49
+```
 - 29 may: starting conducting logs.
 - 29 may: After having restarted it after faithful out experience that the process hangs, we switched to version 0.3.12 of JAX and reran the scripts. This reason for this switch is that previously GPUs ran without issues for multiple days.
     - Seems like the issue is caused by UCloud putting an app to sleep, sometimes reopening it starts the script again. I (KCE) have sent a ticket to UCloud. 
@@ -230,7 +238,101 @@ python3 /work/danish-foundation-models/src/applications/train/run_mlm_flax_strea
     --seed=6
 ```
 
+- 31 may; ran a subset of scandeval obtained score:
+```
+Dane: 
+↳ Micro-average F1-score:
+  - Test: 67.15 ± 2.36
+↳ Micro-average F1-score without MISC tags:
+  - Test: 71.92 ± 2.80
 
+tweet:
+↳ Matthew's correlation coefficient:
+  - Test: 44.38 ± 1.99
+
+scala: 
+↳ Matthew's correlation coefficient:
+  - Test: 48.55 ± 10.20
+```
+
+
+- 31 may: Run polar-terrain crashed again, restarted using:
+
+```bash
+python3 /work/danish-foundation-models/src/applications/train/run_mlm_flax_stream.py \
+    --output_dir=/work/models/transformers/dfm-bert-base \
+    --model_name_or_path=/work/models/transformers/dfm-bert-base \
+    --config_name=/work/models/transformers/dfm-bert-base \
+    --tokenizer_name=/work/models/transformers/dfm-bert-base \
+    --dataset_name=dcc-v1 \
+    --max_seq_length=512 \
+    --per_device_train_batch_size=46 \
+    --per_device_eval_batch_size=46 \
+    --learning_rate=0.00001565 \
+    --warmup_steps=1 \
+    --overwrite_output_dir \
+    --adam_beta1=0.9 \
+    --adam_beta2=0.999 \
+    --num_train_steps=1240000 \
+    --num_eval_samples=5000 \
+    --logging_steps=500 \
+    --eval_steps=10000 \
+    --push_to_hub \
+    --weight_decay=0.01 \
+    --skip_n_training_docs=51111000 \
+    --seed=6
+```
+- 31 may: Run honest lake timed outz again, restarted using:
+```bash
+python3 /work/danish-foundation-models/src/applications/train/run_mlm_flax_stream.py \
+    --output_dir=/work/models/transformers/dfm-bert-base \
+    --model_name_or_path=/work/models/transformers/dfm-bert-base \
+    --config_name=/work/models/transformers/dfm-bert-base \
+    --tokenizer_name=/work/models/transformers/dfm-bert-base \
+    --dataset_name=dcc-v1 \
+    --max_seq_length=512 \
+    --per_device_train_batch_size=46 \
+    --per_device_eval_batch_size=46 \
+    --learning_rate=0.00001542 \
+    --warmup_steps=1 \
+    --overwrite_output_dir \
+    --adam_beta1=0.9 \
+    --adam_beta2=0.999 \
+    --num_train_steps=1240000 \
+    --num_eval_samples=5000 \
+    --logging_steps=500 \
+    --eval_steps=10000 \
+    --push_to_hub \
+    --weight_decay=0.01 \
+    --skip_n_training_docs=52459000 \
+    --seed=6
+```
+
+- 1 jun: Run skilled waterfall timed out again (this is not working), restarted using 4 V100 and a lower batch size
+```bash
+python3 /work/danish-foundation-models/src/applications/train/run_mlm_flax_stream.py \
+    --output_dir=/work/models/transformers/dfm-bert-base \
+    --model_name_or_path=/work/models/transformers/dfm-bert-base \
+    --config_name=/work/models/transformers/dfm-bert-base \
+    --tokenizer_name=/work/models/transformers/dfm-bert-base \
+    --dataset_name=dcc-v1 \
+    --max_seq_length=512 \
+    --per_device_train_batch_size=32 \
+    --per_device_eval_batch_size=32 \
+    --learning_rate=0.00001530 \
+    --warmup_steps=1 \
+    --overwrite_output_dir \
+    --adam_beta1=0.9 \
+    --adam_beta2=0.999 \
+    --num_train_steps=1240000 \
+    --num_eval_samples=5000 \
+    --logging_steps=500 \
+    --eval_steps=10000 \
+    --push_to_hub \
+    --weight_decay=0.01 \
+    --skip_n_training_docs=54083000 \
+    --seed=6
+```
 
 # Wish to contribute
 DFM is considered a collaborate project for training and improving Danish Language models. If you wish to contribute don't hesitate to reach out using the discussion section or directly to the authors.
