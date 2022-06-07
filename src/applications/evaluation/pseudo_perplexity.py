@@ -18,8 +18,12 @@ import numpy as np
 from dfm.data.load_datasets import load_danews, load_dagw_dfm, load_hopetwitter
 import torch
 def ppl(
-    text: str, model: AutoModelForMaskedLM, tokenizer: AutoTokenizer, batch_size=64,
+    text: str, model: AutoModelForMaskedLM, tokenizer: AutoTokenizer, batch_size=64, subsamples = 0.10, seed = 123,
 ) -> Dict[str, float]:
+    """
+    uses a seed for the subsample, so will produce the same subsample for different models. The subsample is also always
+    performed in numpy and then converted to the model format to keep it consistent across models.
+    """
     inputs = tokenizer(text, return_tensors="np", truncation=True, max_length=512)
     special_tokens = set(tokenizer.all_special_ids)
     special_tokens = np.isin(inputs["input_ids"][0], tokenizer.all_special_ids)
@@ -38,6 +42,24 @@ def ppl(
     batch = batch[:,contains_mask]
     attention_mask = attention_mask[:,contains_mask]
 
+    np.random.seed(seed)
+    if subsamples:
+        # construct random mask of subsamples % Trues
+        n_subsamples = int(batch.shape[1]*subsamples)
+        if n_subsamples < 2:
+            n_subsamples = 2
+        mask = np.zeros(batch.shape[1])
+        mask[:n_subsamples] = 1
+        np.random.shuffle(mask)
+        mask = mask== 1
+        # downsample using mask
+        batch = batch[:, mask]
+        attention_mask = attention_mask[:, mask]
+        
+    gold_token = inputs["input_ids"][0][non_special_tokens]
+    if subsamples:
+        gold_token = gold_token[mask]
+
     # recreate input as a masked batch
     inputs_ = {
         "input_ids": batch,
@@ -45,7 +67,7 @@ def ppl(
     }
 
     ppl = 0
-    n_samples = inputs_["input_ids"].shape[0]
+    n_samples = inputs_["input_ids"].shape[1]
     for i in range(0, n_samples, batch_size):
         batch_input = {
             "input_ids": inputs_["input_ids"][:, i:i+batch_size],
@@ -65,7 +87,6 @@ def ppl(
             token_logits = token_logits.cpu().detach().numpy()
 
         # extract logit of gold token
-        gold_token = inputs["input_ids"][0][non_special_tokens]
         mask_token_index = np.argwhere(batch_input["input_ids"] == tokenizer.mask_token_id)
         mask_token_logits = token_logits[mask_token_index[:, 0], mask_token_index[:, 1], :]
         gold_token_logits = mask_token_logits[np.arange(mask_token_logits.shape[0]), gold_token[i:i+batch_size]]
@@ -87,8 +108,8 @@ def pppl(
     return np.exp(-np.sum(ppl_values) / np.sum(token_lengths))
 
 mdls = [
-#    "KennethEnevoldsen/dfm-bert-base",  # 1.4349901347773766
-    "vesteinn/ScandiBERT",  # 1.0686843661248284
+    #"vesteinn/ScandiBERT",
+    "KennethEnevoldsen/dfm-bert-base",
 ]
 
 datasets = {}
@@ -99,10 +120,16 @@ for sample in iter(dagw):
     datasets[sample["source"]].append(sample["text"])
     
 danews = load_danews()["test"]
-datasets["danews"] = [t["text"] for t in danews]
+datasets["DaNews"] = [t["text"] for t in danews]
 hopetwitter = load_hopetwitter()["test"]
-datasets["hopetwitter"] = [t["text"] for t in hopetwitter]
+datasets["HopeTwitter"] = [t["text"] for t in hopetwitter]
 
+datasets["Legal"] = datasets.pop("retsinformationdk") +  datasets.pop("skat")
+datasets["Spontaneous Speech"] = datasets.pop("opensub") 
+datasets["Books"] = datasets.pop("wikibooks") +  datasets.pop("wikisource") + datasets.pop("adl") 
+datasets["Wikipedia"] = datasets.pop("wiki")
+datasets["Reddit"] = datasets.pop("reddit-da")
+datasets["Bornholmsk"] = datasets.pop("botxt")
 
 
 for mdl in mdls:
@@ -115,5 +142,6 @@ for mdl in mdls:
 
     print(f"Model:{mdl}")
     for name, texts in datasets.items():
+        print(f"\t{name}, ", end="")
         pppl_ = pppl(texts, model, tokenizer)
-        print(f"\t{name}, {pppl_}")
+        print(f"{pppl_}")
