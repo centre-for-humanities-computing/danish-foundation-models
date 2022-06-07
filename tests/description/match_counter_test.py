@@ -16,7 +16,10 @@ class TestMatchCounter:
 
     @pytest.fixture(scope="class")
     def regex_patterns(self):
-        return [{"soldat": [{"LOWER": {"REGEX": "soldat.+"}}]}]
+        return [
+            {"soldat": [{"LOWER": {"REGEX": "soldat.+"}}]},
+            {"tokens": [{"LOWER": {"REGEX": ".+"}}]},
+        ]
 
     @pytest.fixture(scope="class")
     def term_pattern_list(self):
@@ -51,7 +54,14 @@ class TestMatchCounter:
             pattern_container_list=regex_patterns
         )
 
-        assert len(matcher_objects) == 1
+        assert len(matcher_objects) == 2
+
+    def test_token_counts(self, regex_patterns, nlp):
+        mc = MatchCounter(match_patterns=regex_patterns, nlp=nlp)
+
+        texts = ["Været på Altevatnet kl. "]
+
+        assert mc.count(texts)["tokens"] == [4]
 
     def test_get_counts_from_each_doc(self, texts, mc_basic):
         """
