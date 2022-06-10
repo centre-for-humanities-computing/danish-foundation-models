@@ -149,4 +149,5 @@ models/*
 # R lang.
 .Rproj.user
 *.Rproj
+.Rhistory
 
