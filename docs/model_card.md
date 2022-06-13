@@ -40,7 +40,7 @@ Future iterations of this model should include a validation of biases pertaining
 
 *Performance Metrics*:
 
-Our model is evaluate on the following performance metrics:
+Our model is evaluated on the following performance metrics:
 
 - Pseudo perplexity, following [4], across 8 distinctly different domains including Danish dialects, books, legal, social media (Reddit, Twitter), spontaneous speech, news and wikipedia.
 - The Danish subsection of Scandeval [5].
