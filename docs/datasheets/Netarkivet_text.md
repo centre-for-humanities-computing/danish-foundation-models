@@ -10,14 +10,14 @@
 ---
 
 Netarkivet Text (NAT) consist of a subsection of [Netarkivet](https://www.kb.dk/find-materiale/samlinger/netarkivet) and 
-contains XXX sites across XXX domains. Netarkivet include
-sites from the period XX/XX/2006 to  XX/XX/2016.
+contains 2,332 million sites across 1.6 million domains. 
+Netarkivet include sites from the period 2006 to 2016.
 
 NAT have been filters out quality using a series of heuristic filters and removing repitious texts. 
 Following the filtering NAT is deduplicated to remove exact and near-duplicates. For more on data cleaning
 see post processing.
 
-NAT includes a total of XXX tokens of which XXX (XXX%) are left after filtering.
+The sites which passed the quality filter were deduplicated pr. year consist of 865 billion tokens of which 134 (0.16%) billion were left after filtering and deduplication.
 
 ## Datasheet
 
@@ -28,7 +28,7 @@ Following the recommendation and framework of [3] we add the following datasheet
 **For what purpose was the dataset created? Who created the dataset? Who funded the creation of the dataset?**
 
 Netarkivet is created following the Danish [archival law](https://www.retsinformation.dk/eli/lta/2004/1439).
-From which a text only corpus was derived with the purpose of XXX. This is the
+From which a text only corpus was derived for research purposes, see [4,5]. This is the
 subsection from which this dataset is derived.
 
 This subsection have then been filtered with the intention of training Danish language
@@ -49,6 +49,7 @@ No.
 
 Instances of the dataset are a Danish domain site including metadata such as;
 
+```
 |     | Column      | Dtype  |
 | --- | ----------- | ------ |
 | 0   | harvest_id  | int32  |
@@ -60,11 +61,13 @@ Instances of the dataset are a Danish domain site including metadata such as;
 | 6   | timestamp   | object |
 | 7   | uri         | object |
 | 9   | domain_key  | object |
-
+```
 
 **How many instances are there in total (of each type, if appropriate)?**
 
-The dataset consist of XXX documents where XXX (XXX%) are left after filtering. 
+NAT contains a total of 2332 million sites distributed over 1,6 million domains.  
+1,370 million of these sites are Danish, with the largest secondary language being English
+with 718 million sites.
 
 **Does the dataset contain all possible instances or is it a sample (not necessarily random) of instances from a larger set?**
 
@@ -72,21 +75,28 @@ These domains is an instane from a larger set of domains from Netarkivet, which 
 
 **If the dataset is a sample from a larger set, what was the sampling strategy?**
 
-The Netarkivet is described as being scrabed in the following ways:
+The Netarkivet is being scrabed using;
 
 - Cross-sectional collection of all Danish websites up to four times a year.
 - Selective collection if the following domains: Alle Danish newsmedia (with a frequency
 ranging from 12 times a day to weekly), political parties, organisations and union,
 legal bodies such as ministeries og agencies, selected social media profiles, YouTube videos. 
 - Event collections of two-three event yearly (e.g. elections and the corona pandemic)
-- Special webscraped (for instance in collaboration with researchers)
+- Special webscrapes (for instance in collaboration with researchers)
+
+A selective subset of Netarkivet is then extracted pr. year from 2006 to 2016 such that 
+it contain no duplicate sites. Apache Tika (v. 1.15) is then used to extract the text from the sites.
+During extract all HTML markup is removed, along with javascript and CSS code. 
+The content of textual HTML elements, such as ´<P>´ and ´<H1>´ are concatenated into one piece of text.
 
 **Who was involved in the data collection process?**
-The Royal Danish Library collects Netarkivet and helped with the construction of the
-subset along with XXX.
+
+The Royal Danish Library collects Netarkivet and along with Brügger et al. [4,5]
+helped with the construction of the Netarkivet text.
 
 **Over what timeframe was the data collected?**
-The dataset include articles from the period XX/XX/2006 to  XX/XX/2016.
+
+The dataset include articles from the period 2006 to 2016.
 
 **Were any ethical review processes conducted?**
 
@@ -106,10 +116,8 @@ NAT has been filtered using a series of heuristic filters as well as removing
 repetitious texts. Following the filtering, the corpus is deduplicated to remove exact and
 near-duplicates.
 
-Of all documents, XXX (XXX%) were filtered based due to low-quality and XXX
-(XXX%) because they were near-duplicates.
 
-For the quality filtering, DaNews applies a filter akin to [2] which contains text
+For the quality filtering, NAT applies a filter akin to [2] which contains text
 that:
 
 - Contain at least 2 Danish stopwords. For the stopword list we use the one used in
@@ -136,7 +144,7 @@ probabilistic data structure for approximating the Jaccard similarity between tw
 **Is the software used to preprocess/clean/label the instances available?**
 
 Yes, the scripts are available
-[here](https://github.com/centre-for-humanities-computing/danish-foundation-models/tree/main/src/application/danews). 
+[here](https://github.com/centre-for-humanities-computing/danish-foundation-models/tree/main/src/application/nat). 
 the scripts use version 0.0.2 of the
 [dfm package](https://github.com/centre-for-humanities-computing/danish-foundation-models). 
 
@@ -145,9 +153,8 @@ the scripts use version 0.0.2 of the
 **Has the dataset been used for any tasks already?**
 
 Yes, the dataset has been used to pre-train Danish language models.
-The dataset of the dataset have also been used in;
-XXX
-XXX
+Furthermore, the unfiltered dataset have also been used in [4] and [5], for examining
+of the development on the Danish Web.
 
 **Is there a repository that links to any or all papers or systems that use the dataset?**
 
@@ -186,7 +193,6 @@ If you wish to cite this work please see our GitHub page for an up to date citat
 
 
 ### References:
-
 - [1] Broder, Andrei Z. "On the resemblance and containment of documents."
         Proceedings. Compression and Complexity of SEQUENCES 1997
         (Cat. No. 97TB100171). IEEE, 1997.
@@ -198,3 +204,10 @@ If you wish to cite this work please see our GitHub page for an up to date citat
         https://arxiv.org/abs/2112.11446v2
 - [3] T. Gebru, J. Morgenstern, B. Vecchione, J. W. Vaughan, H. Wallach, H. Daumé III,
         and K. Crawford. Datasheets for datasets. arXiv preprint arXiv:1803.09010, 2018.
+- [4] Brügger, N., Nielsen, J., & Laursen, D. (2020). Big data experiments with the 
+        archived Web: Methodological reflections on studying the development of a
+        nation’s Web. First Monday. https://doi.org/10.5210/fm.v25i3.10384
+- [5] Brügger, N. (2021). Digital humanities and web archives: Possible new paths for 
+        combining datasets. International Journal of Digital Humanities, 2(1), 145–168.
+        https://doi.org/10.1007/s42803-021-00038-z
+
