@@ -100,9 +100,3 @@ For our training data we sample from HopeTwitter, Danews, DAGW$_{DFM}$ and Netar
 - [11] Sigurbergsson, G. I., & Derczynski, L. (2020). Offensive Language and Hate Speech Detection for Danish. Proceedings of the 12th Language Resources and Evaluation Conference, 3498–3508. https://aclanthology.org/2020.lrec-1.430
 - [12] Møllerhøj, J. D. (2019, December 5). Danish BERT model: BotXO has trained the most advanced BERT model. BotXO. https://www.botxo.ai/blog/danish-bert-model/
 
-
-
-
-
-
-
