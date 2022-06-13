@@ -42,7 +42,7 @@ Future iterations of this model should include a validation of biases pertaining
 
 Our model is evaluated on the following performance metrics:
 
-- Pseudo perplexity, following [4], across 8 distinctly different domains including Danish dialects, books, legal, social media (Reddit, Twitter), spontaneous speech, news and wikipedia.
+- Pseudo perplexity, following [4], across 8 distinctly different domains including Danish dialects, books, legal, social media (Reddit, Twitter), spontaneous speech, news and Wikipedia.
 - The Danish subsection of Scandeval [5].
 
 *Decision Threshold*: 
