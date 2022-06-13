@@ -1,6 +1,6 @@
 import pytest
-from dfm.description import MatchCounter
 import spacy
+from dfm.description import MatchCounter
 
 
 class TestMatchCounter:
@@ -16,7 +16,10 @@ class TestMatchCounter:
 
     @pytest.fixture(scope="class")
     def regex_patterns(self):
-        return [{"soldat": [{"LOWER": {"REGEX": "soldat.+"}}]}]
+        return [
+            {"soldat": [{"LOWER": {"REGEX": "soldat.+"}}]},
+            {"tokens": [{"LOWER": {"REGEX": ".+"}}]},
+        ]
 
     @pytest.fixture(scope="class")
     def term_pattern_list(self):
@@ -51,7 +54,14 @@ class TestMatchCounter:
             pattern_container_list=regex_patterns
         )
 
-        assert len(matcher_objects) == 1
+        assert len(matcher_objects) == 2
+
+    def test_token_counts(self, regex_patterns, nlp):
+        mc = MatchCounter(match_patterns=regex_patterns, nlp=nlp)
+
+        texts = ["Været på Altevatnet kl. "]
+
+        assert mc.count(texts)["tokens"] == [4]
 
     def test_get_counts_from_each_doc(self, texts, mc_basic):
         """
@@ -66,15 +76,25 @@ class TestMatchCounter:
         assert counts == {"heks": [0, 1, 0], "soldat": [1, 0, 2]}
 
     def test_multiple_matches_under_same_label(self, nlp):
-        from dfm.description.description_patterns import (
-            get_religion_patterns,
-        )
+        from dfm.description.description_patterns import get_religion_patterns
 
         mc = MatchCounter(match_patterns=get_religion_patterns(), nlp=nlp)
 
         texts = ["En kristen er en del af de kristne, og kristne tror på kristendommen"]
 
         assert mc.count(texts)["rel_christian"] == [4]
+
+    def test_genders_not_matching_on_prefix(self, nlp):
+        gender_pronoun_patterns = [
+            {"male_pronoun": [{"LOWER": "han"}]},
+            {"female_pronoun": [{"LOWER": "hun"}]},
+        ]
+
+        mc = MatchCounter(match_patterns=gender_pronoun_patterns, nlp=nlp)
+
+        texts = ["Handlekraftig, handlekraft, handlekraften"]
+
+        assert mc.count(texts)["male_pronoun"] == [0]
 
     def test_labelled_term_list_generation(self):
         labelled_term_list = [{"christian": ["christian", "christianity"]}]

@@ -1,5 +1,4 @@
 import os
-import sys
 import time
 from typing import List
 
@@ -28,8 +27,8 @@ def create_patterns() -> List:
     any_token_pattern = [{"tokens": [{"TEXT": {"REGEX": ".+"}}]}]
 
     gender_pronoun_patterns = [
-        {"male_pronoun": [{"LOWER": "han"}]},
-        {"female_pronoun": [{"LOWER": "hun"}]},
+        {"gender_male_pronoun": [{"LOWER": "han"}]},
+        {"gender_female_pronoun": [{"LOWER": "hun"}]},
     ]
 
     # Adult words
