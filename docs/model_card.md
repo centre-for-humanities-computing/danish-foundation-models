@@ -70,7 +70,7 @@ The Scandeval benchmark is the most comprehensive benchmark for Danish. Pseudo p
 
 *Pre-processing*:
 
-Input documents is tokenized using the tokenizer of the Danish BERT by BotXO [12], which use a BPE with a vocabulary size of ~30.000 and NFKC normalization. 
+Input documents is tokenized using the tokenizer of the Danish BERT by BotXO [12], which use a BPE with a vocabulary size of ~30,000 and NFKC normalization. 
 
 ## Training Data
 
