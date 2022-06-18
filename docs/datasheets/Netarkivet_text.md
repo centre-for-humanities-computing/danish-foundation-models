@@ -17,24 +17,24 @@ NAT has been filtered using a series of heuristic filters and removing repetitio
 Following the filtering, NAT is further deduplicated to remove exact and near-duplicates. For more on data cleaning,
 see the post processing section below.
 
-The sites which passed the quality filter were deduplicated pr. year consist of 865 billion tokens of which 134 (0.16%) billion were left after filtering and deduplication.
+The sites which passed the quality filter were deduplicated pr. year. NAT consist of 865 billion tokens of which 134 (0.16%) billion were left after filtering and deduplication.
 
 ## Datasheet
 
-Following the recommendation and framework of [3] we add the following datasheet. 
+Following the recommendation and framework of [3], we add the following datasheet. 
 
 ### Motivation:
 
 **For what purpose was the dataset created? Who created the dataset? Who funded the creation of the dataset?**
 
-Netarkivet is created following the Danish [archival law](https://www.retsinformation.dk/eli/lta/2004/1439).
-From which a text only corpus was derived for research purposes, see [4,5]. This is the
-subsection from which this dataset is derived.
-
+Netarkivet is created following the Danish [archival law](https://www.retsinformation.dk/eli/lta/2004/1439),
+from which a text-only corpus was derived for research purposes, see [4,5]. This is the
+part from which this dataset is derived.
 This subsection have then been filtered with the intention of training Danish language
+This part has then been filtered with the intention of training Danish language
 models by a team of researchers at Center for Humanities Computing Aarhus (CHCAA) using
 a codebase jointly developed with partners from industry (e.g. KMD, Ekstra Bladet) and
-other research institutions (e.g. Briston University, Alexandra Institute).
+other research institutions (e.g. Bristol University, Alexandra Institute).
 For more on collaborators on this project see the [GitHub repository](https://github.com/centre-for-humanities-computing/danish-foundation-models
 ).
 
@@ -47,7 +47,7 @@ No.
 
 **What do the instances that comprise the dataset represent (e.g., documents, photos, people, countries)?**
 
-Instances of the dataset are a Danish domain site including metadata such as;
+Instances of the dataset are Danish domain sites, which further include metadata such as:
 
 
 |     | Column      | Dtype  |
@@ -62,27 +62,37 @@ Instances of the dataset are a Danish domain site including metadata such as;
 | 7   | uri         | object |
 | 9   | domain_key  | object |
 
+Where `harvest_id` is the id of the associated Netarkivet web harvest. Each web harvest
+consist of jobs each with their associated `job-id`. 
+
+Language is the language classified using a the following language detection [library](https://github.com/optimaize/language-detector). `uri` is the URI of the site e.g. `"http://www.apple.com/podcasting"`. 
+`timestamp` is the date given on the format `"20060612105533"`, indicating year, month, date, time.
+The `sha1` is the website hash.
+`mime_*` indicated The [mime/media type](https://en.wikipedia.org/wiki/Media_type).
+`mime_served` could e.g. be `"text/html; charset=iso-8859-1"` and `mime_droid` could e.g. be `"text/html; version=2.0"` and is the mime type identified by the server and by [DROID](https://github.com/digital-preservation/droid) respectively.
+
+
+
 
 **How many instances are there in total (of each type, if appropriate)?**
 
-NAT contains a total of 2332 million sites distributed over 1,6 million domains.  
+NAT contains a total of 2,332 million sites distributed over 1.6 million domains.  
 1,370 million of these sites are Danish, with the largest secondary language being English
 with 718 million sites.
 
 **Does the dataset contain all possible instances or is it a sample (not necessarily random) of instances from a larger set?**
 
-These domains is an instane from a larger set of domains from Netarkivet, which is a samples subset of the Danish internet.
-
+These domains are a subset of Netarkivet, which again is a sample of all the Danish content on the internet.
 **If the dataset is a sample from a larger set, what was the sampling strategy?**
 
-The Netarkivet is being scrabed using;
+Netarkivet has being scraped from the internet using the following procedures:
 
 - Cross-sectional collection of all Danish websites up to four times a year.
-- Selective collection if the following domains: Alle Danish newsmedia (with a frequency
-ranging from 12 times a day to weekly), political parties, organisations and union,
+- Selective collection of the following domains: All Danish newsmedia (with a frequency
+ranging from 12 times a day to weekly), political parties, organisations and unions,
 legal bodies such as ministeries og agencies, selected social media profiles, YouTube videos. 
-- Event collections of two-three event yearly (e.g. elections and the corona pandemic)
-- Special webscrapes (for instance in collaboration with researchers)
+- Event collections of 2-3 events yearly (e.g. elections and the corona pandemic)
+- Miscellaneous/on-demand webscrapes (for instance in collaboration with researchers)
 
 A selective subset of Netarkivet is then extracted pr. year from 2006 to 2016 such that 
 it contain no duplicate sites. Apache Tika (v. 1.15) is then used to extract the text from the sites.
