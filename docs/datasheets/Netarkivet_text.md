@@ -163,7 +163,7 @@ No.
 **What (other) tasks could the dataset be used for?**
 
 The scale of the dataset makes it suitable for NLP tasks such as language modelling.
-It is likely possible to extract reviews, social media post and similar semi-labelled
+It is likely possible to extract reviews, social media posts and similar semi-labelled
 datasets from the dataset which can be used for NLP task such as sentiment analysis or
 hate-speech detection.
 
