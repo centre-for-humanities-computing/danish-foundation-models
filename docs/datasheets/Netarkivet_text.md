@@ -176,8 +176,8 @@ emerging conspiracy theories, and online information dynamics.
 preprocessed/cleaned/labeled that might impact future uses?**
 
 This dataset is static and thus does not evolve over time with the language, thus will
-become increasingly outdated over time. The Netarkivet of which it is derived is however
-not static and is thus likely to develop further, which should allow us to update the 
+become increasingly outdated over time. Netarkivet, from which it is derived, is
+not static however, and is thus likely to further develop, which will allow us to update the 
 dataset going forward.
 
 
