@@ -15,7 +15,7 @@ Netarkivet includes sites from the period 2006 to 2016.
 
 NAT has been filtered using a series of heuristic filters and removing repetitious texts. 
 Following the filtering NAT is deduplicated to remove exact and near-duplicates. For more on data cleaning
-see post processing.
+see the post processing section below.
 
 The sites which passed the quality filter were deduplicated pr. year consist of 865 billion tokens of which 134 (0.16%) billion were left after filtering and deduplication.
 
