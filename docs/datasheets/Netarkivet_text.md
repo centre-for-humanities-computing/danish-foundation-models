@@ -49,7 +49,7 @@ No.
 
 Instances of the dataset are a Danish domain site including metadata such as;
 
-```
+
 |     | Column      | Dtype  |
 | --- | ----------- | ------ |
 | 0   | harvest_id  | int32  |
@@ -61,7 +61,7 @@ Instances of the dataset are a Danish domain site including metadata such as;
 | 6   | timestamp   | object |
 | 7   | uri         | object |
 | 9   | domain_key  | object |
-```
+
 
 **How many instances are there in total (of each type, if appropriate)?**
 
@@ -87,7 +87,7 @@ legal bodies such as ministeries og agencies, selected social media profiles, Yo
 A selective subset of Netarkivet is then extracted pr. year from 2006 to 2016 such that 
 it contain no duplicate sites. Apache Tika (v. 1.15) is then used to extract the text from the sites.
 During extract all HTML markup is removed, along with javascript and CSS code. 
-The content of textual HTML elements, such as ´<P>´ and ´<H1>´ are concatenated into one piece of text.
+The content of textual HTML elements, such as ´\<P\>´ and ´\<H1\>´ are concatenated into one piece of text.
 
 **Who was involved in the data collection process?**
 
