@@ -153,8 +153,8 @@ the scripts use version 0.0.2 of the
 **Has the dataset been used for any tasks already?**
 
 Yes, the dataset has been used to pre-train Danish language models.
-Furthermore, the unfiltered dataset have also been used in [4] and [5], for examining
-of the development on the Danish Web.
+Furthermore, the unfiltered dataset has also been used in [4] and [5], for examining
+of the development on the Danish web.
 
 **Is there a repository that links to any or all papers or systems that use the dataset?**
 
