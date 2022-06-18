@@ -9,7 +9,7 @@
 
 ---
 
-Netarkivet Text (NAT) consist of a subsection of [Netarkivet](https://www.kb.dk/find-materiale/samlinger/netarkivet) and 
+Netarkivet Text (NAT) consists of a subsection of [Netarkivet](https://www.kb.dk/find-materiale/samlinger/netarkivet) and 
 contains 2,332 million sites across 1.6 million domains. 
 Netarkivet include sites from the period 2006 to 2016.
 
