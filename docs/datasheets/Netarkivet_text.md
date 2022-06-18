@@ -169,7 +169,7 @@ hate-speech detection.
 
 The content of dataset makes it useable in a wide range of other applications in media
 studies, social science or humanities, including development of written Danish,
-emergence conspiracy theories, and online information dynamics.
+emerging conspiracy theories, and online information dynamics.
 
 
 **Is there anything about the composition of the dataset or the way it was collected and
