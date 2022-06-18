@@ -11,7 +11,7 @@
 
 Netarkivet Text (NAT) consists of a subsection of [Netarkivet](https://www.kb.dk/find-materiale/samlinger/netarkivet) and 
 contains 2,332 million sites across 1.6 million domains. 
-Netarkivet include sites from the period 2006 to 2016.
+Netarkivet includes sites from the period 2006 to 2016.
 
 NAT have been filters out quality using a series of heuristic filters and removing repitious texts. 
 Following the filtering NAT is deduplicated to remove exact and near-duplicates. For more on data cleaning
