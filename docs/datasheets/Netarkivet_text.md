@@ -9,13 +9,13 @@
 
 ---
 
-Netarkivet Text (NAT) consist of a subsection of [Netarkivet](https://www.kb.dk/find-materiale/samlinger/netarkivet) and 
+Netarkivet Text (NAT) consists of a subsection of [Netarkivet](https://www.kb.dk/find-materiale/samlinger/netarkivet) and 
 contains 2,332 million sites across 1.6 million domains. 
-Netarkivet include sites from the period 2006 to 2016.
+Netarkivet includes sites from the period 2006 to 2016.
 
-NAT have been filters out quality using a series of heuristic filters and removing repitious texts. 
-Following the filtering NAT is deduplicated to remove exact and near-duplicates. For more on data cleaning
-see post processing.
+NAT has been filtered using a series of heuristic filters and removing repetitious texts. 
+Following the filtering, NAT is further deduplicated to remove exact and near-duplicates. For more on data cleaning,
+see the post processing section below.
 
 The sites which passed the quality filter were deduplicated pr. year consist of 865 billion tokens of which 134 (0.16%) billion were left after filtering and deduplication.
 
@@ -153,8 +153,8 @@ the scripts use version 0.0.2 of the
 **Has the dataset been used for any tasks already?**
 
 Yes, the dataset has been used to pre-train Danish language models.
-Furthermore, the unfiltered dataset have also been used in [4] and [5], for examining
-of the development on the Danish Web.
+Furthermore, the unfiltered dataset has also been used in [4] and [5], for examining
+of the development on the Danish web.
 
 **Is there a repository that links to any or all papers or systems that use the dataset?**
 
@@ -163,21 +163,21 @@ No.
 **What (other) tasks could the dataset be used for?**
 
 The scale of the dataset makes it suitable for NLP tasks such as language modelling.
-It is likely possible to extract reviews, social media post and similar semi-labelled
+It is likely possible to extract reviews, social media posts and similar semi-labelled
 datasets from the dataset which can be used for NLP task such as sentiment analysis or
 hate-speech detection.
 
 The content of dataset makes it useable in a wide range of other applications in media
 studies, social science or humanities, including development of written Danish,
-emergence conspiracy theories, and online information dynamics.
+emerging conspiracy theories, and online information dynamics.
 
 
 **Is there anything about the composition of the dataset or the way it was collected and
 preprocessed/cleaned/labeled that might impact future uses?**
 
 This dataset is static and thus does not evolve over time with the language, thus will
-become increasingly outdated over time. The Netarkivet of which it is derived is however
-not static and is thus likely to develop further, which should allow us to update the 
+become increasingly outdated over time. Netarkivet, from which it is derived, is
+not static however, and is thus likely to further develop, which will allow us to update the 
 dataset going forward.
 
 

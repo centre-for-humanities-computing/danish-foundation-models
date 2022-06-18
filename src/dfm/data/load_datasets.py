@@ -212,7 +212,7 @@ def load_nat(
         train_path = path_to_nat / f"{year}_deduplicated_filtered.jsonl"
         dataset_ = load_dataset(
             "json",
-            data_files={"train": [train_path] * n_training_repeats},
+            data_files={"train": [str(train_path)] * n_training_repeats},
             streaming=True,
             split="train",
             **kwargs,

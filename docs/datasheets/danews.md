@@ -26,7 +26,7 @@ Following the recommendation and framework of [5] we add the following datasheet
 creation of the dataset?**
 
 The dataset was created with the purpose of pre-training Danish language models. It was
-created by a team of researchers at the Center for Humanities Computing Aarhus (CHCAA) using
+created by a team of researchers at the Center for Humanities Computing Aarhus ([CHCAA](https://chcaa.io/#/))  using
 a codebase jointly developed with partners from academia and industry, including KMD,
 Ekstra Bladet, Bristol University and Deepdivr. For more on collaborators on this
 project see the
@@ -242,7 +242,7 @@ No.
 If you wish to cite this work please see our GitHub page for an up to date citation:
 https://github.com/centre-for-humanities-computing/danish-foundation-models
 
-### References:
+# References:
 
 - [1] Broder, Andrei Z. "On the resemblance and containment of documents."
         Proceedings. Compression and Complexity of SEQUENCES 1997
