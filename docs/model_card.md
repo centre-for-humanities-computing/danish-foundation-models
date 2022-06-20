@@ -9,6 +9,8 @@ In accordance with [1], we present the `dfm-bert-base` model card.
 
 *Model Type*: Transformer encoder model[2]; BERT [3]
 
+*Model available at*: [chcaa/dfm-bert-base-v1](https://huggingface.co/chcaa/dfm-bert-base-v1)
+
 *Feedback on the Model*: kenneth.enevoldsen@uni.au.dk
 
 ## Indended Uses
