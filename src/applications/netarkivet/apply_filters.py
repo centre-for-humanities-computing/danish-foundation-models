@@ -20,14 +20,14 @@ from wasabi import msg
 
 def shuffle_buffer(x: Iterable, buffer_size: int) -> Iterable:
     """Creates shuffle buffer from iterable.
-    
+
     Args:
         x (Iterable): An iterable you want shuffled
         buffer_size (int): The buffer shuffle
-    
+
     Returns:
         Iterable: An iterable which is shuffled using a shuffle buffer
-    
+
     Example:
         >>> shuffled = shuffle_buffer(x =[1,2, 3, 4, 5], buffer_size=2)
         >>> print(list(shuffled))
