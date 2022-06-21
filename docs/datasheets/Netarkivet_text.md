@@ -94,7 +94,7 @@ legal bodies such as ministeries og agencies, selected social media profiles, Yo
 - Event collections of 2-3 events yearly (e.g. elections and the corona pandemic)
 - Miscellaneous/on-demand webscrapes (for instance in collaboration with researchers)
 
-A selective subset of Netarkivet is then extracted pr. year from 2006 to 2016 such that 
+A selective subset of Netarkivet is then extracted per year from 2006 to 2016 such that 
 it contain no duplicate sites. Apache Tika (v. 1.15) is then used to extract the text from the sites.
 During extract all HTML markup is removed, along with javascript and CSS code. 
 The content of textual HTML elements, such as ´\<P\>´ and ´\<H1\>´ are concatenated into one piece of text.
