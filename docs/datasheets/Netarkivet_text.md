@@ -68,7 +68,7 @@ consists of jobs, each with their associated `job-id`.
 Language is the language classified using the following language detection [library](https://github.com/optimaize/language-detector). `uri` is the URI of the site e.g. `"http://www.apple.com/podcasting"`. 
 `timestamp` is the date given on the format `"20060612105533"`, indicating year, month, date, time.
 The `sha1` is the website hash.
-`mime_*` indicated The [mime/media type](https://en.wikipedia.org/wiki/Media_type).
+`mime_*` indicates the [mime/media type](https://en.wikipedia.org/wiki/Media_type).
 `mime_served` could for instance be `"text/html; charset=iso-8859-1"` and `mime_droid` could be `"text/html; version=2.0"` and is the mime type identified by the server and by [DROID](https://github.com/digital-preservation/droid), respectively.
 
 
