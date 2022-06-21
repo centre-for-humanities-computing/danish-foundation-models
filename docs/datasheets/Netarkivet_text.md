@@ -69,7 +69,7 @@ Language is the language classified using a the following language detection [li
 `timestamp` is the date given on the format `"20060612105533"`, indicating year, month, date, time.
 The `sha1` is the website hash.
 `mime_*` indicated The [mime/media type](https://en.wikipedia.org/wiki/Media_type).
-`mime_served` could e.g. be `"text/html; charset=iso-8859-1"` and `mime_droid` could e.g. be `"text/html; version=2.0"` and is the mime type identified by the server and by [DROID](https://github.com/digital-preservation/droid) respectively.
+`mime_served` could for instance be `"text/html; charset=iso-8859-1"` and `mime_droid` could be `"text/html; version=2.0"` and is the mime type identified by the server and by [DROID](https://github.com/digital-preservation/droid), respectively.
 
 
 
