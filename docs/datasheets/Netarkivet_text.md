@@ -63,7 +63,7 @@ Instances of the dataset are Danish domain sites, which further include metadata
 | 9   | domain_key  | object |
 
 Where `harvest_id` is the id of the associated Netarkivet web harvest. Each web harvest
-consist of jobs each with their associated `job-id`. 
+consists of jobs, each with their associated `job-id`. 
 
 Language is the language classified using the following language detection [library](https://github.com/optimaize/language-detector). `uri` is the URI of the site e.g. `"http://www.apple.com/podcasting"`. 
 `timestamp` is the date given on the format `"20060612105533"`, indicating year, month, date, time.
