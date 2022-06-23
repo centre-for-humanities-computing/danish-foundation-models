@@ -70,10 +70,6 @@ Language is the language classified using the following language detection [libr
 The `sha1` is the website hash.
 `mime_*` indicates the [mime/media type](https://en.wikipedia.org/wiki/Media_type).
 `mime_served` could for instance be `"text/html; charset=iso-8859-1"` and `mime_droid` could be `"text/html; version=2.0"` and is the mime type identified by the server and by [DROID](https://github.com/digital-preservation/droid), respectively.
-
-
-
-
 **How many instances are there in total (of each type, if appropriate)?**
 
 NAT contains a total of 2,332 million sites distributed over 1.6 million domains.  
