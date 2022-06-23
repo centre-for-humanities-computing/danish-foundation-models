@@ -102,7 +102,7 @@ The content of textual HTML elements, such as ´\<P\>´ and ´\<H1\>´ are conca
 **Who was involved in the data collection process?**
 
 The Royal Danish Library collects Netarkivet and along with Brügger et al. [4,5]
-helped with the construction of the Netarkivet text.
+helped with the construction of NAT.
 
 **Over what timeframe was the data collected?**
 
