@@ -10,15 +10,17 @@ A collaborative project for training foundational Danish language model.
 The dataset currently available to the project for training:
 
 
-| Dataset            | Description                                                              | Size in million tokens | Open Source?
+| Dataset            | Description                                                              | Size in million tokens (filtered) | Open Source
 | ------------------ | ------------------------------------------------------------------------ | ---------------------- |--------------
-| :books: DAGW       | Danish Gigaword. A wide coverage dataset of Danish text.                 | ~1 000                 | Yes
-| :bird: HopeTwitter | A dataset of tweets collected as a part of the HOPE project.             |                        | Yes
-| :newspaper: DaNews | A dataset consisting of Danish newspapers                                |                        | No
-| 🗯 Reddit-da        | A Danish subsection of reddit                                            | ~86                   | Yes
-| :link: Netarkivet  | A subsection of the "Danish" internet collected the royal Danish library |                        | No
-| :link: mC4         | A cleaned part of the common crawl                                       |                        | Yes
-| Lex.dk             | A Danish curated wikipedia, written by experts                           | ~26                    | No
+| :books: DAGW       | Danish Gigaword. A wide coverage dataset of Danish text.                 | \~1 000 (\~?)              | ✅
+| :bird: HopeTwitter | A dataset of tweets collected as a part of the HOPE project.             | ~973 (~463)                       | ✅
+| :newspaper: DaNews | A dataset consisting of Danish newspapers                                | ~9 296 (~8 667)                      | 
+| 🗯 Reddit-da        | A Danish subsection of reddit                                            | ~86                   | ✅
+| :link: Netarkivet  | A subsection of the "Danish" internet collected the royal Danish library | ~400 000 (~130 000)                    | 
+| :link: mC4         | A cleaned part of the common crawl                                       |                        | ✅
+| Lex.dk             | A Danish curated wikipedia, written by experts                           | ~26                    | 
+| **Sum**             |                                                                          | ~11 381 (~9 130)                    | 
+
 
 
 ## Models:
