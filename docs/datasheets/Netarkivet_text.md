@@ -83,6 +83,7 @@ with 718 million sites.
 **Does the dataset contain all possible instances or is it a sample (not necessarily random) of instances from a larger set?**
 
 These domains are a subset of Netarkivet, which again is a sample of all the Danish content on the internet.
+
 **If the dataset is a sample from a larger set, what was the sampling strategy?**
 
 Netarkivet has being scraped from the internet using the following procedures:
