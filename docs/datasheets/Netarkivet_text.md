@@ -92,9 +92,9 @@ legal bodies such as ministeries og agencies, selected social media profiles, Yo
 - Miscellaneous/on-demand webscrapes (for instance in collaboration with researchers)
 
 A selective subset of Netarkivet is then extracted per year from 2006 to 2016 such that 
-it contain no duplicate sites. Apache Tika (v. 1.15) is then used to extract the text from the sites.
-During extract all HTML markup is removed, along with javascript and CSS code. 
-The content of textual HTML elements, such as ´\<P\>´ and ´\<H1\>´ are concatenated into one piece of text.
+it contains no duplicate sites. Apache Tika (v. 1.15) is then used to extract the text from the sites.
+During extraction, all HTML markup is removed, along with javascript and CSS code. 
+The content of textual HTML elements, such as ´<P>´ and ´<H1>´ are concatenated into one piece of text.
 
 **Who was involved in the data collection process?**
 
@@ -120,7 +120,7 @@ any ethical approvals.
 SIFT feature extraction, removal of instances, processing of missing values)?**
 
 NAT has been filtered using a series of heuristic filters as well as removing
-repetitious texts. Following the filtering, the corpus is deduplicated to remove exact and
+repetitious texts. Following the filtering, the corpus was deduplicated to remove exact and
 near-duplicates.
 
 
