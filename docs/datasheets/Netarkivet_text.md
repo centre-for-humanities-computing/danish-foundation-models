@@ -181,7 +181,6 @@ The content of dataset makes it useable in a wide range of other applications in
 studies, social science or humanities, including development of written Danish,
 emerging conspiracy theories, and online information dynamics.
 
-
 **Is there anything about the composition of the dataset or the way it was collected and
 preprocessed/cleaned/labeled that might impact future uses?**
 
