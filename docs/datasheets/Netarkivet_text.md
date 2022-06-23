@@ -17,7 +17,7 @@ NAT has been filtered using a series of heuristic filters and removing repetitio
 Following the filtering, NAT is further deduplicated to remove exact and near-duplicates. For more on data cleaning,
 see the post processing section below.
 
-The sites which passed the quality filter were deduplicated pr. year. NAT consist of 865 billion tokens of which 134 (0.16%) billion were left after filtering and deduplication.
+The sites which passed the quality filter were deduplicated per year. NAT consist of 865 billion tokens of which 134 (15%) billion were left after filtering and deduplication.
 
 ## Datasheet
 
