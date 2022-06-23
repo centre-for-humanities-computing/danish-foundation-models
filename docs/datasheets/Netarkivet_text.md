@@ -17,7 +17,7 @@ NAT has been filtered using a series of heuristic filters and removing repetitio
 Following the filtering, NAT is further deduplicated to remove exact and near-duplicates. For more on data cleaning,
 see the post processing section below.
 
-The sites which passed the quality filter were deduplicated pr. year. NAT consist of 865 billion tokens of which 134 (0.16%) billion were left after filtering and deduplication.
+The sites which passed the quality filter were deduplicated per year. NAT consist of 865 billion tokens of which 134 (15%) billion were left after filtering and deduplication.
 
 ## Datasheet
 
@@ -70,10 +70,6 @@ Language is the language classified using the following language detection [libr
 The `sha1` is the website hash.
 `mime_*` indicates the [mime/media type](https://en.wikipedia.org/wiki/Media_type).
 `mime_served` could for instance be `"text/html; charset=iso-8859-1"` and `mime_droid` could be `"text/html; version=2.0"` and is the mime type identified by the server and by [DROID](https://github.com/digital-preservation/droid), respectively.
-
-
-
-
 **How many instances are there in total (of each type, if appropriate)?**
 
 NAT contains a total of 2,332 million sites distributed over 1.6 million domains.  
@@ -83,6 +79,7 @@ with 718 million sites.
 **Does the dataset contain all possible instances or is it a sample (not necessarily random) of instances from a larger set?**
 
 These domains are a subset of Netarkivet, which again is a sample of all the Danish content on the internet.
+
 **If the dataset is a sample from a larger set, what was the sampling strategy?**
 
 Netarkivet has being scraped from the internet using the following procedures:
@@ -180,7 +177,6 @@ hate-speech detection.
 The content of dataset makes it useable in a wide range of other applications in media
 studies, social science or humanities, including development of written Danish,
 emerging conspiracy theories, and online information dynamics.
-
 
 **Is there anything about the composition of the dataset or the way it was collected and
 preprocessed/cleaned/labeled that might impact future uses?**
