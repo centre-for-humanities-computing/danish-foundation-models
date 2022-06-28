@@ -1,6 +1,7 @@
 import curses
 import os
 from functools import partial
+from typing import Iterable
 
 
 def rate_str(str):
@@ -85,10 +86,12 @@ def main_window(win, str_to_rate):
             raise e
 
 
+def rate_examples(examples: Iterable[str]):
+    for example in examples:
+        rate_str(example)
+
+
 if __name__ == "__main__":
     str_iterable = ["I'm a true string!", "Je suis un string", "fidosajfiodsaj"]
 
-    stdscr = curses.initscr()
-
-    for str in str_iterable:
-        rate_str(str)
+    rate_examples(str_iterable)
