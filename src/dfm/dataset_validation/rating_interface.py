@@ -4,6 +4,8 @@ from functools import partial
 from nis import cat
 from typing import Iterable
 
+import pandas as pd
+
 
 class ExampleRater:
     def __init__(self, examples: Iterable, output_path: str):
@@ -152,10 +154,13 @@ class ExampleRater:
                 f.write("category,is_porn,is_offensive,text\n")
 
         with open(self.output_path, "a") as f:
+            example_str_with_quotations_doubled = example_str.replace('"', '""')
+            example_str = f'"{example_str_with_quotations_doubled}"'
+
             row = ""
 
             for var in [category, is_porn, is_offensive, example_str]:
-                row += f"{var},"
+                row += f",{var}"
 
             f.write(f"{row}\n")
 
