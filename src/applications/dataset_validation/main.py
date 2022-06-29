@@ -1,5 +1,3 @@
-from doctest import Example
-
 from dfm.dataset_validation.rating_interface import ExampleRater
 
 
