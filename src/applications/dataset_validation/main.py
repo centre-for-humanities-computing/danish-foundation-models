@@ -1,4 +1,5 @@
 from dfm.dataset_validation.rating_interface import ExampleRater
+from datetime import date
 
 
 def text_generator(seed=2):
@@ -21,11 +22,12 @@ def text_generator(seed=2):
 
 
 if __name__ == "__main__":
+    MY_NAME = "martin"
+    N_TO_RATE = 100
 
-    # gen = text_generator(seed=2)
-    # texts = [next(gen) for i in range(100)]
+    gen = text_generator(seed=2)
+    texts = [next(gen) for i in range(N_TO_RATE)]
 
-    messy_texts = ['I\'m a messy text, " \t \n \n \n ", yes I am!'] * 100
-    rater = ExampleRater(examples=messy_texts, output_path="test.csv")
+    rater = ExampleRater(examples=texts, output_path=f"{MY_NAME}_{date.today()}.csv", resume_from_index=50)
 
     rater.rate_examples()

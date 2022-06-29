@@ -8,8 +8,12 @@ import pandas as pd
 
 
 class ExampleRater:
-    def __init__(self, examples: Iterable, output_path: str):
-        self.examples = examples
+    def __init__(self, examples: Iterable, output_path: str, resume_from_index: Int):
+        if resume_from_index:
+            self.examples = examples[50:]
+        else:
+            self.examples = examples
+
         self.output_path = output_path
 
         self.items_to_process = []
