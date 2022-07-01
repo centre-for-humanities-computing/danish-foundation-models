@@ -4,11 +4,11 @@ import pytest
 from src.dfm.cleaning.sentence_filter import SentenceFilter
 
 
-class TestSentenceFilter:
+class TestEndsWithPunctuationOrEmoji:
 
     @pytest.fixture(scope='class')
     def sentence_filter(self):
-        yield SentenceFilter()
+        yield SentenceFilter(filter_names=["ends_with_punctuation_or_emoji"])
 
     @pytest.fixture(scope='class')
     def sentences(self):
