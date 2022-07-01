@@ -4,7 +4,7 @@ The deduplication is based on the MinHash algorithm [1], which is optimised
 using parallelism and vectorisation.
 
 Author:
-    Dan Saattrup Nielsen (saattrupdan@gmail.com)
+    Dan Saattrup Nielsen (dan.nielsen@alexandra.dk)
     Kenneth Enevoldsen (kennethcenevoldsen@gmail.com)
 
 References:
