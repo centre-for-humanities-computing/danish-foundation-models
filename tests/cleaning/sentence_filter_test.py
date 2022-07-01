@@ -22,7 +22,7 @@ class TestSentenceFilter:
 
     @pytest.fixture(scope='class')
     def document(self, sentences):
-        yield sentences.join("\n")
+        yield "\n".join(sentences)
 
     def test_sentence_ends_with_punctuation_or_emoji(
             self, sentences, sentence_filter
