@@ -21,21 +21,31 @@ class TestSentenceFilter:
         ]
 
     @pytest.fixture(scope='class')
+    def clean_sentence_indices(self):
+        yield [0, 1, 3]
+
+    @pytest.fixture(scope='class')
     def document(self, sentences):
         yield "\n".join(sentences)
 
+    @pytest.fixture(scope='class')
+    def cleaned_document(self, sentences, clean_sentence_indices):
+        yield "\n".join([sentences[i] for i in clean_sentence_indices])
+
     def test_sentence_ends_with_punctuation_or_emoji(
-            self, sentences, sentence_filter
+            self, sentences, sentence_filter, clean_sentence_indices
         ) -> None:
         """Tests that the sentences are correctly filtered by ending character."""
         filter_outputs = [
             sentence_filter._ends_with_punctuation_or_emoji(sentence)
             for sentence in sentences
         ]
-        assert filter_outputs == [True, True, False, True, False]
+        assert filter_outputs == [
+            i in clean_sentence_indices for i in range(len(sentences))
+        ]
 
-    def test_filter_corpus(self, sentence_filter, document, sentences) -> None:
+    def test_filter_corpus(self, sentence_filter, document, cleaned_document) -> None:
         """Tests that the corpus is correctly filtered."""
         filtered_corpus = list(sentence_filter.filter_corpus([document]))
         assert len(filtered_corpus) == 1
-        assert filtered_corpus[0] == "\n".join(sentences[i] for i in [0, 1, 3])
+        assert filtered_corpus[0] == cleaned_document
