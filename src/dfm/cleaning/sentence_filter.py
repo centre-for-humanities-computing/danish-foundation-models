@@ -1,4 +1,4 @@
-"""Filter on a sentence level, most of which are taken from [1].
+"""Filter on a sentence level, most of which are from [1].
 
 Authors:
     Dan Saattrup Nielsen (dan.nielsen@alexandra.dk)
@@ -10,31 +10,56 @@ References:
         text-to-text transformer. J. Mach. Learn. Res., 21(140), 1-67.
 """
 
-from typing import Iterable, Union, Tuple, Any, Dict, Callable
+from typing import Iterable, Union, Tuple, Any, Dict, Callable, Sequence, Optional
 from collections import Counter
 import emoji
 
 
 class SentenceFilter:
-    """Filter on a sentence level, most of which are taken from [1].
+    """Filter on a sentence level, most of which are from [1].
+
+    Args:
+        filter_names (sequence of str or None, optional):
+            A sequence of filter names to be applied to the corpus. Must be among the
+            following:
+                - ends_with_punctuation_or_emoji
+            If None then all filters will be applied. Defaults to None.
+
+    Attributes:
+        filters (dict):
+            A dictionary with all the sentence filters to be applied. Keys are the
+            names of the filters and values are the filter functions.
+        filter_counts (Counter):
+            A counter keeping track of how many sentences each filter removed.
 
     References:
         [1] Raffel, C., Shazeer, N., Roberts, A., Lee, K., Narang, S., Matena, M., ...
             & Liu, P. J. (2020). Exploring the limits of transfer learning with a
             unified text-to-text transformer. J. Mach. Learn. Res., 21(140), 1-67.
     """
-    def __init__(self):
-
-        # Create a counter for keeping track of how many documents each filter removed
-        self.filtered = Counter()
+    def __init__(self, filter_names: Optional[Sequence[str]] = None):
 
         # Create a dictionary with all the sentence filters
-        self.filters: Dict[str, Callable[[str], bool]] = dict(
+        self._all_filters: Dict[str, Callable[[str], bool]] = dict(
             ends_with_punctuation_or_emoji=self._ends_with_punctuation_or_emoji,
         )
 
+        # Create variable storing the filters to be used
+        self.filters: Dict[str, Callable[[str], bool]] = dict()
+        if filter_names is None:
+            self.filters = self._all_filters
+        else:
+            self.filters = {
+                filter_name: self._all_filters[filter_name]
+                for filter_name in filter_names
+            }
+
+        # Create a counter for keeping track of how many documents each filter removed
+        self.filter_counts = Counter()
+
+
     def filter_corpus(
-        self, texts: Union[Iterable[str], Iterable[Tuple[str, Union[Any, None]]]],
+        self, texts: Union[Iterable[str], Iterable[Tuple[str, Optional[Any]]]],
     ) -> Union[Iterable[str], Iterable[Tuple[str, Union[Any, None]]]]:
         """Filters a corpus using the sentence filters.
 
@@ -133,7 +158,7 @@ class SentenceFilter:
                 document wasn't filtered
         """
         # Iterate over all the filter functions
-        for filter, filter_fn in self.filters.items():
+        for filter_name, filter_fn in self.filters.items():
 
             # Apply the filter function, which returns True if the document satisfied
             # the filter, and False if it didn't
@@ -144,8 +169,8 @@ class SentenceFilter:
             # name to log what filter function was responsible for the removal of the
             # docuemnt
             if not satisfied_filter:
-                self.filtered[filter] += 1
-                return filter
+                self.filter_counts[filter_name] += 1
+                return filter_name
 
     def _ends_with_punctuation_or_emoji(self, sentence: str) -> bool:
         """Checks if a sentence ends with punctuation or an emoji.
