@@ -1,5 +1,5 @@
 """
-Danish implementation of quality filter and repetitious text filter described in [1]
+Danish implementation of quality filter and repetitious text filter described in [1].
 
 Authors:
     Kenneth C. Enevoldsen
@@ -7,12 +7,9 @@ Authors:
     Malte Højmark-Bertelsen
 
 References:
-    [1] Rae, J. W., Borgeaud, S., Cai, T., Millican, K., Hoffmann, J., Song, F.,
-    Aslanides, J., Henderson, S., Ring, R., Young, S., Rutherford, E., Hennigan,
-    T., Menick, J., Cassirer, A., Powell, R., Driessche, G. van den, Hendricks,
-    L. A., Rauh, M., Huang, P.-S., … Irving, G. (2021).
-    Scaling Language Models: Methods, Analysis & Insights from Training Gopher.
-    https://arxiv.org/abs/2112.11446v2
+    [1] Rae, J. W., Borgeaud, S., Cai, T., Millican, K., Hoffmann, J., Song, F., ... &
+        Irving, G. (2021). Scaling language models: Methods, analysis & insights from
+        training gopher. arXiv preprint arXiv:2112.11446.
 """
 
 from typing import Dict, Iterable, Optional, Tuple, List, Callable
