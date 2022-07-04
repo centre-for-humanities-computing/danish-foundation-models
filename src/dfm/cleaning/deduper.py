@@ -13,21 +13,23 @@ References:
         (Cat. No. 97TB100171). IEEE, 1997.
 """
 
-from datasketch import MinHashLSH
-from datasets.arrow_dataset import Dataset
-from datasets.iterable_dataset import IterableDataset
-from typing import Union, Iterable, Optional, Callable, Dict, Tuple
-from pathlib import Path
-import shutil
-import json
-from tqdm.auto import tqdm
 import itertools as it
-import more_itertools as mit
-from joblib import Parallel, delayed
+import json
 import multiprocessing as mp
 import pickle
+import shutil
 from functools import partial
-from .deduper_utils import get_minhash, default_normalization
+from pathlib import Path
+from typing import Callable, Dict, Iterable, Optional, Tuple, Union
+
+import more_itertools as mit
+from datasets.arrow_dataset import Dataset
+from datasets.iterable_dataset import IterableDataset
+from datasketch import MinHashLSH
+from joblib import Parallel, delayed
+from tqdm.auto import tqdm
+
+from .deduper_utils import default_normalization, get_minhash
 
 
 class Deduper:
@@ -580,9 +582,10 @@ class Deduper:
 
 
 if __name__ == "__main__":
-    from datasets import load_dataset
-    from pathlib import Path
     from argparse import ArgumentParser
+    from pathlib import Path
+
+    from datasets import load_dataset
 
     parser = ArgumentParser()
     parser.add_argument("--split_method", "-s", type=str, required=True)

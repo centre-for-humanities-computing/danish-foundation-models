@@ -7,14 +7,12 @@ import sys
 
 from datasets import load_dataset
 
-
 f_path = os.path.dirname(os.path.abspath(__file__))
 os.chdir(os.path.join(f_path, ".."))
 sys.path.append(os.getcwd())
 
-from dedupe import min_hash_deduper, duplicate_filter
+from dedupe import duplicate_filter, min_hash_deduper
 from utils import to_datetime
-
 
 dataset = load_dataset("DaNews", streaming=True)
 ds = dataset["train"]

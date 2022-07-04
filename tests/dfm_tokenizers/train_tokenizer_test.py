@@ -1,11 +1,12 @@
 """Tests for training the tokenizers"""
 
-import pytest
-import pandas as pd
-from datasets import load_dataset
 import os
-from src.dfm.dfm_tokenizers import TokenizerConfig, train_tokenizer
 
+import pandas as pd
+import pytest
+from datasets import load_dataset
+
+from src.dfm.dfm_tokenizers import TokenizerConfig, train_tokenizer
 
 # Disable tokenizer parallelization
 os.environ["TOKENIZERS_PARALLELISM"] = "false"

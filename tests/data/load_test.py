@@ -1,15 +1,10 @@
 """Tests for the dataset loading scripts"""
 
 import pytest
-from src.dfm.data.load import (
-    load_tweets,
-    load_news,
-    load_dagw,
-    load_reddit,
-    load_lexdk,
-    load_tokenizer_ds,
-)
-from datasets import IterableDataset, Dataset
+from datasets import Dataset, IterableDataset
+
+from src.dfm.data.load import (load_dagw, load_lexdk, load_news, load_reddit,
+                               load_tokenizer_ds, load_tweets)
 
 
 @pytest.mark.skip(reason="Dataset not publicly available")

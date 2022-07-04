@@ -9,15 +9,13 @@ Authors:
     Kenneth Enevoldsen
 """
 
-from typing import List, Tuple, Union
-
-import os
-from pathlib import Path
-import shutil
-
 import json
 import multiprocessing as mp
+import os
+import shutil
 from collections import Counter
+from pathlib import Path
+from typing import List, Tuple, Union
 
 import pandas as pd
 from wasabi import msg

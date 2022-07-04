@@ -6,7 +6,8 @@ from functools import partial
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Union
 
-from datasets import DatasetDict, IterableDatasetDict, interleave_datasets, load_dataset
+from datasets import (DatasetDict, IterableDatasetDict, interleave_datasets,
+                      load_dataset)
 
 HOPETWITTER_PATH = Path("/work") / "twitter_cleaned"
 DAGW_DFM_PATH = Path("/work") / "dagw-clean"

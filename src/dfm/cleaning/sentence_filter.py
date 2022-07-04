@@ -10,8 +10,10 @@ References:
         text-to-text transformer. J. Mach. Learn. Res., 21(140), 1-67.
 """
 
-from typing import Iterable, Union, Tuple, Any, Dict, Callable, Sequence, Optional
 from collections import Counter
+from typing import (Any, Callable, Dict, Iterable, Optional, Sequence, Tuple,
+                    Union)
+
 import emoji
 
 

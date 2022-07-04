@@ -9,17 +9,16 @@ Authors:
 """
 
 
-from typing import List
-import os
 import json
+import os
 from collections import Counter, defaultdict
-
-from wasabi import msg
+from typing import List
 
 from pysafebrowsing import SafeBrowsing
+from wasabi import msg
 
-from .DNS_filter import dns_filter
 from .count_domains import get_paths
+from .DNS_filter import dns_filter
 
 read_path = os.path.join("/work", "netarkivet-cleaned")
 dfm_path = os.path.join("ucloud-setup", "githubs", "danish-foundation-models")

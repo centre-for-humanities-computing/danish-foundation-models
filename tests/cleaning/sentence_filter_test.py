@@ -1,6 +1,7 @@
 """Unit tests for the sentence filter."""
 
 import pytest
+
 from src.dfm.cleaning.sentence_filter import SentenceFilter
 
 

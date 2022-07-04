@@ -1,5 +1,6 @@
 import pytest
 import spacy
+
 from src.dfm.description import MatchCounter, get_religion_patterns
 
 

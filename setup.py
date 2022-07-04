@@ -1,9 +1,8 @@
-from setuptools import setup
-from setuptools import find_packages
-
+import os
 import subprocess
 import sys
-import os
+
+from setuptools import find_packages, setup
 
 path = os.path.join("src", "dfm", "about.py")
 

@@ -1,9 +1,11 @@
 """Tests for the tokenizer configuration"""
 
-import pytest
-from pathlib import Path
-from pydantic import ValidationError
 import os
+from pathlib import Path
+
+import pytest
+from pydantic import ValidationError
+
 from src.dfm.dfm_tokenizers import TokenizerConfig
 
 # Disable tokenizer parallelization

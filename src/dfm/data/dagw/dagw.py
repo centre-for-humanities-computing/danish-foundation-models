@@ -4,8 +4,8 @@
 import os
 
 import datasets
-from datasets.utils import metadata
 import ndjson
+from datasets.utils import metadata
 
 from .licenses import *
 

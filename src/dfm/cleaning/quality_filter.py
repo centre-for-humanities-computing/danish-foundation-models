@@ -12,9 +12,9 @@ References:
         training gopher. arXiv preprint arXiv:2112.11446.
 """
 
-from typing import Dict, Iterable, Optional, Tuple, List, Callable
 from collections import Counter, defaultdict
 from functools import partial
+from typing import Callable, Dict, Iterable, List, Optional, Tuple
 
 import spacy
 from spacy.tokens import Doc

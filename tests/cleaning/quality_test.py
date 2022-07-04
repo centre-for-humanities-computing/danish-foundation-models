@@ -2,9 +2,10 @@
 
 from typing import List
 
-from src.dfm.cleaning import QualityFilter
 import pytest
 from pytest_lazyfixture import lazy_fixture
+
+from src.dfm.cleaning import QualityFilter
 
 
 class TestQualityFilter:

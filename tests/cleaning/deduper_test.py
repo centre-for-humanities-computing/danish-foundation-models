@@ -1,16 +1,15 @@
 """Tests for the deduplication module"""
 
-from src.dfm.cleaning import Deduper
-from src.dfm.cleaning.deduper_utils import (
-    get_minhash,
-    get_shingles,
-    default_normalization,
-)
-import tempfile
-from pathlib import Path
 import json
 import re
+import tempfile
+from pathlib import Path
+
 import pytest
+
+from src.dfm.cleaning import Deduper
+from src.dfm.cleaning.deduper_utils import (default_normalization, get_minhash,
+                                            get_shingles)
 
 
 def word_shape(doc: str) -> str:

@@ -11,24 +11,19 @@ python dfm/train.py --config tests/test_configs/pretrain_config.yaml
 ```
 """
 
+import argparse
 from dataclasses import dataclass
 from typing import List, Optional, Union
-import argparse
 
-from transformers import (
-    AutoConfig,
-    AutoModelForPreTraining,
-    Trainer,
-    TrainingArguments,
-    AutoTokenizer,
-    DataCollatorForLanguageModeling,
-)
 from datasets import interleave_datasets
+from transformers import (AutoConfig, AutoModelForPreTraining, AutoTokenizer,
+                          DataCollatorForLanguageModeling, Trainer,
+                          TrainingArguments)
 
 from .data.load import dfm_load_dataset
+from .modelling.model_types import MODEL_TYPES
 from .modelling.preprocess import preprocess_dataset
 from .modelling.utils import read_yaml
-from .modelling.model_types import MODEL_TYPES
 
 
 def main(args):

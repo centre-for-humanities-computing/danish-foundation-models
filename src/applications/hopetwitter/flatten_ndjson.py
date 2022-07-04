@@ -7,8 +7,8 @@ Dependent on:
 Authors:
     Kenneth Enevoldsen
 """
-import os
 import glob
+import os
 
 import ndjson
 
