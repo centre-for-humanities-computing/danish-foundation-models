@@ -5,7 +5,7 @@ Authors:
     Lasse Hansen
     Malte Højmark-Bertelsen
 
-```bash 
+```bash
 pip install -e .
 python dfm/train.py --config tests/test_configs/pretrain_config.yaml
 ```
@@ -25,10 +25,10 @@ from transformers import (
 )
 from datasets import interleave_datasets
 
-from dfm.data.load import dfm_load_dataset
-from dfm.modelling.preprocess import preprocess_dataset
-from dfm.modelling.utils import read_yaml
-from dfm.modelling.model_types import MODEL_TYPES
+from .data.load import dfm_load_dataset
+from .modelling.preprocess import preprocess_dataset
+from .modelling.utils import read_yaml
+from .modelling.model_types import MODEL_TYPES
 
 
 def main(args):
