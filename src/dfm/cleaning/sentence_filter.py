@@ -23,7 +23,13 @@ class SentenceFilter:
             A sequence of filter names to be applied to the corpus. Must be among the
             following:
                 - ends_with_punctuation_or_emoji
+                - has_few_title_cased_words
             If None then all filters will be applied. Defaults to None.
+        title_cased_words_threshold (float, optional):
+            The threshold for the number of title cased words in a sentence. If the
+            number of title cased words in a sentence is greater than this threshold,
+            then the sentence will be filtered out. Must be between 0 and 1, inclusive.
+            Defaults to 0.9.
 
     Attributes:
         filters (dict):
@@ -37,26 +43,33 @@ class SentenceFilter:
             & Liu, P. J. (2020). Exploring the limits of transfer learning with a
             unified text-to-text transformer. J. Mach. Learn. Res., 21(140), 1-67.
     """
-    def __init__(self, filter_names: Optional[Sequence[str]] = None):
+    def __init__(
+            self,
+            filter_names: Optional[Sequence[str]] = None,
+            title_cased_words_threshold: float = 0.9,
+        ):
+
+        # Store arguments as attributes
+        self.title_cased_words_threshold = title_cased_words_threshold
 
         # Create a dictionary with all the sentence filters
-        self._all_filters: Dict[str, Callable[[str], bool]] = dict(
+        _all_filters: Dict[str, Callable[[str], bool]] = dict(
             ends_with_punctuation_or_emoji=self._ends_with_punctuation_or_emoji,
+            has_few_title_cased_words=self._has_few_title_cased_words,
         )
 
         # Create variable storing the filters to be used
         self.filters: Dict[str, Callable[[str], bool]] = dict()
         if filter_names is None:
-            self.filters = self._all_filters
+            self.filters = _all_filters
         else:
             self.filters = {
-                filter_name: self._all_filters[filter_name]
+                filter_name: _all_filters[filter_name]
                 for filter_name in filter_names
             }
 
         # Create a counter for keeping track of how many documents each filter removed
         self.filter_counts = Counter()
-
 
     def filter_corpus(
         self, texts: Union[Iterable[str], Iterable[Tuple[str, Optional[Any]]]],
@@ -195,11 +208,14 @@ class SentenceFilter:
 
         # Add all the "manual" emojis, like ":)" and ":-("
         mouths = list(")(DPpOo@")
+        noses = ["", "-"]
         eyes = list(":;")
-        emojis += [f"{eye}{mouth}" for eye in eyes for mouth in mouths]
-        emojis += [f"{eye}-{mouth}" for eye in eyes for mouth in mouths]
-        emojis += [f"{mouth}{eye}" for eye in eyes for mouth in mouths]
-        emojis += [f"{mouth}-{eye}" for eye in eyes for mouth in mouths]
+        emojis += [
+            f"{eye}{nose}{mouth}" for eye in eyes for nose in noses for mouth in mouths
+        ]
+        emojis += [
+            f"{mouth}{nose}{eye}" for eye in eyes for nose in noses for mouth in mouths
+        ]
 
         # Add punctuation symbols which signify the end of a sentence. We include
         # quotation marks as quotes may end in these symbols
@@ -207,3 +223,29 @@ class SentenceFilter:
 
         # Return whether the input sentence ends with any of the symbols
         return any(sentence.endswith(char) for char in emojis + punctuation)
+
+    def _has_few_title_cased_words(self, sentence: str) -> bool:
+        """Checks if a sentence contains few title cased words.
+
+        This is to exclude menus and lists, which are often all title cased. Note that
+        actual titles in Danish are not title cased.
+
+        Args:
+            sentence (str):
+                The sentence to check.
+
+        Returns:
+            bool:
+                True if the sentence contains many title cased words, False otherwise.
+        """
+        # Split the sentence into words
+        words = [word for word in sentence.split() if len(word) > 0]
+
+        # Count the number of title cased words
+        num_title_cased_words = len(list(filter(lambda word: word.istitle(), words)))
+
+        # Compute the proportion of title cased words in the sentence
+        proportion_title_cased_words = num_title_cased_words / len(words)
+
+        # Return whether the proportion of title cased words is sufficiently low
+        return proportion_title_cased_words < self.title_cased_words_threshold
