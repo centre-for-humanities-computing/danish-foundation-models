@@ -57,20 +57,21 @@ class SentenceFilter:
             & Liu, P. J. (2020). Exploring the limits of transfer learning with a
             unified text-to-text transformer. J. Mach. Learn. Res., 21(140), 1-67.
     """
+
     def __init__(
-            self,
-            filter_names: Optional[Sequence[str]] = None,
-            title_cased_words_threshold: float = 0.7,
-            min_num_words: int = 3,
-            curly_brackets_threshold: int = 2,
-        ):
+        self,
+        filter_names: Optional[Sequence[str]] = None,
+        title_cased_words_threshold: float = 0.7,
+        min_num_words: int = 3,
+        curly_brackets_threshold: int = 2,
+    ):
 
         # Store arguments as attributes
         self.title_cased_words_threshold = title_cased_words_threshold
         self.min_num_words = min_num_words
         self.curly_brackets_threshold = curly_brackets_threshold
 
-        # Create a dictionary with all the sentence filters
+        # Create a dictionary with all the sentence filters
         _all_filters: Dict[str, Callable[[str], bool]] = dict(
             ends_with_punctuation_or_emoji=self._ends_with_punctuation_or_emoji,
             has_few_title_cased_words=self._has_few_title_cased_words,
@@ -78,21 +79,21 @@ class SentenceFilter:
             has_few_curly_brackets=self._has_few_curly_brackets,
         )
 
-        # Create variable storing the filters to be used
+        # Create variable storing the filters to be used
         self.filters: Dict[str, Callable[[str], bool]] = dict()
         if filter_names is None:
             self.filters = _all_filters
         else:
             self.filters = {
-                filter_name: _all_filters[filter_name]
-                for filter_name in filter_names
+                filter_name: _all_filters[filter_name] for filter_name in filter_names
             }
 
         # Create a counter for keeping track of how many documents each filter removed
         self.filter_counts = Counter()
 
     def filter_corpus(
-        self, texts: Union[Iterable[str], Iterable[Tuple[str, Optional[Any]]]],
+        self,
+        texts: Union[Iterable[str], Iterable[Tuple[str, Optional[Any]]]],
     ) -> Union[Iterable[str], Iterable[Tuple[str, Union[Any, None]]]]:
         """Filters a corpus using the sentence filters.
 
@@ -130,7 +131,8 @@ class SentenceFilter:
 
                 # Split the document into sentences, splitting on newlines
                 sentences = [
-                    sentence.strip() for sentence in doc.split("\n")
+                    sentence.strip()
+                    for sentence in doc.split("\n")
                     if len(sentence.strip()) > 0
                 ]
 
@@ -226,7 +228,7 @@ class SentenceFilter:
         emojis += list(emoji_dict.keys())
         emojis += list(emoji_dict.values())
 
-        # Add all the "manual" emojis, like ":)" and ":-("
+        # Add all the "manual" emojis, like ":)" and ":-("
         mouths = list(")(DPpOo@")
         noses = ["", "-"]
         eyes = list(":;")

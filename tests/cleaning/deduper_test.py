@@ -4,7 +4,7 @@ from src.dfm.cleaning import Deduper
 from src.dfm.cleaning.deduper_utils import (
     get_minhash,
     get_shingles,
-    default_normalization
+    default_normalization,
 )
 import tempfile
 from pathlib import Path

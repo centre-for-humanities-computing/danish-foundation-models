@@ -3,7 +3,6 @@ import spacy
 from src.dfm.description import MatchCounter, get_religion_patterns
 
 
-
 class TestMatchCounter:
     @pytest.fixture(scope="class")
     def texts(self):
