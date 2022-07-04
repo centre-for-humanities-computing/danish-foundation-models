@@ -30,8 +30,16 @@ class SentenceFilter:
             number of title cased words in a sentence is greater than this threshold,
             then the sentence will be filtered out. Must be between 0 and 1, inclusive.
             Defaults to 0.7.
+        min_num_words (int, optional):
+            The minimum number of words in a sentence. If the number of words in a
+            sentence is less than this number, then the sentence will be filtered
+            out. Defaults to 3.
 
     Attributes:
+        title_cased_words_threshold (float):
+            The threshold for the number of title cased words in a sentence.
+        min_num_words (int):
+            The minimum number of words in a sentence.
         filters (dict):
             A dictionary with all the sentence filters to be applied. Keys are the
             names of the filters and values are the filter functions.
@@ -47,15 +55,18 @@ class SentenceFilter:
             self,
             filter_names: Optional[Sequence[str]] = None,
             title_cased_words_threshold: float = 0.7,
+            min_num_words: int = 3,
         ):
 
         # Store arguments as attributes
         self.title_cased_words_threshold = title_cased_words_threshold
+        self.min_num_words = min_num_words
 
         # Create a dictionary with all the sentence filters
         _all_filters: Dict[str, Callable[[str], bool]] = dict(
             ends_with_punctuation_or_emoji=self._ends_with_punctuation_or_emoji,
             has_few_title_cased_words=self._has_few_title_cased_words,
+            has_enough_words=self._has_enough_words,
         )
 
         # Create variable storing the filters to be used
@@ -249,3 +260,20 @@ class SentenceFilter:
 
         # Return whether the proportion of title cased words is sufficiently low
         return proportion_title_cased_words < self.title_cased_words_threshold
+
+    def _has_enough_words(self, sentence: str) -> bool:
+        """Checks if a sentence contains enough words.
+
+        Args:
+            sentence (str):
+                The sentence to check.
+
+        Returns:
+            bool:
+                True if the sentence contains enough words, False otherwise.
+        """
+        # Split the sentence into words
+        words = [word for word in sentence.split() if len(word) > 0]
+
+        # Return whether the number of words is sufficiently high
+        return len(words) >= self.min_num_words
