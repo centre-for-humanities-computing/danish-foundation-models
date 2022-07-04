@@ -26,20 +26,26 @@ class SentenceFilter:
                 - has_few_title_cased_words
             If None then all filters will be applied. Defaults to None.
         title_cased_words_threshold (float, optional):
-            The threshold for the number of title cased words in a sentence. If the
-            number of title cased words in a sentence is greater than this threshold,
-            then the sentence will be filtered out. Must be between 0 and 1, inclusive.
-            Defaults to 0.7.
+            The threshold for the maximal number of title cased words in a sentence. If
+            the number of title cased words in a sentence is greater than this
+            threshold, then the sentence will be filtered out. Must be between 0 and 1,
+            inclusive. Defaults to 0.7.
         min_num_words (int, optional):
             The minimum number of words in a sentence. If the number of words in a
             sentence is less than this number, then the sentence will be filtered
             out. Defaults to 3.
+        curly_brackets_threshold (int, optional):
+            The threshold for the maximal number of curly brackets in a sentence. If
+            the number of curly brackets in a sentence is greater than this threshold,
+            then the sentence will be filtered out. Defaults to 2.
 
     Attributes:
         title_cased_words_threshold (float):
             The threshold for the number of title cased words in a sentence.
         min_num_words (int):
             The minimum number of words in a sentence.
+        curly_brackets_threshold (float):
+            The threshold for the number of curly brackets in a sentence.
         filters (dict):
             A dictionary with all the sentence filters to be applied. Keys are the
             names of the filters and values are the filter functions.
@@ -56,17 +62,20 @@ class SentenceFilter:
             filter_names: Optional[Sequence[str]] = None,
             title_cased_words_threshold: float = 0.7,
             min_num_words: int = 3,
+            curly_brackets_threshold: int = 2,
         ):
 
         # Store arguments as attributes
         self.title_cased_words_threshold = title_cased_words_threshold
         self.min_num_words = min_num_words
+        self.curly_brackets_threshold = curly_brackets_threshold
 
         # Create a dictionary with all the sentence filters
         _all_filters: Dict[str, Callable[[str], bool]] = dict(
             ends_with_punctuation_or_emoji=self._ends_with_punctuation_or_emoji,
             has_few_title_cased_words=self._has_few_title_cased_words,
             has_enough_words=self._has_enough_words,
+            has_few_curly_brackets=self._has_few_curly_brackets,
         )
 
         # Create variable storing the filters to be used
@@ -277,3 +286,20 @@ class SentenceFilter:
 
         # Return whether the number of words is sufficiently high
         return len(words) >= self.min_num_words
+
+    def _has_few_curly_brackets(self, sentence: str) -> bool:
+        """Checks if a sentence contains few curly brackets.
+
+        Args:
+            sentence (str):
+                The sentence to check.
+
+        Returns:
+            bool:
+                True if the sentence contains many curly brackets, False otherwise.
+        """
+        # Count the number of curly brackets
+        num_curly_brackets = sentence.count("{") + sentence.count("}")
+
+        # Return whether the number of curly brackets is sufficiently low
+        return num_curly_brackets < self.curly_brackets_threshold
