@@ -17,7 +17,7 @@ from datasets import (
     DatasetDict,
 )
 from wasabi import msg
-from dfm.data.utils import to_datetime
+from .utils import to_datetime
 
 # Removed import below untill fixed.
 # from text_dedup import min_hash_deduper, duplicate_filter

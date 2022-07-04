@@ -1,7 +1,7 @@
 """Tests for the dataset loading scripts"""
 
 import pytest
-from dfm.data.load import (
+from src.dfm.data.load import (
     load_tweets,
     load_news,
     load_dagw,

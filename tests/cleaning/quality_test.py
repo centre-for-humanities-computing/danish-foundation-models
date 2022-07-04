@@ -2,8 +2,7 @@
 
 from typing import List
 
-from dfm.cleaning import QualityFilter
-from numpy import True_
+from src.dfm.cleaning import QualityFilter
 import pytest
 from pytest_lazyfixture import lazy_fixture
 

@@ -1,6 +1,6 @@
 import pytest
 import spacy
-from dfm.description import MatchCounter
+from src.dfm.description import MatchCounter
 
 
 class TestMatchCounter:

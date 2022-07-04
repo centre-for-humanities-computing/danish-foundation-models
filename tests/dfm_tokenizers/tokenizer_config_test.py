@@ -4,7 +4,7 @@ import pytest
 from pathlib import Path
 from pydantic import ValidationError
 import os
-from dfm.dfm_tokenizers import TokenizerConfig
+from src.dfm.dfm_tokenizers import TokenizerConfig
 
 # Disable tokenizer parallelization
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
