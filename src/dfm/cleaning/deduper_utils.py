@@ -1,7 +1,7 @@
 """Utility functions for the deduplicator.
 
 Author:
-    Dan Saattrup Nielsen (saattrupdan@gmail.com)
+    Dan Saattrup Nielsen (dan.nielsen@alexandra.dk)
 """
 
 from datasketch import MinHash, LeanMinHash
