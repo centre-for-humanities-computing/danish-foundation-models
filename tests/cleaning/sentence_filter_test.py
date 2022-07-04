@@ -49,3 +49,48 @@ class TestEndsWithPunctuationOrEmoji:
         filtered_corpus = list(sentence_filter.filter_corpus([document]))
         assert len(filtered_corpus) == 1
         assert filtered_corpus[0] == cleaned_document
+
+
+class TestHasFewTitleCasedWords:
+
+    @pytest.fixture(scope='class')
+    def sentence_filter(self):
+        yield SentenceFilter(filter_names=["has_few_title_cased_words"])
+
+    @pytest.fixture(scope='class')
+    def sentences(self):
+        yield [
+            "Det her er en sætning, som kun har ét ord, der starter med stort bogstav.",
+            "Om os Indkøbskurv Shop Find butik Kontakt",
+            "Han hedder John Hansen, blev der sagt.",
+        ]
+
+    @pytest.fixture(scope='class')
+    def clean_sentence_indices(self):
+        yield [0, 2]
+
+    @pytest.fixture(scope='class')
+    def document(self, sentences):
+        yield "\n".join(sentences)
+
+    @pytest.fixture(scope='class')
+    def cleaned_document(self, sentences, clean_sentence_indices):
+        yield "\n".join([sentences[i] for i in clean_sentence_indices])
+
+    def test_has_few_title_cased_words(
+            self, sentences, sentence_filter, clean_sentence_indices
+        ) -> None:
+        """Tests that the sentences are correctly filtered by ending character."""
+        filter_outputs = [
+            sentence_filter._has_few_title_cased_words(sentence)
+            for sentence in sentences
+        ]
+        assert filter_outputs == [
+            i in clean_sentence_indices for i in range(len(sentences))
+        ]
+
+    def test_filter_corpus(self, sentence_filter, document, cleaned_document) -> None:
+        """Tests that the corpus is correctly filtered."""
+        filtered_corpus = list(sentence_filter.filter_corpus([document]))
+        assert len(filtered_corpus) == 1
+        assert filtered_corpus[0] == cleaned_document
