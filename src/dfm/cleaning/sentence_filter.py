@@ -29,7 +29,7 @@ class SentenceFilter:
             The threshold for the number of title cased words in a sentence. If the
             number of title cased words in a sentence is greater than this threshold,
             then the sentence will be filtered out. Must be between 0 and 1, inclusive.
-            Defaults to 0.9.
+            Defaults to 0.7.
 
     Attributes:
         filters (dict):
@@ -46,7 +46,7 @@ class SentenceFilter:
     def __init__(
             self,
             filter_names: Optional[Sequence[str]] = None,
-            title_cased_words_threshold: float = 0.9,
+            title_cased_words_threshold: float = 0.7,
         ):
 
         # Store arguments as attributes
