@@ -28,6 +28,10 @@ if __name__ == "__main__":
     gen = text_generator(seed=2)
     texts = [next(gen) for i in range(N_TO_RATE)]
 
-    rater = ExampleRater(examples=texts, output_path=f"{MY_NAME}_{date.today()}.csv", resume_from_index=50)
+    rater = ExampleRater(
+        examples=texts,
+        output_path=f"{MY_NAME}_{date.today()}.csv",
+        resume_from_index=50,
+    )
 
     rater.rate_examples()
