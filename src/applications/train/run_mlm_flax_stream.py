@@ -19,25 +19,25 @@ with whole word masking on a text file or a dataset.
 Here is the full list of checkpoints on the hub that can be fine-tuned by this script:
 https://huggingface.co/models?filter=fill-mask
 """
-import os
 import logging
+import os
 import sys
 import time
 from collections import defaultdict
 from dataclasses import dataclass, field
-
-from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
+import flax
 import jax
 import jax.numpy as jnp
 import numpy as np
-
-import flax
 import optax
+import wandb
+from datasets import load_dataset
 from flax import jax_utils, traverse_util
 from flax.training import train_state
 from flax.training.common_utils import get_metrics, onehot, shard
+from tqdm import tqdm
 from transformers import (
     CONFIG_MAPPING,
     FLAX_MODEL_FOR_MASKED_LM_MAPPING,
@@ -48,13 +48,8 @@ from transformers import (
     PreTrainedTokenizerBase,
     TensorType,
     TrainingArguments,
-    is_tensorboard_available,
-    set_seed
+    set_seed,
 )
-from datasets import load_dataset
-from tqdm import tqdm
-
-import wandb
 
 from dfm.data.load_datasets import load_dcc_v1
 
@@ -62,6 +57,7 @@ MODEL_CONFIG_CLASSES = list(FLAX_MODEL_FOR_MASKED_LM_MAPPING.keys())
 MODEL_TYPES = tuple(conf.model_type for conf in MODEL_CONFIG_CLASSES)
 TRAINING_SAMPLES = 0
 TRAINING_DOCS = 0
+
 
 @dataclass
 class ModelArguments:
@@ -120,17 +116,22 @@ class DataTrainingArguments:
     """
     Arguments pretaining to what data we are going to input our model for training and eval.
     """
+
     dataset_name: Optional[str] = field(
         default="dcc-v1",
         metadata={"help": "The name of the dataset to use (via the datasets library)."},
     )
     skip_n_training_samples: Optional[int] = field(
         default=0,
-        metadata={"help": "How many training samples to skip. Defaults to 0. Useful for restarting runs."},
+        metadata={
+            "help": "How many training samples to skip. Defaults to 0. Useful for restarting runs."
+        },
     )
     skip_n_training_docs: Optional[int] = field(
         default=0,
-        metadata={"help": "How many training docs to skip. Defaults to 0. Useful for restarting runs."},
+        metadata={
+            "help": "How many training docs to skip. Defaults to 0. Useful for restarting runs."
+        },
     )
 
     train_file: Optional[str] = field(
@@ -335,7 +336,7 @@ def advance_iter_and_group_samples(train_iterator, num_samples, max_seq_length):
     while i < num_total_tokens:
         tokenized_samples = next(train_iterator)
         TRAINING_SAMPLES += 1  # log training iterator
-        
+
         i += len(tokenized_samples["input_ids"])
 
         # concatenate tokenized samples to list
@@ -357,7 +358,6 @@ def advance_iter_and_group_samples(train_iterator, num_samples, max_seq_length):
 
     grouped_samples = group_texts(samples)
     return grouped_samples
-
 
 
 if __name__ == "__main__":
@@ -436,9 +436,15 @@ if __name__ == "__main__":
         TRAINING_DOCS += len(examples[data_args.text_column_name])
         # TODO remove:
         if TRAINING_DOCS < 21560000 and TRAINING_DOCS % 100000 == 0:
-            print("TRAINING_DOCS:", TRAINING_DOCS, "- DOCS left to skip:", 21560000-TRAINING_DOCS)
+            print(
+                "TRAINING_DOCS:",
+                TRAINING_DOCS,
+                "- DOCS left to skip:",
+                21560000 - TRAINING_DOCS,
+            )
         # until here
         return examples
+
     dataset = dataset.map(log_dataset_function, batched=True)
 
     if data_args.skip_n_training_docs:
@@ -458,7 +464,7 @@ if __name__ == "__main__":
 
     if model_args.tokenizer_name:
         # TODO: add load based on name
-        # 
+        #
         tokenizer = AutoTokenizer.from_pretrained(
             model_args.tokenizer_name,
             cache_dir=model_args.cache_dir,
@@ -485,9 +491,7 @@ if __name__ == "__main__":
         )
 
     tokenized_datasets = dataset.map(
-        tokenize_function,
-        batched=True,
-        remove_columns=column_names
+        tokenize_function, batched=True, remove_columns=column_names
     )
 
     shuffle_seed = training_args.seed
@@ -500,7 +504,7 @@ if __name__ == "__main__":
         tokenized_datasets_ = tokenized_datasets.skip(data_args.skip_n_training_samples)
     else:
         tokenized_datasets_ = tokenized_datasets
-    
+
     # Data collator
     # This one will take care of randomly masking the tokens.
     data_collator = FlaxDataCollatorForLanguageModeling(
@@ -695,12 +699,16 @@ if __name__ == "__main__":
 
         if step % training_args.logging_steps == 0 and step > 0:
             train_time += time.time() - train_start
-            wandb.log({"step": step, 
-                       "train_loss": train_metric['loss'].mean(),
-                       "learning_rate": train_metric['learning_rate'].mean(),
-                       "train_time": train_time,
-                       "training_samples": TRAINING_SAMPLES,
-                       "training_docs": TRAINING_DOCS})
+            wandb.log(
+                {
+                    "step": step,
+                    "train_loss": train_metric["loss"].mean(),
+                    "learning_rate": train_metric["learning_rate"].mean(),
+                    "train_time": train_time,
+                    "training_samples": TRAINING_SAMPLES,
+                    "training_docs": TRAINING_DOCS,
+                }
+            )
             steps.write(
                 f"Step... ({step} | Loss: {train_metric['loss'].mean()}, Learning Rate: {train_metric['learning_rate'].mean()})"
             )
@@ -733,12 +741,16 @@ if __name__ == "__main__":
 
             # Update progress bar
             steps.desc = f"Step... ({step + 1}/{num_train_steps} | Loss: {eval_metrics['loss']}, Acc: {eval_metrics['accuracy']})"
-            wandb.log({"step": step + 1, 
-                       "eval_loss": eval_metrics['loss'],
-                       "eval_accuracy": eval_metrics['accuracy'],
-                       "train_time": train_time,
-                       "training_samples": TRAINING_SAMPLES,
-                       "training_docs": TRAINING_DOCS})
+            wandb.log(
+                {
+                    "step": step + 1,
+                    "eval_loss": eval_metrics["loss"],
+                    "eval_accuracy": eval_metrics["accuracy"],
+                    "train_time": train_time,
+                    "training_samples": TRAINING_SAMPLES,
+                    "training_docs": TRAINING_DOCS,
+                }
+            )
             eval_metrics = []
 
             # save checkpoint after each epoch and push checkpoint to the hub
