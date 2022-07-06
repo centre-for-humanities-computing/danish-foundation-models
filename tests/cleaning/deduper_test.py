@@ -8,8 +8,11 @@ from pathlib import Path
 import pytest
 
 from src.dfm.cleaning import Deduper
-from src.dfm.cleaning.deduper_utils import (default_normalization, get_minhash,
-                                            get_shingles)
+from src.dfm.cleaning.deduper_utils import (
+    default_normalization,
+    get_minhash,
+    get_shingles,
+)
 
 
 def word_shape(doc: str) -> str:
