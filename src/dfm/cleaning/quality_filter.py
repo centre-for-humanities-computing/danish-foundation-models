@@ -30,6 +30,7 @@ from spacy.tokens import Doc
 from luga import language
 from langdetect import detect_langs
 
+
 def duplicate_chr_fraction_getter(doc: Doc, attr: str) -> float:
     """Calculate the character fraction of duplicates based on a counter object
 
@@ -252,25 +253,28 @@ class QualityFilter:
         max_length: int = 5_000_000,
         string_filter: Optional[str] = None,
         ignore_filters: List[str] = [],
-        language_detection_tool: str = 'luga',
+        language_detection_tool: str = "luga",
         language_threshold: float = 0.90,
-        languages: Sequence[str] = ['da'],
+        languages: Sequence[str] = ["da"],
         short_long_sentence_length_split: int = 30,
-        short_long_sentence_threshold: float = 0.5
-
+        short_long_sentence_threshold: float = 0.5,
     ):
 
-        __available_language_detection_tools = ['langdetect', 'luga']
+        __available_language_detection_tools = ["langdetect", "luga"]
 
         if language_detection_tool not in __available_language_detection_tools:
-            raise AttributeError(f"{language_detection_tool} is not a valid language detection packages - must be in {__available_language_detection_tools}")
+            raise AttributeError(
+                f"{language_detection_tool} is not a valid language detection "
+                f"packages - must be in {__available_language_detection_tools}"
+            )
 
+        # Load Danish spaCy model
         self.nlp = spacy.blank("da")
 
-        # required docuement extension for spaCy
+        # Required document extension for spaCy
         self.__set_extensions()
 
-        # a ordered dictionary of which filters to apply
+        # An ordered dictionary of which filters to apply
         self.filters = {
             "doc_length": partial(self.doc_length, doc_length=doc_length),
             "mean_word_length": partial(
@@ -313,14 +317,13 @@ class QualityFilter:
                 self.detect_language,
                 language_detection_tool=language_detection_tool,
                 languages=languages,
-                language_threshold=language_threshold
+                language_threshold=language_threshold,
             ),
             "short_long_sentece": partial(
                 self.short_long_sentence,
                 short_long_sentence_length_split=short_long_sentence_length_split,
-                short_long_sentence_threshold=short_long_sentence_threshold
-            )
-
+                short_long_sentence_threshold=short_long_sentence_threshold,
+            ),
         }
 
         if string_filter:
@@ -331,24 +334,23 @@ class QualityFilter:
         for f in ignore_filters:
             self.filters.pop(f)
 
-        # create a counter for keeping track of how many times the specific filter
+        # Create a counter for keeping track of how many times the specific filter
         # removed a document
         self.filtered = Counter()
 
-        # set maximum length for the nlp pipeline.
+        # Set maximum length for the nlp pipeline.
         self.nlp.max_length = max_length
 
     def __set_extensions(self) -> None:
-        """Sets dynamic extension such that certain values aren't calculated multiple
-        times."""
-        # getters for quality filters
+        """Sets dynamic extension to avoid redundant calculations."""
+        # Getters for quality filters
         set_dynamic_ext("len", func=lambda doc: len(doc))
         set_dynamic_ext(
             "n_words",
             func=lambda doc: len([t for t in doc if not (t.is_space or t.is_punct)]),
         )
 
-        # getter for rep. text filters
+        # Getter for rep. text filters
         set_dynamic_ext("lines", func=lambda doc: doc.text.split("\n"))
         set_dynamic_ext("paragraphs", func=lambda doc: doc.text.split("\n\n"))
 
@@ -382,7 +384,7 @@ class QualityFilter:
         self, texts: Iterable[str], as_tuples: bool = False, **kwargs
     ) -> Iterable[str]:
         """
-        Applies quality filter
+        Applies quality filter.
 
         Args:
             texts (Iterable[str]): An iterable of strings of the text you wish to
@@ -402,21 +404,25 @@ class QualityFilter:
         while docs:
             try:
                 doc = next(docs)
-                if as_tuples:  # split tuple into doc and context
+
+                # Split tuple into doc and context
+                if as_tuples:
                     doc, context = doc
 
                 is_filtered = self.is_filtered(doc)
 
-                # don't yield texts which did not pass the filter
+                # Don't yield texts which did not pass the filter
                 if is_filtered is not None:
                     continue
 
-                if as_tuples:  # yield doc along with context
+                # Yield doc along with context
+                if as_tuples:
                     yield doc, context
                 else:
                     yield doc
 
-            except ValueError:  # max length exceeded
+            # Max length exceeded
+            except ValueError:
                 self.filtered["max_chr_length"] += 1
                 docs = self.nlp.pipe(texts)
             except StopIteration:
@@ -469,10 +475,15 @@ class QualityFilter:
                 break
 
     @staticmethod
-    def short_long_sentence(doc: Doc, short_long_sentence_length_split: int, short_long_sentence_threshold: float) -> bool:
-        """Checks that the ratio long sentences is above the minimum threshold
+    def short_long_sentence(
+        doc: Doc,
+        short_long_sentence_length_split: int,
+        short_long_sentence_threshold: float,
+    ) -> bool:
+        """Checks that the ratio long sentences is above the minimum threshold.
 
-        Inspired by implementation: https://github.com/oscar-corpus/ungoliant/blob/master/src/filtering/record.rs
+        Inspired by implementation:
+        https://github.com/oscar-corpus/ungoliant/blob/master/src/filtering/record.rs
 
         Args:
             doc (Doc):
@@ -482,7 +493,11 @@ class QualityFilter:
             bool:
                 True if the ratio long sentences is above the minimum threshold
         """
-        sentences = [sentence.strip() for sentence in doc.text.split("\n") if len(sentence.strip()) > 0]
+        sentences = [
+            sentence.strip()
+            for sentence in doc.text.split("\n")
+            if len(sentence.strip()) > 0
+        ]
         _long_count = 0
         _short_count = 0
         for sentence in sentences:
@@ -490,41 +505,61 @@ class QualityFilter:
                 _long_count += 1
             else:
                 _short_count += 1
-        ratio =  _long_count / (_long_count + _short_count)
+        ratio = _long_count / (_long_count + _short_count)
         return ratio >= short_long_sentence_threshold
 
     @staticmethod
-    def detect_language(doc: Doc, language_detection_tool: str, languages: Sequence[str], language_threshold: float) -> bool:
-        """Detects if a specified (or sequence of languages) is detected
+    def detect_language(
+        doc: Doc,
+        language_detection_tool: str,
+        languages: Sequence[str],
+        language_threshold: float,
+    ) -> bool:
+        """Detects if a specified (or sequence of languages) is detected.
 
         Args:
-            language_detection_tool (str): 2 toolboxes are currently supported, luga and langdetect
-            languages (Sequence[str]): sequence of languages to detect for
-            language_threshold (float): minimum threshold for detection probability
+            language_detection_tool (str):
+                Two toolboxes are currently supported, `luga` and `langdetect`.
+            languages (sequence of str):
+                Sequence of languages to detect for.
+            language_threshold (float):
+                Minimum threshold for detection probability.
 
         Returns:
-            bool: Boolean whether one of the specified languages is detected with probability higher than threshold
+            bool:
+                Boolean whether one of the specified languages is detected with
+                probability higher than threshold.
         """
 
-        def luga_detect(doc: Doc, languages: Sequence[str], language_threshold: float) -> bool:
-            doc_joined = " ".join([sentence.strip() for sentence in doc.text.split("\n") if len(sentence.strip()) > 0])
-            detected = language(doc_joined) # type: ignore
+        def luga_detect(
+            doc: Doc, languages: Sequence[str], language_threshold: float
+        ) -> bool:
+            doc_joined = " ".join(
+                [
+                    sentence.strip()
+                    for sentence in doc.text.split("\n")
+                    if len(sentence.strip()) > 0
+                ]
+            )
+            detected = language(doc_joined)  # type: ignore
             lang, score = detected.name, detected.score
             if score >= language_threshold and lang in languages:
                 return True
             else:
                 return False
 
-        def langdetect_detect(doc: Doc, languages: Sequence[str], language_threshold: float) -> bool:
-            detected = detect_langs(doc.text) # type: ignore
+        def langdetect_detect(
+            doc: Doc, languages: Sequence[str], language_threshold: float
+        ) -> bool:
+            detected = detect_langs(doc.text)  # type: ignore
             for l in detected:
                 if l.lang in languages and l.prob >= language_threshold:
                     return True
             return False
 
         detectors: Dict[str, Callable[[Doc, Sequence[str], float], bool]] = {
-            'luga': luga_detect,
-            'langdetect': langdetect_detect
+            "luga": luga_detect,
+            "langdetect": langdetect_detect,
         }
 
         return detectors[language_detection_tool](doc, languages, language_threshold)
@@ -560,7 +595,6 @@ class QualityFilter:
             bool: A boolean indicator of whether the text passed the filter.
         """
         w_len = 0
-        n_words = 0
         for t in doc:
             if t.is_space or t.is_punct:
                 continue
