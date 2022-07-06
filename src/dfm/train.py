@@ -16,9 +16,14 @@ from dataclasses import dataclass
 from typing import List, Optional, Union
 
 from datasets import interleave_datasets
-from transformers import (AutoConfig, AutoModelForPreTraining, AutoTokenizer,
-                          DataCollatorForLanguageModeling, Trainer,
-                          TrainingArguments)
+from transformers import (
+    AutoConfig,
+    AutoModelForPreTraining,
+    AutoTokenizer,
+    DataCollatorForLanguageModeling,
+    Trainer,
+    TrainingArguments,
+)
 
 from .data.load import dfm_load_dataset
 from .modelling.model_types import MODEL_TYPES

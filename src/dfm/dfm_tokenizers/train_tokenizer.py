@@ -5,8 +5,16 @@ from typing import Iterable, Union
 
 from datasets.arrow_dataset import Dataset
 from datasets.iterable_dataset import IterableDataset
-from tokenizers import (AddedToken, decoders, models, normalizers,
-                        pre_tokenizers, processors, tokenizers, trainers)
+from tokenizers import (
+    AddedToken,
+    decoders,
+    models,
+    normalizers,
+    pre_tokenizers,
+    processors,
+    tokenizers,
+    trainers,
+)
 
 from .tokenizer_config import TokenizerConfig
 
