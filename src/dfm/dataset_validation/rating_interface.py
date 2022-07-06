@@ -8,11 +8,11 @@ import pandas as pd
 
 
 class ExampleRater:
-    def __init__(self, examples: Iterable, output_path: str, resume_from_index: Int):
+    def __init__(self, examples: Iterable, output_path: str, resume_from_index: int):
         if resume_from_index:
-            self.examples = examples[50:]
+            self.examples = list(reversed(examples[resume_from_index:]))
         else:
-            self.examples = examples
+            self.examples = list(reversed(examples))
 
         self.output_path = output_path
 
