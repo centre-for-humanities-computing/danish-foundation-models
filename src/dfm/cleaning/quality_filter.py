@@ -180,15 +180,14 @@ class QualityFilter:
         duplicate_n_gram_fraction_thresholds (list of float, optional):
             The character fraction thresholds. Defaults to [0.25, 0.24, 0.23, 0.22,
             0.21, 0.20].
-        duplicate_n_gram_fraction_range (Tuple[int, int], optional):
+        duplicate_n_gram_fraction_range (pair of int, optional):
             The n-gram range. Defaults to (5, 11).
         max_length (int, optional):
-            Maximum character length of a document. Defaults to 5_000_000
+            Maximum character length of a document. Defaults to 5_000_000.
         string (str or None, optional):
             String for filtering. Defaults to None.
         ignore_filters (list of str, optional):
-            Filters which should be skipped. Options
-            include:
+            Filters which should be skipped. Options include:
                 - "doc_length"
                 - "mean_word_length"
                 - "alpha_ratio"
@@ -201,6 +200,9 @@ class QualityFilter:
                 - "top_ngram_chr_fraction"
                 - "duplicate_ngram_chr_fraction"
                 - "string_filter"
+        language_detection_tool (str, optional):
+            The language detection tool to use. Options include "luga" or "langdetect".
+            Defaults to "luga".
         language_threshold (float, optional):
             The threshold used for minimum confidence in langauge detection. If the
             language detection model outputs a probability lower than the threshold,
