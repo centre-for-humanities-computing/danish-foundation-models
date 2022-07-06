@@ -1,24 +1,35 @@
 """
-Danish implementation of quality filter and repetitious text filter described in [1].
+Danish implementation of quality filter and repetitious text filter described in [1]. This has furthermore 
+been extended with filters based on [2] (language detection) and [3] (short/long sentence ratio). 
 
 Authors:
     Kenneth C. Enevoldsen
     Kasper Junge
     Malte Højmark-Bertelsen
+    Philip Krejler
 
 References:
     [1] Rae, J. W., Borgeaud, S., Cai, T., Millican, K., Hoffmann, J., Song, F., ... &
         Irving, G. (2021). Scaling language models: Methods, analysis & insights from
         training gopher. arXiv preprint arXiv:2112.11446.
+
+    [2] Raffel, C., Shazeer, N., Roberts, A., Lee, K., Narang, S., Matena, M., ... &
+    Liu, P. J. (2020). Exploring the limits of transfer learning with a unified
+    text-to-text transformer. J. Mach. Learn. Res., 21(140), 1-67.
+
+    [3] Abadji, Julien, et al. "Towards a Cleaner Document-Oriented Multilingual 
+    Crawled Corpus." arXiv preprint arXiv:2201.06642 (2022).
 """
 
 from collections import Counter, defaultdict
 from functools import partial
-from typing import Callable, Dict, Iterable, List, Optional, Tuple
+from os import stat
+from typing import Callable, Dict, Iterable, List, Optional, Tuple, Sequence
 
 import spacy
 from spacy.tokens import Doc
-
+from luga import language 
+from langdetect import detect_langs
 
 def duplicate_chr_fraction_getter(doc: Doc, attr: str) -> float:
     """Calculate the character fraction of duplicates based on a counter object
@@ -178,6 +189,18 @@ class QualityFilter:
             "line_bullets_or_ellipsis", "duplicate_lines_chr_fraction",
             "duplicate_paragraph_chr_fraction", "top_ngram_chr_fraction",
             "duplicate_ngram_chr_fraction", "string_filter"
+        language_threshold (float, optional): 
+            The threshold used for minimum confidence in langauge detection. If the language detection model
+            outputs a probability lower than the threshold, then the document will be discarded. Defaults to 0.90
+        languages (sequence): 
+            Sequence of languages to perform language detection for. Defaults to ['da'].
+        short_long_sentence_length_split (int): 
+            Number of characters to determine whether short or long sentence - if number of characters exceed short_long_sentence_length_split
+            then it is classfied as a long sentence, and vice versa. Defaults to 30
+        short_long_sentence_ratio (float): 
+            The threshold for minimum ratio between short and long sentences. Short and long sentences are defined as ____. 
+            If the ratio n_long / n_short (n_short = number of short sentences, n_long = number of long sentences) 
+            is below the threshold, the document will be discarded. Defaults to 0.6
     """
 
     def __init__(
@@ -209,7 +232,18 @@ class QualityFilter:
         max_length: int = 5_000_000,
         string_filter: Optional[str] = None,
         ignore_filters: List[str] = [],
+        language_detection_tool: str = 'luga', 
+        language_threshold: float = 0.90, 
+        languages: Sequence[str] = ['da'],  
+        short_long_sentence_length_split: int = 30, 
+        short_long_sentence_threshold: float = 0.5
+
     ):
+
+        __available_language_detection_tools = ['langdetect', 'luga']
+
+        if language_detection_tool not in __available_language_detection_tools: 
+            raise AttributeError(f"{language_detection_tool} is not a valid language detection packages - must be in {__available_language_detection_tools}")
 
         self.nlp = spacy.blank("da")
 
@@ -255,6 +289,18 @@ class QualityFilter:
                 ngram_range=duplicate_n_gram_fraction_range,
                 thresholds=duplicate_n_gram_fraction_thresholds,
             ),
+            "detect_language": partial(
+                self.detect_language, 
+                language_detection_tool=language_detection_tool,
+                languages=languages, 
+                language_threshold=language_threshold
+            ),
+            "short_long_sentece": partial(
+                self.short_long_sentence, 
+                short_long_sentence_length_split=short_long_sentence_length_split,
+                short_long_sentence_threshold=short_long_sentence_threshold
+            )
+
         }
 
         if string_filter:
@@ -401,6 +447,67 @@ class QualityFilter:
                 docs = self.nlp.pipe(texts)
             except StopIteration:
                 break
+
+    @staticmethod
+    def short_long_sentence(doc: Doc, short_long_sentence_length_split: int, short_long_sentence_threshold: float) -> bool: 
+        """Checks that the ratio long sentences is above the minimum threshold 
+
+        Inspired by implementation: https://github.com/oscar-corpus/ungoliant/blob/master/src/filtering/record.rs
+
+        Args: 
+            doc (Doc): 
+                Document to check
+        
+        Returns: 
+            bool: 
+                True if the ratio long sentences is above the minimum threshold 
+        """
+        sentences = [sentence.strip() for sentence in doc.text.split("\n") if len(sentence.strip()) > 0]
+        _long_count = 0
+        _short_count = 0
+        for sentence in sentences: 
+            if len(sentence) > short_long_sentence_length_split: 
+                _long_count += 1
+            else: 
+                _short_count += 1
+        ratio =  _long_count / (_long_count + _short_count)
+        return ratio >= short_long_sentence_threshold
+    
+    @staticmethod
+    def detect_language(doc: Doc, language_detection_tool: str, languages: Sequence[str], language_threshold: float) -> bool: 
+        """Detects if a specified (or sequence of languages) is detected
+
+        Args: 
+            language_detection_tool (str): 2 toolboxes are currently supported, luga and langdetect
+            languages (Sequence[str]): sequence of languages to detect for
+            language_threshold (float): minimum threshold for detection probability
+        
+        Returns:
+            bool: Boolean whether one of the specified languages is detected with probability higher than threshold
+        """
+        
+        def luga_detect(doc: Doc, languages: Sequence[str], language_threshold: float) -> bool:
+            doc_joined = " ".join([sentence.strip() for sentence in doc.text.split("\n") if len(sentence.strip()) > 0])
+            detected = language(doc_joined) # type: ignore
+            lang, score = detected.name, detected.score
+            if score >= language_threshold and lang in languages:
+                return True
+            else: 
+                return False
+
+        def langdetect_detect(doc: Doc, languages: Sequence[str], language_threshold: float) -> bool: 
+            detected = detect_langs(doc.text) # type: ignore
+            for l in detected:
+                if l.lang in languages and l.prob >= language_threshold:
+                    return True 
+            return False
+
+        detectors: Dict[str, Callable[[Doc, Sequence[str], float], bool]] = {
+            'luga': luga_detect,
+            'langdetect': langdetect_detect
+        }
+
+        return detectors[language_detection_tool](doc, languages, language_threshold)
 
     @staticmethod
     def doc_length(doc: Doc, doc_length: Tuple[int, int]) -> bool:
