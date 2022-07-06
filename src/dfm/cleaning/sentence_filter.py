@@ -26,6 +26,8 @@ class SentenceFilter:
             following:
                 - ends_with_punctuation_or_emoji
                 - has_few_title_cased_words
+                - has_enough_words
+                - has_few_curly_brackets
             If None then all filters will be applied. Defaults to None.
         title_cased_words_threshold (float, optional):
             The threshold for the maximal number of title cased words in a sentence. If
