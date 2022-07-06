@@ -10,9 +10,7 @@
 ---
 
 DaNews consist of articles from Danish news and tabloid media from 1 December 2000 to 
-30 April 2021. It consists of ~25 million articles across 1,362 news
-sources. Note that newspapers, such as Politiken with multiple outlets, e.g. physically
-and online, are counted as multiple sources.
+30 April 2021. It consists of articles derived from infomedia API through the [HOPE project](https://hope-project.dk/#/). The articles stems from multiple news sources such as Politiken, including both online of physical news papers.
 DaNews consists of 9.29 billion tokens of which 8.67 Billion (93%) were left after
 quality filtering and deduplication.
 
@@ -25,13 +23,14 @@ Following the recommendation and framework of [5] we add the following datasheet
 **For what purpose was the dataset created? Who created the dataset? Who funded the
 creation of the dataset?**
 
-The dataset was created with the purpose of pre-training Danish language models. It was
+The preprocessed dataset was created with the purpose of pre-training Danish language models. It was
 created by a team of researchers at the Center for Humanities Computing Aarhus ([CHCAA](https://chcaa.io/#/))  using
 a codebase jointly developed with partners from academia and industry, including KMD,
 Ekstra Bladet, Bristol University and Deepdivr. For more on collaborators on this
 project see the
 [GitHub repository](https://github.com/centre-for-humanities-computing/danish-foundation-models
 ).
+
 
 **Any other comments?**
 
@@ -234,7 +233,7 @@ writing style which is unlikely to reflect the Danish language as a whole.
 **Will the dataset be distributed to third parties outside of the entity (e.g., company,
 institution, organization) on behalf of which the dataset was created?**
 
-No.
+No. 
 
 
 ### Citation
