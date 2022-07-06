@@ -3,14 +3,8 @@
 import pytest
 from datasets import Dataset, IterableDataset
 
-from src.dfm.data.load import (
-    load_dagw,
-    load_lexdk,
-    load_news,
-    load_reddit,
-    load_tokenizer_ds,
-    load_tweets,
-)
+from src.dfm.data.load import (load_dagw, load_lexdk, load_news, load_reddit,
+                               load_tokenizer_ds, load_tweets)
 
 
 @pytest.mark.skip(reason="Dataset not publicly available")
