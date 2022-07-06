@@ -23,12 +23,12 @@ References:
 
 from collections import Counter, defaultdict
 from functools import partial
-from typing import Callable, Dict, Iterable, List, Optional, Tuple, Sequence
+from typing import Callable, Dict, Iterable, List, Optional, Sequence, Tuple
 
 import spacy
-from spacy.tokens import Doc
-from luga import language
 from langdetect import detect_langs
+from luga import language
+from spacy.tokens import Doc
 
 
 def duplicate_chr_fraction_getter(doc: Doc, attr: str) -> float:

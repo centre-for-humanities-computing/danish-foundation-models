@@ -11,7 +11,8 @@ References:
 """
 
 from collections import Counter
-from typing import Any, Callable, Dict, Iterable, Optional, Sequence, Tuple, Union
+from typing import (Any, Callable, Dict, Iterable, Optional, Sequence, Tuple,
+                    Union)
 
 import emoji
 
