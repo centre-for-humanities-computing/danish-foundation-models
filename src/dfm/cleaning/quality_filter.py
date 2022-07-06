@@ -9,6 +9,7 @@ Authors:
     Kasper Junge
     Malte Højmark-Bertelsen
     Philip Krejler
+    Dan Saattrup Nielsen
 
 References:
     [1] Rae, J. W., Borgeaud, S., Cai, T., Millican, K., Hoffmann, J., Song, F., ... &
