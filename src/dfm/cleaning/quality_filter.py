@@ -1,6 +1,8 @@
-"""
-Danish implementation of quality filter and repetitious text filter described in [1]. This has furthermore 
-been extended with filters based on [2] (language detection) and [3] (short/long sentence ratio). 
+"""Filter on document level.
+
+This is a Danish implementation of quality filter and repetitious text filter described
+in [1], which has been extended with filters based on [2] (language detection) and [3]
+(short/long sentence ratio).
 
 Authors:
     Kenneth C. Enevoldsen
@@ -12,13 +14,11 @@ References:
     [1] Rae, J. W., Borgeaud, S., Cai, T., Millican, K., Hoffmann, J., Song, F., ... &
         Irving, G. (2021). Scaling language models: Methods, analysis & insights from
         training gopher. arXiv preprint arXiv:2112.11446.
-
     [2] Raffel, C., Shazeer, N., Roberts, A., Lee, K., Narang, S., Matena, M., ... &
-    Liu, P. J. (2020). Exploring the limits of transfer learning with a unified
-    text-to-text transformer. J. Mach. Learn. Res., 21(140), 1-67.
-
-    [3] Abadji, Julien, et al. "Towards a Cleaner Document-Oriented Multilingual 
-    Crawled Corpus." arXiv preprint arXiv:2201.06642 (2022).
+        Liu, P. J. (2020). Exploring the limits of transfer learning with a unified
+        text-to-text transformer. J. Mach. Learn. Res., 21(140), 1-67.
+    [3] Abadji, Julien, et al. "Towards a Cleaner Document-Oriented Multilingual
+        Crawled Corpus." arXiv preprint arXiv:2201.06642 (2022).
 """
 
 from collections import Counter, defaultdict
@@ -28,7 +28,7 @@ from typing import Callable, Dict, Iterable, List, Optional, Tuple, Sequence
 
 import spacy
 from spacy.tokens import Doc
-from luga import language 
+from luga import language
 from langdetect import detect_langs
 
 def duplicate_chr_fraction_getter(doc: Doc, attr: str) -> float:
@@ -125,82 +125,103 @@ def set_dynamic_ext(
 
 
 class QualityFilter:
-    """
-    Danish implementation of quality filter described in (Rae et al., 2021). With some
+    """Document-level filter.
+
+    This is a Danish implementation of quality filter described in [1]. With some
     notable changes include removing duplicate line fraction as these typically would
     either also be filtered by the duplicate line chr. fraction (similar for duplicate
     paragraph fraction) or be false positive which could contain shorter lists with
     duplicate values. see addtional changes in arguments description.
 
     Args:
-        min_stop_words (int, optional): The least amount of stop words a text
-            should have before it is kept. Defaults to 2.
-        mean_word_length (Tuple[int, int], optional): Upper and lower bound on the
-            mean word length. Defaults to (3, 10).
-        doc_length (Tuple[int, int], optional): Upper and lower bound on the
-            documents length. Defaults to (50, 100_000). The 50 words threshold is
-            quite high filtering texts in general, but for filtering text for e.g.
-            language modelling it ensures longer dependencies.
-        alpha_ratio (float, optional): the percentage of spacy tokens in this document
-            which should contain alphabetic character. Defaults to 0.6, changed from 0.8
-            in [1], estimated from Danish Gigaword. Likely both due to the spaCy
-            tokenizer and the relatively fewer words in languages using compound words.
-        symbol_2_word_ellipsis (float, optional): The highest acceptable ratio of
-            ellipsis to words. Defaults to 0.1.
-        symbol_2_word_hashtag (float, optional): The highest acceptable ratio of
-            symbols to words.. Defaults to 0.1.
-        max_p_begin_bullets (float, optional): Maximum number of lines which begins
-            with a bulletpoint. Defaults to 0.9.
-        max_p_end_ellipsis (float, optional): Maximum number of lines which ends
-            with an ellipsis. Defaults to 0.3.
-        min_bullets (int): Minimum number of bullets there should be before the text
-                is filtered. An addition from [1].
-        min_ellipsis (int): Minimum number of ellipsis there should be before the text
-                is filtered. An addition from [1].
-        duplicate_lines_chr_fraction (float, optional): Max fraction of characters which
-            is a part of a duplicate line. Defaults to 0.2
+        min_stop_words (int, optional):
+            The least amount of stop words a text should have before it is kept.
+            Defaults to 2.
+        mean_word_length (pair of int, optional):
+            Upper and lower bound on the mean word length. Defaults to (3, 10).
+        doc_length (pair of int, optional):
+            Upper and lower bound on the documents length. Defaults to (50, 100_000).
+        alpha_ratio (float, optional):
+            The percentage of spacy tokens in this document which should contain
+            alphabetic character. Defaults to 0.6.
+        symbol_2_word_ellipsis (float, optional):
+            The highest acceptable ratio of ellipsis to words. Defaults to 0.1.
+        symbol_2_word_hashtag (float, optional):
+            The highest acceptable ratio of symbols to words.. Defaults to 0.1.
+        max_p_begin_bullets (float, optional):
+            Maximum number of lines which begins with a bulletpoint. Defaults to 0.9.
+        max_p_end_ellipsis (float, optional):
+            Maximum number of lines which ends with an ellipsis. Defaults to 0.3.
+        min_bullets (int):
+            Minimum number of bullets there should be before the text is filtered. An
+            addition from [1].
+        min_ellipsis (int):
+            Minimum number of ellipsis there should be before the text is filtered. An
+            addition from [1].
+        duplicate_lines_chr_fraction (float, optional):
+            Max fraction of characters which is a part of a duplicate line. Defaults to
+            0.2
         duplicate_paragraph_chr_fraction (float, optional): Max fraction of characters
             which is a part of a duplicate paragraph. Defaults to 0.2.
-        top_ngram_chr_fraction_thresholds: The maximum fraction of characters which is a
-            part of the top ngram. Should be a list of floats corresponding to the
-            n-grams range top_ngram_chr_fraction_range. I.e. [0.20, 0.18, 0.16] with a
-            range of (2, 4) states that if the first top 20% of characters is contained
-            within the top 2-gram then filter out the text. Defaults to [0.20, 0.18, 0.16].
-        top_ngram_chr_fraction_range (Tuple[int, int], optional): Range of n-gram to
-            check for top_ngram_chr_fraction_thresholds. Defaults to (2, 4).
-        min_count (int): Minimum count of n-grams. Ignores n-grams below this
-            threshold. This is to avoid filtering text with very large n-grams,
-            which happens in legal text or languages with compound words. This is an
-            extention to the existing filtering.
-        duplicate_n_gram_fraction_thresholds (List[float], optional): The character
-            fraction thresholds. Defaults to [0.25, 0.24, 0.23, 0.22, 0.21, 0.20],
-            changed from [0.15, 0.14, 0.13, 0.12, 0.11, 0.10], which for example denote
-            that the any text with duplicate 5 grams constituting more than 15% of the
-            text characters is filtered, 14% for 6-grams and so on. The reason for the
-            change is that seemingly valid text where still excluded, especially in the
-            n-gram included compound words and thus where longer.
-        duplicate_n_gram_fraction_range (Tuple[int, int], optional): The n-gram range.
-            Defaults to (5, 11).
-        max_length (int, optional): max_length in characters. Defaults to 5_000_000
-        string (str, optional): String for filtering. Defaults to None.
-        ignore_filters (List[str], optional): Filters which should be skipped. Options
-            include: "doc_length", "mean_word_length", "alpha_ratio", "stop_word",
-            "symbol_2_word_hashtag", "symbol_2_word_ellipsis",
-            "line_bullets_or_ellipsis", "duplicate_lines_chr_fraction",
-            "duplicate_paragraph_chr_fraction", "top_ngram_chr_fraction",
-            "duplicate_ngram_chr_fraction", "string_filter"
-        language_threshold (float, optional): 
-            The threshold used for minimum confidence in langauge detection. If the language detection model
-            outputs a probability lower than the threshold, then the document will be discarded. Defaults to 0.90
-        languages (sequence): 
-            Sequence of languages to perform language detection for. Defaults to ['da'].
-        short_long_sentence_length_split (int): 
-            Number of characters to determine whether short or long sentence - if number of characters exceed short_long_sentence_length_split
-            then it is classfied as a long sentence, and vice versa. Defaults to 30
-        short_long_sentence_ratio (float): 
-            The threshold for minimum ratio between short and long sentences. Short and long sentences are defined as ____. 
-            If the ratio n_long / n_short (n_short = number of short sentences, n_long = number of long sentences) 
-            is below the threshold, the document will be discarded. Defaults to 0.6
+        top_ngram_chr_fraction_thresholds (list of float):
+            The maximum fraction of characters which is a part of the top ngram. Should
+            be a list of floats corresponding to the n-grams range
+            top_ngram_chr_fraction_range, i.e., [0.20, 0.18, 0.16] with a range of (2,
+            4) states that if the first top 20% of characters is contained within the
+            top 2-gram then filter out the text. Defaults to [0.20, 0.18, 0.16].
+        top_ngram_chr_fraction_range (pair of int, optional):
+            Range of n-gram to check for top_ngram_chr_fraction_thresholds. Defaults to
+            (2, 4).
+        min_count (int):
+            Minimum count of n-grams. Ignores n-grams below this threshold. This is to
+            avoid filtering text with very large n-grams, which happens in legal text
+            or languages with compound words. This is an extention to the existing
+            filtering.
+        duplicate_n_gram_fraction_thresholds (list of float, optional):
+            The character fraction thresholds. Defaults to [0.25, 0.24, 0.23, 0.22,
+            0.21, 0.20].
+        duplicate_n_gram_fraction_range (Tuple[int, int], optional):
+            The n-gram range. Defaults to (5, 11).
+        max_length (int, optional):
+            Maximum character length of a document. Defaults to 5_000_000
+        string (str or None, optional):
+            String for filtering. Defaults to None.
+        ignore_filters (list of str, optional):
+            Filters which should be skipped. Options
+            include:
+                - "doc_length"
+                - "mean_word_length"
+                - "alpha_ratio"
+                - "stop_word"
+                - "symbol_2_word_hashtag"
+                - "symbol_2_word_ellipsis"
+                - "line_bullets_or_ellipsis"
+                - "duplicate_lines_chr_fraction"
+                - "duplicate_paragraph_chr_fraction"
+                - "top_ngram_chr_fraction"
+                - "duplicate_ngram_chr_fraction"
+                - "string_filter"
+        language_threshold (float, optional):
+            The threshold used for minimum confidence in langauge detection. If the
+            language detection model outputs a probability lower than the threshold,
+            then the document will be discarded. Defaults to 0.9.
+        languages (list of str, optional):
+            Sequence of languages to perform language detection for. Defaults to
+            ['da'].
+        short_long_sentence_length_split (int, optional):
+            Number of characters to determine whether short or long sentence - if
+            number of characters exceed short_long_sentence_length_split then it is
+            classfied as a long sentence, and vice versa. Defaults to 30.
+        short_long_sentence_ratio (float, optional):
+            The threshold for minimum ratio between short and long sentences. Short and
+            long sentences are defined as ____. If the ratio n_long / n_short (n_short
+            = number of short sentences, n_long = number of long sentences) is below
+            the threshold, the document will be discarded. Defaults to 0.6.
+
+    References:
+        [1] Rae, J. W., Borgeaud, S., Cai, T., Millican, K., Hoffmann, J., Song, F.,
+            ... & Irving, G. (2021). Scaling language models: Methods, analysis &
+            insights from training gopher. arXiv preprint arXiv:2112.11446.
     """
 
     def __init__(
@@ -232,17 +253,17 @@ class QualityFilter:
         max_length: int = 5_000_000,
         string_filter: Optional[str] = None,
         ignore_filters: List[str] = [],
-        language_detection_tool: str = 'luga', 
-        language_threshold: float = 0.90, 
-        languages: Sequence[str] = ['da'],  
-        short_long_sentence_length_split: int = 30, 
+        language_detection_tool: str = 'luga',
+        language_threshold: float = 0.90,
+        languages: Sequence[str] = ['da'],
+        short_long_sentence_length_split: int = 30,
         short_long_sentence_threshold: float = 0.5
 
     ):
 
         __available_language_detection_tools = ['langdetect', 'luga']
 
-        if language_detection_tool not in __available_language_detection_tools: 
+        if language_detection_tool not in __available_language_detection_tools:
             raise AttributeError(f"{language_detection_tool} is not a valid language detection packages - must be in {__available_language_detection_tools}")
 
         self.nlp = spacy.blank("da")
@@ -290,13 +311,13 @@ class QualityFilter:
                 thresholds=duplicate_n_gram_fraction_thresholds,
             ),
             "detect_language": partial(
-                self.detect_language, 
+                self.detect_language,
                 language_detection_tool=language_detection_tool,
-                languages=languages, 
+                languages=languages,
                 language_threshold=language_threshold
             ),
             "short_long_sentece": partial(
-                self.short_long_sentence, 
+                self.short_long_sentence,
                 short_long_sentence_length_split=short_long_sentence_length_split,
                 short_long_sentence_threshold=short_long_sentence_threshold
             )
@@ -449,57 +470,57 @@ class QualityFilter:
                 break
 
     @staticmethod
-    def short_long_sentence(doc: Doc, short_long_sentence_length_split: int, short_long_sentence_threshold: float) -> bool: 
-        """Checks that the ratio long sentences is above the minimum threshold 
+    def short_long_sentence(doc: Doc, short_long_sentence_length_split: int, short_long_sentence_threshold: float) -> bool:
+        """Checks that the ratio long sentences is above the minimum threshold
 
         Inspired by implementation: https://github.com/oscar-corpus/ungoliant/blob/master/src/filtering/record.rs
 
-        Args: 
-            doc (Doc): 
+        Args:
+            doc (Doc):
                 Document to check
-        
-        Returns: 
-            bool: 
-                True if the ratio long sentences is above the minimum threshold 
+
+        Returns:
+            bool:
+                True if the ratio long sentences is above the minimum threshold
         """
         sentences = [sentence.strip() for sentence in doc.text.split("\n") if len(sentence.strip()) > 0]
         _long_count = 0
         _short_count = 0
-        for sentence in sentences: 
-            if len(sentence) > short_long_sentence_length_split: 
+        for sentence in sentences:
+            if len(sentence) > short_long_sentence_length_split:
                 _long_count += 1
-            else: 
+            else:
                 _short_count += 1
         ratio =  _long_count / (_long_count + _short_count)
         return ratio >= short_long_sentence_threshold
-    
+
     @staticmethod
-    def detect_language(doc: Doc, language_detection_tool: str, languages: Sequence[str], language_threshold: float) -> bool: 
+    def detect_language(doc: Doc, language_detection_tool: str, languages: Sequence[str], language_threshold: float) -> bool:
         """Detects if a specified (or sequence of languages) is detected
 
-        Args: 
+        Args:
             language_detection_tool (str): 2 toolboxes are currently supported, luga and langdetect
             languages (Sequence[str]): sequence of languages to detect for
             language_threshold (float): minimum threshold for detection probability
-        
+
         Returns:
             bool: Boolean whether one of the specified languages is detected with probability higher than threshold
         """
-        
+
         def luga_detect(doc: Doc, languages: Sequence[str], language_threshold: float) -> bool:
             doc_joined = " ".join([sentence.strip() for sentence in doc.text.split("\n") if len(sentence.strip()) > 0])
             detected = language(doc_joined) # type: ignore
             lang, score = detected.name, detected.score
             if score >= language_threshold and lang in languages:
                 return True
-            else: 
+            else:
                 return False
 
-        def langdetect_detect(doc: Doc, languages: Sequence[str], language_threshold: float) -> bool: 
+        def langdetect_detect(doc: Doc, languages: Sequence[str], language_threshold: float) -> bool:
             detected = detect_langs(doc.text) # type: ignore
             for l in detected:
                 if l.lang in languages and l.prob >= language_threshold:
-                    return True 
+                    return True
             return False
 
         detectors: Dict[str, Callable[[Doc, Sequence[str], float], bool]] = {
