@@ -22,8 +22,9 @@ dfm_path = os.path.join("/work", "danish-foundation-models")
 
 sys.path.append(dfm_path)
 
-from src.applications.netarkivet.content_filtering.count_domains_netarkivet import \
-    get_paths
+from src.applications.netarkivet.content_filtering.count_domains_netarkivet import (
+    get_paths,
+)
 
 
 def sum_counters(counters: List[Counter]) -> Counter:

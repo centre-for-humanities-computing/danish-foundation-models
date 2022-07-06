@@ -38,10 +38,18 @@ from flax import jax_utils, traverse_util
 from flax.training import train_state
 from flax.training.common_utils import get_metrics, onehot, shard
 from tqdm import tqdm
-from transformers import (CONFIG_MAPPING, FLAX_MODEL_FOR_MASKED_LM_MAPPING,
-                          AutoConfig, AutoTokenizer, FlaxAutoModelForMaskedLM,
-                          HfArgumentParser, PreTrainedTokenizerBase,
-                          TensorType, TrainingArguments, set_seed)
+from transformers import (
+    CONFIG_MAPPING,
+    FLAX_MODEL_FOR_MASKED_LM_MAPPING,
+    AutoConfig,
+    AutoTokenizer,
+    FlaxAutoModelForMaskedLM,
+    HfArgumentParser,
+    PreTrainedTokenizerBase,
+    TensorType,
+    TrainingArguments,
+    set_seed,
+)
 
 from dfm.data.load_datasets import load_dcc_v1
 
