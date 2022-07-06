@@ -5,11 +5,11 @@ in [1], which has been extended with filters based on [2] (language detection) a
 (short/long sentence ratio).
 
 Authors:
-    Kenneth C. Enevoldsen
-    Kasper Junge
-    Malte Højmark-Bertelsen
-    Philip Krejler
-    Dan Saattrup Nielsen
+    Kenneth C. Enevoldsen (kennethcenevoldsen@gmail.com)
+    Kasper Junge (kasper.junge@eb.dk)
+    Malte Højmark-Bertelsen (hjb@kmd.dk)
+    Philip Krejler (pk@capacit.com)
+    Dan Saattrup Nielsen (dan.nielsen@alexandra.dk)
 
 References:
     [1] Rae, J. W., Borgeaud, S., Cai, T., Millican, K., Hoffmann, J., Song, F., ... &
