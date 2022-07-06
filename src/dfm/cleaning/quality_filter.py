@@ -216,10 +216,10 @@ class QualityFilter:
             number of characters exceed short_long_sentence_length_split then it is
             classfied as a long sentence, and vice versa. Defaults to 30.
         short_long_sentence_ratio (float, optional):
-            The threshold for minimum ratio between short and long sentences. Short and
-            long sentences are defined as ____. If the ratio n_long / n_short (n_short
-            = number of short sentences, n_long = number of long sentences) is below
-            the threshold, the document will be discarded. Defaults to 0.6.
+            The threshold for minimum ratio between short and long sentences, with the
+            short/long distinction defined by `short_long_sentence_length_split`. If
+            the ratio n_long / n_short  is below the threshold, the document will be
+            discarded. Defaults to 0.6.
 
     References:
         [1] Rae, J. W., Borgeaud, S., Cai, T., Millican, K., Hoffmann, J., Song, F.,
