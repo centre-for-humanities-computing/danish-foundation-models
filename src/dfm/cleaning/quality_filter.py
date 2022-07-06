@@ -23,7 +23,6 @@ References:
 
 from collections import Counter, defaultdict
 from functools import partial
-from os import stat
 from typing import Callable, Dict, Iterable, List, Optional, Tuple, Sequence
 
 import spacy
