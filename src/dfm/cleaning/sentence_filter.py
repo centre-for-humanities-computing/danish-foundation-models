@@ -14,6 +14,7 @@ from collections import Counter
 from typing import Any, Callable, Dict, Iterable, Optional, Sequence, Tuple, Union
 from joblib import Parallel, delayed
 import multiprocessing as mp
+from tqdm.auto import tqdm
 
 import emoji
 
@@ -338,7 +339,6 @@ class SentenceFilter:
 
 if __name__ == "__main__":
     from datasets import load_dataset
-    from tqdm.auto import tqdm
     import time
 
     # Initialise the filter
