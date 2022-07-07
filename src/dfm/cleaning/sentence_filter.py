@@ -167,8 +167,8 @@ class SentenceFilter:
                 if filter_name is None
             )
 
-            # Otherwise, we yield the new document, where we also include the
-            # context if it was passed in
+            # Return the new document, where we also include the context if it was
+            # passed in
             if isinstance(sample, tuple):
                 return new_doc, context
             else:
@@ -355,7 +355,7 @@ if __name__ == "__main__":
     )
 
     # Create filter generator
-    filtered_docs = sentence_filter.filter_corpus(dagw["text"], total=len(dagw))
+    filtered_docs = sentence_filter(dagw["text"], total=len(dagw))
 
     # Initialise timer
     t0 = time.time()
