@@ -124,8 +124,8 @@ class SentenceFilter:
         docs = iter(texts)
 
         def filter_sample(
-                sample: Union[str, Tuple[str, Optional[Any]]]
-            ) -> Union[str, Tuple[str, Optional[Any]]]:
+            sample: Union[str, Tuple[str, Optional[Any]]]
+        ) -> Union[str, Tuple[str, Optional[Any]]]:
             """Filter a sample.
 
             Args:
@@ -354,7 +354,7 @@ if __name__ == "__main__":
     # Create filter generator
     filtered_docs = sentence_filter.filter_corpus(dagw["text"], total=len(dagw))
 
-    # Initialise timer
+    # Initialise timer
     t0 = time.time()
 
     # Filter the texts
