@@ -24,7 +24,17 @@ References:
 
 from collections import Counter, defaultdict
 from functools import partial
-from typing import Callable, Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import (
+    Callable,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+    Union,
+    Any,
+)
 
 import spacy
 from langdetect import detect_langs
@@ -33,14 +43,17 @@ from spacy.tokens import Doc
 
 
 def duplicate_chr_fraction_getter(doc: Doc, attr: str) -> float:
-    """Calculate the character fraction of duplicates based on a counter object
+    """Calculate the character fraction of duplicates based on a counter object.
 
     Args:
-        doc (Doc): A spaCy doc
-        attr (str): The document attribute to extraxct
+        doc (Doc):
+            A spaCy Doc.
+        attr (str):
+            The document attribute to extract.
 
     Returns:
-        float: the fraction of duplicate chr
+        float:
+            The fraction of duplicate characters.
     """
     counter = getattr(doc._, attr)
     duplicate_chr = 0
@@ -52,14 +65,17 @@ def duplicate_chr_fraction_getter(doc: Doc, attr: str) -> float:
 
 
 def n_gram_counter(doc: Doc, ngram_range: Tuple[int, int]) -> Dict[str, Counter]:
-    """Calculate the counts of n-grams in the specified range
+    """Calculate the counts of n-grams in the specified range.
 
     Args:
-        doc (Doc): a spaCy Doc
-        ngram_range (Tuple[int, int]): The n-gram range
+        doc (Doc):
+            A spaCy Doc.
+        ngram_range (pair of int):
+            The n-gram range.
 
     Returns:
-        Dict[str, Counter]: A dict. containing the counts of n-grams for a specific n.
+        dict with str keys and Counter values:
+            A dictionary containing the counts of n-grams for a specific n.
     """
     max_len = doc._.len
     lower, upper = ngram_range
@@ -74,12 +90,13 @@ def n_gram_counter(doc: Doc, ngram_range: Tuple[int, int]) -> Dict[str, Counter]
 
 
 def duplicate_fraction_getter(doc: Doc, attr: str = "lines_counter") -> float:
-    """Calculate the duplicate fraction of a Doc attribute based on a counter object
+    """Calculate the duplicate fraction of a Doc attribute based on a counter object.
 
     Args:
-        doc (Doc): A spaCy Doc
-        attr (str, optional): The attribute to be extracted.
-            Defaults to "lines_counter".
+        doc (Doc):
+            A spaCy Doc
+        attr (str, optional):
+            The attribute to be extracted. Defaults to "lines_counter".
 
     Returns:
         float: the duplicate fraction
@@ -95,19 +112,23 @@ def duplicate_fraction_getter(doc: Doc, attr: str = "lines_counter") -> float:
 def set_dynamic_ext(
     ext_name: str, func: Callable, dynamic_ext_prefix: str = "_", object=Doc
 ) -> None:
-    """Set a dynamic extension which only computes when the first time otherwise fetched
-    the previous results.
+    """Sets a dynamic extension to reduce redundant computation.
+
+    This only computes when the first time, and otherwise fetched the previous results.
 
     Args:
-        ext_name (str): The extension name which should be set
-        func (Callable): The getter function for the specified extension
-        dynamic_ext_prefix (str, optional): The dynamic extension prefix where to store
-            if the value is already calculated. Defaults to "_".
-        object (optional): The spaCy object to set the extension to. Options include
-            Token, Doc, Span. Defaults to Doc.
+        ext_name (str):
+            The extension name which should be set.
+        func (Callable):
+            The getter function for the specified extension.
+        dynamic_ext_prefix (str, optional):
+            The dynamic extension prefix where to store if the value is already
+            calculated. Defaults to "_".
+        object (optional):
+            The spaCy object to set the extension to. Options include Token, Doc, Span.
+            Defaults to Doc.
     """
-
-    def __create_dynamic_getter(ext_name: str, func: Callable) -> None:
+    def __create_dynamic_getter(ext_name: str, func: Callable) -> Callable:
         def dynamic_getter(doc):
             attr = getattr(doc._, ext_name)
             if attr is None:
@@ -383,23 +404,24 @@ class QualityFilter:
 
         set_dynamic_ext("chr_len", func=lambda doc: len(doc.text))
 
-    def __call__(
-        self, texts: Iterable[str], as_tuples: bool = False, **kwargs
-    ) -> Iterable[str]:
-        """
-        Applies quality filter.
+    def filter_corpus(
+        self,
+        texts: Iterable[str], as_tuples: bool = False,
+        **kwargs
+    ) -> Union[Iterable[str], Iterable[Tuple[str, Union[Any, None]]]]:
+        """Applies quality filter.
 
         Args:
-            texts (Iterable[str]): An iterable of strings of the text you wish to
-                filter.
-            as_tuples (bool, optional): If True doc is expected to be a tuple of size
-                two with the first element being the text. The output of this function
-                    will then also be a generator of tuples filtered based on the text.
-                    Defaults to False.
+            texts (iter of str):
+                An iterable of strings of the text you wish to filter.
+            as_tuples (bool, optional):
+                If True doc is expected to be a tuple of size two with the first
+                element being the text. The output of this function will then also be a
+                generator of tuples filtered based on the text. Defaults to False.
 
         Yields:
-            str: Either texts or tuples depending on the as_tuples
-                argument.
+            str or pair:
+                Either texts or tuples depending on the as_tuples argument.
         """
         texts = iter(texts)
         docs = self.nlp.pipe(texts, as_tuples=as_tuples, **kwargs)
@@ -431,15 +453,34 @@ class QualityFilter:
             except StopIteration:
                 break
 
-    def is_filtered(self, doc: Doc) -> Optional[str]:
-        """
-        Check if a single document is filtered
+    def __call__(
+        self, *args, **kwargs
+    ) -> Union[Iterable[str], Iterable[Tuple[str, Union[Any, None]]]]:
+        """Applies quality filter.
 
         Args:
-            doc (Doc): A spaCy document
+            *args:
+                Positional arguments to be passed to `filter_corpus`.
+            **kwargs:
+                Keyword arguments to be passed to `filter_corpus`.
 
-        Returns: the name of the filter which filtered out the document or None if the
-            document wasn't filtered
+        Yields:
+            str or pair:
+                Either texts or tuples depending on the as_tuples argument.
+        """
+        return self.filter_corpus(*args, **kwargs)
+
+    def is_filtered(self, doc: Doc) -> Optional[str]:
+        """Check if a single document is filtered
+
+        Args:
+            doc (Doc):
+                A spaCy document
+
+        Returns:
+            str or None:
+                The name of the filter which filtered out the document or None if the
+                document wasn't filtered.
         """
         for filter, filter_fn in self.filters.items():
             if not filter_fn(doc):
