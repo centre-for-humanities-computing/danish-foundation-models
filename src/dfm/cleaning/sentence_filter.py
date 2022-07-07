@@ -176,7 +176,7 @@ class SentenceFilter:
 
         # Main filtering loop
         n_jobs = mp.cpu_count() - 1
-        with Parallel(n_jobs=n_jobs) as parallel:
+        with Parallel(n_jobs=n_jobs, backend="threading") as parallel:
 
             # Set up iterator, depending on whether we have a progress bar or not
             if progress_bar:
@@ -338,6 +338,9 @@ class SentenceFilter:
 
 
 if __name__ == "__main__":
+    # Benchmarking script on cleaned DAGW + Reddit.
+    # Took 1 hour and xx minutes on a MacBook Pro 16" (2021) with Apple M1 Max chip.
+
     from datasets import load_dataset
     import time
 
@@ -366,5 +369,3 @@ if __name__ == "__main__":
 
     # Print the time taken
     print(f"Time taken: {time_taken} seconds.")
-
-    breakpoint()
