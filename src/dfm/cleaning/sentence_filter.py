@@ -339,7 +339,7 @@ class SentenceFilter:
 
 if __name__ == "__main__":
     # Benchmarking script on cleaned DAGW + Reddit.
-    # Took 1 hour and xx minutes on a MacBook Pro 16" (2021) with Apple M1 Max chip.
+    # Took 1 hour and 52 minutes on a MacBook Pro 16" (2021) with Apple M1 Max chip.
 
     from datasets import load_dataset
     import time
