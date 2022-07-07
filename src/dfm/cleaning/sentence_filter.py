@@ -12,6 +12,8 @@ References:
 
 from collections import Counter
 from typing import Any, Callable, Dict, Iterable, Optional, Sequence, Tuple, Union
+from joblib import Parallel, delayed
+import multiprocessing as mp
 
 import emoji
 
@@ -97,6 +99,8 @@ class SentenceFilter:
     def filter_corpus(
         self,
         texts: Union[Iterable[str], Iterable[Tuple[str, Optional[Any]]]],
+        progress_bar: bool = True,
+        total: Optional[int] = None,
     ) -> Union[Iterable[str], Iterable[Tuple[str, Union[Any, None]]]]:
         """Filters a corpus using the sentence filters.
 
@@ -104,6 +108,12 @@ class SentenceFilter:
             texts (iter of str, or iter of pairs):
                 An iterable of strings of the text to be filtered, or an iterable of
                 pairs with the first element being the text to be filtered.
+            progress_bar (bool, optional):
+                Whether to show a progress bar. Defaults to True.
+            total (int or None, optional):
+                The total number of texts to be filtered, to be used in the progress
+                bar. If None, then the progress bar will not have a total. Defaults
+                to None.
 
         Yields:
             str or pair:
@@ -113,57 +123,73 @@ class SentenceFilter:
         # Ensure that the texts are iterable
         docs = iter(texts)
 
-        # Iterate over all the documents in the corpus
-        while docs:
-            try:
-                # Get the first document
-                doc_or_tuple = next(docs)
+        def filter_sample(
+                sample: Union[str, Tuple[str, Optional[Any]]]
+            ) -> Union[str, Tuple[str, Optional[Any]]]:
+            """Filter a sample.
 
-                # If the document is a tuple, then we expect the first element to be the
-                # text, and the second element to be the metadata.
-                if isinstance(doc_or_tuple, tuple):
-                    doc, context = doc_or_tuple
-                elif isinstance(doc_or_tuple, str):
-                    doc = doc_or_tuple
-                    context = None
-                else:
-                    raise TypeError(
-                        "Expected either a string or a tuple, "
-                        f"got {type(doc_or_tuple)}."
-                    )
+            Args:
+                sample (str or pair):
+                    The sample to be filtered.
 
-                # Split the document into sentences, splitting on newlines
-                sentences = [
-                    sentence.strip()
-                    for sentence in doc.split("\n")
-                    if len(sentence.strip()) > 0
-                ]
-
-                # Apply the filters to the sentences
-                filters_triggered = list(map(self.apply_filters, sentences))
-
-                # Create a new document from the sentences that didn't trigger any
-                # filters
-                new_doc = "\n".join(
-                    sentence
-                    for sentence, filter_name in zip(sentences, filters_triggered)
-                    if filter_name is None
+            Returns:
+                str or pair:
+                    The filtered sample.
+            """
+            # If the document is a tuple, then we expect the first element to
+            # be the text, and the second element to be the metadata.
+            if isinstance(sample, tuple):
+                doc, context = sample
+            elif isinstance(sample, str):
+                doc = sample
+                context = None
+            else:
+                raise TypeError(
+                    "Expected either a string or a tuple, got {type(sample)}."
                 )
 
-                # If all sentences were filtered, then we don't yield anything, and
-                # instead just skip to the next document
-                if new_doc == "":
-                    continue
+            # Split the document into sentences, splitting on newlines
+            sentences = [
+                sentence.strip()
+                for sentence in doc.split("\n")
+                if len(sentence.strip()) > 0
+            ]
 
-                # Otherwise, we yield the new document, where we also include the
-                # context if it was passed in
-                if isinstance(doc_or_tuple, tuple):
-                    yield new_doc, context
-                else:
-                    yield new_doc
+            # Apply the filters to the sentences
+            filters_triggered = list(map(self.apply_filters, sentences))
 
-            except StopIteration:
-                break
+            # Create a new document from the sentences that didn't trigger any
+            # filters
+            new_doc = "\n".join(
+                sentence
+                for sentence, filter_name in zip(sentences, filters_triggered)
+                if filter_name is None
+            )
+
+            # Otherwise, we yield the new document, where we also include the
+            # context if it was passed in
+            if isinstance(sample, tuple):
+                return new_doc, context
+            else:
+                return new_doc
+
+        # Main filtering loop
+        n_jobs = mp.cpu_count() - 1
+        with Parallel(n_jobs=n_jobs) as parallel:
+
+            # Set up iterator, depending on whether we have a progress bar or not
+            if progress_bar:
+                itr = tqdm(docs, desc="Filtering corpus", total=total)
+            else:
+                itr = docs
+
+            # Filter all documents
+            for doc in parallel(delayed(filter_sample)(sample) for sample in itr):
+                yield doc
+
+            # Close the progress bar, if we had one
+            if progress_bar:
+                itr.close()
 
     def __call__(
         self, *args, **kwargs
@@ -308,3 +334,37 @@ class SentenceFilter:
 
         # Return whether the number of curly brackets is sufficiently low
         return num_curly_brackets < self.curly_brackets_threshold
+
+
+if __name__ == "__main__":
+    from datasets import load_dataset
+    from tqdm.auto import tqdm
+    import time
+
+    # Initialise the filter
+    sentence_filter = SentenceFilter()
+
+    # Load the dataset
+    dagw = load_dataset(
+        "DDSC/dagw_reddit_filtered_v1.0.0",
+        split="train",
+        use_auth_token=True,
+    )
+
+    # Create filter generator
+    filtered_docs = sentence_filter.filter_corpus(dagw["text"], total=len(dagw))
+
+    # Initialise timer
+    t0 = time.time()
+
+    # Filter the texts
+    for doc in filtered_docs:
+        pass
+
+    # Record the time taken
+    time_taken = time.time() - t0
+
+    # Print the time taken
+    print(f"Time taken: {time_taken} seconds.")
+
+    breakpoint()
