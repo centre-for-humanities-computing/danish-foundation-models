@@ -32,3 +32,4 @@ pytest-cov>=2.8.1
 
 # format
 black==22.3.0
+isort~=5.10.1
