@@ -932,4 +932,36 @@ class QualityFilter:
         return doc._.duplicate_lines_fraction < fraction
 
 
-# *** Time taken to filter DAGW with 10 cores: 23077 sec ***
+if __name__ == "__main__":
+    # Benchmarking script on cleaned DAGW + Reddit.
+    # Took x hours and xx minutes on xxx.
+    # Previously took 6 hours and 25 minutes with 10 cores.
+
+    from datasets import load_dataset
+    import time
+
+    # Initialise the filter
+    doc_filter = QualityFilter()
+
+    # Load the dataset
+    dagw = load_dataset(
+        "DDSC/dagw_reddit_filtered_v1.0.0",
+        split="train",
+        use_auth_token=True,
+    )
+
+    # Create filter generator
+    filtered_docs = doc_filter(dagw["text"])
+
+    # Initialise timer
+    t0 = time.time()
+
+    # Filter the texts
+    for doc in filtered_docs:
+        pass
+
+    # Record the time taken
+    time_taken = time.time() - t0
+
+    # Print the time taken
+    print(f"Time taken: {time_taken} seconds.")
