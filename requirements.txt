@@ -26,7 +26,6 @@ langdetect~=1.0.9
 wasabi>=0.9.0,<0.10.0
 pydantic~=1.8.2
 click~=8.0.4
-tqdm~=4.64.0
 
 # testing
 pytest>=6.2.5
