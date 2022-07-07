@@ -128,6 +128,7 @@ def set_dynamic_ext(
             The spaCy object to set the extension to. Options include Token, Doc, Span.
             Defaults to Doc.
     """
+
     def __create_dynamic_getter(ext_name: str, func: Callable) -> Callable:
         def dynamic_getter(doc):
             attr = getattr(doc._, ext_name)
@@ -405,9 +406,7 @@ class QualityFilter:
         set_dynamic_ext("chr_len", func=lambda doc: len(doc.text))
 
     def filter_corpus(
-        self,
-        texts: Iterable[str], as_tuples: bool = False,
-        **kwargs
+        self, texts: Iterable[str], as_tuples: bool = False, **kwargs
     ) -> Union[Iterable[str], Iterable[Tuple[str, Union[Any, None]]]]:
         """Applies quality filter.
 
