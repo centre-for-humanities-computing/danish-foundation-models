@@ -9,12 +9,12 @@ Authors:
 """
 
 import glob
+import multiprocessing
 import os
 from pathlib import Path
-import multiprocessing
 
-from wasabi import msg
 from datasets import load_dataset
+from wasabi import msg
 
 from dfm.cleaning import QualityFilter
 

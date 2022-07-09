@@ -1,13 +1,15 @@
 """Data preprocessing script for Danish Foundation Models """
 
-from typing import Union
 from functools import partial
+from typing import Union
+
+from datasets import DatasetDict
 from datasets.arrow_dataset import Dataset
 from transformers import AutoTokenizer, BatchEncoding
 from transformers.tokenization_utils_base import PreTrainedTokenizerBase
 from transformers.tokenization_utils_fast import PreTrainedTokenizerFast
-from dfm.data.load import dfm_load_dataset
-from datasets import DatasetDict
+
+from ..data.load import dfm_load_dataset
 
 
 def main():

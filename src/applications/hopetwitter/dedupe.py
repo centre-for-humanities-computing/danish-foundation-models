@@ -8,14 +8,13 @@ Authors:
     Kenneth Enevoldsen
 """
 import glob
-import os
-from pathlib import Path
 import multiprocessing
+import os
 from functools import partial
-
-from wasabi import msg
+from pathlib import Path
 
 from datasets import load_dataset
+from wasabi import msg
 
 from dfm.cleaning import Deduper
 

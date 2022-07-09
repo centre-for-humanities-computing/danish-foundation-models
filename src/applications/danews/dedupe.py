@@ -11,8 +11,8 @@ Authors:
 import os
 from functools import partial
 
-from wasabi import msg
 from datasets import load_from_disk
+from wasabi import msg
 
 from dfm.cleaning import Deduper
 

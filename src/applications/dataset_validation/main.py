@@ -1,5 +1,6 @@
-from dfm.dataset_validation.rating_interface import ExampleRater
 from datetime import date
+
+from dfm.dataset_validation.rating_interface import ExampleRater
 
 
 def text_generator(seed=2):

@@ -10,9 +10,9 @@ Authors:
 """
 import os
 
+import spacy
 from datasets import load_from_disk
 from wasabi import msg
-import spacy
 
 path = os.path.join(
     "/work", "twitter_cleaned", "twitter_da_stopwords_2019-01-01_2021-04-30"

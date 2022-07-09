@@ -1,9 +1,9 @@
-from datasets import load_dataset
 import glob
-from collections import Counter
 import json
-from wasabi import msg
+from collections import Counter
 
+from datasets import load_dataset
+from wasabi import msg
 
 domains = set()
 lang_sites = Counter()

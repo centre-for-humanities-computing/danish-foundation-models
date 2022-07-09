@@ -9,17 +9,15 @@ Authors:
 
 """
 
-from typing import Iterable
-
 import glob
 import os
 from functools import partial
+from typing import Iterable
 
-from wasabi import msg
 import ndjson
-
 import psutil
 from psutil._common import bytes2human
+from wasabi import msg
 
 from dfm.cleaning import Deduper
 

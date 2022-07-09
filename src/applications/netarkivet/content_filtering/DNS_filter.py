@@ -7,8 +7,6 @@ Authors:
     Kenneth Enevoldsen
 """
 
-from typing import Iterable, Optional, Tuple
-
 import asyncio
 import json
 import os
@@ -18,12 +16,11 @@ import sys
 import time
 from concurrent.futures import ThreadPoolExecutor
 from itertools import islice
+from typing import Iterable, Optional, Tuple
 
 import aiohttp
 from aiohttp import ClientTimeout
-
 from wasabi import msg
-
 
 ssl_context = ssl._create_unverified_context()
 ssl_context.set_ciphers("DEFAULT@SECLEVEL=1")

@@ -4,8 +4,8 @@ apply filters to DFM compositite dataset consisting of dagw and reddit-da datase
 
 import os
 
-from wasabi import msg
 from datasets import load_from_disk
+from wasabi import msg
 
 if __name__ == "__main__":
     path = os.path.join("/work", "dagw-clean", "dfm_dagw_reddit.arrow")

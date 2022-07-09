@@ -3,12 +3,12 @@ Preprocess (quality filter and deduplicate) the DFM compositite dataset consisti
 dagw and reddit-da dataset.
 """
 import os
-from pathlib import Path
 from functools import partial
+from pathlib import Path
 
-
-from datasets import load_dataset, concatenate_datasets
+from datasets import concatenate_datasets, load_dataset
 from wasabi import msg
+
 from dfm.cleaning import Deduper, QualityFilter
 
 

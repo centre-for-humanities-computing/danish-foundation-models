@@ -1,13 +1,14 @@
 """Utility functions for the deduplicator.
 
 Author:
-    Dan Saattrup Nielsen (saattrupdan@gmail.com)
+    Dan Saattrup Nielsen (dan.nielsen@alexandra.dk)
 """
 
-from datasketch import MinHash, LeanMinHash
-from typing import List, Callable
-from unicodedata import normalize
 import re
+from typing import Callable, List
+from unicodedata import normalize
+
+from datasketch import LeanMinHash, MinHash
 
 
 def get_shingles(

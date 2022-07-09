@@ -1,10 +1,10 @@
 from collections import defaultdict
+from typing import Dict, Iterable, List, Optional
+
 from soupsieve import match
 from spacy.language import Language
 from spacy.matcher import Matcher
 from spacy.tokens import Doc
-
-from typing import Dict, Iterable, List, Optional
 
 
 class MatchCounter:

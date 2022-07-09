@@ -5,10 +5,9 @@ dataset.
 
 import os
 
+import spacy
 from datasets import load_from_disk
 from wasabi import msg
-import spacy
-
 
 path = os.path.join("/work", "dagw-clean", "dfm_dagw_reddit.arrow")
 write_path = os.path.join("/work", "dagw-clean", "dfm_dagw_reddit.arrow")
