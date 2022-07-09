@@ -9,6 +9,17 @@ Fine-tuning the library models for masked language modeling (BERT, ALBERT, RoBER
 
 Here is the full list of checkpoints on the hub that can be fine-tuned by this script:
 https://huggingface.co/models?filter=fill-mask
+
+python src/applications/train/run_mlm_pytorch_stream.py \
+    --dataset_name DDSC/reddit-da \
+    --model_name_or_path roberta-base \
+    --output_dir /tmp/test_mlm \
+    --do_train \
+    --overwrite_output_dir \
+    --streaming \
+    --validation_split 1000 \
+    --max_steps 1 \
+    --max_train_samples 1000 
 """
 # You can also adapt this script on your own masked language modeling task. Pointers for this are left as comments.
 
@@ -21,8 +32,10 @@ from itertools import chain
 from typing import Optional
 
 import datasets
+import torch
 import transformers
 from datasets import load_dataset, load_metric
+from torch.utils.data import DataLoader
 from transformers import (
     CONFIG_MAPPING,
     MODEL_FOR_MASKED_LM_MAPPING,
@@ -150,9 +163,7 @@ class DataTrainingArguments:
     )
     streaming: bool = field(
         default=False,
-        metadata={
-            "help": "Whether to load the dataset using streaming"
-        },
+        metadata={"help": "Whether to load the dataset using streaming"},
     )
     train_file: Optional[str] = field(
         default=None, metadata={"help": "The input training data file (a text file)."}
@@ -167,10 +178,11 @@ class DataTrainingArguments:
         default=False,
         metadata={"help": "Overwrite the cached training and evaluation sets"},
     )
-    validation_split_percentage: Optional[int] = field(
+    validation_split: Optional[int] = field(
         default=5,
         metadata={
-            "help": "The percentage of the train set used as validation set in case there's no validation split"
+            "help": "The percentage of the train set used as validation set in case"
+            + "there's no validation split. If streaming is True then this will be the count"
         },
     )
     max_seq_length: Optional[int] = field(
@@ -327,23 +339,34 @@ def main():
             data_args.dataset_config_name,
             cache_dir=model_args.cache_dir,
             use_auth_token=True if model_args.use_auth_token else None,
-            streaming=data_args.streaming
+            streaming=data_args.streaming,
         )
         if "validation" not in raw_datasets.keys():
-            raw_datasets["validation"] = load_dataset(
-                data_args.dataset_name,
-                data_args.dataset_config_name,
-                split=f"train[:{data_args.validation_split_percentage}%]",
-                cache_dir=model_args.cache_dir,
-                use_auth_token=True if model_args.use_auth_token else None,
-            )
-            raw_datasets["train"] = load_dataset(
-                data_args.dataset_name,
-                data_args.dataset_config_name,
-                split=f"train[{data_args.validation_split_percentage}%:]",
-                cache_dir=model_args.cache_dir,
-                use_auth_token=True if model_args.use_auth_token else None,
-            )
+            if data_args.streaming is False:
+                raw_datasets["validation"] = load_dataset(
+                    data_args.dataset_name,
+                    data_args.dataset_config_name,
+                    split=f"train[:{data_args.validation_split}%]",
+                    cache_dir=model_args.cache_dir,
+                    use_auth_token=True if model_args.use_auth_token else None,
+                    streaming=data_args.streaming,
+                )
+                raw_datasets["train"] = load_dataset(
+                    data_args.dataset_name,
+                    data_args.dataset_config_name,
+                    split=f"train[{data_args.validation_split}%:]",
+                    cache_dir=model_args.cache_dir,
+                    use_auth_token=True if model_args.use_auth_token else None,
+                    streaming=data_args.streaming,
+                )
+            else:
+                raw_datasets["validation"] = raw_datasets["train"].take(
+                    data_args.validation_split
+                )
+                raw_datasets["train"] = raw_datasets["train"].skip(
+                    data_args.validation_split
+                )
+
     else:
         data_files = {}
         if data_args.train_file is not None:
@@ -361,22 +384,30 @@ def main():
             use_auth_token=True if model_args.use_auth_token else None,
         )
 
-        # If no validation data is there, validation_split_percentage will be used to divide the dataset.
+        # If no validation data is there, validation_split will be used to divide the dataset.
         if "validation" not in raw_datasets.keys():
-            raw_datasets["validation"] = load_dataset(
-                extension,
-                data_files=data_files,
-                split=f"train[:{data_args.validation_split_percentage}%]",
-                cache_dir=model_args.cache_dir,
-                use_auth_token=True if model_args.use_auth_token else None,
-            )
-            raw_datasets["train"] = load_dataset(
-                extension,
-                data_files=data_files,
-                split=f"train[{data_args.validation_split_percentage}%:]",
-                cache_dir=model_args.cache_dir,
-                use_auth_token=True if model_args.use_auth_token else None,
-            )
+            if data_args.streaming is False:
+                raw_datasets["validation"] = load_dataset(
+                    extension,
+                    data_files=data_files,
+                    split=f"train[:{data_args.validation_split}%]",
+                    cache_dir=model_args.cache_dir,
+                    use_auth_token=True if model_args.use_auth_token else None,
+                )
+                raw_datasets["train"] = load_dataset(
+                    extension,
+                    data_files=data_files,
+                    split=f"train[{data_args.validation_split}%:]",
+                    cache_dir=model_args.cache_dir,
+                    use_auth_token=True if model_args.use_auth_token else None,
+                )
+            else:
+                raw_datasets["validation"] = raw_datasets["train"].take(
+                    data_args.validation_split
+                )
+                raw_datasets["train"] = raw_datasets["train"].skip(
+                    data_args.validation_split
+                )
 
     # See more about loading any type of standard or custom dataset (from files, python dict, pandas DataFrame, etc) at
     # https://huggingface.co/docs/datasets/loading_datasets.html.
@@ -443,9 +474,17 @@ def main():
     # Preprocessing the datasets.
     # First we tokenize all the texts.
     if training_args.do_train:
-        column_names = raw_datasets["train"].column_names
+        if data_args.streaming:
+            example = next(iter(raw_datasets["train"]))
+            column_names = list(example.keys())
+        else:
+            column_names = raw_datasets["train"].column_names
     else:
-        column_names = raw_datasets["validation"].column_names
+        if data_args.streaming:
+            example = next(iter(raw_datasets["train"]))
+            column_names = list(example.keys())
+        else:
+            column_names = raw_datasets["validation"].column_names
     text_column_name = "text" if "text" in column_names else column_names[0]
 
     if data_args.max_seq_length is None:
@@ -485,15 +524,7 @@ def main():
                 return_special_tokens_mask=True,
             )
 
-        with training_args.main_process_first(desc="dataset map tokenization"):
-            tokenized_datasets = raw_datasets.map(
-                tokenize_function,
-                batched=True,
-                num_proc=data_args.preprocessing_num_workers,
-                remove_columns=[text_column_name],
-                load_from_cache_file=not data_args.overwrite_cache,
-                desc="Running tokenizer on dataset line_by_line",
-            )
+        desc = "Running tokenizer on dataset line_by_line"
     else:
         # Otherwise, we tokenize every text, then concatenate them together before splitting them in smaller parts.
         # We use `return_special_tokens_mask=True` because DataCollatorForLanguageModeling (see below) is more
@@ -503,15 +534,20 @@ def main():
                 examples[text_column_name], return_special_tokens_mask=True
             )
 
-        with training_args.main_process_first(desc="dataset map tokenization"):
-            tokenized_datasets = raw_datasets.map(
-                tokenize_function,
-                batched=True,
-                num_proc=data_args.preprocessing_num_workers,
-                remove_columns=column_names,
-                load_from_cache_file=not data_args.overwrite_cache,
-                desc="Running tokenizer on every text in dataset",
-            )
+        desc = "Running tokenizer on every text in dataset"
+
+    with training_args.main_process_first(desc="dataset map tokenization"):
+        _map_config = dict(
+            function=tokenize_function,
+            batched=True,
+            remove_columns=column_names,
+        )
+        if data_args.streaming is False:
+            _map_config["num_proc"] = data_args.preprocessing_num_workers
+            _map_config["load_from_cache_file"] = not data_args.overwrite_cache
+            _map_config["desc"] = desc
+
+        tokenized_datasets = raw_datasets.map(**_map_config)
 
         # Main data processing function that will concatenate all texts from our dataset and generate chunks of
         # max_seq_length.
@@ -543,21 +579,26 @@ def main():
         # https://huggingface.co/docs/datasets/package_reference/main_classes.html#datasets.Dataset.map
 
         with training_args.main_process_first(desc="grouping texts together"):
-            tokenized_datasets = tokenized_datasets.map(
-                group_texts,
+            _map_config = dict(
+                function=group_texts,
                 batched=True,
-                num_proc=data_args.preprocessing_num_workers,
-                load_from_cache_file=not data_args.overwrite_cache,
-                desc=f"Grouping texts in chunks of {max_seq_length}",
             )
+            if data_args.streaming is False:
+                _map_config["num_proc"] = (data_args.preprocessing_num_workers,)
+                _map_config["load_from_cache_file"] = (not data_args.overwrite_cache,)
+                _map_config["desc"] = f"Grouping texts in chunks of {max_seq_length}"
+            tokenized_datasets = tokenized_datasets.map(**_map_config)
 
     if training_args.do_train:
         if "train" not in tokenized_datasets:
             raise ValueError("--do_train requires a train dataset")
         train_dataset = tokenized_datasets["train"]
         if data_args.max_train_samples is not None:
-            max_train_samples = min(len(train_dataset), data_args.max_train_samples)
-            train_dataset = train_dataset.select(range(max_train_samples))
+            if data_args.streaming:
+                train_dataset = train_dataset.take(data_args.max_train_samples)
+            else:
+                max_train_samples = min(len(train_dataset), data_args.max_train_samples)
+                train_dataset = train_dataset.select(range(max_train_samples))
 
     if training_args.do_eval:
         if "validation" not in tokenized_datasets:
@@ -597,11 +638,11 @@ def main():
     data_collator = DataCollatorForLanguageModeling(
         tokenizer=tokenizer,
         mlm_probability=data_args.mlm_probability,
-        pad_to_multiple_of=8 if pad_to_multiple_of_8 else None,
+        pad_to_multiple_of=8 if pad_to_multiple_of_8 else None,  # TODO: turn this back on (if we can get the rest to work)
     )
 
     # Initialize our Trainer
-    trainer = Trainer(
+    _training_args = dict(
         model=model,
         args=training_args,
         train_dataset=train_dataset if training_args.do_train else None,
@@ -616,6 +657,15 @@ def main():
         else None,
     )
 
+    if data_args.streaming:
+        # convert to pytorch iterable dataset
+        if training_args.do_train:
+            _training_args["train_dataset"] = train_dataset.with_format("torch")
+        if training_args.do_eval:
+            _training_args["eval_dataset"] = eval_dataset.with_format("torch")
+
+    trainer = Trainer(**_training_args)
+
     # Training
     if training_args.do_train:
         checkpoint = None
@@ -627,12 +677,20 @@ def main():
         trainer.save_model()  # Saves the tokenizer too for easy upload
         metrics = train_result.metrics
 
-        max_train_samples = (
-            data_args.max_train_samples
-            if data_args.max_train_samples is not None
-            else len(train_dataset)
-        )
-        metrics["train_samples"] = min(max_train_samples, len(train_dataset))
+        if data_args.streaming:
+            max_train_samples = data_args.max_train_samples
+            if max_train_samples is None:
+                raise ValueError(
+                    "When specifying --streaming, then you must also specify --max_train_samples"
+                )
+            metrics["train_samples"] = data_args.max_train_samples
+        else:
+            max_train_samples = (
+                data_args.max_train_samples
+                if data_args.max_train_samples is not None
+                else len(train_dataset)
+            )
+            metrics["train_samples"] = min(max_train_samples, len(train_dataset))
 
         trainer.log_metrics("train", metrics)
         trainer.save_metrics("train", metrics)
@@ -644,12 +702,13 @@ def main():
 
         metrics = trainer.evaluate()
 
-        max_eval_samples = (
-            data_args.max_eval_samples
-            if data_args.max_eval_samples is not None
-            else len(eval_dataset)
-        )
-        metrics["eval_samples"] = min(max_eval_samples, len(eval_dataset))
+        if data_args.streaming is False:
+            max_eval_samples = (
+                data_args.max_eval_samples
+                if data_args.max_eval_samples is not None
+                else len(eval_dataset)
+            )
+            metrics["eval_samples"] = min(max_eval_samples, len(eval_dataset))
         try:
             perplexity = math.exp(metrics["eval_loss"])
         except OverflowError:
