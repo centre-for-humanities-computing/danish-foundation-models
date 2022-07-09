@@ -135,6 +135,7 @@ dmypy.json
 **/*.jsonl
 *.ndjson
 *.csv
+src/applications/dataset_validation/intercoder_reliability.ipynb
 
 # MacOS
 .DS_Store
@@ -151,3 +152,5 @@ models/*
 *.Rproj.user
 .Rproj.user
 .Rhistory
+
+
