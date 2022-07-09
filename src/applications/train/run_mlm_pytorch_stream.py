@@ -22,7 +22,6 @@ from typing import Optional
 
 import datasets
 import transformers
-import wandb
 from datasets import load_dataset, load_metric
 from transformers import (
     CONFIG_MAPPING,
@@ -147,6 +146,12 @@ class DataTrainingArguments:
         default=None,
         metadata={
             "help": "The configuration name of the dataset to use (via the datasets library)."
+        },
+    )
+    streaming: bool = field(
+        default=False,
+        metadata={
+            "help": "Whether to load the dataset using streaming"
         },
     )
     train_file: Optional[str] = field(
@@ -322,6 +327,7 @@ def main():
             data_args.dataset_config_name,
             cache_dir=model_args.cache_dir,
             use_auth_token=True if model_args.use_auth_token else None,
+            streaming=data_args.streaming
         )
         if "validation" not in raw_datasets.keys():
             raw_datasets["validation"] = load_dataset(
