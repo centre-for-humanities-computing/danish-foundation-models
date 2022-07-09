@@ -19,7 +19,7 @@ python src/applications/train/run_mlm_pytorch_stream.py \
     --streaming \
     --validation_split 1000 \
     --max_steps 1 \
-    --max_train_samples 1000 
+    --max_train_samples 1000
 """
 # You can also adapt this script on your own masked language modeling task. Pointers for this are left as comments.
 
@@ -32,10 +32,8 @@ from itertools import chain
 from typing import Optional
 
 import datasets
-import torch
 import transformers
 from datasets import load_dataset, load_metric
-from torch.utils.data import DataLoader
 from transformers import (
     CONFIG_MAPPING,
     MODEL_FOR_MASKED_LM_MAPPING,
@@ -50,7 +48,6 @@ from transformers import (
     set_seed,
 )
 from transformers.trainer_utils import get_last_checkpoint
-from transformers.utils import check_min_version
 from transformers.utils.versions import require_version
 
 # # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
@@ -638,7 +635,9 @@ def main():
     data_collator = DataCollatorForLanguageModeling(
         tokenizer=tokenizer,
         mlm_probability=data_args.mlm_probability,
-        pad_to_multiple_of=8 if pad_to_multiple_of_8 else None,  # TODO: turn this back on (if we can get the rest to work)
+        pad_to_multiple_of=8
+        if pad_to_multiple_of_8
+        else None,  # TODO: turn this back on (if we can get the rest to work)
     )
 
     # Initialize our Trainer
