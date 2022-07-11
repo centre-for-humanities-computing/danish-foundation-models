@@ -39,19 +39,11 @@ from typing import Optional
 import datasets
 import transformers
 from datasets import load_dataset, load_metric
-from transformers import (
-    CONFIG_MAPPING,
-    MODEL_FOR_MASKED_LM_MAPPING,
-    AutoConfig,
-    AutoModelForMaskedLM,
-    AutoTokenizer,
-    DataCollatorForLanguageModeling,
-    HfArgumentParser,
-    Trainer,
-    TrainingArguments,
-    is_torch_tpu_available,
-    set_seed,
-)
+from transformers import (CONFIG_MAPPING, MODEL_FOR_MASKED_LM_MAPPING,
+                          AutoConfig, AutoModelForMaskedLM, AutoTokenizer,
+                          DataCollatorForLanguageModeling, HfArgumentParser,
+                          Trainer, TrainingArguments, is_torch_tpu_available,
+                          set_seed)
 from transformers.trainer_utils import get_last_checkpoint
 from transformers.utils.versions import require_version
 
