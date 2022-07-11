@@ -11,7 +11,7 @@ Here is the full list of checkpoints on the hub that can be fine-tuned by this s
 https://huggingface.co/models?filter=fill-mask
 
 python src/applications/train/run_mlm_pytorch_stream.py \
-    --dataset_name DDSC/reddit-da \
+    --train_file src/applications/train/test.txt \
     --model_name_or_path roberta-base \
     --output_dir /tmp/test_mlm \
     --do_train \
@@ -379,6 +379,7 @@ def main():
             data_files=data_files,
             cache_dir=model_args.cache_dir,
             use_auth_token=True if model_args.use_auth_token else None,
+            streaming=data_args.streaming,
         )
 
         # If no validation data is there, validation_split will be used to divide the dataset.
@@ -390,6 +391,7 @@ def main():
                     split=f"train[:{data_args.validation_split}%]",
                     cache_dir=model_args.cache_dir,
                     use_auth_token=True if model_args.use_auth_token else None,
+                    streaming=data_args.streaming,
                 )
                 raw_datasets["train"] = load_dataset(
                     extension,
@@ -397,6 +399,7 @@ def main():
                     split=f"train[{data_args.validation_split}%:]",
                     cache_dir=model_args.cache_dir,
                     use_auth_token=True if model_args.use_auth_token else None,
+                    streaming=data_args.streaming,
                 )
             else:
                 raw_datasets["validation"] = raw_datasets["train"].take(
