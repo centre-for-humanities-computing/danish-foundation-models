@@ -20,6 +20,11 @@ python src/applications/train/run_mlm_pytorch_stream.py \
     --validation_split 1000 \
     --max_steps 1 \
     --max_train_samples 1000
+
+Note: requires the dev version of HF datasets: 
+https://github.com/huggingface/datasets
+
+
 """
 # You can also adapt this script on your own masked language modeling task. Pointers for this are left as comments.
 
