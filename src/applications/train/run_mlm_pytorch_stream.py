@@ -26,7 +26,6 @@ https://github.com/huggingface/datasets
 
 
 """
-# You can also adapt this script on your own masked language modeling task. Pointers for this are left as comments.
 
 import logging
 import math
@@ -39,21 +38,20 @@ from typing import Optional
 import datasets
 import transformers
 from datasets import load_dataset, load_metric
-from transformers import (CONFIG_MAPPING, MODEL_FOR_MASKED_LM_MAPPING,
-                          AutoConfig, AutoModelForMaskedLM, AutoTokenizer,
-                          DataCollatorForLanguageModeling, HfArgumentParser,
-                          Trainer, TrainingArguments, is_torch_tpu_available,
-                          set_seed)
-from transformers.trainer_utils import get_last_checkpoint
-from transformers.utils.versions import require_version
-
-# # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
-# check_min_version("4.21.0.dev0")
-
-require_version(
-    "datasets>=1.8.0",
-    "To fix: pip install -r examples/pytorch/language-modeling/requirements.txt",
+from transformers import (
+    CONFIG_MAPPING,
+    MODEL_FOR_MASKED_LM_MAPPING,
+    AutoConfig,
+    AutoModelForMaskedLM,
+    AutoTokenizer,
+    DataCollatorForLanguageModeling,
+    HfArgumentParser,
+    Trainer,
+    TrainingArguments,
+    is_torch_tpu_available,
+    set_seed,
 )
+from transformers.trainer_utils import get_last_checkpoint
 
 logger = logging.getLogger(__name__)
 MODEL_CONFIG_CLASSES = list(MODEL_FOR_MASKED_LM_MAPPING.keys())
@@ -254,78 +252,19 @@ class DataTrainingArguments:
                     )
 
 
-def main():
-    # See all possible arguments in src/transformers/training_args.py
-    # or by passing the --help flag to this script.
-    # We now keep distinct sets of args, for a cleaner separation of concerns.
+def get_dataset(model_args, data_args):
+    """
+    Get the datasets: you can either provide your own CSV/JSON/TXT training and
+    evaluation files (see below) or just provide the name of one of the public datasets
+    available on the hub at https://huggingface.co/datasets/ (the dataset will be
+    downloaded automatically from the datasets Hub
 
-    parser = HfArgumentParser(
-        (ModelArguments, DataTrainingArguments, TrainingArguments)
-    )
-    if len(sys.argv) == 2 and sys.argv[1].endswith(".json"):
-        # If we pass only one argument to the script and it's the path to a json file,
-        # let's parse it to get our arguments.
-        model_args, data_args, training_args = parser.parse_json_file(
-            json_file=os.path.abspath(sys.argv[1])
-        )
-    else:
-        model_args, data_args, training_args = parser.parse_args_into_dataclasses()
+    For CSV/JSON files, this script will use the column called 'text' or the first
+    column. You can easily tweak this behavior (see below)
 
-    # Setup logging
-    logging.basicConfig(
-        format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
-        datefmt="%m/%d/%Y %H:%M:%S",
-        handlers=[logging.StreamHandler(sys.stdout)],
-    )
-
-    log_level = training_args.get_process_log_level()
-    logger.setLevel(log_level)
-    datasets.utils.logging.set_verbosity(log_level)
-    transformers.utils.logging.set_verbosity(log_level)
-    transformers.utils.logging.enable_default_handler()
-    transformers.utils.logging.enable_explicit_format()
-
-    # Log on each process the small summary:
-    logger.warning(
-        f"Process rank: {training_args.local_rank}, device: {training_args.device}, n_gpu: {training_args.n_gpu}"
-        + f"distributed training: {bool(training_args.local_rank != -1)}, 16-bits training: {training_args.fp16}"
-    )
-    # Set the verbosity to info of the Transformers logger (on main process only):
-    logger.info(f"Training/evaluation parameters {training_args}")
-
-    # Detecting last checkpoint.
-    last_checkpoint = None
-    if (
-        os.path.isdir(training_args.output_dir)
-        and training_args.do_train
-        and not training_args.overwrite_output_dir
-    ):
-        last_checkpoint = get_last_checkpoint(training_args.output_dir)
-        if last_checkpoint is None and len(os.listdir(training_args.output_dir)) > 0:
-            raise ValueError(
-                f"Output directory ({training_args.output_dir}) already exists and is not empty. "
-                "Use --overwrite_output_dir to overcome."
-            )
-        elif (
-            last_checkpoint is not None and training_args.resume_from_checkpoint is None
-        ):
-            logger.info(
-                f"Checkpoint detected, resuming training at {last_checkpoint}. To avoid this behavior, change "
-                "the `--output_dir` or add `--overwrite_output_dir` to train from scratch."
-            )
-
-    # Set seed before initializing model.
-    set_seed(training_args.seed)
-
-    # Get the datasets: you can either provide your own CSV/JSON/TXT training and evaluation files (see below)
-    # or just provide the name of one of the public datasets available on the hub at https://huggingface.co/datasets/
-    # (the dataset will be downloaded automatically from the datasets Hub
-    #
-    # For CSV/JSON files, this script will use the column called 'text' or the first column. You can easily tweak this
-    # behavior (see below)
-    #
-    # In distributed training, the load_dataset function guarantee that only one local process can concurrently
-    # download the dataset.
+    In distributed training, the load_dataset function guarantee that only one local
+    process can concurrently download the dataset.
+    """
     if data_args.dataset_name is not None:
         # Downloading and loading a dataset from the hub.
         raw_datasets = load_dataset(
@@ -406,9 +345,13 @@ def main():
                     data_args.validation_split
                 )
 
-    # See more about loading any type of standard or custom dataset (from files, python dict, pandas DataFrame, etc) at
+    # See more about loading any type of standard or custom dataset (from files, python
+    # dict, pandas DataFrame, etc) at
     # https://huggingface.co/docs/datasets/loading_datasets.html.
+    return raw_datasets
 
+
+def get_tokenizer_and_model(model_args):
     # Load pretrained model and tokenizer
     #
     # Distributed training:
@@ -467,9 +410,12 @@ def main():
         model = AutoModelForMaskedLM.from_config(config)
 
     model.resize_token_embeddings(len(tokenizer))
+    return tokenizer, model
 
+
+def preprocess_dataset(data_args, training_args, raw_datasets, tokenizer):
     # Preprocessing the datasets.
-    # First we tokenize all the texts.
+    # First we tokenize the texts.
     if training_args.do_train:
         if data_args.streaming:
             example = next(iter(raw_datasets["train"]))
@@ -585,6 +531,144 @@ def main():
                 _map_config["load_from_cache_file"] = (not data_args.overwrite_cache,)
                 _map_config["desc"] = f"Grouping texts in chunks of {max_seq_length}"
             tokenized_datasets = tokenized_datasets.map(**_map_config)
+    return tokenized_datasets
+
+
+def train(trainer, train_dataset, training_args, data_args, last_checkpoint):
+    checkpoint = None
+    if training_args.resume_from_checkpoint is not None:
+        checkpoint = training_args.resume_from_checkpoint
+    elif last_checkpoint is not None:
+        checkpoint = last_checkpoint
+    train_result = trainer.train(resume_from_checkpoint=checkpoint)
+    trainer.save_model()  # Saves the tokenizer too for easy upload
+    metrics = train_result.metrics
+
+    if data_args.streaming:
+        max_train_samples = data_args.max_train_samples
+        if max_train_samples is None:
+            raise ValueError(
+                "When specifying --streaming, then you must also specify --max_train_samples"
+            )
+        metrics["train_samples"] = data_args.max_train_samples
+    else:
+        max_train_samples = (
+            data_args.max_train_samples
+            if data_args.max_train_samples is not None
+            else len(train_dataset)
+        )
+        metrics["train_samples"] = min(max_train_samples, len(train_dataset))
+
+    trainer.log_metrics("train", metrics)
+    trainer.save_metrics("train", metrics)
+    trainer.save_state()
+
+
+def evaluate(trainer, eval_dataset, data_args, model_args):
+    logger.info("*** Evaluate ***")
+
+    metrics = trainer.evaluate()
+
+    if data_args.streaming is False:
+        max_eval_samples = (
+            data_args.max_eval_samples
+            if data_args.max_eval_samples is not None
+            else len(eval_dataset)
+        )
+        metrics["eval_samples"] = min(max_eval_samples, len(eval_dataset))
+    try:
+        perplexity = math.exp(metrics["eval_loss"])
+    except OverflowError:
+        perplexity = float("inf")
+    metrics["perplexity"] = perplexity
+
+    trainer.log_metrics("eval", metrics)
+    trainer.save_metrics("eval", metrics)
+
+    kwargs = {"finetuned_from": model_args.model_name_or_path, "tasks": "fill-mask"}
+    if data_args.dataset_name is not None:
+        kwargs["dataset_tags"] = data_args.dataset_name
+        if data_args.dataset_config_name is not None:
+            kwargs["dataset_args"] = data_args.dataset_config_name
+            kwargs[
+                "dataset"
+            ] = f"{data_args.dataset_name} {data_args.dataset_config_name}"
+        else:
+            kwargs["dataset"] = data_args.dataset_name
+    
+    return kwargs
+
+
+def main():
+    # See all possible arguments in src/transformers/training_args.py
+    # or by passing the --help flag to this script.
+    # We now keep distinct sets of args, for a cleaner separation of concerns.
+
+    parser = HfArgumentParser(
+        (ModelArguments, DataTrainingArguments, TrainingArguments)
+    )
+    if len(sys.argv) == 2 and sys.argv[1].endswith(".json"):
+        # If we pass only one argument to the script and it's the path to a json file,
+        # let's parse it to get our arguments.
+        model_args, data_args, training_args = parser.parse_json_file(
+            json_file=os.path.abspath(sys.argv[1])
+        )
+    else:
+        model_args, data_args, training_args = parser.parse_args_into_dataclasses()
+
+    # Setup logging
+    logging.basicConfig(
+        format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
+        datefmt="%m/%d/%Y %H:%M:%S",
+        handlers=[logging.StreamHandler(sys.stdout)],
+    )
+
+    log_level = training_args.get_process_log_level()
+    logger.setLevel(log_level)
+    datasets.utils.logging.set_verbosity(log_level)
+    transformers.utils.logging.set_verbosity(log_level)
+    transformers.utils.logging.enable_default_handler()
+    transformers.utils.logging.enable_explicit_format()
+
+    # Log on each process the small summary:
+    logger.warning(
+        f"Process rank: {training_args.local_rank}, device: {training_args.device}, n_gpu: {training_args.n_gpu}"
+        + f"distributed training: {bool(training_args.local_rank != -1)}, 16-bits training: {training_args.fp16}"
+    )
+    # Set the verbosity to info of the Transformers logger (on main process only):
+    logger.info(f"Training/evaluation parameters {training_args}")
+
+    # Detecting last checkpoint.
+    last_checkpoint = None
+    if (
+        os.path.isdir(training_args.output_dir)
+        and training_args.do_train
+        and not training_args.overwrite_output_dir
+    ):
+        last_checkpoint = get_last_checkpoint(training_args.output_dir)
+        if last_checkpoint is None and len(os.listdir(training_args.output_dir)) > 0:
+            raise ValueError(
+                f"Output directory ({training_args.output_dir}) already exists and is not empty. "
+                "Use --overwrite_output_dir to overcome."
+            )
+        elif (
+            last_checkpoint is not None and training_args.resume_from_checkpoint is None
+        ):
+            logger.info(
+                f"Checkpoint detected, resuming training at {last_checkpoint}. To avoid this behavior, change "
+                "the `--output_dir` or add `--overwrite_output_dir` to train from scratch."
+            )
+
+    # Set seed before initializing model.
+    set_seed(training_args.seed)
+
+    raw_datasets = get_dataset(model_args, data_args)
+
+    tokenizer, model = get_tokenizer_and_model(model_args)
+
+    tokenized_datasets = preprocess_dataset(
+        data_args, training_args, raw_datasets, tokenizer
+    )
 
     if training_args.do_train:
         if "train" not in tokenized_datasets:
@@ -635,9 +719,7 @@ def main():
     data_collator = DataCollatorForLanguageModeling(
         tokenizer=tokenizer,
         mlm_probability=data_args.mlm_probability,
-        pad_to_multiple_of=8
-        if pad_to_multiple_of_8
-        else None,  # TODO: turn this back on (if we can get the rest to work)
+        pad_to_multiple_of=8 if pad_to_multiple_of_8 else None,
     )
 
     # Initialize our Trainer
@@ -667,66 +749,11 @@ def main():
 
     # Training
     if training_args.do_train:
-        checkpoint = None
-        if training_args.resume_from_checkpoint is not None:
-            checkpoint = training_args.resume_from_checkpoint
-        elif last_checkpoint is not None:
-            checkpoint = last_checkpoint
-        train_result = trainer.train(resume_from_checkpoint=checkpoint)
-        trainer.save_model()  # Saves the tokenizer too for easy upload
-        metrics = train_result.metrics
-
-        if data_args.streaming:
-            max_train_samples = data_args.max_train_samples
-            if max_train_samples is None:
-                raise ValueError(
-                    "When specifying --streaming, then you must also specify --max_train_samples"
-                )
-            metrics["train_samples"] = data_args.max_train_samples
-        else:
-            max_train_samples = (
-                data_args.max_train_samples
-                if data_args.max_train_samples is not None
-                else len(train_dataset)
-            )
-            metrics["train_samples"] = min(max_train_samples, len(train_dataset))
-
-        trainer.log_metrics("train", metrics)
-        trainer.save_metrics("train", metrics)
-        trainer.save_state()
+        train(trainer, train_dataset, training_args, data_args, last_checkpoint)
 
     # Evaluation
     if training_args.do_eval:
-        logger.info("*** Evaluate ***")
-
-        metrics = trainer.evaluate()
-
-        if data_args.streaming is False:
-            max_eval_samples = (
-                data_args.max_eval_samples
-                if data_args.max_eval_samples is not None
-                else len(eval_dataset)
-            )
-            metrics["eval_samples"] = min(max_eval_samples, len(eval_dataset))
-        try:
-            perplexity = math.exp(metrics["eval_loss"])
-        except OverflowError:
-            perplexity = float("inf")
-        metrics["perplexity"] = perplexity
-
-        trainer.log_metrics("eval", metrics)
-        trainer.save_metrics("eval", metrics)
-
-    kwargs = {"finetuned_from": model_args.model_name_or_path, "tasks": "fill-mask"}
-    if data_args.dataset_name is not None:
-        kwargs["dataset_tags"] = data_args.dataset_name
-        if data_args.dataset_config_name is not None:
-            kwargs["dataset_args"] = data_args.dataset_config_name
-            kwargs[
-                "dataset"
-            ] = f"{data_args.dataset_name} {data_args.dataset_config_name}"
-        else:
-            kwargs["dataset"] = data_args.dataset_name
+        kwargs = evaluate(trainer, eval_dataset, data_args, model_args)
 
     if training_args.push_to_hub:
         trainer.push_to_hub(**kwargs)
