@@ -1,29 +1,33 @@
 """
-Author:
-    Kenneth Enevoldsen
+Fine-tuning the huggingface models for masked language modeling (BERT, ALBERT,
+RoBERTa...) on a text file or a dataset.
 
 Outline copied from:
 https://github.com/huggingface/transformers/blob/main/examples/pytorch/language-modeling/run_mlm.py
+Adapted for streaming datasets.
 
-Fine-tuning the library models for masked language modeling (BERT, ALBERT, RoBERTa...) on a text file or a dataset.
 
 Here is the full list of checkpoints on the hub that can be fine-tuned by this script:
 https://huggingface.co/models?filter=fill-mask
 
-python src/applications/train/run_mlm_pytorch_stream.py \
-    --train_file src/applications/train/test.txt \
-    --model_name_or_path roberta-base \
-    --output_dir /tmp/test_mlm \
-    --do_train \
-    --overwrite_output_dir \
-    --streaming \
-    --validation_split 1000 \
-    --max_steps 1 \
-    --max_train_samples 1000
 
-Note: requires the dev version of HF datasets: 
+Note: requires the dev version of HF datasets:
 https://github.com/huggingface/datasets
 
+Example usage:
+
+.. code::
+
+    python src/applications/train/run_mlm_pytorch_stream.py \
+        --train_file test.txt \
+        --model_name_or_path roberta-base \
+        --output_dir /tmp/test_mlm \
+        --do_train \
+        --overwrite_output_dir \
+        --streaming \
+        --validation_split 1000 \
+        --max_steps 1 \
+        --max_train_samples 1000
 
 """
 
@@ -352,11 +356,13 @@ def get_dataset(model_args, data_args):
 
 
 def get_tokenizer_and_model(model_args):
-    # Load pretrained model and tokenizer
-    #
-    # Distributed training:
-    # The .from_pretrained methods guarantee that only one local process can concurrently
-    # download model & vocab.
+    """
+    Load pretrained model and tokenizer
+
+    Distributed training:
+    The .from_pretrained methods guarantee that only one local process can concurrently
+    download model & vocab.
+    """
     config_kwargs = {
         "cache_dir": model_args.cache_dir,
         "revision": model_args.model_revision,
@@ -414,7 +420,9 @@ def get_tokenizer_and_model(model_args):
 
 
 def preprocess_dataset(data_args, training_args, raw_datasets, tokenizer):
-    # Preprocessing the datasets.
+    """
+    Preprocess the datasets. Including tokenization and grouping of texts.
+    """
     # First we tokenize the texts.
     if training_args.do_train:
         if data_args.streaming:
@@ -535,6 +543,7 @@ def preprocess_dataset(data_args, training_args, raw_datasets, tokenizer):
 
 
 def train(trainer, train_dataset, training_args, data_args, last_checkpoint):
+    """Train using the trainer"""
     checkpoint = None
     if training_args.resume_from_checkpoint is not None:
         checkpoint = training_args.resume_from_checkpoint
@@ -565,6 +574,7 @@ def train(trainer, train_dataset, training_args, data_args, last_checkpoint):
 
 
 def evaluate(trainer, eval_dataset, data_args, model_args):
+    """Evaluate model"""
     logger.info("*** Evaluate ***")
 
     metrics = trainer.evaluate()
@@ -595,7 +605,7 @@ def evaluate(trainer, eval_dataset, data_args, model_args):
             ] = f"{data_args.dataset_name} {data_args.dataset_config_name}"
         else:
             kwargs["dataset"] = data_args.dataset_name
-    
+
     return kwargs
 
 
