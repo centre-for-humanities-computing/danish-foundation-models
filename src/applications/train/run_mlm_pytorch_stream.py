@@ -27,7 +27,6 @@ Example usage:
         --validation_split 1000 \
         --max_steps 1 \
         --max_train_samples 1000
-
 """
 
 import logging
