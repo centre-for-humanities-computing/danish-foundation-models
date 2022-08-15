@@ -351,7 +351,7 @@ def get_dataset(model_args: ModelArguments, data_args: DataTrainingArguments) ->
     return raw_datasets
 
 
-def get_tokenizer_and_model(model_args):
+def get_tokenizer_and_model(model_args: ModelArguments) -> tuple:
     """Load pretrained model and tokenizer.
 
     Distributed training:
