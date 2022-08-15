@@ -352,8 +352,7 @@ def get_dataset(model_args: ModelArguments, data_args: DataTrainingArguments) ->
 
 
 def get_tokenizer_and_model(model_args):
-    """
-    Load pretrained model and tokenizer
+    """Load pretrained model and tokenizer.
 
     Distributed training:
     The .from_pretrained methods guarantee that only one local process can concurrently
