@@ -6,7 +6,6 @@ Outline copied from:
 https://github.com/huggingface/transformers/blob/main/examples/pytorch/language-modeling/run_mlm.py
 Adapted for streaming datasets.
 
-
 Here is the full list of checkpoints on the hub that can be fine-tuned by this script:
 https://huggingface.co/models?filter=fill-mask
 
