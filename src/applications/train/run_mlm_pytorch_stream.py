@@ -252,7 +252,7 @@ class DataTrainingArguments:
                     )
 
 
-def get_dataset(model_args, data_args):
+def get_dataset(model_args: ModelArguments, data_args: DataTrainingArguments) -> Dict[str, Dataset]:
     """Get the datasets.
     
     You can either provide your own CSV/JSON/TXT training and
