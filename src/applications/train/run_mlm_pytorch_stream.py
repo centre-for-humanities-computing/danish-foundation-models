@@ -34,11 +34,11 @@ import os
 import sys
 from dataclasses import dataclass, field
 from itertools import chain
-from typing import Optional
+from typing import Optional, Tuple, Union
 
 import datasets
 import transformers
-from datasets import load_dataset, load_metric
+from datasets import Dataset, DatasetDict, IterableDataset, load_dataset, load_metric
 from transformers import (
     CONFIG_MAPPING,
     MODEL_FOR_MASKED_LM_MAPPING,
@@ -249,9 +249,11 @@ class DataTrainingArguments:
                     )
 
 
-def get_dataset(model_args: ModelArguments, data_args: DataTrainingArguments) -> Dict[str, Dataset]:
+def get_dataset(
+    model_args: ModelArguments, data_args: DataTrainingArguments
+) -> DatasetDict:
     """Get the datasets.
-    
+
     You can either provide your own CSV/JSON/TXT training and
     evaluation files (see below) or just provide the name of one of the public datasets
     available on the hub at https://huggingface.co/datasets/ (the dataset will be
@@ -262,6 +264,16 @@ def get_dataset(model_args: ModelArguments, data_args: DataTrainingArguments) ->
 
     In distributed training, the load_dataset function guarantee that only one local
     process can concurrently download the dataset.
+
+    Args:
+        model_args (ModelArguments): Arguments supplied to the model, including
+            cache_dir and auth_token.
+        data_args (DataTrainingArguments): Arguments for loading the dataset, including
+            config_name, dataset_name, streaming etc.
+
+    Returns:
+        DatasetDict: a DatasetDict containing a train, test and validation
+            split.
     """
     if data_args.dataset_name is not None:
         # Downloading and loading a dataset from the hub.
@@ -349,12 +361,21 @@ def get_dataset(model_args: ModelArguments, data_args: DataTrainingArguments) ->
     return raw_datasets
 
 
-def get_tokenizer_and_model(model_args: ModelArguments) -> tuple:
+def get_tokenizer_and_model(
+    model_args: ModelArguments,
+) -> Tuple[AutoTokenizer, AutoModelForMaskedLM]:
     """Load pretrained model and tokenizer.
 
     Distributed training:
     The .from_pretrained methods guarantee that only one local process can concurrently
     download model & vocab.
+
+    Args:
+        model_args (ModelArguments): Arguments for loading the model.
+
+    Returns:
+        Tuple[AutoTokenizer, AutoModelForMaskedLM]:
+            A tuple containing the tokenizer and model for training.
     """
     config_kwargs = {
         "cache_dir": model_args.cache_dir,
@@ -412,7 +433,12 @@ def get_tokenizer_and_model(model_args: ModelArguments) -> tuple:
     return tokenizer, model
 
 
-def preprocess_dataset(data_args, training_args, raw_datasets, tokenizer):
+def preprocess_dataset(
+    data_args: DataTrainingArguments,
+    training_args: TrainingArguments,
+    raw_datasets: DatasetDict,
+    tokenizer: AutoTokenizer,
+) -> DatasetDict:
     """Preprocess the datasets. Including tokenization and grouping of texts."""
     # First we tokenize the texts.
     if training_args.do_train:
@@ -533,8 +559,26 @@ def preprocess_dataset(data_args, training_args, raw_datasets, tokenizer):
     return tokenized_datasets
 
 
-def train(trainer, train_dataset, training_args, data_args, last_checkpoint):
-    """Train using the trainer"""
+def train(
+    trainer: Trainer,
+    train_dataset: Union[IterableDataset, Dataset],
+    training_args: TrainingArguments,
+    data_args: DataTrainingArguments,
+    last_checkpoint,
+) -> dict:
+    """Train using the trainer
+
+    Args:
+        trainer (Trainer): The trainer.
+        train_dataset (Union[IterableDataset, Dataset]): The training dataset.
+        training_args (TrainingArguments): Training arguments including
+            resume_from_checkpoint.
+        data_args (DataTrainingArguments): Dataset arguments including streaming and
+            max_train_samples.
+
+    Returns:
+        dict: a dict on informationed to be logged.
+    """
     checkpoint = None
     if training_args.resume_from_checkpoint is not None:
         checkpoint = training_args.resume_from_checkpoint
@@ -564,8 +608,24 @@ def train(trainer, train_dataset, training_args, data_args, last_checkpoint):
     trainer.save_state()
 
 
-def evaluate(trainer, eval_dataset, data_args, model_args):
-    """Evaluate model"""
+def evaluate(
+    trainer: Trainer,
+    eval_dataset: Union[IterableDataset, Dataset],
+    data_args: DataTrainingArguments,
+    model_args: ModelArguments,
+):
+    """Evaluate model
+
+    Args:
+        trainer (Trainer): The trainer.
+        eval_dataset (Union[IterableDataset, Dataset]): The evaluation dataset
+        data_args (DataTrainingArguments): The dataset arguments, including
+            max_eval_samples.
+        model_args (ModelArguments): The model arguments, including model_name_or_path.
+
+    Returns:
+        dict: A dict of information to be logged.
+    """
     logger.info("*** Evaluate ***")
 
     metrics = trainer.evaluate()
