@@ -9,7 +9,6 @@ Adapted for streaming datasets.
 Here is the full list of checkpoints on the hub that can be fine-tuned by this script:
 https://huggingface.co/models?filter=fill-mask
 
-
 Note: requires the dev version of HF datasets:
 https://github.com/huggingface/datasets
 
