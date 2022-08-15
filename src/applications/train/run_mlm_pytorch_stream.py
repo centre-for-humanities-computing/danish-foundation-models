@@ -415,9 +415,7 @@ def get_tokenizer_and_model(model_args: ModelArguments) -> tuple:
 
 
 def preprocess_dataset(data_args, training_args, raw_datasets, tokenizer):
-    """
-    Preprocess the datasets. Including tokenization and grouping of texts.
-    """
+    """Preprocess the datasets. Including tokenization and grouping of texts."""
     # First we tokenize the texts.
     if training_args.do_train:
         if data_args.streaming:
