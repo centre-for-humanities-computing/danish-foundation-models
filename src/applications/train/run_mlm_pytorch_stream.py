@@ -6,10 +6,8 @@ Outline copied from:
 https://github.com/huggingface/transformers/blob/main/examples/pytorch/language-modeling/run_mlm.py
 Adapted for streaming datasets.
 
-
 Here is the full list of checkpoints on the hub that can be fine-tuned by this script:
 https://huggingface.co/models?filter=fill-mask
-
 
 Note: requires the dev version of HF datasets:
 https://github.com/huggingface/datasets
@@ -28,7 +26,6 @@ Example usage:
         --validation_split 1000 \
         --max_steps 1 \
         --max_train_samples 1000
-
 """
 
 import logging
@@ -64,9 +61,7 @@ MODEL_TYPES = tuple(conf.model_type for conf in MODEL_CONFIG_CLASSES)
 
 @dataclass
 class ModelArguments:
-    """
-    Arguments pertaining to which model/config/tokenizer we are going to fine-tune, or train from scratch.
-    """
+    """Arguments pertaining to which model/config/tokenizer we are going to fine-tune, or train from scratch."""
 
     model_name_or_path: Optional[str] = field(
         default=None,
@@ -143,9 +138,7 @@ class ModelArguments:
 
 @dataclass
 class DataTrainingArguments:
-    """
-    Arguments pertaining to what data we are going to input our model for training and eval.
-    """
+    """Arguments pertaining to what data we are going to input our model for training and eval."""
 
     dataset_name: Optional[str] = field(
         default=None,
@@ -256,12 +249,13 @@ class DataTrainingArguments:
                     )
 
 
-def get_dataset(model_args, data_args):
-    """
-    Get the datasets: you can either provide your own CSV/JSON/TXT training and
+def get_dataset(model_args: ModelArguments, data_args: DataTrainingArguments) -> Dict[str, Dataset]:
+    """Get the datasets.
+    
+    You can either provide your own CSV/JSON/TXT training and
     evaluation files (see below) or just provide the name of one of the public datasets
     available on the hub at https://huggingface.co/datasets/ (the dataset will be
-    downloaded automatically from the datasets Hub
+    downloaded automatically from the Hugging Face Hub
 
     For CSV/JSON files, this script will use the column called 'text' or the first
     column. You can easily tweak this behavior (see below)
@@ -355,9 +349,8 @@ def get_dataset(model_args, data_args):
     return raw_datasets
 
 
-def get_tokenizer_and_model(model_args):
-    """
-    Load pretrained model and tokenizer
+def get_tokenizer_and_model(model_args: ModelArguments) -> tuple:
+    """Load pretrained model and tokenizer.
 
     Distributed training:
     The .from_pretrained methods guarantee that only one local process can concurrently
@@ -420,9 +413,7 @@ def get_tokenizer_and_model(model_args):
 
 
 def preprocess_dataset(data_args, training_args, raw_datasets, tokenizer):
-    """
-    Preprocess the datasets. Including tokenization and grouping of texts.
-    """
+    """Preprocess the datasets. Including tokenization and grouping of texts."""
     # First we tokenize the texts.
     if training_args.do_train:
         if data_args.streaming:
