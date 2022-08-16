@@ -1,6 +1,7 @@
 import pytest
 import spacy
-from dfm.description import MatchCounter
+
+from src.dfm.description import MatchCounter, get_religion_patterns
 
 
 class TestMatchCounter:
@@ -76,8 +77,6 @@ class TestMatchCounter:
         assert counts == {"heks": [0, 1, 0], "soldat": [1, 0, 2]}
 
     def test_multiple_matches_under_same_label(self, nlp):
-        from dfm.description.description_patterns import get_religion_patterns
-
         mc = MatchCounter(match_patterns=get_religion_patterns(), nlp=nlp)
 
         texts = ["En kristen er en del af de kristne, og kristne tror på kristendommen"]

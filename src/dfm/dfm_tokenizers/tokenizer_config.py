@@ -1,10 +1,11 @@
 """Class to hold the configuration for the tokenizer"""
 
-from pathlib import Path
 import json
-from typing import Union
-from pydantic import BaseModel, PositiveInt, StrictStr
 from enum import Enum
+from pathlib import Path
+from typing import Union
+
+from pydantic import BaseModel, PositiveInt, StrictStr
 
 
 class TokenizerType(str, Enum):

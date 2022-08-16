@@ -8,12 +8,11 @@ Author:
     Kenneth Enevoldsen
 """
 
-from typing import List
-
+import json
 import os
 import sys
-import json
 from collections import Counter
+from typing import List
 
 import matplotlib
 import matplotlib.pyplot as plt

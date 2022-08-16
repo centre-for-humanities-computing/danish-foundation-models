@@ -5,15 +5,14 @@ Authors:
     Kenneth Enevoldsen
 """
 
-import os
 import glob
+import os
 from pathlib import Path
-from datasets.utils import disable_progress_bar
 
 import spacy
-from wasabi import msg
-
 from datasets import load_dataset
+from datasets.utils import disable_progress_bar
+from wasabi import msg
 
 disable_progress_bar()
 

@@ -9,9 +9,8 @@ Authors:
 """
 import os
 
-from wasabi import msg
 from datasets import load_from_disk
-
+from wasabi import msg
 
 if __name__ == "__main__":
     path = os.path.join(

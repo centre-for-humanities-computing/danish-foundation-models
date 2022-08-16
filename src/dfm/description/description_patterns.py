@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from dfm.description import MatchCounter
+from .match_counter import MatchCounter
 
 # Terms for religions are:
 # * The person-noun singular (e.g. "kristen") and conjugated
@@ -762,6 +762,7 @@ def get_muslim_name_patterns() -> List[Dict[str, list]]:
         List[Dict[str, list]]: list of lowercase spacy match patterns
     """
     from dacy.datasets import muslim_names
+
     from dfm.description.match_counter import MatchCounter
 
     muslim_names_list = [name.lower() for name in muslim_names()["first_name"]]
@@ -778,6 +779,7 @@ def get_gender_name_patterns() -> List[Dict[str, list]]:
         List[Dict[str, list]]: list of lowercase spacy match patterns
     """
     from dacy.datasets import female_names, male_names
+
     from dfm.description.match_counter import MatchCounter
 
     female_names_list = [name.lower() for name in female_names()["first_name"]]

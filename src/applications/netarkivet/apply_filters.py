@@ -7,12 +7,12 @@ Dependent on:
 Authors:
     Kenneth Enevoldsen
 """
-from typing import Iterable, Optional, List, Union
-from pathlib import Path
 import glob
+import os
 import random
 from contextlib import ExitStack
-import os
+from pathlib import Path
+from typing import Iterable, List, Optional, Union
 
 import ndjson
 from wasabi import msg
