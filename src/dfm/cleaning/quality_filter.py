@@ -24,17 +24,7 @@ References:
 
 from collections import Counter, defaultdict
 from functools import partial
-from typing import (
-    Callable,
-    Dict,
-    Iterable,
-    List,
-    Optional,
-    Sequence,
-    Tuple,
-    Union,
-    Any,
-)
+from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tuple, Union
 
 import spacy
 from langdetect import detect_langs
@@ -936,8 +926,9 @@ if __name__ == "__main__":
     # Took x hours and xx minutes on xxx.
     # Previously took 6 hours and 25 minutes with 10 cores.
 
-    from datasets import load_dataset
     import time
+
+    from datasets import load_dataset
 
     # Initialise the filter
     doc_filter = QualityFilter()

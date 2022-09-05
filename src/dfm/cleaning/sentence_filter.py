@@ -10,13 +10,13 @@ References:
         text-to-text transformer. J. Mach. Learn. Res., 21(140), 1-67.
 """
 
+import multiprocessing as mp
 from collections import Counter
 from typing import Any, Callable, Dict, Iterable, Optional, Sequence, Tuple, Union
-from joblib import Parallel, delayed
-import multiprocessing as mp
-from tqdm.auto import tqdm
 
 import emoji
+from joblib import Parallel, delayed
+from tqdm.auto import tqdm
 
 
 class SentenceFilter:
@@ -341,8 +341,9 @@ if __name__ == "__main__":
     # Benchmarking script on cleaned DAGW + Reddit.
     # Took 1 hour and 52 minutes on a MacBook Pro 16" (2021) with Apple M1 Max chip.
 
-    from datasets import load_dataset
     import time
+
+    from datasets import load_dataset
 
     # Initialise the filter
     sentence_filter = SentenceFilter()
