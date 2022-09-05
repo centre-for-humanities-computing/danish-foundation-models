@@ -1,19 +1,21 @@
 """Script to train tokenizers"""
 
-from tokenizers import (
-    trainers,
-    pre_tokenizers,
-    tokenizers,
-    normalizers,
-    models,
-    AddedToken,
-    processors,
-    decoders,
-)
+from pathlib import Path
+from typing import Iterable, Union
+
 from datasets.arrow_dataset import Dataset
 from datasets.iterable_dataset import IterableDataset
-from pathlib import Path
-from typing import Union, Iterable
+from tokenizers import (
+    AddedToken,
+    decoders,
+    models,
+    normalizers,
+    pre_tokenizers,
+    processors,
+    tokenizers,
+    trainers,
+)
+
 from .tokenizer_config import TokenizerConfig
 
 

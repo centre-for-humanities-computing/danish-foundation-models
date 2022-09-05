@@ -8,9 +8,10 @@ Dependent on:
 Authors:
     Kenneth Enevoldsen
 """
-from datasets import load_from_disk
 from pathlib import Path
+
 import spacy
+from datasets import load_from_disk
 
 
 def word_count(batch):

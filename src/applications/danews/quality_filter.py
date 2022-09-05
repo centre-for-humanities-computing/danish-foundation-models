@@ -9,14 +9,13 @@ Authors:
 """
 
 import glob
+import multiprocessing
 import os
 import sys
 from pathlib import Path
-import multiprocessing
-
-from wasabi import msg
 
 from datasets import load_dataset
+from wasabi import msg
 
 dfm_path = os.path.join("danish-foundation-models")
 sys.path.append(dfm_path)

@@ -7,9 +7,9 @@ Dependent on:
 Authors:
     Kenneth Enevoldsen
 """
-from pathlib import Path
-import os
 import glob
+import os
+from pathlib import Path
 
 from datasets import load_dataset
 from wasabi import msg
