@@ -1,8 +1,5 @@
 # Results from corpus tagging
 
-([Kreutzera et al., 2022](https://direct.mit.edu/tacl/article/doi/10.1162/tacl_a_00447/109285/Quality-at-a-Glance-An-Audit-of-Web-Crawled))
-
-
 ## Text proportions
 
 ----
