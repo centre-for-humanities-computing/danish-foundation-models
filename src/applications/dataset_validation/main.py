@@ -82,7 +82,7 @@ def post_clean(texts: Iterable[str]) -> Iterable[str]:
 if __name__ == "__main__":
     MY_NAME = "kenneth"
     SESSION = "session_1"
-    N_TO_RATE = 100.0  # n text documents to rate (!= sentences)
+    N_TO_RATE = 100  # n text documents to rate (!= sentences)
     max_texts = 1000
     seed = 2  # seeds already used: 2,
     max_len = 2000
@@ -98,7 +98,7 @@ if __name__ == "__main__":
 
     rater = ExampleRater(
         examples=text_splits,
-        output_path=f"/work/netarkivet-cleaned/tagging/{MY_NAME}_{SESSION}_{date.today()}.csv",
+        output_path=f"/work/netarkivet-cleaned/tagging/{MY_NAME}_{SESSION}_n-docs_{N_TO_RATE}_{date.today()}.csv",
     )
 
     rater.rate_examples()
