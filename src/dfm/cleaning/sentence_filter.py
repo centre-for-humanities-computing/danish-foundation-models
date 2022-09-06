@@ -146,7 +146,7 @@ class SentenceFilter:
                 context = None
             else:
                 raise TypeError(
-                    "Expected either a string or a tuple, got {type(sample)}."
+                    f"Expected either a string or a tuple, got {type(sample)}."
                 )
 
             # Split the document into sentences, splitting on newlines
