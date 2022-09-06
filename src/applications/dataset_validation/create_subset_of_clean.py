@@ -4,34 +4,26 @@ from typing import Iterable, Optional
 from dfm.dataset_validation.rating_interface import ExampleRater
 from dfm.cleaning import SentenceFilter, QualityFilter
 
-n_text_cleaned = 0
-n_char_total = 0
+import ndjson
 
 
-def text_generator(seed, n_texts: Optional[int], max_texts: Optional[int]):
+def text_generator(seed, max_texts=5000):
     from dfm.data.load_datasets import load_nat
 
     datasets = load_nat(seed=seed)["train"]
     texts = (text["text"].replace("\xa0", "\n") for text in iter(datasets))
-
     if max_texts:
         texts = [next(texts) for i in range(max_texts)]
+
     texts = post_clean(texts)
-    for i, text in enumerate(texts):
-        if n_texts and i > n_texts:
-            break
-        for newline in text.split("\n"):
-            if newline:
-                yield newline
+    return texts
 
 def post_clean(texts: Iterable[str]) -> Iterable[str]:
+    global n_text_cleaned
     def __text_genw_counter(texts):
-        global n_text_cleaned
-        global n_char_total
         for t in texts:
             n_text_cleaned += 1
-            n_char_total += len(t)
-            yield t
+            yield texts
     sf = SentenceFilter(
         filter_names = None,
         title_cased_words_threshold = 0.7,
@@ -65,40 +57,23 @@ def post_clean(texts: Iterable[str]) -> Iterable[str]:
         duplicate_n_gram_fraction_range = (5, 10),
         max_length= 5_000_000,
         string_filter = None,
-        language_detection_tool =  "langdetect",
+        ignore_filters = [],
+        language_detection_tool = "langdetect",
         language_threshold = 0.90,
         languages = ["da"],
         short_long_sentence_length_split = 30,
         short_long_sentence_threshold  = 0.5,
     )
-    texts = sf(__text_genw_counter(texts))
+    texts = sf(texts)
     texts = qf(texts)
-    texts = (t.text for t in texts)
     return texts
 
 
 if __name__ == "__main__":
-    MY_NAME = "kenneth"
-    SESSION = "session_1"
-    N_TO_RATE = 100. # n text documents to rate (!= sentences)
-    max_texts = 1000
-    seed = 2 # seeds already used: 2, 
-    max_len = 2000
-
-    gen = text_generator(seed=seed, n_texts=N_TO_RATE, max_texts=max_texts)
-    texts = list(gen)
-    print(f"N texts to obtain {N_TO_RATE}: {n_text_cleaned}")
-    print(f"n_char_cleaned/n_char_total = {sum(len(t) for t in texts) /n_char_total }")
+    texts = text_generator(seed=2)
+    texts = [t.text for t in texts]
     # Fix: max length on texts segments
-    text_splits = [text[i:i+max_len] for text in texts for i in range(0, len(text), max_len)]
-
-    rater = ExampleRater(
-        examples=text_splits,
-        output_path=f"/work/netarkivet-cleaned/tagging/{MY_NAME}_{SESSION}_{date.today()}.csv"
-    )
-
-    rater.rate_examples()
-
-    # proportion af "»"
-    # ratio af {...}
-    # Siden blev behandlet på {0.164} sekund"
+    texts_ = [{"text": t} for t in texts]
+    with open('/work/netarkivet-cleaned/temp/tagging_texts.ndjson', 'w') as f:
+        ndjson.dump(texts_, f)
+    

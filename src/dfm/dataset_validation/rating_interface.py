@@ -76,8 +76,7 @@ class ExampleRater:
             win.addstr(f"{left_spacing*2}[U]ndo")
             win.addstr("\n" * 2)
 
-            win.addstr(f"Processed: {self.n_items_processed} 🎉")
-            win.addstr("\n" * 2)
+            win.addstr(f"Processed: {self.n_items_processed} 🎉\n\n")
 
             key = win.getkey()
 
@@ -112,7 +111,7 @@ class ExampleRater:
             }
         )
 
-        # Remove the line from the .csv
+        # Remove the line from the .c
         with open(self.output_path, "r") as f:
             lines = f.readlines()
             lines_to_write = lines[:-1]
