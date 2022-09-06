@@ -37,8 +37,6 @@ from typing import (
 )
 
 import spacy
-from langdetect import detect_langs
-from luga import language
 from spacy.tokens import Doc
 
 
@@ -577,6 +575,7 @@ class QualityFilter:
         def luga_detect(
             doc: Doc, languages: Sequence[str], language_threshold: float
         ) -> bool:
+            from luga import language
             doc_joined = " ".join(
                 [
                     sentence.strip()
@@ -594,6 +593,7 @@ class QualityFilter:
         def langdetect_detect(
             doc: Doc, languages: Sequence[str], language_threshold: float
         ) -> bool:
+            from langdetect import detect_langs
             detected = detect_langs(doc.text)  # type: ignore
             for l in detected:
                 if l.lang in languages and l.prob >= language_threshold:
