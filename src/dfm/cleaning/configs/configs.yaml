@@ -1,0 +1,46 @@
+# config for clean.py
+path: "data/test/*.parquet"
+save_dir: "data/test/clean" # Optional[str]
+id_col: "id"
+lang_col: "lang"
+text_col: "text"
+num_proc: -1 # int:
+batch_size: 8.192
+valid_languages: ["da"] # list[str]
+save_meta_data: True # bool
+save_file_ext: "jsonl" # save file extension (no ".")
+apply_quality_filter: True # bool
+apply_sentence_filter: True # bool
+
+quality_filter:
+  min_stop_words: 2 # int
+  mean_word_length: [3, 10] # Tuple[int, int]
+  doc_length: [50, 100000] # Tuple[int, int]
+  alpha_ratio: 0.8 # float
+  symbol_2_word_hashtag: 0.1 # float
+  symbol_2_word_ellipsis: 0.1 # float
+  max_p_begin_bullets: 0.9 # float
+  max_p_end_ellipsis: 0.3 # float
+  min_bullets: 2 # int
+  min_ellipsis: 2 # int
+  duplicate_lines_chr_fraction: 0.2 # float
+  duplicate_paragraph_chr_fraction: 0.2 # float
+  top_ngram_chr_fraction_thresholds: [0.2, 0.18, 0.16] # List[float]
+  top_ngram_chr_fraction_range: [2, 4] # Tuple[int, int]
+  top_ngram_min_count: 3, # int
+  duplicate_n_gram_fraction_thresholds: [0.15, 0.14, 0.13, 0.12, 0.11, 0.1] # List[float]
+  duplicate_n_gram_fraction_range: [5, 10] # Tuple[int, int]
+  max_length: 5000000 # int
+  string_filter: null # Optional[str]
+  language_detection_tool: "langdetect" # str
+  language_threshold: 0.9 # float
+  languages: ["da"] # List[str]
+  short_long_sentence_length_split: 30 # int
+  short_long_sentence_threshold: 0.5 # float
+  ignore_filters: [] # List[str]
+
+sentence_filter:
+  filter_names: null
+  title_cased_words_threshold: 0.7 # float
+  min_num_words: 3 # int
+  curly_brackets_threshold: 2 # float
