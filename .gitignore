@@ -153,3 +153,6 @@ models/*
 *.Rproj.user
 .Rproj.user
 .Rhistory
+
+# Hydra
+outputs/*
