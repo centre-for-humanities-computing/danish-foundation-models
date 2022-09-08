@@ -85,7 +85,7 @@ if __name__ == "__main__":
     N_TO_RATE = 100  # n text documents to rate (!= sentences)
     max_texts = 1000
     seed = 2  # seeds already used: 2,
-    max_len = 2000
+    max_len = 1000
 
     gen = text_generator(seed=seed, n_texts=N_TO_RATE, max_texts=max_texts)
     texts = list(gen)

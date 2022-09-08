@@ -10,13 +10,13 @@ References:
         text-to-text transformer. J. Mach. Learn. Res., 21(140), 1-67.
 """
 
+import multiprocessing as mp
 from collections import Counter
 from typing import Any, Callable, Dict, Iterable, Optional, Sequence, Tuple, Union
-from joblib import Parallel, delayed
-import multiprocessing as mp
-from tqdm.auto import tqdm
 
 import emoji
+from joblib import Parallel, delayed
+from tqdm.auto import tqdm
 
 
 class SentenceFilter:
@@ -70,12 +70,14 @@ class SentenceFilter:
         title_cased_words_threshold: float = 0.7,
         min_num_words: int = 3,
         curly_brackets_threshold: int = 2,
+        n_jobs: int = -1,
     ):
 
         # Store arguments as attributes
         self.title_cased_words_threshold = title_cased_words_threshold
         self.min_num_words = min_num_words
         self.curly_brackets_threshold = curly_brackets_threshold
+        self.n_jobs = n_jobs
 
         # Create a dictionary with all the sentence filters
         _all_filters: Dict[str, Callable[[str], bool]] = dict(
@@ -175,22 +177,29 @@ class SentenceFilter:
                 return new_doc
 
         # Main filtering loop
-        n_jobs = mp.cpu_count() - 1
-        with Parallel(n_jobs=n_jobs, backend="threading") as parallel:
+        if self.n_jobs == -1:
+            n_jobs = mp.cpu_count() - 1
+        else:
+            n_jobs = self.n_jobs
+        if n_jobs == 1:
+            for doc in docs:
+                yield filter_sample(doc)
+        else:
+            with Parallel(n_jobs=n_jobs, backend="threading") as parallel:
 
-            # Set up iterator, depending on whether we have a progress bar or not
-            if progress_bar:
-                itr = tqdm(docs, desc="Filtering corpus", total=total)
-            else:
-                itr = docs
+                # Set up iterator, depending on whether we have a progress bar or not
+                if progress_bar:
+                    itr = tqdm(docs, desc="Filtering corpus", total=total)
+                else:
+                    itr = docs
 
-            # Filter all documents
-            for doc in parallel(delayed(filter_sample)(sample) for sample in itr):
-                yield doc
+                # Filter all documents
+                for doc in parallel(delayed(filter_sample)(sample) for sample in itr):
+                    yield doc
 
-            # Close the progress bar, if we had one
-            if progress_bar:
-                itr.close()
+                # Close the progress bar, if we had one
+                if progress_bar:
+                    itr.close()
 
     def __call__(
         self, *args, **kwargs
@@ -341,8 +350,9 @@ if __name__ == "__main__":
     # Benchmarking script on cleaned DAGW + Reddit.
     # Took 1 hour and 52 minutes on a MacBook Pro 16" (2021) with Apple M1 Max chip.
 
-    from datasets import load_dataset
     import time
+
+    from datasets import load_dataset
 
     # Initialise the filter
     sentence_filter = SentenceFilter()
