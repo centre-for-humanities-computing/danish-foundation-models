@@ -135,6 +135,7 @@ dmypy.json
 **/*.jsonl
 *.ndjson
 *.csv
+*.parquet
 src/applications/dataset_validation/intercoder_reliability.ipynb
 
 # MacOS
@@ -152,6 +153,3 @@ models/*
 *.Rproj.user
 .Rproj.user
 .Rhistory
-
-
-src/applications/train/test.txt
