@@ -8,9 +8,9 @@ path = os.path.join("src", "dfm", "about.py")
 
 with open(path) as f:
     v = f.read()
-    for l in v.split("\n"):
-        if l.startswith("__version__"):
-            __version__ = l.split('"')[-2]
+    for line in v.split("\n"):
+        if line.startswith("__version__"):
+            __version__ = line.split('"')[-2]
 
 
 def install_nodeps(package_name: str):

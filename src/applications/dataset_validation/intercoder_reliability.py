@@ -71,11 +71,11 @@ def get_proportions(taggers, md):
             n_char_cat = sum(len(t) for t in cat_text)
             t += f"\n- {n_char_cat/n_char*100:.2f}% of characters is `{cat}`"
 
-        cat_text = df["text"][df["is_porn"] == True].values
+        cat_text = df["text"][df["is_porn"] == True].values  # noqa E712
         n_char_cat = sum(len(t) for t in cat_text)
         t += f"\n- {n_char_cat/n_char*100:.2f}% of characters is porn"
 
-        cat_text = df["text"][df["is_offensive"] == True].values
+        cat_text = df["text"][df["is_offensive"] == True].values  # noqa E712
         n_char_cat = sum(len(t) for t in cat_text)
         t += f"\n- {n_char_cat/n_char*100:.2f}% of characters is offensive"
         md.add(t)

@@ -11,16 +11,12 @@ Authors:
 import glob
 import multiprocessing
 import os
-import sys
 from pathlib import Path
 
 from datasets import load_dataset
 from wasabi import msg
 
-dfm_path = os.path.join("danish-foundation-models")
-sys.path.append(dfm_path)
-
-from src.dfm.cleaning import QualityFilter
+from dfm.cleaning import QualityFilter
 
 
 def filter_batch(batch, i):
@@ -120,7 +116,7 @@ def main(
     path = os.path.join(read_path, "**", "*.ndjson")
     json_files = glob.glob(path, recursive=True)
 
-    w_path = os.path.join(write_path, f"infomedia_2000-2021.jsonl")
+    w_path = os.path.join(write_path, "infomedia_2000-2021.jsonl")
 
     # load in batch
     dataset = load_dataset("json", data_files={"train": json_files})
@@ -146,4 +142,4 @@ if __name__ == "__main__":
     read_path = os.path.join("/work", "hope-infomedia", "yearly")
     write_path = os.path.join("/work", "hope-infomedia_cleaned")
     main(read_path, write_path)
-    msg.good(f"Finished Processing")
+    msg.good("Finished Processing")

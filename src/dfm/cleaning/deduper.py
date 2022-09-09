@@ -344,7 +344,7 @@ class Deduper:
             with config_path.open("wb") as f:
                 pickle.dump(config, f)
 
-    def _deduplicate(
+    def _deduplicate(  # noqa: C901
         self,
         corpus: Union[
             Dataset,

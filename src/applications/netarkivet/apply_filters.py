@@ -54,7 +54,7 @@ def shuffle_buffer(x: Iterable, buffer_size: int) -> Iterable:
         yield shufbuf.pop()
 
 
-def jsonl_merge(
+def jsonl_merge(  # noqa C901
     jsonl_files: List[Union[Path, str]],
     buffer_size: Optional[int] = None,
     sample: bool = True,

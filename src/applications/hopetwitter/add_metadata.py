@@ -50,7 +50,7 @@ and consists of {n_docs} tweets across {n_users} unique users. HopeTwitter inclu
 tweets from the period 2019-01-01_2021-04-30.
 
 A subsection of HopeTwitter, henceforth HopeTwitter_c, have been filtered out to only include Danish tweets
-and low-quality text have been removed using a series of heuristic filters and removing repitious texts. 
+and low-quality text have been removed using a series of heuristic filters and removing repitious texts.
 Following the filtering HopeTwitter_c is deduplicated to remove exact and near-duplicates. For more on data cleaning
 see section on post processing.
 
@@ -76,7 +76,7 @@ No.
 
 **What do the instances that comprise the dataset represent (e.g., documents, photos, people, countries)?**
 
-HopeTwitter consist of all tweets containing at least one of the following stopwords collected through the Twitter API. 
+HopeTwitter consist of all tweets containing at least one of the following stopwords collected through the Twitter API.
 See "If the dataset is a sample from a larger set, what was the sampling strategy?".
 
 HopeTwitter_c filters HopeTwitter by removing non-Danish tweets as determined by metadata and further removed low-quality, repitious text and near-duplicated.
@@ -84,7 +84,7 @@ HopeTwitter_c filters HopeTwitter by removing non-Danish tweets as determined by
 
 **How many instances are there in total (of each type, if appropriate)?**
 
-The dataset consist of {n_docs} documents where {n_duplicates} ({n_duplicates/n_docs:.2f}%) were considered duplicates. 
+The dataset consist of {n_docs} documents where {n_duplicates} ({n_duplicates/n_docs:.2f}%) were considered duplicates.
 
 **Does the dataset contain all possible instances or is it a sample (not necessarily random) of instances from a larger set?**
 
@@ -93,23 +93,23 @@ which does not include a stopword.
 
 **If the dataset is a sample from a larger set, what was the sampling strategy?**
 
-Tweets are streamed continuously using queried a set of the highest 
-frequency scandinavian-specific words from Danish, Norwegian (Bokmål) and Swedish. 
+Tweets are streamed continuously using queried a set of the highest
+frequency scandinavian-specific words from Danish, Norwegian (Bokmål) and Swedish.
 Resulting the following list:
 
 ```
-aften, aldrig, alltid, altid, andet, arbejde, bedste, behöver, behøver, beklager, berätta, betyr, blev, blevet, blir, blitt, blive, bliver, 
-bruge, burde, bättre, båe, bør, deim, deires, ditt, drar, drepe, dykk, dykkar, där, död, döda, død, døde, efter, elsker, endnu, faen, fandt, 
-feil, fikk, finner, flere, forstår, fortelle, fortfarande, fortsatt, fortælle, från, få, fået, får, fått, förlåt, första, försöker, før, 
-først, første, gick, gikk, gillar, gjennom, gjerne, gjorde, gjort, gjør, gjøre, godt, gå, gång, går, göra, gør, gøre, hadde, hallå, havde, 
-hedder, helt, helvete, hende, hendes, hennes, herregud, hjelp, hjelpe, hjem, hjälp, hjå, hjælp, hjælpe, honom, hossen, hvem, hvis, hvordan, 
-hvorfor, händer, här, håll, håller, hør, høre, hører, igjen, ikkje, ingenting, inkje, inte, intet, jeres, jävla, kanske, kanskje, kender, kjenner, 
-korleis, kvarhelst, kveld, kven, kvifor, känner, ledsen, lenger, lidt, livet, längre, låt, låter, længe, meget, menar, mycket, mykje, må, måde, 
-många, mår, måske, måste, måtte, navn, nogen, noget, nogle, noko, nokon, nokor, nokre, någon, något, några, nån, når, nåt, nødt, också, også, 
-pengar, penger, pratar, prøver, på, redan, rundt, rätt, sagde, saker, samma, sammen, selv, selvfølgelig, sidan, sidste, siger, sikker, sikkert, 
-själv, skete, skjedde, skjer, skulle, sluta, slutt, snakke, snakker, snill, snälla, somt, stadig, stanna, sted, står, synes, säger, sätt, så, 
-sådan, såg, sånn, tager, tiden, tilbage, tilbake, tillbaka, titta, trenger, trodde, troede, tror, två, tycker, tänker, uden, undskyld, unnskyld, 
-ursäkta, uten, varför, varit, varte, veldig, venner, verkligen, vidste, vilken, virkelig, visste, väg, väl, väldigt, vän, vår, våra, våre, væk, vær, 
+aften, aldrig, alltid, altid, andet, arbejde, bedste, behöver, behøver, beklager, berätta, betyr, blev, blevet, blir, blitt, blive, bliver,
+bruge, burde, bättre, båe, bør, deim, deires, ditt, drar, drepe, dykk, dykkar, där, död, döda, død, døde, efter, elsker, endnu, faen, fandt,
+feil, fikk, finner, flere, forstår, fortelle, fortfarande, fortsatt, fortælle, från, få, fået, får, fått, förlåt, första, försöker, før,
+først, første, gick, gikk, gillar, gjennom, gjerne, gjorde, gjort, gjør, gjøre, godt, gå, gång, går, göra, gør, gøre, hadde, hallå, havde,
+hedder, helt, helvete, hende, hendes, hennes, herregud, hjelp, hjelpe, hjem, hjälp, hjå, hjælp, hjælpe, honom, hossen, hvem, hvis, hvordan,
+hvorfor, händer, här, håll, håller, hør, høre, hører, igjen, ikkje, ingenting, inkje, inte, intet, jeres, jävla, kanske, kanskje, kender, kjenner,
+korleis, kvarhelst, kveld, kven, kvifor, känner, ledsen, lenger, lidt, livet, längre, låt, låter, længe, meget, menar, mycket, mykje, må, måde,
+många, mår, måske, måste, måtte, navn, nogen, noget, nogle, noko, nokon, nokor, nokre, någon, något, några, nån, når, nåt, nødt, också, også,
+pengar, penger, pratar, prøver, på, redan, rundt, rätt, sagde, saker, samma, sammen, selv, selvfølgelig, sidan, sidste, siger, sikker, sikkert,
+själv, skete, skjedde, skjer, skulle, sluta, slutt, snakke, snakker, snill, snälla, somt, stadig, stanna, sted, står, synes, säger, sätt, så,
+sådan, såg, sånn, tager, tiden, tilbage, tilbake, tillbaka, titta, trenger, trodde, troede, tror, två, tycker, tänker, uden, undskyld, unnskyld,
+ursäkta, uten, varför, varit, varte, veldig, venner, verkligen, vidste, vilken, virkelig, visste, väg, väl, väldigt, vän, vår, våra, våre, væk, vær,
 være, været, älskar, åh, år, åt, över
 ```
 
@@ -128,17 +128,17 @@ XXX
 
 ## Preprocessing/cleaning/labeling
 
-**Was any preprocessing/Cleaning/Labeling of the data done 
-(e.g., discretization or bucketing, tokenization, part-of-speech tagging, 
+**Was any preprocessing/Cleaning/Labeling of the data done
+(e.g., discretization or bucketing, tokenization, part-of-speech tagging,
 SIFT feature extraction, removal of instances, processing of missing values)?**
 
-We filter tweets that are not in Danish. We remove low-quality text and deduplicate documents based on their 
+We filter tweets that are not in Danish. We remove low-quality text and deduplicate documents based on their
 document-level n-gram similarity. The full pre-processing details are given in the post processing section.
 
 **Is the software used to preprocess/clean/label the instances available?**
 
-Yes, the script are avaiable [here](https://github.com/centre-for-humanities-computing/danish-foundation-models/tree/main/src/application/hopetwitter). 
-Which used version 0.0.1 of the [dfm package](https://github.com/centre-for-humanities-computing/danish-foundation-models). 
+Yes, the script are avaiable [here](https://github.com/centre-for-humanities-computing/danish-foundation-models/tree/main/src/application/hopetwitter).
+Which used version 0.0.1 of the [dfm package](https://github.com/centre-for-humanities-computing/danish-foundation-models).
 
 ## Uses
 
@@ -177,10 +177,10 @@ No.
 
 # Post processing
 
-HopeTwitter_c have been filtered for quality using a series of heuristic filters and removing repitious texts. 
+HopeTwitter_c have been filtered for quality using a series of heuristic filters and removing repitious texts.
 Following the filtering HopeTwitter_c is deduplicated to remove exact and near-duplicates.
 
-A total of {n_low_quality} ({n_low_quality/n_docs:.2f}%) were considered low quality and a 
+A total of {n_low_quality} ({n_low_quality/n_docs:.2f}%) were considered low quality and a
 total of {n_duplicates} ({n_duplicates/(n_non_duplicates+n_duplicates):.2f}%) documents were considered duplicates.
 
 ## Quality Filter:
@@ -196,7 +196,7 @@ For the quality filtering HopeTwitter applies a filter akin to [2] which filters
 - Have low high degree of repitiuous text:
  - Less than 20% duplicate lines.
  - Less than 20% duplicate paragraphs.
- - Where the top 2-4 grams constitute less than 20%, 18%, 16%, respectively, of the text. 
+ - Where the top 2-4 grams constitute less than 20%, 18%, 16%, respectively, of the text.
  - Where the duplicate 5-10 grams constitute less than 25%, 24%, 23%, 22%, 21%, 20% of the text, respectively.
 
 ## Deduplication
@@ -209,9 +209,9 @@ References:
 - [1] Broder, Andrei Z. "On the resemblance and containment of documents."
     Proceedings. Compression and Complexity of SEQUENCES 1997
     (Cat. No. 97TB100171). IEEE, 1997.
-- [2] Rae, J. W., Borgeaud, S., Cai, T., Millican, K., Hoffmann, J., Song, F., 
-    Aslanides, J., Henderson, S., Ring, R., Young, S., Rutherford, E., Hennigan, 
-    T., Menick, J., Cassirer, A., Powell, R., Driessche, G. van den, Hendricks, 
+- [2] Rae, J. W., Borgeaud, S., Cai, T., Millican, K., Hoffmann, J., Song, F.,
+    Aslanides, J., Henderson, S., Ring, R., Young, S., Rutherford, E., Hennigan,
+    T., Menick, J., Cassirer, A., Powell, R., Driessche, G. van den, Hendricks,
     L. A., Rauh, M., Huang, P.-S., … Irving, G. (2021).
     Scaling Language Models: Methods, Analysis & Insights from Training Gopher.
     https://arxiv.org/abs/2112.11446v2
