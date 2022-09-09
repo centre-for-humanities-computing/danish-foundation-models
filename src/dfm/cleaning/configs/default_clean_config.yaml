@@ -5,7 +5,7 @@ id_col: "id"
 lang_col: "lang"
 text_col: "text"
 num_proc: -1 # int:
-batch_size: 8.192
+batch_size: 8192
 valid_languages: ["da"] # list[str]
 save_meta_data: True # bool
 save_file_ext: "jsonl" # save file extension (no ".")

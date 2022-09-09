@@ -17,20 +17,20 @@ Authors:
     - Kenneth Enevoldsen <kennethcenevoldsen@gmail.com>
 """
 
-
 import logging
+import multiprocessing as mp
 from glob import glob
 from pathlib import Path
 
 import hydra
 from datasets import load_dataset
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 from tqdm import tqdm
 from tqdm.contrib.logging import logging_redirect_tqdm
 
 from dfm.cleaning import QualityFilter, SentenceFilter
 
-CFG_PATH = Path(__file__).parent / "configs" / "config.yaml"
+CFG_PATH = Path(__file__).parent / "configs"
 VALID_SAVE_FORMATS = {
     "parquet": "parquet",
     "json": "json",
@@ -200,7 +200,7 @@ def dataset_to_disk(dataset, path, _ext: str) -> Path:
 
 @hydra.main(
     config_path=CFG_PATH,
-    config_name="default_config_train_slided_autoencoder",
+    config_name="default_clean_config.yaml",
     version_base="1.2",
 )
 def main(cfg: DictConfig) -> None:
@@ -210,7 +210,13 @@ def main(cfg: DictConfig) -> None:
     # set logging
     logging.basicConfig(filename=save_dir / "cleaning.log", level=logging.INFO)
     # save config to folder
-    hydra.utils.save_as_yaml(cfg, save_dir / "clean_config.yaml")
+    with open(save_dir / "clean_config.yaml", "w") as f:
+        OmegaConf.save(cfg, f)
+
+    if cfg.num_proc == -1:
+        num_proc = mp.cpu_count() - 1
+    else:
+        num_proc = cfg.num_proc
 
     meta_data_cols = [
         cfg.id_col,
@@ -219,7 +225,7 @@ def main(cfg: DictConfig) -> None:
         "passed_quality_filter",
     ]
 
-    paths = glob.glob(cfg.path)
+    paths = glob(cfg.path)
 
     # check save path file extension
     if cfg.save_file_ext not in VALID_SAVE_FORMATS:
@@ -234,7 +240,7 @@ def main(cfg: DictConfig) -> None:
         for path in files:
             # load dataset
             file_ext = Path(path).suffix
-            ext = VALID_SAVE_FORMATS[file_ext]
+            ext = VALID_SAVE_FORMATS[file_ext[1:]]  # remove the "."
             dataset = load_dataset(ext, data_files=path, split="train")
 
             # filter languages:
@@ -244,18 +250,19 @@ def main(cfg: DictConfig) -> None:
                     dataset.filter(lambda example: example[cfg.lang_col] in valid_langs)
 
             if cfg.apply_sentence_filter:
+                
                 dataset = dataset.map(
-                    lambda batch: s_filter(batch, cfg, save_meta=cfg.save_meta_data),
+                    lambda batch: s_filter(batch, cfg),
                     batched=True,
                     batch_size=cfg.batch_size,
-                    num_proc=cfg.num_proc,
+                    num_proc=num_proc,
                 )
             if cfg.apply_quality_filter:
                 dataset = dataset.map(
-                    lambda batch: q_filter(batch, cfg, save_meta=cfg.save_meta_data),
+                    lambda batch: q_filter(batch, cfg),
                     batched=True,
                     batch_size=cfg.batch_size,
-                    num_proc=cfg.num_proc,
+                    num_proc=num_proc,
                 )
 
             if cfg.save_meta_data:
