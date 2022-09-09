@@ -27,36 +27,27 @@ md.add(md.title(1, "Results from corpus tagging"))
 
 md.add(
     """
-Each user tagged 100 documents (unless otherwise specified). Each document were tagged
-on a per "sentence" basis. A "sentence" is defined by a newline split. "sentences", longer
-that 1000 characters were split into multiple sentences of 1000 characters or less.
+Each user tagged 100 documents unless otherwise specified. Documents were split by newlines into text-blocks, block was rated. 
+Text-blocks longer than 1000 characters were split into multiple blocks of 1000 characters or less.
 
-This tagging scheme similar to 
+This tagging scheme is similar to 
 ([Kreutzer et al., 2022](https://direct.mit.edu/tacl/article/doi/10.1162/tacl_a_00447/109285/Quality-at-a-Glance-An-Audit-of-Web-Crawled)).
 
-Each tag where put into one of the following categories:
-    """
-)
-md.add("- `wrong_language`: Not Danish")
-md.add("- `skipped`: Unsure of category")
-md.add(
-    "- `correct_language`: Danish text where at least 80\% of the text is reasonable "
-    + "sentences."
-)
-md.add(
-    "- `not_language`: Text where less than 80\% of the text is reasonable sentences."
-    + " Takes priority over wrong_language."
-)
+Each block was put into one of the following categories:
+Each user tagged 100 documents (unless otherwise specified). Each document were tagged
 
-md.add(
-    """
+- `wrong_language`: Not Danish
+- `skipped`: Unsure of category
+- `correct_language`: Danish text where at least 80\% of the text is reasonable sentences
+- `not_language`: Text where less than 80\% of the text is reasonable sentences.
+Takes priority over wrong_language.
+
 Additionally, each sentence was marked as being pornographic and/or offensive.
-    """
-)
 
-md.add(md.title(2, "Text proportions"))
-md.add("----")
+## Text proportions
 
+----
+"""
 
 def get_proportions(taggers, md):
     # examine proportion of texts that are porn/hate/correct language:
