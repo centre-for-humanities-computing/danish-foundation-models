@@ -38,11 +38,11 @@ Each user tagged 100 documents (unless otherwise specified). Each document were 
 
 - `wrong_language`: Not Danish
 - `skipped`: Unsure of category
-- `correct_language`: Danish text where at least 80% of the text is reasonable sentences
-- `not_language`: Text where less than 80% of the text is reasonable sentences.
-Takes priority over wrong_language.
+- `correct_language`: Danish text where at least 80% of the text is reasonable.
+- `not_language`: Text where less than 80% of the text is reasonable. Takes priority over `wrong_language`.
 
-Additionally, each sentence was marked as being pornographic and/or offensive.
+
+Additionally, each block was tagged for pornography (yes/no) and offensiveness (yes/no).
 
 ## Text proportions
 
@@ -57,7 +57,7 @@ def get_proportions(taggers, md):
         tagger_name, _, session_n, __, n_docs, date = tagger.split("_")
         df = taggers[tagger]
 
-        md.add(f"**{tagger_name}** (Session: {session_n})")
+        md.add(f"**{tagger_name.capitalize()}** (Session: {session_n})")
         md.add(
             f"- *Date: {date}*"
             + f"\n- *Sentences tagged: {len(df)}*"
@@ -100,7 +100,7 @@ for pair in pairs:
     tagger1_name, _, session_n1, __, n_docs1, date1 = tagger1.split("_")
     tagger2_name, _, session_n2, __, n_docs2, date2 = tagger2.split("_")
     md.add(
-        f"**{tagger1_name}** (Session: {session_n1}) vs **{tagger2_name}** - (Session: {session_n2})"
+        f"**{tagger1_name.capitalize()}** (Session: {session_n1}) vs **{tagger2_name.capitalize()}** - (Session: {session_n2})"
     )
     # merge
     df = pd.merge(taggers[pair[0]], taggers[pair[1]], on="text", suffixes=("_1", "_2"))
@@ -113,7 +113,7 @@ for pair in pairs:
         df["category_1"] == "correct_language", df["category_2"] == "correct_language"
     )
     md.add(
-        f"- Cohen's Kappa (correct vs not): {kappa:.4f} (Overlap in sentences: {df.shape[0]})"
+        f"- Cohen's Kappa (correct_language vs not correct_language): {kappa:.4f} (Overlap in sentences: {df.shape[0]})"
     )
 
 
@@ -124,7 +124,7 @@ Comparison with mC4
 
 -----
 
-"*Note*: mC4 did have a high degree of repititious texts. Similarly it did when texts blocks where not language they were often something like:
+*Note*: mC4 did have a high degree of repititious texts. Similarly it did when texts blocks where not language they were often something like:
 
 ```
 2lineStart%22%3A%22%22%2C%22placeholder%22%3A1%2C%22extName%22%3A%22nowiki%22%7D"" class=""placeholder placeholder-ext"" contenteditable=""false"">]&#x200b;</span></a></sup>&#x200b;</span>, at en lurifaks som Jimmy page, bruger MIT navn til opfindelsen! SV<span data-rte-instance=""1524-12953202845f3523698f3f1"" data-rte-meta=""%7B%22type%22%3A%22ext%22%2C%22wikitext%22%3A%22%3Cref%3ESVIN%3C%5C%2Fref%3E%22%2C%22lineStart%22%3A%22%22%2C%22placeholder%22%3A1%2C%22extName%22%3A%22ref%22%7D"" class=""placeholder placeholder-ext"" contenteditable=""false""><sup data-rte-washtml=""1"" id=""cite_ref-2"" class=""reference"" data-rte-attribs=""
