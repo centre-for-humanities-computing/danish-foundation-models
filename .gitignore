@@ -136,6 +136,7 @@ dmypy.json
 *.ndjson
 *.csv
 src/applications/dataset_validation/intercoder_reliability.ipynb
+*.parquet
 
 # MacOS
 .DS_Store
