@@ -27,7 +27,7 @@ quality_filter:
   duplicate_paragraph_chr_fraction: 0.2 # float
   top_ngram_chr_fraction_thresholds: [0.2, 0.18, 0.16] # List[float]
   top_ngram_chr_fraction_range: [2, 4] # Tuple[int, int]
-  top_ngram_min_count: 3, # int
+  top_ngram_min_count: 3 # int
   duplicate_n_gram_fraction_thresholds: [0.15, 0.14, 0.13, 0.12, 0.11, 0.1] # List[float]
   duplicate_n_gram_fraction_range: [5, 10] # Tuple[int, int]
   max_length: 5000000 # int

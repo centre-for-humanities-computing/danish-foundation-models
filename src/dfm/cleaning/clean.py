@@ -181,9 +181,9 @@ def s_filter(batch, cfg):
         }
 
 
-def dataset_to_disk(dataset, path, _ext: str) -> Path:
-    _ext = VALID_SAVE_FORMATS[_ext]
-    path = path.with_suffix(".{ext}")
+def dataset_to_disk(dataset, path, ext: str) -> Path:
+    _ext = VALID_SAVE_FORMATS[ext]
+    path = path.with_suffix(f".{ext}")
     if _ext == "parquet":
         dataset.to_parquet(path)
         return path
@@ -250,7 +250,7 @@ def main(cfg: DictConfig) -> None:
                     dataset.filter(lambda example: example[cfg.lang_col] in valid_langs)
 
             if cfg.apply_sentence_filter:
-                
+
                 dataset = dataset.map(
                     lambda batch: s_filter(batch, cfg),
                     batched=True,
@@ -270,27 +270,25 @@ def main(cfg: DictConfig) -> None:
                 columns_to_remove = [
                     c
                     for c in dataset.column_names
-                    if c not in meta_data_cols or not c.startswith("filtered_by_")
+                    if (c not in meta_data_cols) and (not c.startswith("filtered_by_"))
                 ]
                 meta = dataset.remove_columns(columns_to_remove)
                 # save meta
-                meta_path = save_dir / Path(path).stem + "_meta.jsonl"
+                meta_path = save_dir / (Path(path).stem + "_meta.jsonl")
                 meta.to_json(meta_path)
                 logging.info(f"\tSaved meta data to {meta_path.resolve()}")
 
-        # remove meta data columns
-        columns_to_remove = [
-            c for c in dataset.column_names if not c.startswith("filtered_by_")
-        ]
-        if cfg.apply_sentence_filter:
-            columns_to_remove.append("passed_sentence_filter")
-        if cfg.apply_quality_filter:
-            columns_to_remove.append("passed_quality_filter")
-        dataset = dataset.remove_columns(columns_to_remove)
+            # remove meta data columns
+            columns_to_remove = [
+                c for c in dataset.column_names if c.startswith("filtered_by_")
+            ]
+            dataset = dataset.remove_columns(columns_to_remove)
 
-        # save dataset with new file extension
-        save_path = save_dir / Path(path).name
-        path = dataset_to_disk(dataset, save_path, cfg.save_file_ext)
+            # save dataset with new file extension
+            save_path = save_dir / Path(path).name
+            path = dataset_to_disk(dataset, save_path, cfg.save_file_ext)
+    
+    logging.info(f"Finished cleaning {len(paths)} files")
 
 
 if __name__ == "__main__":
