@@ -5,7 +5,7 @@ Usage:
     python clean.py --dataset <path_to_dataset> --config <path_to_config>
 
 Where <path_to_dataset> can include wildcards, e.g.:
-    python clean.py --path /path/to/dataset/*.parquet --save_dir /path/to/save_dir 
+    python clean.py path=/path/to/dataset/*.parquet save_dir=/path/to/save_dir 
     --config /path/to/config.yaml
 
 This will clean all parquet files in the dataset directory and save the cleaned
@@ -104,8 +104,8 @@ def q_filter(batch, cfg):
                     and batch["passed_sentence_filter"]
                 )
 
-        is_filtered = [filter_lang(batch, i) for i, _ in enumerate(batch["text"])]
-        texts = (t for t, is_f in zip(batch["text"], is_filtered) if is_f)
+        is_filtered = [filter_lang(batch, i) for i, _ in enumerate(batch[cfg.text_col])]
+        texts = (t for t, is_f in zip(batch[cfg.text_col], is_filtered) if is_f)
 
         # apply q_filter
         filter_gen = qf.describe_filter(texts, batch_size=cfg.batch_size)
@@ -137,7 +137,7 @@ def q_filter(batch, cfg):
     else:
         passed = [
             f == "passed filters"
-            for f in qf.describe_filter(batch["text"], batch_size=cfg.batch_size)
+            for f in qf.describe_filter(batch[cfg.text_col], batch_size=cfg.batch_size)
         ]
         # return batch with only the texts that passed the quality filter
         return {k: [v[i] for i, p in enumerate(passed) if p] for k, v in batch.items()}
@@ -156,8 +156,8 @@ def s_filter(batch, cfg):
 
         if valid_langs:
             filter_lang = lambda batch, i: (batch[cfg.lang_col][i] in valid_langs)
-            is_filtered = [filter_lang(batch, i) for i, _ in enumerate(batch["text"])]
-            texts = (t for t, is_f in zip(batch["text"], is_filtered) if is_f)
+            is_filtered = [filter_lang(batch, i) for i, _ in enumerate(batch[cfg.text_col])]
+            texts = (t for t, is_f in zip(batch[cfg.text_col], is_filtered) if is_f)
             filtered_texts = sf(texts)
             # merge with unfiltered texts
             batch[cfg.text_col] = [
@@ -236,12 +236,24 @@ def main(cfg: DictConfig) -> None:
     # group paths in batches
     files = tqdm(paths, desc="files")
 
+    first_file = True
     with logging_redirect_tqdm():
         for path in files:
             # load dataset
             file_ext = Path(path).suffix
             ext = VALID_SAVE_FORMATS[file_ext[1:]]  # remove the "."
+
+            save_path = save_dir / Path(path).name
+            
+            _save_path = save_path.with_suffix(f".{cfg.save_file_ext}")
+            if _save_path.exists() and cfg.skip_existing:
+                logging.info(f"File already existing, skipping:\n\t{_save_path}")
+                continue
+            
             dataset = load_dataset(ext, data_files=path, split="train")
+            if first_file:
+                logging.info(f"The columns of the first dataset is:\n{dataset.column_names}")
+                first_file = False
 
             # filter languages:
             if not cfg.save_meta_data:
@@ -285,7 +297,6 @@ def main(cfg: DictConfig) -> None:
             dataset = dataset.remove_columns(columns_to_remove)
 
             # save dataset with new file extension
-            save_path = save_dir / Path(path).name
             path = dataset_to_disk(dataset, save_path, cfg.save_file_ext)
     
     logging.info(f"Finished cleaning {len(paths)} files")

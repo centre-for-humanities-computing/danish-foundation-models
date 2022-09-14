@@ -11,6 +11,7 @@ save_meta_data: True # bool
 save_file_ext: "jsonl" # save file extension (no ".")
 apply_quality_filter: True # bool
 apply_sentence_filter: True # bool
+skip_existing: True # bool: skip existing files (good when restarting the script)
 
 quality_filter:
   min_stop_words: 2 # int
