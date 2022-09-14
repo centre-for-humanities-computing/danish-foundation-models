@@ -12,6 +12,7 @@ save_file_ext: "jsonl" # save file extension (no ".")
 apply_quality_filter: True # bool
 apply_sentence_filter: True # bool
 skip_existing: True # bool: skip existing files (good when restarting the script)
+verbosity_level: 1 # int: 0, 1, 2: 0 = no output, 1 = progress bar, 2 = detailed output (for debugging)
 
 quality_filter:
   min_stop_words: 2 # int

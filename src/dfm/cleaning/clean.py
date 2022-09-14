@@ -5,7 +5,7 @@ Usage:
     python clean.py --dataset <path_to_dataset> --config <path_to_config>
 
 Where <path_to_dataset> can include wildcards, e.g.:
-    python clean.py path=/path/to/dataset/*.parquet save_dir=/path/to/save_dir 
+    python clean.py path=/path/to/dataset/*.parquet save_dir=/path/to/save_dir
     --config /path/to/config.yaml
 
 This will clean all parquet files in the dataset directory and save the cleaned
@@ -19,6 +19,7 @@ Authors:
 
 import logging
 import multiprocessing as mp
+from functools import partial
 from glob import glob
 from pathlib import Path
 
@@ -156,7 +157,9 @@ def s_filter(batch, cfg):
 
         if valid_langs:
             filter_lang = lambda batch, i: (batch[cfg.lang_col][i] in valid_langs)
-            is_filtered = [filter_lang(batch, i) for i, _ in enumerate(batch[cfg.text_col])]
+            is_filtered = [
+                filter_lang(batch, i) for i, _ in enumerate(batch[cfg.text_col])
+            ]
             texts = (t for t, is_f in zip(batch[cfg.text_col], is_filtered) if is_f)
             filtered_texts = sf(texts)
             # merge with unfiltered texts
@@ -198,6 +201,73 @@ def dataset_to_disk(dataset, path, ext: str) -> Path:
     logging.info(f"\tSaved cleaned dataset to {path.resolve()}")
 
 
+def process_files(path: Path, cfg: DictConfig):
+    # load dataset
+    file_ext = Path(path).suffix
+    ext = VALID_SAVE_FORMATS[file_ext[1:]]  # remove the "."
+
+    save_dir = Path(cfg.save_dir)
+    save_path = save_dir / Path(path).name
+
+    meta_data_cols = [
+        cfg.id_col,
+        cfg.lang_col,
+        "passed_sentence_filter",
+        "passed_quality_filter",
+    ]
+
+    _save_path = save_path.with_suffix(f".{cfg.save_file_ext}")
+    if _save_path.exists() and cfg.skip_existing:
+        logging.info(f"File already existing, skipping:\n\t{_save_path}")
+        return
+
+    dataset = load_dataset(ext, data_files=path, split="train")
+    if cfg.verbosity_level == 2:
+        logging.debug(f"The columns of the first dataset is:\n{dataset.column_names}")
+
+    # filter languages:
+    if not cfg.save_meta_data:
+        if cfg.valid_languages and cfg.lang_col:
+            valid_langs = set(cfg.valid_languages)
+            dataset.filter(lambda example: example[cfg.lang_col] in valid_langs)
+
+    if cfg.apply_sentence_filter:
+
+        dataset = dataset.map(
+            lambda batch: s_filter(batch, cfg),
+            batched=True,
+            batch_size=cfg.batch_size,
+        )
+    if cfg.apply_quality_filter:
+        dataset = dataset.map(
+            lambda batch: q_filter(batch, cfg),
+            batched=True,
+            batch_size=cfg.batch_size,
+        )
+
+    if cfg.save_meta_data:
+        # subset meta data
+        columns_to_remove = [
+            c
+            for c in dataset.column_names
+            if (c not in meta_data_cols) and (not c.startswith("filtered_by_"))
+        ]
+        meta = dataset.remove_columns(columns_to_remove)
+        # save meta
+        meta_path = save_dir / (Path(path).stem + "_meta.jsonl")
+        meta.to_json(meta_path)
+        logging.info(f"\tSaved meta data to {meta_path.resolve()}")
+
+    # remove meta data columns
+    columns_to_remove = [
+        c for c in dataset.column_names if c.startswith("filtered_by_")
+    ]
+    dataset = dataset.remove_columns(columns_to_remove)
+
+    # save dataset with new file extension
+    path = dataset_to_disk(dataset, save_path, cfg.save_file_ext)
+
+
 @hydra.main(
     config_path=CFG_PATH,
     config_name="default_clean_config.yaml",
@@ -208,7 +278,12 @@ def main(cfg: DictConfig) -> None:
     save_dir = Path(cfg.save_dir)
     save_dir.mkdir(exist_ok=True, parents=True)
     # set logging
-    logging.basicConfig(filename=save_dir / "cleaning.log", level=logging.INFO)
+    if cfg.verbosity_level == 0:
+        logging.basicConfig(level=logging.ERROR)
+    if cfg.verbosity_level == 1:
+        logging.basicConfig(filename=save_dir / "cleaning.log", level=logging.INFO)
+    if cfg.verbosity_level == 2:
+        logging.basicConfig(filename=save_dir / "cleaning.log", level=logging.DEBUG)
     # save config to folder
     with open(save_dir / "clean_config.yaml", "w") as f:
         OmegaConf.save(cfg, f)
@@ -217,13 +292,6 @@ def main(cfg: DictConfig) -> None:
         num_proc = mp.cpu_count() - 1
     else:
         num_proc = cfg.num_proc
-
-    meta_data_cols = [
-        cfg.id_col,
-        cfg.lang_col,
-        "passed_sentence_filter",
-        "passed_quality_filter",
-    ]
 
     paths = glob(cfg.path)
 
@@ -236,69 +304,13 @@ def main(cfg: DictConfig) -> None:
     # group paths in batches
     files = tqdm(paths, desc="files")
 
-    first_file = True
+    _process_files = partial(process_files, cfg=cfg)
     with logging_redirect_tqdm():
-        for path in files:
-            # load dataset
-            file_ext = Path(path).suffix
-            ext = VALID_SAVE_FORMATS[file_ext[1:]]  # remove the "."
+        with mp.Pool(num_proc) as pool:
+            # process files in parallel
+            for _ in pool.imap_unordered(_process_files, files, chunksize=1):
+                pass
 
-            save_path = save_dir / Path(path).name
-            
-            _save_path = save_path.with_suffix(f".{cfg.save_file_ext}")
-            if _save_path.exists() and cfg.skip_existing:
-                logging.info(f"File already existing, skipping:\n\t{_save_path}")
-                continue
-            
-            dataset = load_dataset(ext, data_files=path, split="train")
-            if first_file:
-                logging.info(f"The columns of the first dataset is:\n{dataset.column_names}")
-                first_file = False
-
-            # filter languages:
-            if not cfg.save_meta_data:
-                if cfg.valid_languages and cfg.lang_col:
-                    valid_langs = set(cfg.valid_languages)
-                    dataset.filter(lambda example: example[cfg.lang_col] in valid_langs)
-
-            if cfg.apply_sentence_filter:
-
-                dataset = dataset.map(
-                    lambda batch: s_filter(batch, cfg),
-                    batched=True,
-                    batch_size=cfg.batch_size,
-                    num_proc=num_proc,
-                )
-            if cfg.apply_quality_filter:
-                dataset = dataset.map(
-                    lambda batch: q_filter(batch, cfg),
-                    batched=True,
-                    batch_size=cfg.batch_size,
-                    num_proc=num_proc,
-                )
-
-            if cfg.save_meta_data:
-                # subset meta data
-                columns_to_remove = [
-                    c
-                    for c in dataset.column_names
-                    if (c not in meta_data_cols) and (not c.startswith("filtered_by_"))
-                ]
-                meta = dataset.remove_columns(columns_to_remove)
-                # save meta
-                meta_path = save_dir / (Path(path).stem + "_meta.jsonl")
-                meta.to_json(meta_path)
-                logging.info(f"\tSaved meta data to {meta_path.resolve()}")
-
-            # remove meta data columns
-            columns_to_remove = [
-                c for c in dataset.column_names if c.startswith("filtered_by_")
-            ]
-            dataset = dataset.remove_columns(columns_to_remove)
-
-            # save dataset with new file extension
-            path = dataset_to_disk(dataset, save_path, cfg.save_file_ext)
-    
     logging.info(f"Finished cleaning {len(paths)} files")
 
 
