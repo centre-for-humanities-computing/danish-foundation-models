@@ -23,8 +23,10 @@ from functools import partial
 from glob import glob
 from pathlib import Path
 
+import datasets
 import hydra
 from datasets import load_dataset
+from datasets.utils import disable_progress_bar
 from omegaconf import DictConfig, OmegaConf
 from tqdm import tqdm
 from tqdm.contrib.logging import logging_redirect_tqdm
@@ -278,6 +280,9 @@ def main(cfg: DictConfig) -> None:
 
     save_dir = Path(cfg.save_dir)
     save_dir.mkdir(exist_ok=True, parents=True)
+    # set logging for huggingface datasets
+    datasets.logging.set_verbosity_error()
+    disable_progress_bar()
     # set logging
     if cfg.verbosity_level == 0:
         logging.basicConfig(level=logging.ERROR)
