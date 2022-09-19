@@ -1,0 +1,17 @@
+# config for clean.py
+path: "data/test/*.parquet"
+save_dir: "data/test/dedupe" # Optional[str]
+text_col: "text"
+num_proc: -1 # int: -1 = all available cores
+batch_size: 500000 # int
+seed: 42 # int
+keep_duplicates: True # bool
+save_file_ext: "jsonl" # save file extension (no ".")
+verbosity_level: 2 # int: 0, 1, 2: 0 = no output, 1 = progress bar, 2 = detailed output (for debugging)
+
+deduper:
+  split_method: "word_ngram" # str: "word_ngram", "paragraph", "none", where "none" means no splitting
+  ngram_size: 13 # int
+  ngram_stride: 1 # int
+  similarity_threshold: 0.8 # float
+  num_minhashes: 32 # int

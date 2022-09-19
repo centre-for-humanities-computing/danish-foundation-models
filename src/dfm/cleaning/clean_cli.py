@@ -2,10 +2,10 @@
 A general script for cleaning iterable text documents
 
 Usage:
-    python clean.py --dataset <path_to_dataset> --config <path_to_config>
+    python clean_cli.py path=<path_to_dataset> --config <path_to_config>
 
 Where <path_to_dataset> can include wildcards, e.g.:
-    python clean.py path=/path/to/dataset/*.parquet save_dir=/path/to/save_dir
+    python clean_cli.py path=/path/to/dataset/*.parquet save_dir=/path/to/save_dir
     --config /path/to/config.yaml
 
 This will clean all parquet files in the dataset directory and save the cleaned
@@ -23,8 +23,10 @@ from functools import partial
 from glob import glob
 from pathlib import Path
 
+import datasets
 import hydra
 from datasets import load_dataset
+from datasets.utils import disable_progress_bar
 from omegaconf import DictConfig, OmegaConf
 from tqdm import tqdm
 from tqdm.contrib.logging import logging_redirect_tqdm
@@ -223,7 +225,7 @@ def process_files(path: Path, cfg: DictConfig):
 
     dataset = load_dataset(ext, data_files=path, split="train")
     if cfg.verbosity_level == 2:
-        logging.debug(f"The columns of the first dataset is:\n{dataset.column_names}")
+        logging.debug(f"The columns of the dataset is:\n{dataset.column_names}")
 
     # filter languages:
     if not cfg.save_meta_data:
@@ -274,9 +276,13 @@ def process_files(path: Path, cfg: DictConfig):
     version_base="1.2",
 )
 def main(cfg: DictConfig) -> None:
+    """Main function for cleaning a dataset."""
 
     save_dir = Path(cfg.save_dir)
     save_dir.mkdir(exist_ok=True, parents=True)
+    # set logging for huggingface datasets
+    datasets.logging.set_verbosity_error()
+    disable_progress_bar()
     # set logging
     if cfg.verbosity_level == 0:
         logging.basicConfig(level=logging.ERROR)
