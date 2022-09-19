@@ -2,10 +2,10 @@
 A general script for cleaning iterable text documents
 
 Usage:
-    python clean.py --dataset <path_to_dataset> --config <path_to_config>
+    python clean_cli.py path=<path_to_dataset> --config <path_to_config>
 
 Where <path_to_dataset> can include wildcards, e.g.:
-    python clean.py path=/path/to/dataset/*.parquet save_dir=/path/to/save_dir
+    python clean_cli.py path=/path/to/dataset/*.parquet save_dir=/path/to/save_dir
     --config /path/to/config.yaml
 
 This will clean all parquet files in the dataset directory and save the cleaned
