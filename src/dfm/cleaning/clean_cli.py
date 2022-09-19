@@ -223,7 +223,7 @@ def process_files(path: Path, cfg: DictConfig):
 
     dataset = load_dataset(ext, data_files=path, split="train")
     if cfg.verbosity_level == 2:
-        logging.debug(f"The columns of the first dataset is:\n{dataset.column_names}")
+        logging.debug(f"The columns of the dataset is:\n{dataset.column_names}")
 
     # filter languages:
     if not cfg.save_meta_data:
@@ -274,6 +274,7 @@ def process_files(path: Path, cfg: DictConfig):
     version_base="1.2",
 )
 def main(cfg: DictConfig) -> None:
+    """Main function for cleaning a dataset."""
 
     save_dir = Path(cfg.save_dir)
     save_dir.mkdir(exist_ok=True, parents=True)
