@@ -23,7 +23,9 @@ import multiprocessing as mp
 from glob import glob
 from pathlib import Path
 
+import datasets
 import hydra
+from datasets.utils import disable_progress_bar
 from datasets import Dataset, load_dataset
 from omegaconf import DictConfig, OmegaConf
 from tqdm import tqdm
@@ -65,11 +67,12 @@ def process_path(path: Path, deduper: Deduper, cfg: DictConfig) -> None:
     path = Path(path)
     file_ext = path.suffix
     ext = VALID_SAVE_FORMATS[file_ext[1:]]  # remove the "."
-    dataset = load_dataset(ext, data_files=str(path), split="train")
+    dataset = load_dataset(ext, data_files=str(path), split="train", streaming=False)
 
-    logging.debug("The columns of the dataset is: \n %s", str(dataset.column_names))
+    if cfg.verbosity_level == 2:
+        logging.debug("The columns of the dataset is: \n %s", str(dataset.column_names))
 
-    if cfg.keep_duplicates and "passed_quality_filter" in dataset.column_names:
+    if (not cfg.keep_duplicates) and "passed_quality_filter" in dataset.column_names:
         info_str = (
             "'keep_duplicates' is set to False, therefore files"
             + " which did not pass the quality filter will also be removed."
@@ -79,28 +82,31 @@ def process_path(path: Path, deduper: Deduper, cfg: DictConfig) -> None:
             len_before = len(dataset)
         dataset = dataset.filter(lambda x: x["passed_quality_filter"])
 
-        logging.debug("Filtered out %d documents", len_before - len(dataset))
+        if cfg.verbosity_level == 2:
+            logging.debug("Filtered out %d documents", len_before - len(dataset))
         texts = dataset[cfg.text_col]
     else:
         if "passed_quality_filter" in dataset.column_names:
             # create a text generator of texts which passed the quality filter
             texts = (
-                example["text"]
+                example[cfg.text_col]
                 for example in dataset
                 if example["passed_quality_filter"]
             )
         else:
             texts = dataset[cfg.text_col]
 
+    text_gen_w_unique_ids = ((str(path) + str(i), text) for i, text in enumerate(texts))
+
     depup_gen = deduper.deduplicate(
-        enumerate(texts),
+        text_gen_w_unique_ids,
         return_generator=True,
         overwrite=True,
         store_corpus_to_disk=False,
         store_mask_to_disk=True,
         store_lsh_cache_to_disk=False,
         store_config_to_disk=False,
-        output_dir="tmp_path",
+        output_dir=path.parent / "duplicates",
     )
 
     # add dedupe meta data columns
@@ -135,6 +141,9 @@ def main(cfg: DictConfig) -> None:
 
     save_dir = Path(cfg.save_dir)
     save_dir.mkdir(exist_ok=True, parents=True)
+    # set logging for huggingface datasets
+    datasets.logging.set_verbosity_error()
+    disable_progress_bar()
     # set logging
     if cfg.verbosity_level == 0:
         logging.basicConfig(level=logging.ERROR)
@@ -154,6 +163,7 @@ def main(cfg: DictConfig) -> None:
         num_proc = cfg.num_proc
 
     paths = glob(cfg.path)
+    paths = [path for path in paths if not path.endswith("_meta.jsonl")]  # remove meta files from clean_cli
 
     # create deduper
     verbose = False
