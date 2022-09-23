@@ -8,6 +8,8 @@ seed: 42 # int
 keep_duplicates: True # bool
 save_file_ext: "jsonl" # save file extension (no ".")
 verbosity_level: 2 # int: 0, 1, 2: 0 = no output, 1 = progress bar, 2 = detailed output (for debugging)
+streaming: true # bool: if True, will stream data from disk, otherwise will load all data into memory
+id_col: null # Optional[str]: if not None, will use this column as the id column otherwise will use the index and file name.
 
 deduper:
   split_method: "word_ngram" # str: "word_ngram", "paragraph", "none", where "none" means no splitting
