@@ -1,5 +1,5 @@
 # config for clean.py
-path: "data/test/*.parquet"
+path: "data/test/*.jsonl"
 save_dir: "data/test/dedupe" # Optional[str]
 text_col: "text"
 num_proc: -1 # int: -1 = all available cores

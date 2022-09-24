@@ -22,12 +22,13 @@ import logging
 import multiprocessing as mp
 from glob import glob
 from pathlib import Path
+from typing import Generator, Union
 
 import datasets
 import hydra
-from datasets.utils import disable_progress_bar
 import ndjson
 from datasets import Dataset, load_dataset
+from datasets.utils import disable_progress_bar
 from omegaconf import DictConfig, OmegaConf
 from tqdm import tqdm
 from tqdm.contrib.logging import logging_redirect_tqdm
@@ -54,7 +55,7 @@ def dataset_to_disk(dataset: Dataset, path: Path, ext: str, streaming: bool):
             f"Streaming is only supported for jsonl files not for {ext}. "
             "Please use a different save format."
         )
-    elif streaming:
+    if streaming:
         # write each row to path as a jsonl file
         with open(path, "w", encoding="utf-8") as file:
             writer = ndjson.writer(file, ensure_ascii=False)
@@ -73,23 +74,42 @@ def dataset_to_disk(dataset: Dataset, path: Path, ext: str, streaming: bool):
     return path
 
 
+def create_dataset_generator(path: Union[Path, str]) -> Generator[dict, None, None]:
+    """Create a generator that yields datasets from a path"""
+    # check file extension is json or jsonl
+    ext = path.suffix[1:]
+    if ext not in {"json", "jsonl"}:
+        raise ValueError(
+            "Only json and jsonl files are supported when use_huggingface_loader is"
+            + f" False, not {ext}. Please use a different save format."
+        )
+    with open(path, "r") as file:  # pylint disable=unspecified-encoding
+        reader = ndjson.reader(file)
+
+        for post in reader:
+            yield post
+
+
 def process_path(path: Path, deduper: Deduper, cfg: DictConfig) -> None:
     """Deduplicate a single file and save the deduplicated data to disk"""
-    
+
     save_dir = Path(cfg.save_dir)
     save_path = save_dir / Path(path).name
     path = Path(path)
     file_ext = path.suffix
     ext = VALID_SAVE_FORMATS[file_ext[1:]]  # remove the "."
-    dataset = load_dataset(
-        ext, data_files=str(path), split="train", streaming=cfg.streaming
-    )
+    if cfg.use_huggingface_loader:
+        dataset = load_dataset(
+            ext, data_files=str(path), split="train", streaming=cfg.streaming
+        )
+    else:
+        dataset = create_dataset_generator(path)
 
-    if cfg.streaming:
+    if cfg.streaming or cfg.use_huggingface_loader:
         try:
             column_names = list(next(iter(dataset)).keys())
         except StopIteration:
-            logging.warn("Dataset is empty, skipping: \n%s\n", str(path))
+            logging.warning("Dataset is empty, skipping: \n%s\n", str(path))
             return
     else:
         column_names = dataset.column_names
@@ -104,7 +124,11 @@ def process_path(path: Path, deduper: Deduper, cfg: DictConfig) -> None:
         logging.info(info_str)
         if cfg.verbosity_level == 2:
             len_before = len(dataset)
-        dataset = dataset.filter(lambda x: x["passed_quality_filter"])
+
+        if cfg.use_huggingface_loader:
+            dataset = dataset.filter(lambda x: x["passed_quality_filter"])
+        else:
+            dataset = (d for d in dataset if d["passed_quality_filter"])
 
         if cfg.verbosity_level == 2:
             logging.debug("Filtered out %d documents", len_before - len(dataset))
@@ -118,7 +142,7 @@ def process_path(path: Path, deduper: Deduper, cfg: DictConfig) -> None:
                 if example["passed_quality_filter"]
             )
         else:
-            texts = (example["text"] for example in dataset)
+            texts = (example[cfg.text_col] for example in dataset)
 
     text_gen_w_unique_ids = ((str(path) + str(i), text) for i, text in enumerate(texts))
 
@@ -141,18 +165,29 @@ def process_path(path: Path, deduper: Deduper, cfg: DictConfig) -> None:
             next(is_dub_gen) if example["passed_quality_filter"] else None
             for example in dataset
         ]
-        dataset.add_column("is_duplicate", is_dup)
+        if cfg.use_huggingface_loader:
+            dataset = dataset.add_column("is_duplicate", is_dup)
+        else:
+            dataset = (dict(d, is_duplicate=i) for d, i in zip(dataset, is_dup))
     else:
         # add dedupe meta data columns
         is_dup = [x["duplicate"] for x in depup_gen]
-        dataset.add_column("is_duplicate", is_dup)
+        if cfg.use_huggingface_loader:
+            dataset.add_column("is_duplicate", is_dup)
+        else:
+            dataset = (dict(d, is_duplicate=i) for d, i in zip(dataset, is_dup))
 
     if not cfg.keep_duplicates:
         # filter out duplicates
-        dataset = dataset.filter(lambda x: x["is_duplicate"] is False)
+        if cfg.use_huggingface_loader:
+            dataset = dataset.filter(lambda x: x["is_duplicate"] is False)
+        else:
+            dataset = (d for d in dataset if d["is_duplicate"] is False)
 
     # save dataset with new file extension
-    path = dataset_to_disk(dataset, save_path, cfg.save_file_ext, streaming=cfg.streaming)
+    path = dataset_to_disk(
+        dataset, save_path, cfg.save_file_ext, streaming=cfg.streaming
+    )
 
 
 @hydra.main(
@@ -187,7 +222,9 @@ def main(cfg: DictConfig) -> None:
         num_proc = cfg.num_proc
 
     paths = glob(cfg.path)
-    paths = [path for path in paths if not path.endswith("_meta.jsonl")]  # remove meta files from clean_cli
+    paths = [
+        path for path in paths if not path.endswith("_meta.jsonl")
+    ]  # remove meta files from clean_cli
 
     # create deduper
     verbose = False
