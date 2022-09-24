@@ -23,7 +23,9 @@ import multiprocessing as mp
 from glob import glob
 from pathlib import Path
 
+import datasets
 import hydra
+from datasets.utils import disable_progress_bar
 import ndjson
 from datasets import Dataset, load_dataset
 from omegaconf import DictConfig, OmegaConf
@@ -47,9 +49,9 @@ def dataset_to_disk(dataset: Dataset, path: Path, ext: str, streaming: bool):
     """Save a dataset to disk"""
     _ext = VALID_SAVE_FORMATS[ext]
     path = path.with_suffix(f".{ext}")
-    if streaming and not ext != "jsonl":
+    if streaming and ext not in {"jsonl", "json"}:
         raise ValueError(
-            "Streaming is only supported for jsonl files. "
+            f"Streaming is only supported for jsonl files not for {ext}. "
             "Please use a different save format."
         )
     elif streaming:
@@ -73,6 +75,9 @@ def dataset_to_disk(dataset: Dataset, path: Path, ext: str, streaming: bool):
 
 def process_path(path: Path, deduper: Deduper, cfg: DictConfig) -> None:
     """Deduplicate a single file and save the deduplicated data to disk"""
+    
+    save_dir = Path(cfg.save_dir)
+    save_path = save_dir / Path(path).name
     path = Path(path)
     file_ext = path.suffix
     ext = VALID_SAVE_FORMATS[file_ext[1:]]  # remove the "."
@@ -81,13 +86,17 @@ def process_path(path: Path, deduper: Deduper, cfg: DictConfig) -> None:
     )
 
     if cfg.streaming:
-        column_names = list(next(iter(dataset)).keys())
+        try:
+            column_names = list(next(iter(dataset)).keys())
+        except StopIteration:
+            logging.warn("Dataset is empty, skipping: \n%s\n", str(path))
+            return
     else:
         column_names = dataset.column_names
 
     logging.debug("The columns of the dataset is: \n %s", str(column_names))
 
-    if cfg.keep_duplicates and "passed_quality_filter" in column_names:
+    if (not cfg.keep_duplicates) and "passed_quality_filter" in column_names:
         info_str = (
             "'keep_duplicates' is set to False, therefore files"
             + " which did not pass the quality filter will also be removed."
@@ -97,28 +106,31 @@ def process_path(path: Path, deduper: Deduper, cfg: DictConfig) -> None:
             len_before = len(dataset)
         dataset = dataset.filter(lambda x: x["passed_quality_filter"])
 
-        logging.debug("Filtered out %d documents", len_before - len(dataset))
-        texts = dataset[cfg.text_col]
+        if cfg.verbosity_level == 2:
+            logging.debug("Filtered out %d documents", len_before - len(dataset))
+        texts = (example["text"] for example in dataset)
     else:
         if "passed_quality_filter" in column_names:
             # create a text generator of texts which passed the quality filter
             texts = (
-                example["text"]
+                example[cfg.text_col]
                 for example in dataset
                 if example["passed_quality_filter"]
             )
         else:
             texts = (example["text"] for example in dataset)
 
+    text_gen_w_unique_ids = ((str(path) + str(i), text) for i, text in enumerate(texts))
+
     depup_gen = deduper.deduplicate(
-        enumerate(texts),
+        text_gen_w_unique_ids,
         return_generator=True,
         overwrite=True,
         store_corpus_to_disk=False,
         store_mask_to_disk=True,
         store_lsh_cache_to_disk=False,
         store_config_to_disk=False,
-        output_dir="tmp_path",
+        output_dir=path.parent / "duplicates",
     )
 
     # add dedupe meta data columns
@@ -140,7 +152,7 @@ def process_path(path: Path, deduper: Deduper, cfg: DictConfig) -> None:
         dataset = dataset.filter(lambda x: x["is_duplicate"] is False)
 
     # save dataset with new file extension
-    path = dataset_to_disk(dataset, path, cfg.save_file_ext, streaming=cfg.streaming)
+    path = dataset_to_disk(dataset, save_path, cfg.save_file_ext, streaming=cfg.streaming)
 
 
 @hydra.main(
@@ -153,6 +165,9 @@ def main(cfg: DictConfig) -> None:
 
     save_dir = Path(cfg.save_dir)
     save_dir.mkdir(exist_ok=True, parents=True)
+    # set logging for huggingface datasets
+    datasets.logging.set_verbosity_error()
+    disable_progress_bar()
     # set logging
     if cfg.verbosity_level == 0:
         logging.basicConfig(level=logging.ERROR)
@@ -172,6 +187,7 @@ def main(cfg: DictConfig) -> None:
         num_proc = cfg.num_proc
 
     paths = glob(cfg.path)
+    paths = [path for path in paths if not path.endswith("_meta.jsonl")]  # remove meta files from clean_cli
 
     # create deduper
     verbose = False
