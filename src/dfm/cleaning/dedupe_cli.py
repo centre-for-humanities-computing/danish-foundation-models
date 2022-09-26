@@ -22,7 +22,7 @@ import logging
 import multiprocessing as mp
 from glob import glob
 from pathlib import Path
-from typing import Generator, Union
+from typing import Callable, Generator, Iterable, Union
 
 import datasets
 import hydra
@@ -46,7 +46,41 @@ VALID_SAVE_FORMATS = {
 }
 
 
-def dataset_to_disk(dataset: Dataset, path: Path, ext: str, streaming: bool):
+def multigen(gen_func: Callable) -> Callable:
+    """A decorator for using a generator multiple times"""
+
+    class _multigen:
+        def __init__(self, *args, **kwargs):
+            self.__args = args
+            self.__kwargs = kwargs
+            self.elements = []
+            self.finished = False
+
+        def initial_iter(self):
+            """The initial iteration over the generator
+
+            This saves the elements generated in the generator to a list
+            """
+            # This is the first time we are iterating over the generator
+            self.elements = []
+            for i in gen_func(*self.__args, **self.__kwargs):
+                self.elements.append(i)
+                yield i
+            self.finished = True
+
+        def __iter__(self):
+            if self.finished:
+                # If we have already iterated over the generator, return the
+                # elements we have already generated
+                return iter(self.elements)
+            return self.initial_iter()
+
+    return _multigen
+
+
+def dataset_to_disk(
+    dataset: Union[Dataset, Iterable[dict]], path: Path, ext: str, streaming: bool
+):
     """Save a dataset to disk"""
     _ext = VALID_SAVE_FORMATS[ext]
     path = path.with_suffix(f".{ext}")
@@ -83,19 +117,20 @@ def create_dataset_generator(path: Union[Path, str]) -> Generator[dict, None, No
             "Only json and jsonl files are supported when use_huggingface_loader is"
             + f" False, not {ext}. Please use a different save format."
         )
-    with open(path, "r") as file:  # pylint disable=unspecified-encoding
+    with open(path, "r") as file:  # pylint: disable=unspecified-encoding
         reader = ndjson.reader(file)
 
         for post in reader:
             yield post
 
 
-def process_path(path: Path, deduper: Deduper, cfg: DictConfig) -> None:
+def process_path(path: Union[Path, str], deduper: Deduper, cfg: DictConfig) -> None:
     """Deduplicate a single file and save the deduplicated data to disk"""
 
     save_dir = Path(cfg.save_dir)
     save_path = save_dir / Path(path).name
     path = Path(path)
+    logging.info("Processing %s", str(path.resolve()))
     file_ext = path.suffix
     ext = VALID_SAVE_FORMATS[file_ext[1:]]  # remove the "."
     if cfg.use_huggingface_loader:
@@ -103,7 +138,7 @@ def process_path(path: Path, deduper: Deduper, cfg: DictConfig) -> None:
             ext, data_files=str(path), split="train", streaming=cfg.streaming
         )
     else:
-        dataset = create_dataset_generator(path)
+        dataset = multigen(create_dataset_generator)(path)
 
     if cfg.streaming or cfg.use_huggingface_loader:
         try:
@@ -126,20 +161,24 @@ def process_path(path: Path, deduper: Deduper, cfg: DictConfig) -> None:
             len_before = len(dataset)
 
         if cfg.use_huggingface_loader:
-            dataset = dataset.filter(lambda x: x["passed_quality_filter"])
+            dataset_filtered = dataset.filter(
+                lambda x: x["passed_quality_filter"] is True
+            )
         else:
-            dataset = (d for d in dataset if d["passed_quality_filter"])
+            dataset_filtered = (
+                d for d in dataset if d["passed_quality_filter"] is True
+            )
 
         if cfg.verbosity_level == 2:
             logging.debug("Filtered out %d documents", len_before - len(dataset))
-        texts = (example["text"] for example in dataset)
+        texts = (example["text"] for example in dataset_filtered)
     else:
         if "passed_quality_filter" in column_names:
             # create a text generator of texts which passed the quality filter
             texts = (
                 example[cfg.text_col]
                 for example in dataset
-                if example["passed_quality_filter"]
+                if example["passed_quality_filter"] is True
             )
         else:
             texts = (example[cfg.text_col] for example in dataset)
@@ -151,7 +190,7 @@ def process_path(path: Path, deduper: Deduper, cfg: DictConfig) -> None:
         return_generator=True,
         overwrite=True,
         store_corpus_to_disk=False,
-        store_mask_to_disk=True,
+        store_mask_to_disk=False,
         store_lsh_cache_to_disk=False,
         store_config_to_disk=False,
         output_dir=path.parent / "duplicates",
@@ -162,31 +201,37 @@ def process_path(path: Path, deduper: Deduper, cfg: DictConfig) -> None:
         # add meta data columns
         is_dub_gen = (x["duplicate"] for x in depup_gen)
         is_dup = [
-            next(is_dub_gen) if example["passed_quality_filter"] else None
+            next(is_dub_gen) if example["passed_quality_filter"] is True else None
             for example in dataset
         ]
         if cfg.use_huggingface_loader:
-            dataset = dataset.add_column("is_duplicate", is_dup)
+            dataset_dedup = dataset.add_column("is_duplicate", is_dup)
         else:
-            dataset = (dict(d, is_duplicate=i) for d, i in zip(dataset, is_dup))
+            dataset_dedup = (dict(d, is_duplicate=i) for d, i in zip(dataset, is_dup))
     else:
         # add dedupe meta data columns
         is_dup = [x["duplicate"] for x in depup_gen]
         if cfg.use_huggingface_loader:
-            dataset.add_column("is_duplicate", is_dup)
+            dataset_dedup = dataset.add_column("is_duplicate", is_dup)
         else:
-            dataset = (dict(d, is_duplicate=i) for d, i in zip(dataset, is_dup))
+            dataset_dedup = (dict(d, is_duplicate=i) for d, i in zip(dataset, is_dup))
 
     if not cfg.keep_duplicates:
         # filter out duplicates
         if cfg.use_huggingface_loader:
-            dataset = dataset.filter(lambda x: x["is_duplicate"] is False)
+            dataset_deduplicated = dataset_dedup.filter(
+                lambda x: x["is_duplicate"] is False
+            )
         else:
-            dataset = (d for d in dataset if d["is_duplicate"] is False)
+            dataset_deduplicated = (
+                d for d in dataset_dedup if d["is_duplicate"] is False
+            )
+    else:
+        dataset_deduplicated = dataset_dedup
 
     # save dataset with new file extension
     path = dataset_to_disk(
-        dataset, save_path, cfg.save_file_ext, streaming=cfg.streaming
+        dataset_deduplicated, save_path, cfg.save_file_ext, streaming=cfg.streaming
     )
 
 
@@ -212,6 +257,7 @@ def main(cfg: DictConfig) -> None:
         logging.basicConfig(
             filename=save_dir / "deduplication.log", level=logging.DEBUG
         )
+
     # save config to folder
     with open(save_dir / "deduplication_config.yaml", "w", encoding="utf-8") as file:
         OmegaConf.save(cfg, file)
@@ -254,4 +300,4 @@ def main(cfg: DictConfig) -> None:
 
 
 if __name__ == "__main__":
-    main()
+    main()  # pylint: disable=no-value-for-parameter
