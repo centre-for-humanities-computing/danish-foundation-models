@@ -96,32 +96,13 @@ python3 danish-foundation-models/src/dfm/cleaning/clean_cli.py \
 # Deduplication
 ################################################
 
-python3 danish-foundation-models/src/dfm/cleaning/dedupe_cli.py \
-    path="/work/netarkivet-cleaned/v2/2006/*.jsonl" \
-    save_dir=/work/netarkivet-cleaned/v2/2006 \
-    text_col=content \
-    num_proc=31 \
-    verbosity_level=1
+for YEAR in {2006..2016}
+do
+    echo "$YEAR"
+    python3 danish-foundation-models/src/dfm/cleaning/dedupe_cli.py \
+        path="/work/netarkivet-cleaned/v2/$YEAR/*.jsonl" \
+        save_dir=/work/netarkivet-cleaned/v2/$YEAR/deduplicated/ \
+        text_col=content \
+        num_proc=32
 
-python3 danish-foundation-models/src/dfm/cleaning/dedupe_cli.py \
-    path="/work/netarkivet-cleaned/v2/2007/*.jsonl" \
-    save_dir=/work/netarkivet-cleaned/v2/2007/deduplicated/ \
-    text_col=content \
-    num_proc=31 \
-    verbosity_level=1
-
-
-python3 danish-foundation-models/src/dfm/cleaning/dedupe_cli.py \
-    path="/work/netarkivet-cleaned/v2/2008/*.jsonl" \
-    save_dir=/work/netarkivet-cleaned/v2/2008/deduplicated/ \
-    text_col=content \
-    num_proc=31 \
-    verbosity_level=1
-
-
-python3 danish-foundation-models/src/dfm/cleaning/dedupe_cli.py \
-    path="/work/netarkivet-cleaned/v2/2009/*.jsonl" \
-    save_dir=/work/netarkivet-cleaned/v2/2009/deduplicated/ \
-    text_col=content \
-    num_proc=31 \
-    verbosity_level=1
+done
