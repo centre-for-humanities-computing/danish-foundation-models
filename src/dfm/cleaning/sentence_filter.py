@@ -99,7 +99,7 @@ class SentenceFilter:
         # Create a counter for keeping track of how many documents each filter removed
         self.filter_counts = Counter()
 
-    def filter_corpus(
+    def filter_corpus(  # noqa: C901
         self,
         texts: Union[Iterable[str], Iterable[Tuple[str, Optional[Any]]]],
         progress_bar: bool = True,

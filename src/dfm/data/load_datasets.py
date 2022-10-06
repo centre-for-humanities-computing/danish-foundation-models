@@ -8,6 +8,7 @@ from typing import Dict, Iterable, List, Optional, Union
 
 from datasets import DatasetDict, IterableDatasetDict, interleave_datasets, load_dataset
 
+# paths on UCloud:
 HOPETWITTER_PATH = Path("/work") / "twitter_cleaned"
 DAGW_DFM_PATH = Path("/work") / "dagw-clean"
 DANEWS_PATH = Path("/work") / "hope-infomedia_cleaned"
@@ -175,6 +176,7 @@ def load_danews(
 
 
 def load_nat(
+    version: str = "2.0.0",
     path_to_nat: Union[str, Path] = NAT_PATH,
     years: Iterable[int] = range(2006, 2017),
     probabilities: Optional[List[float]] = None,
@@ -187,6 +189,7 @@ def load_nat(
     Loads NetArkivet Text corpus (NAT).
 
     Args:
+        version (str, optional): Version of NAT to load. Defaults to "2.0.0".
         path_to_nat (Union[str, Path], optional): path to NAT dataset.
             Defaults to /work/netarkivet-cleaned.
         columns_to_keep (Optional[List[str]], optional): Columns to keep. Default to
@@ -207,33 +210,65 @@ def load_nat(
     """
     path_to_nat = Path(path_to_nat)
 
-    datasets = []
-    for year in years:
-        train_path = path_to_nat / f"{year}_deduplicated_filtered.jsonl"
-        dataset_ = load_dataset(
-            "json",
-            data_files={"train": [str(train_path)] * n_training_repeats},
-            streaming=True,
-            split="train",
-            **kwargs,
+    if version == "1.0.0":
+        datasets = []
+        for year in years:
+            train_path = path_to_nat / f"{year}_deduplicated_filtered.jsonl"
+            dataset_ = load_dataset(
+                "json",
+                data_files={"train": [str(train_path)] * n_training_repeats},
+                streaming=True,
+                split="train",
+                **kwargs,
+            )
+            _add_year = partial(__add_column, value=year, column="year")
+            dataset_ = dataset_.map(_add_year)
+            datasets.append(dataset_)
+
+        nat = interleave_datasets(
+            datasets=datasets, probabilities=probabilities, seed=seed
         )
-        _add_year = partial(__add_column, value=year, column="year")
-        dataset_ = dataset_.map(_add_year)
-        datasets.append(dataset_)
+        nat = IterableDatasetDict({"train": nat})
 
-    nat = interleave_datasets(datasets=datasets, probabilities=probabilities, seed=seed)
-    nat = IterableDatasetDict({"train": nat})
+        _add_source = partial(__add_column, value="nat", column="source")
+        nat = nat.map(_add_source)
 
-    _add_source = partial(__add_column, value="nat", column="source")
-    nat = nat.map(_add_source)
+        if columns_to_keep:
+            nat = __select_columns(nat, columns_to_keep)
+        return nat
+    if version == "2.0.0":
+        datasets = []
+        for year in years:
+            train_path = path_to_nat / "v2" / f"{year}" / "year"
+            dataset_ = load_dataset(
+                "json",
+                data_files={"train": [str(train_path)] * n_training_repeats},
+                streaming=True,
+                split="train",
+                **kwargs,
+            )
+            _add_year = partial(__add_column, value=year, column="year")
+            dataset_ = dataset_.map(_add_year)
+            datasets.append(dataset_)
 
-    if columns_to_keep:
-        nat = __select_columns(nat, columns_to_keep)
-    return nat
+        nat = interleave_datasets(
+            datasets=datasets, probabilities=probabilities, seed=seed
+        )
+        nat = IterableDatasetDict({"train": nat})
+
+        _add_source = partial(__add_column, value="nat", column="source")
+        nat = nat.map(_add_source)
+
+        if columns_to_keep:
+            nat = __select_columns(nat, columns_to_keep)
+        return nat
+    raise ValueError(
+        f"Version {version} is not a valid version. It must be 1.0.0 or 2.0.0."
+    )
 
 
 def load_dcc(
-    version: str = "1.0.0",
+    version: str = "1.1.0",
     probabilities: Dict[str, float] = {
         "danews": 0.06,
         "dagw_dfm": 0.06,
@@ -254,9 +289,10 @@ def load_dcc(
     **kwargs,
 ):
     """
-    Loads Danish collosal corpus (DCC) version 1.
+    Loads Danish collosal corpus (DCC).
 
     Args:
+        version (str, optional): Version of DCC to load. Defaults to "1.1.0".
         probabilities (Optional[Dict[str, float], optional): Interleave probabilites of the
             subdatasets. Defualts to {"danews": 0.06, "dagw_dfm": 0.06, "hopetwitter":
             0.03, "nat": 0.85}.
@@ -276,7 +312,7 @@ def load_dcc(
     Returns:
         IterableDatasetDict: A datasets IterableDatasetDict
     """
-    versions_options = ["1.0.0"]
+    versions_options = ["1.0.0", "1.1.0"]
     if version != "1.0.0":
         raise ValueError(
             "Version {version} is not available. Available versions"
@@ -302,13 +338,20 @@ def load_dcc(
         n_training_repeats=n_training_repeats["hopetwitter"],
         **kwargs,
     )
+
+    if version == "1.1.0":
+        nat_version = "2.0.0"
+    else:
+        nat_version = "1.0.0"
+
     datasets["nat"] = load_nat(
+        version=nat_version,
         columns_to_keep=columns_to_keep,
         path_to_nat=path_to_nat,
         n_training_repeats=n_training_repeats["nat"],
+        version=version,
         **kwargs,
     )
-
     dataset_names = ["danews", "dagw_dfm", "hopetwitter", "nat"]
 
     probabilities = [probabilities[k] for k in dataset_names]
