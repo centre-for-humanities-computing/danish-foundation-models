@@ -24,17 +24,7 @@ References:
 
 from collections import Counter, defaultdict
 from functools import partial
-from typing import (
-    Callable,
-    Dict,
-    Iterable,
-    List,
-    Optional,
-    Sequence,
-    Tuple,
-    Union,
-    Any,
-)
+from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tuple, Union
 
 import spacy
 from spacy.tokens import Doc
@@ -576,6 +566,7 @@ class QualityFilter:
             doc: Doc, languages: Sequence[str], language_threshold: float
         ) -> bool:
             from luga import language
+
             doc_joined = " ".join(
                 [
                     sentence.strip()
@@ -594,6 +585,7 @@ class QualityFilter:
             doc: Doc, languages: Sequence[str], language_threshold: float
         ) -> bool:
             from langdetect import detect_langs
+
             detected = detect_langs(doc.text)  # type: ignore
             for l in detected:
                 if l.lang in languages and l.prob >= language_threshold:
@@ -936,8 +928,9 @@ if __name__ == "__main__":
     # Took x hours and xx minutes on xxx.
     # Previously took 6 hours and 25 minutes with 10 cores.
 
-    from datasets import load_dataset
     import time
+
+    from datasets import load_dataset
 
     # Initialise the filter
     doc_filter = QualityFilter()
