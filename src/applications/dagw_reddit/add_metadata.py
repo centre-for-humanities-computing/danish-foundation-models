@@ -41,14 +41,14 @@ passed_quality_filter = ds["passed_quality_filter"]
 n_low_quality = sum(1 for is_good in passed_quality_filter if is_good is False)
 
 ds.info.description = f"""
-DAGW_DFM is a variant of Danish Gigaword (Derczynski et al., 2021, v2) which excludes the sections 
+DAGW_DFM is a variant of Danish Gigaword (Derczynski et al., 2021, v2) which excludes the sections
 containing tweets Twitter and modified news contained in danavis20.
 Twitter were excluded as an it was a sample of an dataset whiich was available to the authors.
 
 DanAvis20 (or danavis) were excluded due to preprocessing desribed in
-(Derczynski et al., 2021, v1 on arvix: https://arxiv.org/pdf/2005.03521v1.pdf) including 
+(Derczynski et al., 2021, v1 on arvix: https://arxiv.org/pdf/2005.03521v1.pdf) including
 shuffling of sentences, pseudonymization of prober names and the replacement of infrequent
-content wordswith statistical cognates, which could lead sentences such as 
+content wordswith statistical cognates, which could lead sentences such as
 "Der er skilsmissesager i forsikringsselskabet".
 
 Additionally DAGW_DFM includes addtionally the reddit-da dataset (hf citation), which include
@@ -57,7 +57,7 @@ a total {reddit_tokens} tokens over {n_reddit_docs} documents.
 
 
 A subsection of DAGW_DFM, henceforth DAGW_DFM_c, have been filtered out to only include Danish tweets
-and low-quality text have been removed using a series of heuristic filters and removing repitious texts. 
+and low-quality text have been removed using a series of heuristic filters and removing repitious texts.
 Following the filtering DAGW_DFM_c is deduplicated to remove exact and near-duplicates. For more on data cleaning
 see section on post processing.
 
@@ -93,7 +93,7 @@ For the quality filtering DFM_DAGW_c applies a filter akin to [2] which filters 
   - Less than 30% duplicate lines.
   - Less than 30% duplicate paragraphs.
   - Less than 30% of the characters is contained within duplicate line.
-  - Where the top 2-4 grams constitute less than 20%, 18%, 16%, respectively, of the characters. 
+  - Where the top 2-4 grams constitute less than 20%, 18%, 16%, respectively, of the characters.
   - Where the duplicate 5-10 grams constitute less than 15%, 14%, 13%, 12%, 11%, 10% of the characters, respectively.
 
 ## Deduplication
@@ -105,9 +105,9 @@ References:
 - [1] Broder, Andrei Z. "On the resemblance and containment of documents."
     Proceedings. Compression and Complexity of SEQUENCES 1997
     (Cat. No. 97TB100171). IEEE, 1997.
-- [2] Rae, J. W., Borgeaud, S., Cai, T., Millican, K., Hoffmann, J., Song, F., 
-    Aslanides, J., Henderson, S., Ring, R., Young, S., Rutherford, E., Hennigan, 
-    T., Menick, J., Cassirer, A., Powell, R., Driessche, G. van den, Hendricks, 
+- [2] Rae, J. W., Borgeaud, S., Cai, T., Millican, K., Hoffmann, J., Song, F.,
+    Aslanides, J., Henderson, S., Ring, R., Young, S., Rutherford, E., Hennigan,
+    T., Menick, J., Cassirer, A., Powell, R., Driessche, G. van den, Hendricks,
     L. A., Rauh, M., Huang, P.-S., … Irving, G. (2021).
     Scaling Language Models: Methods, Analysis & Insights from Training Gopher.
     https://arxiv.org/abs/2112.11446v2

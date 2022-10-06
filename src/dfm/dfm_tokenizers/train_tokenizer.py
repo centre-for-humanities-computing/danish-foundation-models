@@ -19,7 +19,7 @@ from tokenizers import (
 from .tokenizer_config import TokenizerConfig
 
 
-def train_tokenizer(
+def train_tokenizer(  # noqa C901
     corpus: Union[Dataset, IterableDataset, Iterable[str]],
     config: Union[TokenizerConfig, dict],
     save_tokenizer: bool = True,

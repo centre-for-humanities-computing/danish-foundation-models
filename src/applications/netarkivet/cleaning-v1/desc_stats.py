@@ -2,7 +2,7 @@
 Combines counter derived from count_domains_netarkivet.py to create descriptive statistic from netarkivet.
 
 Dependent on:
-    count_domains_netarkivet.py 
+    count_domains_netarkivet.py
 
 Author:
     Kenneth Enevoldsen
@@ -14,15 +14,13 @@ import sys
 from collections import Counter
 from typing import List
 
-import matplotlib
-import matplotlib.pyplot as plt
 import pandas as pd
 
 dfm_path = os.path.join("/work", "danish-foundation-models")
 
 sys.path.append(dfm_path)
 
-from src.applications.netarkivet.content_filtering.count_domains_netarkivet import (
+from src.applications.netarkivet.content_filtering.count_domains_netarkivet import (  # noqa E402
     get_paths,
 )
 

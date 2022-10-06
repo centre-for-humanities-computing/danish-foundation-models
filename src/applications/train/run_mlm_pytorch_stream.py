@@ -433,7 +433,7 @@ def get_tokenizer_and_model(
     return tokenizer, model
 
 
-def preprocess_dataset(
+def preprocess_dataset(  # noqa: C901
     data_args: DataTrainingArguments,
     training_args: TrainingArguments,
     raw_datasets: DatasetDict,
@@ -660,7 +660,7 @@ def evaluate(
     return kwargs
 
 
-def main():
+def main():  # noqa
     # See all possible arguments in src/transformers/training_args.py
     # or by passing the --help flag to this script.
     # We now keep distinct sets of args, for a cleaner separation of concerns.

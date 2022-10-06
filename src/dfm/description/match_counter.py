@@ -1,7 +1,6 @@
 from collections import defaultdict
 from typing import Dict, Iterable, List, Optional
 
-from soupsieve import match
 from spacy.language import Language
 from spacy.matcher import Matcher
 from spacy.tokens import Doc
@@ -40,8 +39,6 @@ class MatchCounter:
             List[str]: Spacy match patterns in the shape {"label": [{"LOWER": "term"}]}
         """
         out_list = []
-
-        attribute = "LOWER" if lowercase else "TEXT"
 
         for labelled_term_list in list_of_labelled_term_lists:
             for label, term_list in labelled_term_list.items():

@@ -1,10 +1,6 @@
 import curses
 import os
-from functools import partial
-from nis import cat
 from typing import Iterable
-
-import pandas as pd
 
 
 class ExampleRater:
@@ -62,14 +58,14 @@ class ExampleRater:
             win.addstr(f"{example_str}")
             win.addstr("\n" * 2)
 
-            win.addstr(f"Tags (non-exclusive):\n")
+            win.addstr("Tags (non-exclusive):\n")
             win.addstr(f"{left_spacing*2}[P]orn: {self.sign_from_bool(is_porn)} \n")
             win.addstr(
                 f"{left_spacing*2}[O]ffensive: {self.sign_from_bool(is_offensive)}"
             )
             win.addstr("\n" * 2)
 
-            win.addstr(f"Category (exclusive):\n")
+            win.addstr("Category (exclusive):\n")
             win.addstr(
                 f"{left_spacing*2}[N]ot language | [W]rong language | [C]orrect language | [S]kip \n"
             )

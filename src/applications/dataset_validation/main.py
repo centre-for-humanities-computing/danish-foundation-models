@@ -1,3 +1,4 @@
+"""Script for rating text quality of NAT."""
 from datetime import date
 from typing import Iterable, Optional
 
@@ -8,7 +9,20 @@ n_text_cleaned = 0
 n_char_total = 0
 
 
-def text_generator(seed, n_texts: Optional[int], max_texts: Optional[int]):
+def text_generator(
+    seed, n_texts: Optional[int], max_texts: Optional[int]
+) -> Iterable[str]:
+    """
+    Create text generator
+
+    Args:
+        seed (int): Seed for the random number generator.
+        n_texts (int): Number of texts to generate.
+        max_texts (int): Maximum number of texts to generate.
+
+    Returns:
+        Iterable[str]: Texts.
+    """
     from dfm.data.load_datasets import load_nat
 
     datasets = load_nat(seed=seed)["train"]
@@ -26,6 +40,21 @@ def text_generator(seed, n_texts: Optional[int], max_texts: Optional[int]):
 
 
 def post_clean(texts: Iterable[str]) -> Iterable[str]:
+    """
+    Post clean texts.
+
+    Args:
+        texts (Iterable[str]): Texts.
+
+    Returns:
+        Iterable[str]: Cleaned texts.
+    """
+    from dfm.cleaning import TextCleaner
+
+    cleaner = TextCleaner()
+    for text in texts:
+        yield cleaner.clean(text)
+
     def __text_genw_counter(texts):
         global n_text_cleaned
         global n_char_total
@@ -79,17 +108,26 @@ def post_clean(texts: Iterable[str]) -> Iterable[str]:
     return texts
 
 
-if __name__ == "__main__":
-    MY_NAME = "kenneth"
-    SESSION = "session_1"
-    N_TO_RATE = 100  # n text documents to rate (!= sentences)
-    max_texts = 1000
-    seed = 2  # seeds already used: 2,
-    max_len = 1000
+def main(
+    name: str,
+    session: str,
+    seed: int,
+    n_to_rate: Optional[int],
+    max_texts: Optional[int],
+):
+    """
+    Main function.
 
-    gen = text_generator(seed=seed, n_texts=N_TO_RATE, max_texts=max_texts)
+    Args:
+        name (str): Name of the rater.
+        session (str): Session name.
+        seed (int): Seed for the random number generator.
+        n_to_rate (int): Number of texts to rate.
+        max_texts (int): Maximum number of texts to clean
+    """
+    gen = text_generator(seed=seed, n_texts=n_to_rate, max_texts=max_texts)
     texts = list(gen)
-    print(f"N texts to obtain {N_TO_RATE}: {n_text_cleaned}")
+    print(f"N texts to obtain {n_to_rate}: {n_text_cleaned}")
     print(f"n_char_cleaned/n_char_total = {sum(len(t) for t in texts) /n_char_total }")
     # Fix: max length on texts segments
     text_splits = [
@@ -98,11 +136,22 @@ if __name__ == "__main__":
 
     rater = ExampleRater(
         examples=text_splits,
-        output_path=f"/work/netarkivet-cleaned/tagging/{MY_NAME}_{SESSION}_n-docs_{N_TO_RATE}_{date.today()}.csv",
+        output_path=f"/work/netarkivet-cleaned/tagging/{name}_{session}_n-docs_{n_to_rate}_{date.today()}.csv",
     )
 
     rater.rate_examples()
 
+
+if __name__ == "__main__":
+    MY_NAME = "kenneth"
+    SESSION = "session_1"
+    N_TO_RATE = 100  # n text documents to rate (!= sentences)
+    max_texts = 1000
+    seed = 2  # seeds already used: 2,
+    max_len = 1000
+
+    main(MY_NAME, seed, N_TO_RATE, max_texts)
+    # potential filters to add:
     # proportion af "»"
     # ratio af {...}
-    # Siden blev behandlet på {0.164} sekund"
+    # Siden blev behandlet på {X} sekund"
