@@ -1,18 +1,11 @@
 import curses
 import os
-from functools import partial
-from nis import cat
 from typing import Iterable
-
-import pandas as pd
 
 
 class ExampleRater:
-    def __init__(self, examples: Iterable, output_path: str, resume_from_index: Int):
-        if resume_from_index:
-            self.examples = examples[50:]
-        else:
-            self.examples = examples
+    def __init__(self, examples: Iterable, output_path: str):
+        self.examples = list(reversed(examples))
 
         self.output_path = output_path
 
@@ -65,22 +58,21 @@ class ExampleRater:
             win.addstr(f"{example_str}")
             win.addstr("\n" * 2)
 
-            win.addstr(f"Tags (non-exclusive):\n")
+            win.addstr("Tags (non-exclusive):\n")
             win.addstr(f"{left_spacing*2}[P]orn: {self.sign_from_bool(is_porn)} \n")
             win.addstr(
                 f"{left_spacing*2}[O]ffensive: {self.sign_from_bool(is_offensive)}"
             )
             win.addstr("\n" * 2)
 
-            win.addstr(f"Category (exclusive):\n")
+            win.addstr("Category (exclusive):\n")
             win.addstr(
                 f"{left_spacing*2}[N]ot language | [W]rong language | [C]orrect language | [S]kip \n"
             )
             win.addstr(f"{left_spacing*2}[U]ndo")
             win.addstr("\n" * 2)
 
-            win.addstr(f"Processed: {self.n_items_processed} 🎉")
-            win.addstr("\n" * 2)
+            win.addstr(f"Processed: {self.n_items_processed} 🎉\n\n")
 
             key = win.getkey()
 
@@ -115,7 +107,7 @@ class ExampleRater:
             }
         )
 
-        # Remove the line from the .csv
+        # Remove the line from the .c
         with open(self.output_path, "r") as f:
             lines = f.readlines()
             lines_to_write = lines[:-1]

@@ -84,12 +84,12 @@ No.
 people, countries)?**
 
 All instances of the dataset are Danish articles depending on the source these are
-derived from tabloid media or  mainstream news. 
+derived from tabloid media or  mainstream news.
 
 **How many instances are there in total (of each type, if appropriate)?**
 
 The dataset consist of {n_docs} documents where {n_docs-n_duplicates}
-({n_duplicates/n_docs:.2f}%) are left after filtering. 
+({n_duplicates/n_docs:.2f}%) are left after filtering.
 
 **Does the dataset contain all possible instances or is it a sample (not necessarily
 random) of instances from a larger set?**
@@ -154,7 +154,7 @@ No.
 **What (other) tasks could the dataset be used for?**
 
 The scale of the dataset makes it suitable for NLP tasks such as language modelling.
-Similarly, the structure of the articles make it a suitable dataset for training text 
+Similarly, the structure of the articles make it a suitable dataset for training text
 summerization models.
 
 **Is there anything about the composition of the dataset or the way it was collected and
@@ -208,7 +208,7 @@ SpaCy v.3.1.4.
   - Less than 20% duplicate lines.
   - Less than 20% duplicate paragraphs.
   - Where the top 2-4 grams constitute less than 20%, 18%, 16%, respectively, of the
-text. 
+text.
   - Where the duplicate 5-10 grams constitute less than 25%, 24%, 23%, 22%, 21%, 20% of
 the text, respectively.
 
