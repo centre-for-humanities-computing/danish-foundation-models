@@ -2,16 +2,12 @@
 Datasets loaders for DFM datasets.
 """
 
+import os
 from functools import partial
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Union
 
 from datasets import DatasetDict, IterableDatasetDict, interleave_datasets, load_dataset
-
-HOPETWITTER_PATH = Path("/work") / "twitter_cleaned"
-DAGW_DFM_PATH = Path("/work") / "dagw-clean"
-DANEWS_PATH = Path("/work") / "hope-infomedia_cleaned"
-NAT_PATH = Path("/work") / "netarkivet-cleaned"
 
 
 def __add_column(example, value, column: str):
@@ -42,7 +38,7 @@ def __select_columns(
 
 
 def load_hopetwitter(
-    path_to_hopetwitter: Union[str, Path] = HOPETWITTER_PATH,
+    path_to_hopetwitter: Union[str, Path, None] = None,
     columns_to_keep: Optional[List[str]] = None,
     n_training_repeats: int = 1,
     **kwargs,
@@ -52,7 +48,8 @@ def load_hopetwitter(
 
     Args:
         path_to_hopetwitter (Union[str, Path, None], optional): path to HopeTwitter.
-            Defaults to "/work/twitter_cleaned".
+            Defaults to None in which case it uses the environment variable
+            HOPETWITTER_PATH to find the dataset.
         columns_to_keep (Optional[List[str]], optional): Columns to keep. Default to None
             in which case all columns are kept.
         n_training_repeats (int, optional): Number of times to repeat the dataset.
@@ -62,6 +59,15 @@ def load_hopetwitter(
     Returns:
         IterableDatasetDict: A datasets IterableDatasetDict
     """
+    if path_to_hopetwitter is None:
+        # check if path is set in environment variable
+        path_to_hopetwitter = os.getenv("HOPETWITTER_PATH")
+        if path_to_hopetwitter is None:
+            raise ValueError(
+                "Path to danews dataset not specified. Please set the environment"
+                + "variable HOPETWITTER_PATH to the path to the dataset or pass the path to"
+                + " the dataset using the path_to_hopetwitter argument."
+            )
     path_to_hopetwitter = Path(path_to_hopetwitter)
 
     test = (
@@ -93,7 +99,7 @@ def load_hopetwitter(
 
 
 def load_dagw_dfm(
-    path_to_dagw: Union[str, Path] = DAGW_DFM_PATH,
+    path_to_dagw: Union[str, Path, None] = None,
     columns_to_keep: Optional[List[str]] = None,
     n_training_repeats: int = 1,
     **kwargs,
@@ -102,8 +108,9 @@ def load_dagw_dfm(
     Loads DAGW_{DFM}.
 
     Args:
-        path_to_dagw (Union[str, Path], optional): path to DAGW_DFM.
-            Defaults to /work/dagw-clean.
+        path_to_dagw (Union[str, Path, None], optional): path to DAGW_DFM.
+            Defaults to None in which case it uses the environment variable
+            DAGW_DFM_PATH to find the dataset.
         columns_to_keep (Optional[List[str]], optional): Columns to keep. Default to
             None in which case all columns are kept.
         n_training_repeats (int, optional): Number of times to repeat the dataset.
@@ -113,6 +120,16 @@ def load_dagw_dfm(
     Returns:
         IterableDatasetDict: A datasets IterableDatasetDict
     """
+    if path_to_dagw is None:
+        # check if path is set in environment variable
+        path_to_dagw = os.getenv("DAGW_DFM_PATH")
+        if path_to_dagw is None:
+            raise ValueError(
+                "Path to danews dataset not specified. Please set the environment"
+                + "variable DAGW_DFM_PATH to the path to the dataset or pass the path to"
+                + " the dataset using the path_to_dagw argument."
+            )
+
     path_to_dagw = Path(path_to_dagw)
 
     test = path_to_dagw / "dagw_reddit_v1.0.0_test.jsonl"
@@ -132,7 +149,7 @@ def load_dagw_dfm(
 
 
 def load_danews(
-    path_to_danews: Union[str, Path] = DANEWS_PATH,
+    path_to_danews: Union[str, Path, None] = None,
     columns_to_keep: Optional[List[str]] = None,
     n_training_repeats: int = 1,
     **kwargs,
@@ -141,8 +158,9 @@ def load_danews(
     Loads DaNews.
 
     Args:
-        path_to_danews (Union[str, Path], optional): path to DaNews dataset.
-            Defaults to /work/hope-infomedia_cleaned
+        path_to_danews (Union[str, Path, None], optional): path to DaNews dataset.
+            Defaults to None, in which case it uses the environment variable
+            DANEWS_PATH.
         columns_to_keep (Optional[List[str]], optional): Columns to keep. Default to
             None in which case all columns are kept.
         n_training_repeats (int, optional): Number of times to repeat the dataset.
@@ -154,6 +172,16 @@ def load_danews(
     Returns:
         IterableDatasetDict: A datasets IterableDatasetDict
     """
+    if path_to_danews is None:
+        # check if path is set in environment variable
+        os.environ
+        path_to_danews = os.getenv("DANEWS_PATH")
+        if path_to_danews is None:
+            raise ValueError(
+                "Path to danews dataset not specified. Please set the environment"
+                + "variable DANEWS_PATH to the path to the dataset or pass the path to"
+                + " the dataset using the path_to_danews argument."
+            )
     path_to_danews = Path(path_to_danews)
 
     test = path_to_danews / "infomedia_2000-2021_v1.0.0_test.jsonl"
@@ -175,7 +203,8 @@ def load_danews(
 
 
 def load_nat(
-    path_to_nat: Union[str, Path] = NAT_PATH,
+    version: str = "2.0.0",
+    path_to_nat: Union[str, Path, None] = None,
     years: Iterable[int] = range(2006, 2017),
     probabilities: Optional[List[float]] = None,
     columns_to_keep: Optional[List[str]] = None,
@@ -187,8 +216,10 @@ def load_nat(
     Loads NetArkivet Text corpus (NAT).
 
     Args:
+        version (str, optional): Version of NAT to load. Defaults to "2.0.0".
         path_to_nat (Union[str, Path], optional): path to NAT dataset.
-            Defaults to /work/netarkivet-cleaned.
+            Defaults to None, in which case the dataset it uses the environment
+            variable NAT_PATH.
         columns_to_keep (Optional[List[str]], optional): Columns to keep. Default to
             None in which case all columns are kept.
         years (Iterable[int]): A list of years to include.
@@ -205,11 +236,28 @@ def load_nat(
     Returns:
         IterableDatasetDict: A datasets IterableDatasetDict
     """
+    if path_to_nat is None:
+        # check if path is set in environment variable
+        path_to_nat = os.getenv("NAT_PATH")
+        if path_to_nat is None:
+            raise ValueError(
+                "Path to NAT dataset not specified. Please set the environment variable"
+                + "NAT_PATH to the path to the dataset or pass the path to the dataset"
+                + "using the path_to_nat argument."
+            )
+
     path_to_nat = Path(path_to_nat)
+
+    valid_version = ["1.0.0", "2.0.0"]
+    if version not in valid_version:
+        raise ValueError(f"Version must be one of {valid_version}, got {version}.")
 
     datasets = []
     for year in years:
-        train_path = path_to_nat / f"{year}_deduplicated_filtered.jsonl"
+        if version == "1.0.0":
+            train_path = path_to_nat / f"{year}_deduplicated_filtered.jsonl"
+        else:
+            train_path = path_to_nat / f"nat_{year}_v{version}.jsonl"
         dataset_ = load_dataset(
             "json",
             data_files={"train": [str(train_path)] * n_training_repeats},
@@ -217,6 +265,9 @@ def load_nat(
             split="train",
             **kwargs,
         )
+        if version != "1.0.0":
+            # rename column content to text
+            dataset_ = dataset_.rename_column("content", "text")
         _add_year = partial(__add_column, value=year, column="year")
         dataset_ = dataset_.map(_add_year)
         datasets.append(dataset_)
@@ -233,7 +284,7 @@ def load_nat(
 
 
 def load_dcc(
-    version: str = "1.0.0",
+    version: str = "1.1.0",
     probabilities: Dict[str, float] = {
         "danews": 0.06,
         "dagw_dfm": 0.06,
@@ -246,42 +297,44 @@ def load_dcc(
         "hopetwitter": 1_000,
         "nat": 100,
     },
-    path_to_hopetwitter: Union[str, Path] = HOPETWITTER_PATH,
-    path_to_dagw: Union[str, Path] = DAGW_DFM_PATH,
-    path_to_danews: Union[str, Path] = DANEWS_PATH,
-    path_to_nat: Union[str, Path] = NAT_PATH,
+    path_to_hopetwitter: Union[str, Path, None] = None,
+    path_to_dagw: Union[str, Path, None] = None,
+    path_to_danews: Union[str, Path, None] = None,
+    path_to_nat: Union[str, Path, None] = None,
     columns_to_keep: List[str] = ["text", "source"],
     **kwargs,
 ):
     """
-    Loads Danish collosal corpus (DCC) version 1.
+    Loads Danish collosal corpus (DCC).
 
     Args:
-        probabilities (Optional[Dict[str, float], optional): Interleave probabilites of the
-            subdatasets. Defualts to {"danews": 0.06, "dagw_dfm": 0.06, "hopetwitter":
-            0.03, "nat": 0.85}.
+        version (str, optional): Version of DCC to load. Defaults to "1.1.0".
+        probabilities (Optional[Dict[str, float], optional): Interleave probabilites of
+            the subdatasets. Defualts to {"danews": 0.06, "dagw_dfm": 0.06,
+            "hopetwitter": 0.03, "nat": 0.85}.
         n_training_repeats (Dict[str, int], optional): Number of times to repeat the
             training dataset of each dataset.
-        path_to_hopetwitter (Union[str, Path], optional): path to Hopetwitter.
-            Defaults to /work/twitter_cleaned.
-        path_to_dagw (Union[str, Path], optional): path to DAGW_DFM.
-            Defaults to /work/dagw-clean.
-        path_to_danews (Union[str, Path], optional): path to DaNews.
-            Defaults to /work/hope-infomedia_cleaned.
-        path_to_nat (Union[str, Path], optional): path to NAT dataset.
-            Defaults to /work/netarkivet-cleaned.
+        path_to_hopetwitter (Union[str, Path, None], optional): path to Hopetwitter.
+            Defalt to None in which case it uses the environment variable which can be
+            set using `export HOPETWITTER_PATH=/path/to/hopetwitter`.
+        path_to_dagw (Union[str, Path, None], optional): path to DAGW_DFM.
+            Defalt to None in which case it uses the environment variable which can be
+            set using `export DAGW_DFM_PATH=/path/to/dagw_dfm`.
+        path_to_danews (Union[str, Path, None], optional): path to DaNews.
+            Defalt to None in which case it uses the environment variable which can be
+            set using `export DANEWS_PATH=/path/to/danews`.
+        path_to_nat (Union[str, Path, None], optional): path to NAT dataset.
+            Defalt to None in which case it uses the environment variable which can be
+            set using `export NAT_PATH=/path/to/nat`.
         columns_to_keep (List[str], optional): Columns to keep across the datasets.
         kwargs: arguments to be passed forward to load_dataset
 
     Returns:
         IterableDatasetDict: A datasets IterableDatasetDict
     """
-    versions_options = ["1.0.0"]
-    if version != "1.0.0":
-        raise ValueError(
-            "Version {version} is not available. Available versions"
-            + f": {versions_options}"
-        )
+    versions_options = ["1.0.0", "1.1.0"]
+    if version not in versions_options:
+        raise ValueError(f"Version must be one of {versions_options}, got {version}.")
     datasets = {}
 
     datasets["danews"] = load_danews(
@@ -302,13 +355,19 @@ def load_dcc(
         n_training_repeats=n_training_repeats["hopetwitter"],
         **kwargs,
     )
+
+    if version == "1.1.0":
+        nat_version = "2.0.0"
+    else:
+        nat_version = "1.0.0"
+
     datasets["nat"] = load_nat(
+        version=nat_version,
         columns_to_keep=columns_to_keep,
         path_to_nat=path_to_nat,
         n_training_repeats=n_training_repeats["nat"],
         **kwargs,
     )
-
     dataset_names = ["danews", "dagw_dfm", "hopetwitter", "nat"]
 
     probabilities = [probabilities[k] for k in dataset_names]
@@ -324,6 +383,13 @@ def load_dcc(
     # test = concatenate_datasets([danews["test"], dagw_dfm["test"], hopetwitter["test"]])
 
     # as concatenate_datasets is not yet implemented for IterableDatasets:
+    if path_to_dagw is None:
+        path_to_dagw = os.environ["DAGW_DFM_PATH"]
+    if path_to_danews is None:
+        path_to_danews = os.environ["DANEWS_PATH"]
+    if path_to_hopetwitter is None:
+        path_to_hopetwitter = os.environ["HOPETWITTER_PATH"]
+
     dagw_test = Path(path_to_dagw) / "dagw_reddit_v1.0.0_test.jsonl"
     dagw_val = Path(path_to_dagw) / "dagw_reddit_v1.0.0_val.jsonl"
     danews_test = Path(path_to_danews) / "infomedia_2000-2021_v1.0.0_test.jsonl"
