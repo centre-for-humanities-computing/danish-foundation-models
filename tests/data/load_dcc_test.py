@@ -28,14 +28,19 @@ def test_load_dcc():
         "HOPETWITTER_PATH"
     ] = "/data-big-projects/danish-foundation-models/twitter_cleaned/"
 
-    dataset = load_dcc()
+    dataset = load_dcc(columns_to_keep=["text", "source"])
     assert isinstance(dataset, IterableDatasetDict)
     assert len(dataset) == 3
     assert "train" in dataset
     assert "validation" in dataset
     assert "test" in dataset
 
-    train = dataset["train"]
-    iter_train = iter(train)
-    for i in range(100):
-        next(iter_train)  # check that we can iterate through the dataset
+    for split in dataset:
+        ds_split = dataset[split]
+        iter_split = iter(ds_split)
+        # check that we can iterate through the dataset
+        for _ in range(1000):
+            sample = next(iter_split)
+            # check that the columns are as expected
+            for i in sample:
+                assert i in ["text", "source"]

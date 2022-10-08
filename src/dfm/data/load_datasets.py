@@ -7,7 +7,13 @@ from functools import partial
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Union
 
-from datasets import DatasetDict, IterableDatasetDict, interleave_datasets, load_dataset
+from datasets import (
+    DatasetDict,
+    IterableDatasetDict,
+    concatenate_datasets,
+    interleave_datasets,
+    load_dataset,
+)
 
 
 def __add_column(example, value, column: str):
@@ -292,9 +298,9 @@ def load_dcc(
         "nat": 0.85,
     },
     n_training_repeats: Dict[str, int] = {
-        "danews": 1_000,
-        "dagw_dfm": 1_000,
-        "hopetwitter": 1_000,
+        "danews": 100,
+        "dagw_dfm": 100,
+        "hopetwitter": 100,
         "nat": 100,
     },
     path_to_hopetwitter: Union[str, Path, None] = None,
@@ -370,47 +376,16 @@ def load_dcc(
     )
     dataset_names = ["danews", "dagw_dfm", "hopetwitter", "nat"]
 
-    probabilities = [probabilities[k] for k in dataset_names]
+    _probabilities = [probabilities[k] for k in dataset_names]
     train_datasets = [datasets[k]["train"] for k in dataset_names]
 
     train = interleave_datasets(
         train_datasets,
-        probabilities=probabilities,
+        probabilities=_probabilities,
         **kwargs,
     )
     # Note: NAT does not include a test, val set
-    # val = concatenate_datasets([danews["validation"], dagw_dfm["validation"], hopetwitter["validation"]])
-    # test = concatenate_datasets([danews["test"], dagw_dfm["test"], hopetwitter["test"]])
-
-    # as concatenate_datasets is not yet implemented for IterableDatasets:
-    if path_to_dagw is None:
-        path_to_dagw = os.environ["DAGW_DFM_PATH"]
-    if path_to_danews is None:
-        path_to_danews = os.environ["DANEWS_PATH"]
-    if path_to_hopetwitter is None:
-        path_to_hopetwitter = os.environ["HOPETWITTER_PATH"]
-
-    dagw_test = Path(path_to_dagw) / "dagw_reddit_v1.0.0_test.jsonl"
-    dagw_val = Path(path_to_dagw) / "dagw_reddit_v1.0.0_val.jsonl"
-    danews_test = Path(path_to_danews) / "infomedia_2000-2021_v1.0.0_test.jsonl"
-    danews_val = Path(path_to_danews) / "infomedia_2000-2021_v1.0.0_val.jsonl"
-    twitter_test = (
-        Path(path_to_hopetwitter)
-        / "twitter_da_stopwords_2019-01-01_2021-04-30_v1.0.0_test.jsonl"
-    )
-    twitter_val = (
-        Path(path_to_hopetwitter)
-        / "twitter_da_stopwords_2019-01-01_2021-04-30_v1.0.0_val.jsonl"
-    )
-    data_files = {
-        "test": [str(dagw_test), str(danews_test), str(twitter_test)],
-        "validation": [str(dagw_val), str(danews_val), str(twitter_val)],
-    }
-    dcc_test_val = load_dataset("json", data_files=data_files, streaming=True)
-    return IterableDatasetDict(
-        {
-            "train": train,
-            "validation": dcc_test_val["validation"],
-            "test": dcc_test_val["test"],
-        }
-    )
+    eval_names = ["danews", "dagw_dfm", "hopetwitter"]
+    val = concatenate_datasets([datasets[k]["validation"] for k in eval_names])
+    test = concatenate_datasets([datasets[k]["test"] for k in eval_names])
+    return IterableDatasetDict({"train": train, "validation": val, "test": test})
