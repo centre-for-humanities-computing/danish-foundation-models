@@ -4,7 +4,9 @@ RoBERTa...) on a text file or a dataset.
 
 Outline copied from:
 https://github.com/huggingface/transformers/blob/main/examples/pytorch/language-modeling/run_mlm.py
-Adapted for streaming datasets.
+Adapted for streaming datasets. The adaption took inspiration from:
+https://github.com/huggingface/transformers/blob/main/examples/research_projects/jax-projects/dataset-streaming/run_mlm_flax_stream.py
+
 
 Here is the full list of checkpoints on the hub that can be fine-tuned by this script:
 https://huggingface.co/models?filter=fill-mask
@@ -53,6 +55,11 @@ from transformers import (
     set_seed,
 )
 from transformers.trainer_utils import get_last_checkpoint
+
+import wandb
+from dfm.data import load_dcc
+
+os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
 logger = logging.getLogger(__name__)
 MODEL_CONFIG_CLASSES = list(MODEL_FOR_MASKED_LM_MAPPING.keys())
@@ -150,6 +157,31 @@ class DataTrainingArguments:
             "help": "The configuration name of the dataset to use (via the datasets library)."
         },
     )
+    nat_weight: Optional[float] = field(
+        default=0.25,
+        metadata={
+            "help": "The probability of sampling from the NAT dataset, assuming the dataset is DCC"
+        },
+    )
+    danews_weight: Optional[float] = field(
+        default=0.25,
+        metadata={
+            "help": "The probability of sampling from the DaNews dataset, assuming the dataset is DCC"
+        },
+    )
+    hopetwittet_weight: Optional[float] = field(
+        default=0.25,
+        metadata={
+            "help": "The probability of sampling from the HopeTwitter dataset, assuming the dataset is DCC"
+        },
+    )
+    dagw_dfm_weight: Optional[float] = field(
+        default=0.25,
+        metadata={
+            "help": "The probability of sampling from the DAGW_dfm dataset, assuming the dataset is DCC"
+        },
+    )
+
     streaming: bool = field(
         default=False,
         metadata={"help": "Whether to load the dataset using streaming"},
@@ -276,14 +308,28 @@ def get_dataset(
             split.
     """
     if data_args.dataset_name is not None:
-        # Downloading and loading a dataset from the hub.
-        raw_datasets = load_dataset(
-            data_args.dataset_name,
-            data_args.dataset_config_name,
-            cache_dir=model_args.cache_dir,
-            use_auth_token=True if model_args.use_auth_token else None,
-            streaming=data_args.streaming,
-        )
+        if data_args.dataset_name.startswith("dcc"):
+            # must be streaming
+            assert data_args.streaming is True
+            version = data_args.dataset_name.split("_")[1][1:]  # ignore the v
+            raw_datasets = load_dcc(
+                version=version,
+                probabilities={
+                    "danews": data_args.danews_weight,
+                    "dagw_dfm": data_args.dagw_dfm_weight,
+                    "hopetwitter": data_args.hopetwittet_weight,
+                    "nat": data_args.nat_weight,
+                },
+            )
+        else:
+            # Downloading and loading a dataset from the hub.
+            raw_datasets = load_dataset(
+                data_args.dataset_name,
+                data_args.dataset_config_name,
+                cache_dir=model_args.cache_dir,
+                use_auth_token=True if model_args.use_auth_token else None,
+                streaming=data_args.streaming,
+            )
         if "validation" not in raw_datasets.keys():
             if data_args.streaming is False:
                 raw_datasets["validation"] = load_dataset(
@@ -433,7 +479,7 @@ def get_tokenizer_and_model(
     return tokenizer, model
 
 
-def preprocess_dataset(
+def preprocess_dataset(  # noqa: C901
     data_args: DataTrainingArguments,
     training_args: TrainingArguments,
     raw_datasets: DatasetDict,
@@ -660,7 +706,7 @@ def evaluate(
     return kwargs
 
 
-def main():
+def main():  # noqa: C901
     # See all possible arguments in src/transformers/training_args.py
     # or by passing the --help flag to this script.
     # We now keep distinct sets of args, for a cleaner separation of concerns.
@@ -676,6 +722,15 @@ def main():
         )
     else:
         model_args, data_args, training_args = parser.parse_args_into_dataclasses()
+
+    wandb.init(
+        project="danish-foundation-models",
+        entity="chcaa",
+        config=parser.parse_args(),
+        tags=["mlm", "pytorch"],
+        save_code=True,
+        group="mlm",
+    )
 
     # Setup logging
     logging.basicConfig(
@@ -747,8 +802,11 @@ def main():
             raise ValueError("--do_eval requires a validation dataset")
         eval_dataset = tokenized_datasets["validation"]
         if data_args.max_eval_samples is not None:
-            max_eval_samples = min(len(eval_dataset), data_args.max_eval_samples)
-            eval_dataset = eval_dataset.select(range(max_eval_samples))
+            if data_args.streaming:
+                eval_dataset = eval_dataset.take(data_args.max_eval_samples)
+            else:
+                max_eval_samples = min(len(eval_dataset), data_args.max_eval_samples)
+                eval_dataset = eval_dataset.select(range(max_eval_samples))
 
         def preprocess_logits_for_metrics(logits, labels):
             if isinstance(logits, tuple):
@@ -758,6 +816,8 @@ def main():
             return logits.argmax(dim=-1)
 
         metric = load_metric("accuracy")
+        # import evaluate
+        # metric = evaluate.load_metric("accuracy")
 
         def compute_metrics(eval_preds):
             preds, labels = eval_preds
@@ -816,10 +876,10 @@ def main():
     if training_args.do_eval:
         kwargs = evaluate(trainer, eval_dataset, data_args, model_args)
 
-    if training_args.push_to_hub:
-        trainer.push_to_hub(**kwargs)
-    else:
-        trainer.create_model_card(**kwargs)
+        if training_args.push_to_hub:
+            trainer.push_to_hub(**kwargs)
+        else:
+            trainer.create_model_card(**kwargs)
 
 
 if __name__ == "__main__":
