@@ -1,0 +1,30 @@
+defaults:
+  - override hydra/hydra_logging: disabled
+  - override hydra/job_logging: disabled
+  - _self_
+
+hydra:
+  output_subdir: null
+  run:
+    dir: .
+
+# config for clean.py
+path: "data/test/*.jsonl"
+save_dir: "data/test/dedupe" # Optional[str]
+text_col: "text"
+num_proc: -1 # int: -1 = all available cores
+batch_size: 500000 # int
+seed: 42 # int
+keep_duplicates: True # bool
+save_file_ext: "jsonl" # save file extension (no ".")
+verbosity_level: 2 # int: 0, 1, 2: 0 = no output, 1 = progress bar, 2 = detailed output (for debugging)
+streaming: true # bool: if True, will stream data from disk, otherwise will load all data into memory
+id_col: null # Optional[str]: if not None, will use this column as the id column otherwise will use the index and file name.
+use_huggingface_loader: false # bool: if True, will use the HuggingFace datasets library to load the data. If false, will stream in the jsonl file.
+
+deduper:
+  split_method: "word_ngram" # str: "word_ngram", "paragraph", "none", where "none" means no splitting
+  ngram_size: 13 # int
+  ngram_stride: 1 # int
+  similarity_threshold: 0.8 # float
+  num_minhashes: 64 # int

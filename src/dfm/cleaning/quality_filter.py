@@ -587,8 +587,8 @@ class QualityFilter:
             from langdetect import detect_langs
 
             detected = detect_langs(doc.text)  # type: ignore
-            for line in detected:
-                if line.lang in languages and line.prob >= language_threshold:
+            for lang in detected:
+                if lang.lang in languages and lang.prob >= language_threshold:
                     return True
             return False
 
