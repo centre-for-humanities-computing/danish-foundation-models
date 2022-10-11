@@ -44,7 +44,15 @@ VALID_SAVE_FORMATS = {
 }
 
 
-def create_quality_filter(cfg):
+def create_quality_filter(cfg: DictConfig) -> QualityFilter:
+    """Create a quality filter from a config
+
+    Args:
+        cfg (DictConfig): A config object containing the quality_filter config
+
+    Returns:
+        QualityFilter: A quality filter object
+    """
     cfg = cfg.quality_filter
 
     qf = QualityFilter(
@@ -77,7 +85,15 @@ def create_quality_filter(cfg):
     return qf
 
 
-def create_sentence_filter(cfg):
+def create_sentence_filter(cfg: DictConfig) -> SentenceFilter:
+    """Create a sentence filter from a config
+
+    Args:
+        cfg (DictConfig): A config object containing the sentence_filter config
+
+    Returns:
+        SentenceFilter: A sentence filter object
+    """
     cfg = cfg.sentence_filter
     sf = SentenceFilter(
         filter_names=cfg.filter_names,
@@ -89,10 +105,17 @@ def create_sentence_filter(cfg):
     return sf
 
 
-def q_filter(batch, cfg):
+def apply_quality_filter(batch: dict, cfg: DictConfig) -> dict:
     """
-    Quality filter which takes in a hf datasets batch and and applies a quality
-    filter to all the texts which pass the language filter
+    Apply quality filter to huggingface datasets batch. Does not apply to texts
+    that are already filtered out.
+
+    Args:
+        batch (dict): A hf datasets batch
+        cfg (DictConfig): A config object containing the quality_filter config
+
+    Returns:
+        dict: A hf datasets batch
     """
     qf = create_quality_filter(cfg)
 
@@ -107,10 +130,16 @@ def q_filter(batch, cfg):
                     and batch["passed_sentence_filter"]
                 )
 
+        else:
+
+            def filter_lang(batch, i):
+                return batch["passed_sentence_filter"]
+
+        # Filter out all texts that do not pass the filters
         is_filtered = [filter_lang(batch, i) for i, _ in enumerate(batch[cfg.text_col])]
         texts = (t for t, is_f in zip(batch[cfg.text_col], is_filtered) if is_f)
 
-        # apply q_filter
+        # apply quality filter
         filter_gen = qf.describe_filter(texts, batch_size=cfg.batch_size)
 
         # merge with unfiltered texts
@@ -129,6 +158,7 @@ def q_filter(batch, cfg):
         ]
         prev_filters.add("max_chr_length")
 
+        # add metadata column for which filters the text was filtered by
         for qfilter in qf.filters:
             batch["filtered_by_" + qfilter] = [
                 None if is_f in prev_filters else is_f == qfilter
@@ -137,19 +167,24 @@ def q_filter(batch, cfg):
             prev_filters.add(qfilter)
         return batch
 
-    else:
-        passed = [
-            f == "passed filters"
-            for f in qf.describe_filter(batch[cfg.text_col], batch_size=cfg.batch_size)
-        ]
-        # return batch with only the texts that passed the quality filter
-        return {k: [v[i] for i, p in enumerate(passed) if p] for k, v in batch.items()}
+    passed = [
+        f == "passed filters"
+        for f in qf.describe_filter(batch[cfg.text_col], batch_size=cfg.batch_size)
+    ]
+    # return batch with only the texts that passed the quality filter
+    return {k: [v[i] for i, p in enumerate(passed) if p] for k, v in batch.items()}
 
 
-def s_filter(batch, cfg):
+def apply_sentence_filter(batch: dict, cfg: DictConfig) -> dict:
     """
-    Sentence filter which takes in a hf datasets batch and and applies a sentence
-    filter to all the texts which pass the language filter
+    Apply sentence filter to a huggingface datasets batch
+
+    Args:
+        batch (dict): A hf datasets batch
+        cfg (DictConfig): A config object containing the sentence_filter config
+
+    Returns:
+        dict: A hf datasets batch
     """
     sf = create_sentence_filter(cfg)
 
@@ -158,7 +193,10 @@ def s_filter(batch, cfg):
         valid_langs = set(cfg.valid_languages)
 
         if valid_langs:
-            filter_lang = lambda batch, i: (batch[cfg.lang_col][i] in valid_langs)
+
+            def filter_lang(batch, i):
+                return batch[cfg.lang_col][i] in valid_langs
+
             is_filtered = [
                 filter_lang(batch, i) for i, _ in enumerate(batch[cfg.text_col])
             ]
@@ -177,33 +215,45 @@ def s_filter(batch, cfg):
         ]
         return batch
 
-    else:
-        batch[cfg.text_col] = sf(batch[cfg.text_col])
-        # remove text that are now empty strings
-        return {
-            k: [v[i] for i, t in enumerate(batch[cfg.text_col]) if t]
-            for k, v in batch.items()
-        }
+    batch[cfg.text_col] = sf(batch[cfg.text_col])
+    # remove text that are now empty strings
+    return {
+        k: [v[i] for i, t in enumerate(batch[cfg.text_col]) if t]
+        for k, v in batch.items()
+    }
 
 
-def dataset_to_disk(dataset, path, ext: str) -> Path:
+def dataset_to_disk(dataset, path, ext: str) -> None:
+    """Save a dataset to disk
+
+    Args:
+        dataset (Dataset): A huggingface dataset
+        path (Path): A path to save the dataset to
+        ext (str): The extension to save the dataset to
+    """
     _ext = VALID_SAVE_FORMATS[ext]
     path = path.with_suffix(f".{ext}")
     if _ext == "parquet":
         dataset.to_parquet(path)
-        return path
     elif _ext == "json":
         dataset.to_json(path)
-        return path
     elif _ext == "csv":
         dataset.to_csv(path)
-        return path
     elif _ext == "arrow":
         dataset.to_disk(path)
-    logging.info(f"\tSaved cleaned dataset to {path.resolve()}")
+    else:
+        raise ValueError(f"Invalid extension: {ext}")
+    logging.info("\tSaved cleaned dataset to %s", path.resolve())
 
 
-def process_files(path: Path, cfg: DictConfig):
+def process_files(path: Path, cfg: DictConfig) -> None:
+    """Process a file or directory of files
+
+    Args:
+        path (Path): A path to a file or directory of files
+        cfg (DictConfig): A config object containing the config for the
+            sentence_filter and quality_filter
+    """
     # load dataset
     file_ext = Path(path).suffix
     ext = VALID_SAVE_FORMATS[file_ext[1:]]  # remove the "."
@@ -220,12 +270,12 @@ def process_files(path: Path, cfg: DictConfig):
 
     _save_path = save_path.with_suffix(f".{cfg.save_file_ext}")
     if _save_path.exists() and cfg.skip_existing:
-        logging.info(f"File already existing, skipping:\n\t{_save_path}")
+        logging.info("File already existing, skipping:\n\t %s", _save_path)
         return
 
     dataset = load_dataset(ext, data_files=path, split="train")
     if cfg.verbosity_level == 2:
-        logging.debug(f"The columns of the dataset is:\n{dataset.column_names}")
+        logging.debug("The columns of the dataset is:\n %s", dataset.column_names)
 
     # filter languages:
     if not cfg.save_meta_data:
@@ -236,13 +286,13 @@ def process_files(path: Path, cfg: DictConfig):
     if cfg.apply_sentence_filter:
 
         dataset = dataset.map(
-            lambda batch: s_filter(batch, cfg),
+            lambda batch: apply_sentence_filter(batch, cfg),
             batched=True,
             batch_size=cfg.batch_size,
         )
     if cfg.apply_quality_filter:
         dataset = dataset.map(
-            lambda batch: q_filter(batch, cfg),
+            lambda batch: apply_quality_filter(batch, cfg),
             batched=True,
             batch_size=cfg.batch_size,
         )
@@ -258,7 +308,7 @@ def process_files(path: Path, cfg: DictConfig):
         # save meta
         meta_path = save_dir / (Path(path).stem + "_meta.jsonl")
         meta.to_json(meta_path)
-        logging.info(f"\tSaved meta data to {meta_path.resolve()}")
+        logging.info("\tSaved meta data to %s", meta_path.resolve())
 
     # remove meta data columns
     columns_to_remove = [
@@ -267,7 +317,7 @@ def process_files(path: Path, cfg: DictConfig):
     dataset = dataset.remove_columns(columns_to_remove)
 
     # save dataset with new file extension
-    path = dataset_to_disk(dataset, save_path, cfg.save_file_ext)
+    dataset_to_disk(dataset, save_path, cfg.save_file_ext)
 
 
 @hydra.main(
@@ -276,7 +326,12 @@ def process_files(path: Path, cfg: DictConfig):
     version_base="1.2",
 )
 def main(cfg: DictConfig) -> None:
-    """Main function for cleaning a dataset."""
+    """Main function for cleaning a dataset.
+
+    Args:
+        cfg (DictConfig): A config object containing the config for the
+            sentence_filter and quality_filter
+    """
 
     save_dir = Path(cfg.save_dir)
     save_dir.mkdir(exist_ok=True, parents=True)
@@ -291,7 +346,7 @@ def main(cfg: DictConfig) -> None:
     if cfg.verbosity_level == 2:
         logging.basicConfig(filename=save_dir / "cleaning.log", level=logging.DEBUG)
     # save config to folder
-    with open(save_dir / "clean_config.yaml", "w") as f:
+    with open(save_dir / "clean_config.yaml", "w", encoding="utf-8") as f:
         OmegaConf.save(cfg, f)
 
     if cfg.num_proc == -1:
@@ -317,8 +372,8 @@ def main(cfg: DictConfig) -> None:
             for _ in pool.imap_unordered(_process_files, files, chunksize=1):
                 pass
 
-    logging.info(f"Finished cleaning {len(paths)} files")
+    logging.info("Finished cleaning %s files", len(paths))
 
 
 if __name__ == "__main__":
-    main()
+    main()  # pylint: disable=no-value-for-parameter

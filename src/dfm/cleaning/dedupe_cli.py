@@ -47,7 +47,13 @@ VALID_SAVE_FORMATS = {
 
 
 def multigen(gen_func: Callable) -> Callable:
-    """A decorator for using a generator multiple times"""
+    """A decorator for using a generator multiple times
+
+    gen_func (Callable): A generator function
+
+    Returns:
+        A generator function that can be used multiple times
+    """
 
     class _multigen:
         def __init__(self, *args, **kwargs):
@@ -80,8 +86,18 @@ def multigen(gen_func: Callable) -> Callable:
 
 def dataset_to_disk(
     dataset: Union[Dataset, Iterable[dict]], path: Path, ext: str, streaming: bool
-):
-    """Save a dataset to disk"""
+) -> None:
+    """Save a dataset to disk
+
+    Args:
+        dataset (Union[Dataset, Iterable[dict]]): The dataset to save
+        path (Path): The path to save the dataset to
+        ext (str): The file extension to save the dataset as
+        streaming (bool): Whether to save the dataset in streaming mode
+
+    Raises:
+        ValueError: If the file extension is not supported
+    """
     _ext = VALID_SAVE_FORMATS[ext]
     path = path.with_suffix(f".{ext}")
     if streaming and ext not in {"jsonl", "json"}:
@@ -95,8 +111,9 @@ def dataset_to_disk(
             writer = ndjson.writer(file, ensure_ascii=False)
             for row in dataset:
                 writer.writerow(row)
+        return
 
-    elif _ext == "parquet":
+    if _ext == "parquet":
         dataset.to_parquet(path)
     elif _ext == "json":
         dataset.to_json(path)
@@ -104,12 +121,20 @@ def dataset_to_disk(
         dataset.to_csv(path)
     elif _ext == "arrow":
         dataset.to_disk(path)
+    else:
+        raise ValueError(f"Unsupported save format {ext}")
     logging.info("\tSaved deduplicated dataset to %s", str(path.resolve()))
-    return path
 
 
 def create_dataset_generator(path: Union[Path, str]) -> Generator[dict, None, None]:
-    """Create a generator that yields datasets from a path"""
+    """Create a generator that yields datasets from a path
+
+    Args:
+        path (Union[Path, str]): The path to the dataset
+
+    Yields:
+        dict: A dataset
+    """
     # check file extension is json or jsonl
     ext = path.suffix[1:]
     if ext not in {"json", "jsonl"}:
@@ -125,7 +150,16 @@ def create_dataset_generator(path: Union[Path, str]) -> Generator[dict, None, No
 
 
 def process_path(path: Union[Path, str], deduper: Deduper, cfg: DictConfig) -> None:
-    """Deduplicate a single file and save the deduplicated data to disk"""
+    """Deduplicate a single file and save the deduplicated data to disk
+
+    Args:
+        path (Union[Path, str]): The path to the dataset
+        deduper (Deduper): The deduper to use
+        cfg (DictConfig): The Hydra config
+
+    Raises:
+        ValueError: If the file extension is not supported
+    """
 
     save_dir = Path(cfg.save_dir)
     save_path = save_dir / Path(path).name
@@ -230,7 +264,7 @@ def process_path(path: Union[Path, str], deduper: Deduper, cfg: DictConfig) -> N
         dataset_deduplicated = dataset_dedup
 
     # save dataset with new file extension
-    path = dataset_to_disk(
+    dataset_to_disk(
         dataset_deduplicated, save_path, cfg.save_file_ext, streaming=cfg.streaming
     )
 
@@ -241,7 +275,11 @@ def process_path(path: Union[Path, str], deduper: Deduper, cfg: DictConfig) -> N
     version_base="1.2",
 )
 def main(cfg: DictConfig) -> None:
-    """Main function for deduplicating a dataset"""
+    """Main function for deduplicating a dataset
+
+    Args:
+        cfg (DictConfig): The Hydra config
+    """
 
     save_dir = Path(cfg.save_dir)
     save_dir.mkdir(exist_ok=True, parents=True)
