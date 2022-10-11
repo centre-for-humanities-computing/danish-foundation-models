@@ -49,7 +49,8 @@ VALID_SAVE_FORMATS = {
 def multigen(gen_func: Callable) -> Callable:
     """A decorator for using a generator multiple times
 
-    gen_func (Callable): A generator function
+    Args:
+        gen_func (Callable): A generator function
 
     Returns:
         A generator function that can be used multiple times
