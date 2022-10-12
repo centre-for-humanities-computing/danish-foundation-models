@@ -28,7 +28,7 @@ else
     elif [ -d /work/ ]; then
         echo "Setting environment variables for Ucloud instance"
 
-        DFM_PATH = /work
+        DFM_PATH=/work/dfm-data
         echo "" >> ~/.bashrc
         echo "# Environment variables for Danish Foundation Models" >> ~/.bashrc
         echo "export NAT_PATH='$DFM_PATH/netarkivet-cleaned/'" >> ~/.bashrc
