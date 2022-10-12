@@ -169,7 +169,7 @@ class DataTrainingArguments:
             "help": "The probability of sampling from the DaNews dataset, assuming the dataset is DCC"
         },
     )
-    hopetwittet_weight: Optional[float] = field(
+    hopetwitter_weight: Optional[float] = field(
         default=0.25,
         metadata={
             "help": "The probability of sampling from the HopeTwitter dataset, assuming the dataset is DCC"
@@ -317,7 +317,7 @@ def get_dataset(
                 probabilities={
                     "danews": data_args.danews_weight,
                     "dagw_dfm": data_args.dagw_dfm_weight,
-                    "hopetwitter": data_args.hopetwittet_weight,
+                    "hopetwitter": data_args.hopetwitter_weight,
                     "nat": data_args.nat_weight,
                 },
             )
