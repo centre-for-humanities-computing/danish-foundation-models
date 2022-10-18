@@ -154,20 +154,24 @@ Troubles in model training paradise (seems like @Dan jinxed it :wink: ):
 Lasse and I decided to restart the run using a small BERT and drop the comparison w. existing models.
 
 This requires:
-- [ ] retraining a tokenizer (32, 50, 128k vocab) (started)
+- [x] retraining a tokenizer (32, 50, 128k vocab)
 - [x] creating a config
-- [x] creating a new HF repo
+- [ ] Setup autocreate and sync for a new HF repo (ready to be tested)
+- [ ] setup on ucloud (ready to be tested)
+  - [ ] needs HF login
 
 
+```bash
 python src/applications/train/run_mlm_pytorch_stream.py \
     --output_dir=/data-big-projects/danish-foundation-models/huggingface-repositories/dfm-roberta-small-v1 \
-    --tokenizer_name=/data-big-projects/danish-foundation-models/tokenizers/unigram_5000000_docs_32000_vocab \
+    --tokenizer_name=/data-big-projects/danish-foundation-models/tokenizers/unigram_100000_docs_32000_vocab \
+    --use_pretrained_tokenizer \
     --model_type=roberta \
-    --config_name=/data-big-projects/danish-foundation-models/huggingface-repositories/dfm-roberta-small-v1 \
+    --config_name=/home/kenneth/github/danish-foundation-models/default-models-configs/small-roberta-config.json \
     --dataset_name=dcc_v1.1.0 \
     --max_seq_length=512 \
-    --per_device_train_batch_size=128 \
-    --per_device_eval_batch_size=128 \
+    --per_device_train_batch_size=48 \
+    --per_device_eval_batch_size=48 \
     --learning_rate=2e-4 \
     --warmup_steps=10000 \
     --adam_beta1=0.9 \
@@ -184,13 +188,26 @@ python src/applications/train/run_mlm_pytorch_stream.py \
     --seed=42 \
     --fp16 \
     --do_eval \
-    --evaluation_strategy="steps" \
+    --evaluation_strategy=steps \
     --nat_weight=0.50 \
     --danews_weight=0.20 \
     --hopetwitter_weight=0.20 \
-    --dagw_dfm_weight=0.10
-    # --overwrite_output_dir \
+    --dagw_dfm_weight=0.10 \
+    --overwrite_output_dir \
+    --optim=adamw_torch
 ```
+If you are wondering about optim, see [this](https://discuss.huggingface.co/t/huggingface-transformers-longformer-optimizer-warning-adamw/14711).
+
+hmmm this did not seem to work initially. Will try changing one step at a time instead. 
+
+- K. Enevoldsen (18 October, server: Grundtvig): Started run again
+  
+Seems like there was a problem with max sequence length being 512, instead it should be 514.
+For related issues see:
+
+- https://github.com/huggingface/transformers/issues/1363
+- https://github.com/facebookresearch/fairseq/issues/1187
+
 
 
 <!-- 
@@ -303,6 +320,7 @@ Checked:
 - [x] fix such that training can restart from a given point (given point in the dataset as well)
 - [x] find a hyperparameters set for a small BERT
 - [x] Set a larger train + eval batch size
+- [ ] Test out the deepspeed integration (pip install deepspeed should do it) - does it make it faster?
 
 
 python src/applications/train/run_mlm_pytorch_stream.py \
@@ -335,3 +353,9 @@ python src/applications/train/run_mlm_pytorch_stream.py \
     --do_eval \
     --evaluation_strategy="steps" \
     --overwrite_output_dir  -->
+
+
+
+<!-- --config_name=/home/kenneth/github/danish-foundation-models/default-models-configs/small-roberta-config.json \ -->
+
+

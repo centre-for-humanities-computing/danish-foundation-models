@@ -21,7 +21,7 @@ Example usage:
     python src/applications/train/run_mlm_pytorch_stream.py \
         --train_file test.txt \
         --model_name_or_path roberta-base \
-        --output_dir /tmp/test_mlm \
+        --output_dir /tmp/models/ \
         --do_train \
         --overwrite_output_dir \
         --streaming \
@@ -29,13 +29,14 @@ Example usage:
         --max_steps 1 \
         --max_train_samples 1000
 """
-
+import json
 import logging
 import math
 import os
 import sys
 from dataclasses import dataclass, field
 from itertools import chain
+from pathlib import Path
 from typing import Optional, Tuple, Union
 
 import datasets
@@ -49,6 +50,7 @@ from transformers import (
     AutoTokenizer,
     DataCollatorForLanguageModeling,
     HfArgumentParser,
+    PreTrainedTokenizerFast,
     Trainer,
     TrainingArguments,
     is_torch_tpu_available,
@@ -116,6 +118,12 @@ class ModelArguments:
         default=True,
         metadata={
             "help": "Whether to use one of the fast tokenizer (backed by the tokenizers library) or not."
+        },
+    )
+    use_pretrained_tokenizer: bool = field(
+        default=False,
+        metadata={
+            "help": "Whether to use a pretrained tokenizer, see https://huggingface.co/docs/transformers/fast_tokenizers"
         },
     )
     model_revision: str = field(
@@ -449,9 +457,23 @@ def get_tokenizer_and_model(
         "use_auth_token": True if model_args.use_auth_token else None,
     }
     if model_args.tokenizer_name:
-        tokenizer = AutoTokenizer.from_pretrained(
-            model_args.tokenizer_name, **tokenizer_kwargs
-        )
+        if model_args.use_pretrained_tokenizer:
+            tok_path = Path(model_args.tokenizer_name)
+            tokenizer = PreTrainedTokenizerFast(
+                tokenizer_file=str(tok_path / "tokenizer.json"),
+            )
+            with open(tok_path / "config.json", "r") as f:
+                tok_config = json.load(f)
+            tokenizer.mask_token = tok_config["mask_token"]
+            tokenizer.unk_token = tok_config["unk_token"]
+            tokenizer.bos_token = tok_config["bos_token"]
+            tokenizer.eos_token = tok_config["eos_token"]
+            tokenizer.pad_token = tok_config["pad_token"]
+
+        else:
+            tokenizer = AutoTokenizer.from_pretrained(
+                model_args.tokenizer_name, **tokenizer_kwargs
+            )
     elif model_args.model_name_or_path:
         tokenizer = AutoTokenizer.from_pretrained(
             model_args.model_name_or_path, **tokenizer_kwargs
