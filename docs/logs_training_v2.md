@@ -209,6 +209,86 @@ For related issues see:
 - https://github.com/facebookresearch/fairseq/issues/1187
 
 
+I then started the following run tuning the batch size:
+```
+python src/applications/train/run_mlm_pytorch_stream.py \
+    --output_dir=/data-big-projects/danish-foundation-models/huggingface-repositories/dfm-roberta-small-v1 \
+    --tokenizer_name=/data-big-projects/danish-foundation-models/tokenizers/unigram_100000_docs_32000_vocab \
+    --use_pretrained_tokenizer \
+    --model_type=roberta \
+    --config_name=/home/kenneth/github/danish-foundation-models/default-models-configs/small-roberta-config.json \
+    --dataset_name=dcc_v1.1.0 \
+    --max_seq_length=512 \
+    --per_device_train_batch_size=256 \
+    --per_device_eval_batch_size=128 \
+    --learning_rate=2e-4 \
+    --warmup_steps=1000 \
+    --adam_beta1=0.9 \
+    --adam_beta2=0.98 \
+    --adam_epsilon=1e-6 \
+    --max_steps=50000 \
+    --max_eval_samples=5000 \
+    --logging_steps=100 \
+    --eval_steps=1000 \
+    --push_to_hub \
+    --weight_decay=0.01 \
+    --do_train \
+    --streaming \
+    --seed=42 \
+    --fp16 \
+    --do_eval \
+    --evaluation_strategy=steps \
+    --nat_weight=0.50 \
+    --danews_weight=0.20 \
+    --hopetwitter_weight=0.20 \
+    --dagw_dfm_weight=0.10 \
+    --overwrite_output_dir \
+    --optim=adamw_torch
+```
+
+
+- K. Enevoldsen (19 October, server: Grundtvig): Start running the grid, we can do this in parallel on grundtvig be specifying `CUDA_VISIBLE_DEVICES=2 python train.py`
+
+e.g.
+```
+CUDA_VISIBLE_DEVICES=0 python src/applications/train/run_mlm_pytorch_stream.py \
+    --output_dir=/data-big-projects/danish-foundation-models/huggingface-repositories/dfm-roberta-small-v1 \
+    --tokenizer_name=/data-big-projects/danish-foundation-models/tokenizers/unigram_100000_docs_32000_vocab \
+    --use_pretrained_tokenizer \
+    --model_type=roberta \
+    --config_name=/home/kenneth/github/danish-foundation-models/default-models-configs/small-roberta-config.json \
+    --dataset_name=dcc_v1.1.0 \
+    --max_seq_length=512 \
+    --learning_rate=2e-4 \
+    --warmup_steps=1000 \
+    --adam_beta1=0.9 \
+    --adam_beta2=0.98 \
+    --adam_epsilon=1e-6 \
+    --max_steps=50000 \
+    --max_eval_samples=5000 \
+    --logging_steps=100 \
+    --eval_steps=1000 \
+    --push_to_hub \
+    --weight_decay=0.01 \
+    --do_train \
+    --streaming \
+    --seed=42 \
+    --fp16 \
+    --do_eval \
+    --evaluation_strategy=steps \
+    --nat_weight=0.50 \
+    --danews_weight=0.20 \
+    --hopetwitter_weight=0.20 \
+    --dagw_dfm_weight=0.10 \
+    --overwrite_output_dir \
+    --per_device_train_batch_size=128 \
+    --per_device_eval_batch_size=128 \
+    --optim=adamw_torch
+```
+
+The results from the grid can be found [here](https://wandb.ai/chcaa/danish-foundation-models/reports/Grid-Search-1--VmlldzoyODE5NDE5).
+
+
 
 <!-- 
 Hyperparameter set for BERT (Googles BERT)
@@ -358,4 +438,39 @@ python src/applications/train/run_mlm_pytorch_stream.py \
 
 <!-- --config_name=/home/kenneth/github/danish-foundation-models/default-models-configs/small-roberta-config.json \ -->
 
+
+CUDA_VISIBLE_DEVICES=3 python src/applications/train/run_mlm_pytorch_stream.py \
+    --output_dir=/data-big-projects/danish-foundation-models/models/exp_morenat \
+    --tokenizer_name=/data-big-projects/danish-foundation-models/tokenizers/unigram_100000_docs_32000_vocab \
+    --use_pretrained_tokenizer \
+    --model_type=roberta \
+    --config_name=/home/kenneth/github/danish-foundation-models/default-models-configs/small-roberta-32000-config.json \
+    --dataset_name=dcc_v1.1.0 \
+    --max_seq_length=512 \
+    --per_device_train_batch_size=128 \
+    --per_device_eval_batch_size=128 \
+    --learning_rate=2e-4 \
+    --warmup_steps=2000 \
+    --adam_beta1=0.9 \
+    --adam_beta2=0.98 \
+    --adam_epsilon=1e-6 \
+    --max_steps=100000 \
+    --max_eval_samples=5000 \
+    --logging_steps=100 \
+    --eval_steps=2000 \
+    --weight_decay=0.01 \
+    --do_train \
+    --streaming \
+    --seed=42 \
+    --fp16 \
+    --do_eval \
+    --evaluation_strategy=steps \
+    --nat_weight=0.7 \
+    --danews_weight=0.1 \
+    --hopetwitter_weight=0.1 \
+    --dagw_dfm_weight=0.1 \
+    --max_grad_norm=10.0 \
+    --gradient_accumulation_steps=1 \
+    --overwrite_output_dir \
+    --optim=adamw_torch
 

@@ -657,12 +657,8 @@ def train(
     metrics = train_result.metrics
 
     if data_args.streaming:
-        max_train_samples = data_args.max_train_samples
-        if max_train_samples is None:
-            raise ValueError(
-                "When specifying --streaming, then you must also specify --max_train_samples"
-            )
-        metrics["train_samples"] = data_args.max_train_samples
+        if data_args.max_train_samples:
+            metrics["train_samples"] = data_args.max_train_samples
     else:
         max_train_samples = (
             data_args.max_train_samples

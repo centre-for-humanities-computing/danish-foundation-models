@@ -19,7 +19,7 @@
   "num_hidden_layers": 12,
   "position_embedding_type": "absolute",
   "transformers_version": "4.20.1",
-  "type_vocab_size": 5,
+  "type_vocab_size": 1,
   "use_cache": true,
-  "vocab_size": 32000
+  "vocab_size": 128000
 }
