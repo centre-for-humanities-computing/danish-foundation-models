@@ -2,7 +2,8 @@
 # 1) ucloud rsync server is running w. ip {RSYNC_IP} with following folder mounted:
 # danish-foundation-models/dfm-data (project: Danish Foundation Models) 
 # 2) Run from a a uc t4 instance is running where you have initially run:
-#  git clone https://github.com/centre-for-humanities-computing/danish-foundation-models
+# git clone https://github.com/centre-for-humanities-computing/danish-foundation-models
+# git checkout trainingv2
 # 3) a private key is located at {SSH_KEY_RSYNC_PATH}.
 # Note: the ucloud rsync server could only be the instance you are running this script from
 
