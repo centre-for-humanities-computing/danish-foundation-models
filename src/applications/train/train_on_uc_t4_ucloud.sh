@@ -20,6 +20,12 @@ ssh -i keys/ssh_key $USER@$IP "rsync -avP -e "ssh -i ./ssh_key"  /data-big-proje
 
 
 # ---
+echo "Installing Python 3.10 and updating apt"
+ssh -i keys/ssh_key $USER@$IP "sudo apt update && sudo apt upgrade -y"
+ssh -i keys/ssh_key $USER@$IP "sudo add-apt-repository ppa:deadsnakes/ppa"
+ssh -i keys/ssh_key $USER@$IP "sudo apt install python3.10 -y"
+
+# ---
 echo "Setting up environment variables for ucloud t4 server"
 ssh -i keys/ssh_key $USER@$IP "echo "" >> ~/.bashrc"
 ssh -i keys/ssh_key $USER@$IP "echo "# Environment variables for Danish Foundation Models" >> ~/.bashrc"
@@ -43,7 +49,8 @@ ssh -i keys/ssh_key $USER@$IP "cd danish-foundation-models && pip install -r req
 
 # ---
 echo "Running training on ucloud t4 server"
-TRAIN_COMMAND="python src/applications/train/run_mlm_pytorch_stream.py
+TRAIN_COMMAND="
+python src/applications/train/run_mlm_pytorch_stream.py
     --output_dir=$RSYNC_DATA_FOLDER/danish-foundation-models/huggingface-repositories/dfm-roberta-small-v1
     --tokenizer_name=$RSYNC_DATA_FOLDER/danish-foundation-models/tokenizers/unigram_5000000_docs_32000_vocab
     --model_type=roberta
