@@ -492,6 +492,7 @@ def get_tokenizer_and_model(
             cache_dir=model_args.cache_dir,
             revision=model_args.model_revision,
             use_auth_token=True if model_args.use_auth_token else None,
+            ignore_mismatched_sizes=True,
         )
     else:
         logger.info("Training new model from scratch")
@@ -652,6 +653,15 @@ def train(
         checkpoint = training_args.resume_from_checkpoint
     elif last_checkpoint is not None:
         checkpoint = last_checkpoint
+    # log trainable parameters to wandb
+    num_trainable_params = sum(
+        p.numel() for p in trainer.model.parameters() if p.requires_grad
+    )
+    num_params = sum(p.numel() for p in trainer.model.parameters())
+    wandb.config.update(
+        {"num_trainable_params": num_trainable_params, "num_params": num_params}
+    )
+
     train_result = trainer.train(resume_from_checkpoint=checkpoint)
     trainer.save_model()  # Saves the tokenizer too for easy upload
     metrics = train_result.metrics
