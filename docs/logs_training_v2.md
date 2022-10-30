@@ -288,17 +288,17 @@ CUDA_VISIBLE_DEVICES=0 python src/applications/train/run_mlm_pytorch_stream.py \
 
 The results from the grid can be found [here](https://wandb.ai/chcaa/danish-foundation-models/reports/Grid-Search-1--VmlldzoyODE5NDE5).
 
-- K. Enevoldsen (27- October, server: UCloud t4, run_name: `run_mlm_train_01`): Started running final small-sized model
+- K. Enevoldsen (30- October, server: UCloud t4, run_names: [`run_mlm_train_01`, `run_mlm_train_01`]): Started running small-sized model and base sized model.
 
 Following the hyperparameter search the following parameters seems reasonable.
 
 ```bash
-python src/applications/train/run_mlm_pytorch_stream.py \
-    --output_dir=/data-big-projects/danish-foundation-models/huggingface-repositories/dfm-deberta-v2-small-v1 \
-    --tokenizer_name=/data-big-projects/danish-foundation-models/tokenizers/unigram_100000_docs_32000_vocab \
+python3 src/applications/train/run_mlm_pytorch_stream.py \
+    --output_dir=/home/ucloud/data/dfm-data/huggingface-repositories/dfm-debertav2-small-v1 \
+    --tokenizer_name=/home/ucloud/data/dfm-data/tokenizers/unigram_100000_docs_32000_vocab \
     --model_type=deberta-v2 \
     --use_pretrained_tokenizer \
-    --config_name=/home/kenneth/github/danish-foundation-models/default-models-configs/small-deberta-v2-32000-config.json \
+    --config_name=/home/ucloud/danish-foundation-models/default-models-configs/small-deberta-v2-32000-config.json \
     --dataset_name=dcc_v1.1.0 \
     --max_seq_length=512 \
     --learning_rate=6e-4 \
@@ -310,6 +310,7 @@ python src/applications/train/run_mlm_pytorch_stream.py \
     --max_eval_samples=5000 \
     --logging_steps=100 \
     --eval_steps=2000 \
+    --save_steps=2000 \
     --push_to_hub \
     --weight_decay=0.01 \
     --do_train \
@@ -318,14 +319,55 @@ python src/applications/train/run_mlm_pytorch_stream.py \
     --fp16 \
     --do_eval \
     --evaluation_strategy=steps \
-    --nat_weight=0.50 \
+    --nat_weight=0.60 \
     --danews_weight=0.20 \
-    --hopetwitter_weight=0.20 \
+    --hopetwitter_weight=0.10 \
     --dagw_dfm_weight=0.10 \
     --overwrite_output_dir \
-    --per_device_train_batch_size=256 \
-    --per_device_eval_batch_size=128 \
-    --gradient_accumulation_steps=2 \
+    --per_device_train_batch_size=64 \
+    --per_device_eval_batch_size=32 \
+    --gradient_accumulation_steps=4 \
     --optim=adamw_torch
     # --overwrite_output_dir
+```
+
+and for the base-sized model:
+
+```bash
+python3 src/applications/train/run_mlm_pytorch_stream.py \
+    --output_dir=/home/ucloud/data/dfm-data/huggingface-repositories/dfm-debertav2-base-v1 \
+    --tokenizer_name=/home/ucloud/data/dfm-data/tokenizers/unigram_100000_docs_32000_vocab \
+    --model_type=deberta-v2 \
+    --use_pretrained_tokenizer \
+    --config_name=/home/ucloud/danish-foundation-models/default-models-configs/small-deberta-v2-32000-config.json \
+    --dataset_name=dcc_v1.1.0 \
+    --max_seq_length=512 \
+    --learning_rate=6e-4 \
+    --warmup_step=10000 \
+    --adam_beta1=0.9 \
+    --adam_beta2=0.98 \
+    --adam_epsilon=1e-6 \
+    --max_steps=100000 \
+    --max_eval_samples=5000 \
+    --logging_steps=100 \
+    --eval_steps=2000 \
+    --save_steps=2000 \
+    --push_to_hub \
+    --weight_decay=0.01 \
+    --do_train \
+    --streaming \
+    --seed=42 \
+    --fp16 \
+    --do_eval \
+    --evaluation_strategy=steps \
+    --nat_weight=0.60 \
+    --danews_weight=0.20 \
+    --hopetwitter_weight=0.10 \
+    --dagw_dfm_weight=0.10 \
+    --overwrite_output_dir \
+    --per_device_train_batch_size=64 \
+    --per_device_eval_batch_size=32 \
+    --gradient_accumulation_steps=4 \
+    --optim=adamw_torch \
+    --overwrite_output_dir
 ```
