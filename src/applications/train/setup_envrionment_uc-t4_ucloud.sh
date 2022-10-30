@@ -43,8 +43,8 @@ rsync -avP -e "ssh -i $SSH_KEY_RSYNC_PATH" $RSYNC_USER@$RSYNC_IP:/work/$RSYNC_DA
 # setup paths for data
 echo "" >> ~/.bashrc
 echo "# Environment variables for Danish Foundation Models" >> ~/.bashrc
-echo "export NAT_PATH='$DATA_DIR/$RSYNC_DATA_FOLDER/netarkivet-cleaned/'" >> ~/.bashrc
-echo "export DAGW_DFM_PATH='$DATA_DIR/$RSYNC_DATA_FOLDER/dagw-cleaned/'" >> ~/.bashrc
+echo "export NAT_PATH='$DATA_DIR/$RSYNC_DATA_FOLDER/netarkivet_cleaned/'" >> ~/.bashrc
+echo "export DAGW_DFM_PATH='$DATA_DIR/$RSYNC_DATA_FOLDER/dagw_cleaned/'" >> ~/.bashrc
 echo "export DANEWS_PATH='$DATA_DIR/$RSYNC_DATA_FOLDER/hope-infomedia_cleaned/'" >> ~/.bashrc
 echo "export HOPETWITTER_PATH='$DATA_DIR/$RSYNC_DATA_FOLDER/twitter_cleaned/'" >> ~/.bashrc
 
@@ -80,14 +80,26 @@ huggingface-cli lfs-enable-largefiles .
 # install requirements
 cd $DFM_PATH
 pip install -e . 
+# apparently this need to be updated
+pip3 install requests --upgrade
+
+# update cuda drivers
+sudo apt update
+sudo apt full-upgrade -y
+sudo apt install nvidia-headless-460 nvidia-utils-460 -y
+sudo reboot
+
 
 # train model
+echo "You can now train the model something like the following command:"
+
+echo "
 python3 src/applications/train/run_mlm_pytorch_stream.py \
-    --output_dir=/data/dfm-data/huggingface-repositories/dfm-debertav2-small-v1 \
-    --tokenizer_name=/data/dfm-data/tokenizers/unigram_100000_docs_32000_vocab \
+    --output_dir=/home/ucloud/data/dfm-data/huggingface-repositories/dfm-debertav2-small-v1 \
+    --tokenizer_name=/home/ucloud/data/dfm-data/tokenizers/unigram_100000_docs_32000_vocab \
     --model_type=deberta-v2 \
     --use_pretrained_tokenizer \
-    --config_name=~/danish-foundation-models/default-models-configs/small-deberta-v2-32000-config.json \
+    --config_name=/home/ucloud/danish-foundation-models/default-models-configs/small-deberta-v2-32000-config.json \
     --dataset_name=dcc_v1.1.0 \
     --max_seq_length=512 \
     --learning_rate=6e-4 \
@@ -98,7 +110,8 @@ python3 src/applications/train/run_mlm_pytorch_stream.py \
     --max_steps=100000 \
     --max_eval_samples=5000 \
     --logging_steps=100 \
-    --eval_steps=2 \
+    --eval_steps=2000 \
+    --save_steps=2000 \
     --push_to_hub \
     --weight_decay=0.01 \
     --do_train \
@@ -112,15 +125,9 @@ python3 src/applications/train/run_mlm_pytorch_stream.py \
     --hopetwitter_weight=0.10 \
     --dagw_dfm_weight=0.10 \
     --overwrite_output_dir \
-    --per_device_train_batch_size=256 \
-    --per_device_eval_batch_size=128 \
-    --gradient_accumulation_steps=2 \
+    --per_device_train_batch_size=64 \
+    --per_device_eval_batch_size=32 \
+    --gradient_accumulation_steps=4 \
     --optim=adamw_torch \
     --overwrite_output_dir
-    # eval_steps=2000
-
-# update cuda drivers
-sudo apt update
-sudo apt full-upgrade -y
-sudo apt install nvidia-headless-460 nvidia-utils-460 -y
-sudo reboot
+"
