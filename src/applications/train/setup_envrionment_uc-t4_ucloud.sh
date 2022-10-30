@@ -56,6 +56,7 @@ sudo apt-get install python3-pip -y
 
 # add python path to bashrc
 echo 'export PATH="/home/ucloud/.local/bin:$PATH"' >> ~/.bashrc
+export PATH="/home/ucloud/.local/bin:$PATH"
 
 # install huggingface_hub
 pip install pip --upgrade
