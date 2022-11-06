@@ -18,7 +18,7 @@ A collaborative project for training foundational Danish language model. Which s
 
 2022
 - January: Project started
-- June: We replicated the performance of the existing Danish BERT using a BERT architecture and the DCC v1.0.0 (This model can be found at [chcaa/dfm-bert-base-v1](https://huggingface.co/chcaa/dfm-bert-base-v1?text=Paris+is+the+%5BMASK%5D+of+France.), you can find the model card [here](https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/docs/model_card.md))
+- June: We replicated the performance of the existing Danish BERT using a BERT architecture and the DCC v1.0.0 (This model can be found at [chcaa/dfm-bert-base-v1](https://huggingface.co/chcaa/dfm-bert-base-v1?text=Paris+is+the+%5BMASK%5D+of+France.))
 - October: 
   - Model trained started using the DeBERTaV2 architecture using the DCC v1.1.0
   which used the notably more filtered Netarkivet Text v2.
