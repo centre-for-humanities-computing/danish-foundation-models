@@ -1,101 +1,71 @@
 
-# DFM: Danish Foundation Models
+
+![](docs/_static/logo.png)
 
 [![Code style: black](https://img.shields.io/badge/Code%20Style-Black-black)](https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html)
 [![github actions pytest](https://github.com/centre-for-humanities-computing/danish-foundation-models/actions/workflows/pytest.yml/badge.svg)](https://github.com/centre-for-humanities-computing/danish-foundation-models/actions)
 
-A collaborative project for training foundational Danish language model.
+A collaborative project for training foundational Danish language model. Which seeks to:
 
-## Datasets:
-The dataset currently available to the project for training:
+- Develop and maintain **state-of-the-art models** for Danish, 
+- which are **well-validated** across a wide range of tasks.
+- Furthermore, we wish to **ensure good documentation**, which allows users to assess the model for their use-case critically
+- **Open-source**, both model and source code
+
+*Note*: This repository is intended for the text model of DFM.
+
+## Progress
+
+2022
+- January: Project started
+- June: We replicated the performance of the existing Danish BERT using BERT architecture on an DCC v1.0.0 (This model can be found at [chcaa/dfm-bert-base-v1](https://huggingface.co/chcaa/dfm-bert-base-v1?text=Paris+is+the+%5BMASK%5D+of+France.), you can find the model card [here](https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/docs/model_card.md))
+- October: Model trained started using the DeBERTaV2 architecture using the DCC v1.1.0
+  which used the notably more filtered Netarkivet Text v2.
+
+### Follow along:
+
+|                                                                                                                    |                                                               |
+| ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------- |
+|🚀 [**Model training**](https://wandb.ai/chcaa/danish-foundation-models/reports/dfm-debertav2-v1--VmlldzoyODc3NTA5) | A weight and biases report of model training |
+|🕵️‍♂️ [**Hyperparameters search**](https://wandb.ai/chcaa/danish-foundation-models/reports/Grid-Search-1--VmlldzoyODE5NDE5) | A weight and biases report of hyperparameters search |
+|🛠️ [**Training Logs**](https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/trainingv2/docs/logs_training_v2.md) | A markdown for noting the progress we went through during the training of the second iteration of models |
 
 
-| Dataset            | Description                                                              | Size in million tokens (filtered) | Open Source
-| ------------------ | ------------------------------------------------------------------------ | ---------------------- |--------------
-| :books: DAGW       | Danish Gigaword. A wide coverage dataset of Danish text.                 | \~1 000 (\~?)              | ✅
-| :bird: HopeTwitter | A dataset of tweets collected as a part of the HOPE project.             | ~973 (~463)                       | ✅
-| :newspaper: DaNews | A dataset consisting of Danish newspapers                                | ~9 296 (~8 667)                      |
-| 🗯 Reddit-da        | A Danish subsection of reddit                                            | ~86                   | ✅
-| :link: Netarkivet  | A subsection of the "Danish" internet collected the royal Danish library | ~400 000 (~130 000)                    |
-| :link: mC4         | A cleaned part of the common crawl                                       |                        | ✅
-| Lex.dk             | A Danish curated wikipedia, written by experts                           | ~26                    |
-| **Sum**             |                                                                          | ~11 381 (~9 130)                    |
+## Danish Collosal Corpus
+
+We currently use the Danish Colossal Corpus (DCC) version 1.1.0 to train Danish Language models. DCC consists of the following datasets: 
+
+| Dataset                                                                                                                                       | Description                                                              | Size in billion tokens (filtered) | Version |
+| --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | --------------------------------- | ------- |
+| 📚 [DAGW$_{DFM}$](https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/docs/dagw_reddit.md)                   | Danish Gigaword as well as Reddit. DAGW includes a wide coverage dataset | 0.83                              | v1      |
+| 🐦 [HopeTwitter](https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/docs/datasheets/hopetwitter.md)         | A dataset of tweets collected as a part of the HOPE project.             | 0.48                              | v1      |
+| 📰 [DaNews](https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/docs/datasheets/danews.md)                   | A dataset consisting of Danish newspapers                                | 8.67                              | v1      |
+| 🌐 [Netarkivet Text](https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/docs/datasheets/Netarkivet_text.md) | A subsection of the "Danish" internet collected the royal Danish library | >100                              | v2      |
 
 
 
-## Models:
-Currently the plan is to train:
+# Contribution
+## Wish to contribute?
+DFM is considered a collaborative project for training and maintaining Danish Language models. If you wish to contribute don't hesitate to reach out using one of the following channels:
 
-- An encoder model (e.g. BERT), probably DeBERTa v3
-- A decoder model (like GPT3), probably GPT
-- A encoder-decoder model (e.g. T5), probably T5 v1.1
+|                                                                                                                    |                                                               |
+| ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------- |
+|🗣 [**DDSC Slack**](https://join.slack.com/t/danskdatascie-o8m9638/shared_invite/zt-1jh2dwmj4-D_mjywfXERvVP75n9O0ykg) | Join the discussion in the "danish-foundation-models"-channel |
+| 💬 [**GitHub Discussion**](https://github.com/centre-for-humanities-computing/danish-foundation-models/discussions) | Ask questions or start a discussion |
+| 🚨 [**GitHub Issues**](https://github.com/centre-for-humanities-computing/danish-foundation-models/issues) | Notices a bug in the code? Please create an issue  |
 
-Potentially other models, which might be included include:
-- long-range transformers
-- distilled versions of the models
+You can contribute both:
 
-### Tokenizers
-Tokenizers is trained on a subset of the dataset which is chosen to be a balanced set. Currently this include
-- DAGW (~1000 million tokens)
-- Reddit (~85 million tokens)
-- HopeTwitter (~300 million tokens)
-- DaNews (~300 million tokens)
+-  Developer time, the lifeblood of any open-source project
+-  Pre-training datasets you wish to include in the model training
+-  Validation tasks can even be private benchmarks where you only wish to share the performance metrics.
+- And probably in many other ways
 
-It is currently noticably missing webdata.
 
-## Timeline:
-- [x] Dec.: first meeting
-- [x] Jan.-Feb.: building codebase for cleaning
-- [ ] Jan.-Mar.: building codebase for training
-- [ ] 15th Mar.: Data cleaning done
-- [ ] 1st Apr.: Dataset descriptions done
-- [ ] Mar.: start training of a candidate model
-- [ ] Apr.: training of model in each model category
-- [ ] Maj: start training largest possible model
-- [ ] 1st Maj: Larger call for project will language models
+## Current Contributors and Collaborators
+This project has collaborators across industry, national institutions and research centers. This project uses compute resources supplied by [Ucloud](https://docs.cloud.sdu.dk/index.html) through the [DeiC e-infrastructure grant](https://www.deic.dk/en/supercomputing/Apply-for-HPC-resources).
 
-# Wish to contribute
-DFM is considered a collaborate project for training and improving Danish Language models. If you wish to contribute don't hesitate to reach out using the discussion section or directly to the authors.
 
-To get started contributing:
-```
-# Clone the project
-git clone https://github.com/centre-for-humanities-computing/danish-foundation-models
+![](docs/_static/collab.png)
 
-# Install libraries
-pip3 install -r requirements.txt
 
-# Run test suite (first run will download datasets)
-python3 -m pytest tests
-```
-
-# Acknowledgements
-This project uses compute resources supplied by [Ucloud](https://docs.cloud.sdu.dk/index.html).
-
-## Current Contributors:
-- Kenneth Enevoldsen, Kenneth.enevoldsen@cas.au.dk
-- Lasse Hansen
-- Jan Kostkan
-- Dan Saattrup Nielsen
-- Malte Højmark-Bertelsen
-- Kasper Junge
-- Jens Dahl Møllerhøj
-- Martin Bernstorff
-- Rokas Maksevičius - Junior developer cleaning the netarkiv
-- Peter Bjerregaard Vahlstrup - the guy who makes sure data collections works
-- Kristoffer Nielbo - Supervisor
-
-## FAQ
-
-### How to I run the tests
-If you are used to running
-```
-python -m  pytest
-```
-
-to run the test, you will notice that this does not work with the current folder setup. This is intentional as this ensures that you always run the package installation before running the tests. This removes potential errors from the installation process.
-
-```
-pip install --editable .
-python -m  pytest
-```
