@@ -18,17 +18,19 @@ A collaborative project for training foundational Danish language model. Which s
 
 2022
 - January: Project started
-- June: We replicated the performance of the existing Danish BERT using BERT architecture on an DCC v1.0.0 (This model can be found at [chcaa/dfm-bert-base-v1](https://huggingface.co/chcaa/dfm-bert-base-v1?text=Paris+is+the+%5BMASK%5D+of+France.), you can find the model card [here](https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/docs/model_card.md))
-- October: Model trained started using the DeBERTaV2 architecture using the DCC v1.1.0
+- June: We replicated the performance of the existing Danish BERT using a BERT architecture and the DCC v1.0.0 (This model can be found at [chcaa/dfm-bert-base-v1](https://huggingface.co/chcaa/dfm-bert-base-v1?text=Paris+is+the+%5BMASK%5D+of+France.), you can find the model card [here](https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/docs/model_card.md))
+- October: 
+  - Model trained started using the DeBERTaV2 architecture using the DCC v1.1.0
   which used the notably more filtered Netarkivet Text v2.
+  - Published a [filtered version](https://huggingface.co/datasets/DDSC/dagw_reddit_filtered_v1.0.0) of the Danish Gigaword and Reddit dataset.
 
 ### Follow along:
 
-|                                                                                                                    |                                                               |
-| ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------- |
-|🚀 [**Model training**](https://wandb.ai/chcaa/danish-foundation-models/reports/dfm-debertav2-v1--VmlldzoyODc3NTA5) | A weight and biases report of model training |
-|🕵️‍♂️ [**Hyperparameters search**](https://wandb.ai/chcaa/danish-foundation-models/reports/Grid-Search-1--VmlldzoyODE5NDE5) | A weight and biases report of hyperparameters search |
-|🛠️ [**Training Logs**](https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/trainingv2/docs/logs_training_v2.md) | A markdown for noting the progress we went through during the training of the second iteration of models |
+|                                                                                                                                             |                                                                                                          |
+| ------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| 🚀 [**Model training**](https://wandb.ai/chcaa/danish-foundation-models/reports/dfm-debertav2-v1--VmlldzoyODc3NTA5)                          | A weight and biases report of model training                                                             |
+| 🕵️‍♂️ [**Hyperparameters search**](https://wandb.ai/chcaa/danish-foundation-models/reports/Grid-Search-1--VmlldzoyODE5NDE5)                     | A weight and biases report of hyperparameters search                                                     |
+| 🛠️ [**Training Logs**](https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/trainingv2/docs/logs_training_v2.md) | A markdown for noting the progress we went through during the training of the second iteration of models |
 
 
 ## Danish Collosal Corpus
@@ -37,22 +39,20 @@ We currently use the Danish Colossal Corpus (DCC) version 1.1.0 to train Danish 
 
 | Dataset                                                                                                                                       | Description                                                              | Size in billion tokens (filtered) | Version |
 | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | --------------------------------- | ------- |
-| 📚 [DAGW, Reddit](https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/docs/dagw_reddit.md)                   | Danish Gigaword and Reddit. DAGW includes a wide coverage dataset | 0.83                              | v1      |
+| 📚 [DAGW, Reddit]([DDSC/dagw_reddit_filtered_v1.0.0](https://huggingface.co/datasets/DDSC/dagw_reddit_filtered_v1.0.0))                        | Danish Gigaword and Reddit. DAGW includes a wide coverage dataset        | 0.83                              | v1      |
 | 🐦 [HopeTwitter](https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/docs/datasheets/hopetwitter.md)         | A dataset of tweets collected as a part of the HOPE project.             | 0.48                              | v1      |
 | 📰 [DaNews](https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/docs/datasheets/danews.md)                   | A dataset consisting of Danish newspapers                                | 8.67                              | v1      |
 | 🌐 [Netarkivet Text](https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/docs/datasheets/Netarkivet_text.md) | A subsection of the "Danish" internet collected the royal Danish library | >100                              | v2      |
 
 
-
-# Contribution
-## Wish to contribute?
+# Wish to contribute?
 DFM is considered a collaborative project for training and maintaining Danish Language models. If you wish to contribute don't hesitate to reach out using one of the following channels:
 
-|                                                                                                                    |                                                               |
-| ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------- |
-|🗣 [**DDSC Slack**](https://join.slack.com/t/danskdatascie-o8m9638/shared_invite/zt-1jh2dwmj4-D_mjywfXERvVP75n9O0ykg) | Join the discussion in the "danish-foundation-models"-channel |
-| 💬 [**GitHub Discussion**](https://github.com/centre-for-humanities-computing/danish-foundation-models/discussions) | Ask questions or start a discussion |
-| 🚨 [**GitHub Issues**](https://github.com/centre-for-humanities-computing/danish-foundation-models/issues) | Notices a bug in the code? Please create an issue  |
+|                                                                                                                      |                                                               |
+| -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| 🗣 [**DDSC Slack**](https://join.slack.com/t/danskdatascie-o8m9638/shared_invite/zt-1jh2dwmj4-D_mjywfXERvVP75n9O0ykg) | Join the discussion in the "danish-foundation-models"-channel |
+| 💬 [**GitHub Discussion**](https://github.com/centre-for-humanities-computing/danish-foundation-models/discussions)   | Ask questions or start a discussion                           |
+| 🚨 [**GitHub Issues**](https://github.com/centre-for-humanities-computing/danish-foundation-models/issues)            | Notices a bug in the code? Please create an issue             |
 
 You can contribute both:
 
