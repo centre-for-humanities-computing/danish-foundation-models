@@ -339,7 +339,7 @@ python3 src/applications/train/run_mlm_pytorch_stream.py \
     --tokenizer_name=/home/ucloud/data/dfm-data/tokenizers/unigram_100000_docs_32000_vocab \
     --model_type=deberta-v2 \
     --use_pretrained_tokenizer \
-    --config_name=/home/ucloud/danish-foundation-models/default-models-configs/small-deberta-v2-32000-config.json \
+    --config_name=/home/ucloud/danish-foundation-models/default-models-configs/base-deberta-v2-32000-config.json \
     --dataset_name=dcc_v1.1.0 \
     --max_seq_length=512 \
     --learning_rate=6e-4 \
@@ -365,9 +365,9 @@ python3 src/applications/train/run_mlm_pytorch_stream.py \
     --hopetwitter_weight=0.10 \
     --dagw_dfm_weight=0.10 \
     --overwrite_output_dir \
-    --per_device_train_batch_size=64 \
+    --per_device_train_batch_size=32 \
     --per_device_eval_batch_size=32 \
-    --gradient_accumulation_steps=4 \
+    --gradient_accumulation_steps=8 \
     --optim=adamw_torch \
     --overwrite_output_dir
 ```
