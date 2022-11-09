@@ -197,12 +197,17 @@ def load_danews(
         danews = __select_columns(danews, columns_to_keep)
     return danews
 
+[0.05154639, 0.09621993, 0.08934708, 0.04123711, 0.12371134,
+       0.11683849, 0.11340206, 0.09621993, 0.0652921 , 0.09965636,
+       0.10652921]
 
 def load_nat(
     version: str = "2.0.0",
     path_to_nat: Union[str, Path, None] = None,
     years: Iterable[int] = range(2006, 2017),
-    probabilities: Optional[List[float]] = None,
+    probabilities: Optional[List[float]] = [0.04123711, 0.05154639, 0.0652921 , 0.08934708, 0.11340206,
+       0.09965636, 0.09621993, 0.12371134, 0.11683849, 0.10652921,
+       0.09621993],
     columns_to_keep: Optional[List[str]] = None,
     seed: Optional[int] = None,
     **kwargs,
@@ -220,7 +225,9 @@ def load_nat(
         years (Iterable[int]): A list of years to include.
         probabilities (Optional[List[float]], optional): Interleave probabilites of
             years, i.e. the probability of sampling a from given year for each sample.
-            Default to None, denoting equal probabilites.
+            Default to [0.04123711, 0.05154639, 0.0652921 , 0.08934708, 0.11340206,
+            0.09965636, 0.09621993, 0.12371134, 0.11683849, 0.10652921,
+            0.09621993], corresponding to size of each dataset.
         seed (Optional[int], optional): Seed used when interleaving datasets. Defaults
             to None.
         kwargs: arguments to be passed forward to load_dataset
