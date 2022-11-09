@@ -46,7 +46,6 @@ def __select_columns(
 def load_hopetwitter(
     path_to_hopetwitter: Union[str, Path, None] = None,
     columns_to_keep: Optional[List[str]] = None,
-    n_training_repeats: int = 1,
     **kwargs,
 ) -> IterableDatasetDict:
     """
@@ -58,8 +57,6 @@ def load_hopetwitter(
             HOPETWITTER_PATH to find the dataset.
         columns_to_keep (Optional[List[str]], optional): Columns to keep. Default to None
             in which case all columns are kept.
-        n_training_repeats (int, optional): Number of times to repeat the dataset.
-            Defaults to 1, indicating that the dataset is not repeated.
         kwargs: arguments to be passed forward to load_dataset
 
     Returns:
@@ -89,7 +86,7 @@ def load_hopetwitter(
         / "twitter_da_stopwords_2019-01-01_2021-04-30_filtered_v1.0.0_train.jsonl"
     )
     data_files = {
-        "train": [str(train)] * n_training_repeats,
+        "train": [str(train)],
         "test": [str(test)],
         "validation": [str(val)],
     }
@@ -107,7 +104,6 @@ def load_hopetwitter(
 def load_dagw_dfm(
     path_to_dagw: Union[str, Path, None] = None,
     columns_to_keep: Optional[List[str]] = None,
-    n_training_repeats: int = 1,
     **kwargs,
 ) -> IterableDatasetDict:
     """
@@ -119,8 +115,6 @@ def load_dagw_dfm(
             DAGW_DFM_PATH to find the dataset.
         columns_to_keep (Optional[List[str]], optional): Columns to keep. Default to
             None in which case all columns are kept.
-        n_training_repeats (int, optional): Number of times to repeat the dataset.
-            Defaults to 1, indicating that the dataset is not repeated.
         kwargs: arguments to be passed forward to load_dataset
 
     Returns:
@@ -142,7 +136,7 @@ def load_dagw_dfm(
     val = path_to_dagw / "dagw_reddit_v1.0.0_val.jsonl"
     train = path_to_dagw / "dagw_reddit_filtered_v1.0.0_train.jsonl"
     data_files = {
-        "train": [str(train)] * n_training_repeats,
+        "train": [str(train)],
         "test": [str(test)],
         "validation": [str(val)],
     }
@@ -157,7 +151,6 @@ def load_dagw_dfm(
 def load_danews(
     path_to_danews: Union[str, Path, None] = None,
     columns_to_keep: Optional[List[str]] = None,
-    n_training_repeats: int = 1,
     **kwargs,
 ) -> IterableDatasetDict:
     """
@@ -169,8 +162,6 @@ def load_danews(
             DANEWS_PATH.
         columns_to_keep (Optional[List[str]], optional): Columns to keep. Default to
             None in which case all columns are kept.
-        n_training_repeats (int, optional): Number of times to repeat the dataset.
-            Defaults to 1, indicating that the dataset is not repeated.
         columns_to_keep (Optional[List[str]], optional): Columns to keep. Default to
             None in which case all columns are kept.
         kwargs: arguments to be passed forward to load_dataset
@@ -180,7 +171,6 @@ def load_danews(
     """
     if path_to_danews is None:
         # check if path is set in environment variable
-        os.environ
         path_to_danews = os.getenv("DANEWS_PATH")
         if path_to_danews is None:
             raise ValueError(
@@ -194,7 +184,7 @@ def load_danews(
     val = path_to_danews / "infomedia_2000-2021_v1.0.0_val.jsonl"
     train = path_to_danews / "infomedia_2000-2021_filtered_v1.0.0_train.jsonl"
     data_files = {
-        "train": [str(train)] * n_training_repeats,
+        "train": [str(train)],
         "test": [str(test)],
         "validation": [str(val)],
     }
@@ -214,7 +204,6 @@ def load_nat(
     years: Iterable[int] = range(2006, 2017),
     probabilities: Optional[List[float]] = None,
     columns_to_keep: Optional[List[str]] = None,
-    n_training_repeats: int = 10,
     seed: Optional[int] = None,
     **kwargs,
 ) -> IterableDatasetDict:
@@ -232,9 +221,6 @@ def load_nat(
         probabilities (Optional[List[float]], optional): Interleave probabilites of
             years, i.e. the probability of sampling a from given year for each sample.
             Default to None, denoting equal probabilites.
-        n_training_repeats (int, optional): Number of times to repeat the dataset.
-            Defaults to 10, indicating that each year is repeated 10 times is not
-            repeated.
         seed (Optional[int], optional): Seed used when interleaving datasets. Defaults
             to None.
         kwargs: arguments to be passed forward to load_dataset
@@ -266,7 +252,7 @@ def load_nat(
             train_path = path_to_nat / f"nat_{year}_v{version}.jsonl"
         dataset_ = load_dataset(
             "json",
-            data_files={"train": [str(train_path)] * n_training_repeats},
+            data_files={"train": [str(train_path)]},
             streaming=True,
             split="train",
             **kwargs,
@@ -278,7 +264,12 @@ def load_nat(
         dataset_ = dataset_.map(_add_year)
         datasets.append(dataset_)
 
-    nat = interleave_datasets(datasets=datasets, probabilities=probabilities, seed=seed)
+    nat = interleave_datasets(
+        datasets=datasets,
+        probabilities=probabilities,
+        seed=seed,
+        stopping_strategy="all_exhausted",
+    )
     nat = IterableDatasetDict({"train": nat})
 
     _add_source = partial(__add_column, value="nat", column="source")
@@ -297,17 +288,12 @@ def load_dcc(
         "hopetwitter": 0.03,
         "nat": 0.85,
     },
-    n_training_repeats: Dict[str, int] = {
-        "danews": 100,
-        "dagw_dfm": 100,
-        "hopetwitter": 100,
-        "nat": 100,
-    },
     path_to_hopetwitter: Union[str, Path, None] = None,
     path_to_dagw: Union[str, Path, None] = None,
     path_to_danews: Union[str, Path, None] = None,
     path_to_nat: Union[str, Path, None] = None,
     columns_to_keep: List[str] = ["text", "source"],
+    stopping_strategy: str = "all_exhausted",
     **kwargs,
 ):
     """
@@ -318,8 +304,6 @@ def load_dcc(
         probabilities (Optional[Dict[str, float], optional): Interleave probabilites of
             the subdatasets. Defualts to {"danews": 0.06, "dagw_dfm": 0.06,
             "hopetwitter": 0.03, "nat": 0.85}.
-        n_training_repeats (Dict[str, int], optional): Number of times to repeat the
-            training dataset of each dataset.
         path_to_hopetwitter (Union[str, Path, None], optional): path to Hopetwitter.
             Defalt to None in which case it uses the environment variable which can be
             set using `export HOPETWITTER_PATH=/path/to/hopetwitter`.
@@ -333,6 +317,7 @@ def load_dcc(
             Defalt to None in which case it uses the environment variable which can be
             set using `export NAT_PATH=/path/to/nat`.
         columns_to_keep (List[str], optional): Columns to keep across the datasets.
+        stopping_strategy (str, optional): Stopping strategy. Defaults to "all_exhausted".
         kwargs: arguments to be passed forward to load_dataset
 
     Returns:
@@ -346,19 +331,16 @@ def load_dcc(
     datasets["danews"] = load_danews(
         columns_to_keep=columns_to_keep,
         path_to_danews=path_to_danews,
-        n_training_repeats=n_training_repeats["danews"],
         **kwargs,
     )
     datasets["dagw_dfm"] = load_dagw_dfm(
         columns_to_keep=columns_to_keep,
         path_to_dagw=path_to_dagw,
-        n_training_repeats=n_training_repeats["dagw_dfm"],
         **kwargs,
     )
     datasets["hopetwitter"] = load_hopetwitter(
         columns_to_keep=columns_to_keep,
         path_to_hopetwitter=path_to_hopetwitter,
-        n_training_repeats=n_training_repeats["hopetwitter"],
         **kwargs,
     )
 
@@ -371,7 +353,6 @@ def load_dcc(
         version=nat_version,
         columns_to_keep=columns_to_keep,
         path_to_nat=path_to_nat,
-        n_training_repeats=n_training_repeats["nat"],
         **kwargs,
     )
     dataset_names = ["danews", "dagw_dfm", "hopetwitter", "nat"]
@@ -382,6 +363,7 @@ def load_dcc(
     train = interleave_datasets(
         train_datasets,
         probabilities=_probabilities,
+        stopping_strategy=stopping_strategy,
         **kwargs,
     )
     # Note: NAT does not include a test, val set
