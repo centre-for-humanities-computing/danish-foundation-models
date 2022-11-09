@@ -5,8 +5,8 @@ transformers>=4.20.1,<4.21.0
 torch>=1.6.0,<1.13.0
 
 # data
-# datasets>=2.6.1,<2.7.0
-git+https://github.com/huggingface/datasets  # dev version needed for running the training script
+datasets>=2.6.1,<2.7.0
+# git+https://github.com/huggingface/datasets  # dev version needed for running the training script
 ndjson>=0.3.1,<0.4.0
 
 ## data cleaning

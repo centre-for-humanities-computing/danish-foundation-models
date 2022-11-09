@@ -41,6 +41,7 @@ from typing import Optional, Tuple, Union
 
 import datasets
 import transformers
+import wandb
 from datasets import Dataset, DatasetDict, IterableDataset, load_dataset, load_metric
 from transformers import (
     CONFIG_MAPPING,
@@ -58,7 +59,6 @@ from transformers import (
 )
 from transformers.trainer_utils import get_last_checkpoint
 
-import wandb
 from dfm.data import load_dcc
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
