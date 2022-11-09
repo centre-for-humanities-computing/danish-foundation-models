@@ -43,6 +43,7 @@ import datasets
 import transformers
 import wandb
 from datasets import Dataset, DatasetDict, IterableDataset, load_dataset, load_metric
+from dfm.data import load_dcc
 from transformers import (
     CONFIG_MAPPING,
     MODEL_FOR_MASKED_LM_MAPPING,
@@ -58,8 +59,6 @@ from transformers import (
     set_seed,
 )
 from transformers.trainer_utils import get_last_checkpoint
-
-from dfm.data import load_dcc
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
@@ -461,6 +460,7 @@ def get_tokenizer_and_model(
             tok_path = Path(model_args.tokenizer_name)
             tokenizer = PreTrainedTokenizerFast(
                 tokenizer_file=str(tok_path / "tokenizer.json"),
+                model_max_length=model_args.max_seq_length,
             )
             with open(tok_path / "config.json", "r") as f:
                 tok_config = json.load(f)
