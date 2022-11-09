@@ -317,7 +317,8 @@ def load_dcc(
             Defalt to None in which case it uses the environment variable which can be
             set using `export NAT_PATH=/path/to/nat`.
         columns_to_keep (List[str], optional): Columns to keep across the datasets.
-        stopping_strategy (str, optional): Stopping strategy. Defaults to "all_exhausted".
+        stopping_strategy (str, optional): Stopping strategy. Defaults to
+            "all_exhausted".
         kwargs: arguments to be passed forward to load_dataset
 
     Returns:
