@@ -460,7 +460,7 @@ def get_tokenizer_and_model(
             tok_path = Path(model_args.tokenizer_name)
             tokenizer = PreTrainedTokenizerFast(
                 tokenizer_file=str(tok_path / "tokenizer.json"),
-                model_max_length=model_args.max_seq_length,
+                model_max_length=config.max_position_embeddings,
             )
             with open(tok_path / "config.json", "r") as f:
                 tok_config = json.load(f)

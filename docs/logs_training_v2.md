@@ -416,7 +416,7 @@ python3 src/applications/train/run_mlm_pytorch_stream.py \
 
 - K. Enevoldsen (9th November, server: UCloud t4): Stopped base sized model as it did not show promising result. 
 
-Starting small sized roberta models to allow for comparison w. debertaV2.
+Starting two small sized roberta models to allow for comparison w. debertaV2.
 
 Note we changed the learning rate to match the learning rate in the roberta paper. Likely also since the exisitng learning rate was too high.
 
@@ -452,9 +452,48 @@ python3 src/applications/train/run_mlm_pytorch_stream.py \
     --danews_weight=0.20 \
     --hopetwitter_weight=0.10 \
     --dagw_dfm_weight=0.10 \
-    --overwrite_output_dir \
     --per_device_train_batch_size=64 \
     --per_device_eval_batch_size=32 \
     --gradient_accumulation_steps=1 \
-    --optim=adamw_torch
+    --optim=adamw_torch \
+    --overwrite_output_dir 
+```
+
+The second one, we change the dataset distribution to increase the weight of highly structured texts.
+```bash
+python3 src/applications/train/run_mlm_pytorch_stream.py \
+    --output_dir=/home/ucloud/data/dfm-data/huggingface-repositories/dfm-roberta-small-v1-data_dist \
+    --tokenizer_name=/home/ucloud/data/dfm-data/tokenizers/unigram_100000_docs_32000_vocab \
+    --model_type=roberta \
+    --use_pretrained_tokenizer \
+    --config_name=/home/ucloud/danish-foundation-models/default-models-configs/small-roberta-32000-config.json \
+    --dataset_name=dcc_v1.1.0 \
+    --max_seq_length=512 \
+    --learning_rate=1e-4 \
+    --warmup_step=10000 \
+    --adam_beta1=0.9 \
+    --adam_beta2=0.98 \
+    --adam_epsilon=1e-6 \
+    --max_steps=1000000 \
+    --max_eval_samples=5000 \
+    --logging_steps=100 \
+    --eval_steps=2000 \
+    --save_steps=2000 \
+    --push_to_hub \
+    --weight_decay=0.01 \
+    --do_train \
+    --streaming \
+    --seed=42 \
+    --fp16 \
+    --do_eval \
+    --evaluation_strategy=steps \
+    --nat_weight=0.40 \
+    --danews_weight=0.25 \
+    --hopetwitter_weight=0.10 \
+    --dagw_dfm_weight=0.25 \
+    --per_device_train_batch_size=64 \
+    --per_device_eval_batch_size=32 \
+    --gradient_accumulation_steps=1 \
+    --optim=adamw_torch \
+    --overwrite_output_dir
 ```
