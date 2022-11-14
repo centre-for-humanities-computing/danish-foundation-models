@@ -83,6 +83,9 @@ pip install -e .
 # apparently this need to be updated
 pip3 install requests --upgrade
 
+# wandb
+wandb login
+
 # update cuda drivers
 sudo apt update
 sudo apt full-upgrade -y
