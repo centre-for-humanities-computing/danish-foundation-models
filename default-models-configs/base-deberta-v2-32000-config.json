@@ -21,7 +21,7 @@
   "pad_token_id": 0,
   "pooler_dropout": 0,
   "pooler_hidden_act": "gelu",
-  "pooler_hidden_size": 256,
+  "pooler_hidden_size": 768,
   "pos_att_type": [
     "p2c",
     "c2p"
