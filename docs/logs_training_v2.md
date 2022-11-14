@@ -489,7 +489,9 @@ python3 src/applications/train/run_mlm_pytorch_stream.py \
     --optim=adamw_torch \
     --overwrite_output_dir
 
-- K. Enevoldsen (14th November, server: UCloud t4): Starting long running small deberta v2
+- K. Enevoldsen (14th November, server: UCloud t4): After discussion w. Dan we agreed
+that we simply need to run a model for a long time with a large batch size and relatively low learning rate.
+Thus we start a long running small deberta v2 (following the deberta paper)
 
 ```
 python3 src/applications/train/run_mlm_pytorch_stream.py \
@@ -498,6 +500,46 @@ python3 src/applications/train/run_mlm_pytorch_stream.py \
     --model_type=deberta-v2 \
     --use_pretrained_tokenizer \
     --config_name=/home/ucloud/danish-foundation-models/default-models-configs/small-deberta-v2-32000-config.json \
+    --dataset_name=dcc_v1.1.0 \
+    --max_seq_length=512 \
+    --learning_rate=2e-4 \
+    --warmup_step=10000 \
+    --adam_beta1=0.9 \
+    --adam_beta2=0.98 \
+    --adam_epsilon=1e-6 \
+    --max_steps=1000000 \
+    --max_eval_samples=5000 \
+    --logging_steps=500 \
+    --eval_steps=4000 \
+    --save_steps=4000 \
+    --push_to_hub \
+    --weight_decay=0.01 \
+    --do_train \
+    --streaming \
+    --seed=42 \
+    --fp16 \
+    --do_eval \
+    --evaluation_strategy=steps \
+    --nat_weight=0.45 \
+    --danews_weight=0.25 \
+    --hopetwitter_weight=0.10 \
+    --dagw_dfm_weight=0.20 \
+    --overwrite_output_dir \
+    --per_device_train_batch_size=64 \
+    --per_device_eval_batch_size=32 \
+    --gradient_accumulation_steps=4 \
+    --optim=adamw_torch
+```
+
+as well as a medium deberta v2:
+
+```
+python3 src/applications/train/run_mlm_pytorch_stream.py \
+    --output_dir=/home/ucloud/data/dfm-data/huggingface-repositories/dfm-debertav2-medium-v1-2048bsz-1Msteps \
+    --tokenizer_name=/home/ucloud/data/dfm-data/tokenizers/unigram_100000_docs_32000_vocab \
+    --model_type=deberta-v2 \
+    --use_pretrained_tokenizer \
+    --config_name=/home/ucloud/danish-foundation-models/default-models-configs/base-deberta-v2-32000-config.json \
     --dataset_name=dcc_v1.1.0 \
     --max_seq_length=512 \
     --learning_rate=2e-4 \
