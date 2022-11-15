@@ -45,6 +45,14 @@ We currently use the Danish Colossal Corpus (DCC) version 1.1.0 to train Danish 
 | 🌐 [Netarkivet Text](https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/docs/datasheets/Netarkivet_text.md) | A subsection of the "Danish" internet collected the royal Danish library | >100                              | v2      |
 
 
+## Open-source models on closed-source data
+As the datasets, DaNews, HopeTwitter and Netarkivet Text either contain personally sensitive information or fall under copyright they can't be shared publicly. However, we want to share as
+much as possible from the project, while protecting privacy and adhering to copyright law. 
+Thus we organize it such that all parts of the project that can be shared and those which
+can't are well-documented using datasheets and training logs. Furthermore during the data processing and training the data stored on UCloud which follows the highest standards of information security management with a [formal ISO27001 certification](https://docs.cloud.sdu.dk/intro/security.html).
+
+![](docs/_static/structure.png)
+
 # Wish to contribute?
 DFM is considered a collaborative project for training and maintaining Danish Language models. If you wish to contribute don't hesitate to reach out using one of the following channels:
 
