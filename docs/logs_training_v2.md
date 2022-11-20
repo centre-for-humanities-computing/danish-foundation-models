@@ -603,10 +603,10 @@ python3 src/applications/train/run_mlm_pytorch_stream.py \
     --fp16 \
     --do_eval \
     --evaluation_strategy=steps \
-    --nat_weight=0.10 \
-    --danews_weight=0.20 \
-    --hopetwitter_weight=0.10 \
-    --dagw_dfm_weight=0.60 \
+    --nat_weight=0.05 \
+    --danews_weight=0.10 \
+    --hopetwitter_weight=0.05 \
+    --dagw_dfm_weight=0.80 \
     --overwrite_output_dir \
     --per_device_train_batch_size=64 \
     --per_device_eval_batch_size=32 \
