@@ -565,8 +565,8 @@ python3 src/applications/train/run_mlm_pytorch_stream.py \
     --hopetwitter_weight=0.10 \
     --dagw_dfm_weight=0.20 \
     --overwrite_output_dir \
-    --per_device_train_batch_size=64 \
+    --per_device_train_batch_size=32 \
     --per_device_eval_batch_size=32 \
-    --gradient_accumulation_steps=4 \
+    --gradient_accumulation_steps=8 \
     --optim=adamw_torch
 ```
