@@ -43,7 +43,6 @@ import datasets
 import transformers
 import wandb
 from datasets import Dataset, DatasetDict, IterableDataset, load_dataset, load_metric
-from dfm.data import load_dcc
 from transformers import (
     CONFIG_MAPPING,
     MODEL_FOR_MASKED_LM_MAPPING,
@@ -59,6 +58,8 @@ from transformers import (
     set_seed,
 )
 from transformers.trainer_utils import get_last_checkpoint
+
+from dfm.data import load_dcc
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
