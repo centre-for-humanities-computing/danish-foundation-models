@@ -114,8 +114,11 @@ class ELECTRALoss:
 
 
 class ElectraDataCollator(DataCollatorForLanguageModeling):
-    def __init__(self, tokenizer, ignore_index=-100, for_electra=False, **kwargs):
+    def __init__(self, tokenizer, mlm_probability=0.15, replace_prob=0.1, original_prob=0.1, ignore_index=-100, for_electra=False):
         super().__init__(tokenizer)
+        self.mlm_probability = mlm_probability
+        self.replace_prob = replace_prob
+        self.original_prob = original_prob
         self.ignore_index = ignore_index
         self.for_electra = for_electra
 
@@ -157,10 +160,6 @@ class ElectraDataCollator(DataCollatorForLanguageModeling):
         self,
         inputs,
         special_tokens_mask,
-        mlm_probability=0.15,
-        replace_prob=0.1,
-        orginal_prob=0.1,
-        ignore_index=-100,
     ):
         """
         Prepare masked tokens inputs/labels for masked language modeling: (1-replace_prob-orginal_prob)% MASK, replace_prob% random, orginal_prob% original within mlm_probability% of tokens in the sentence.
@@ -174,7 +173,7 @@ class ElectraDataCollator(DataCollatorForLanguageModeling):
         vocab_size = self.tokenizer.vocab_size
 
         # Get positions to apply mlm (mask/replace/not changed). (mlm_probability)
-        probability_matrix = torch.full(labels.shape, mlm_probability, device=device)
+        probability_matrix = torch.full(labels.shape, self.mlm_probability, device=device)
         special_tokens_mask = torch.full(
             inputs.shape, False, dtype=torch.bool, device=device
         )
@@ -182,10 +181,10 @@ class ElectraDataCollator(DataCollatorForLanguageModeling):
             special_tokens_mask = special_tokens_mask | (inputs == sp_id)
         probability_matrix.masked_fill_(special_tokens_mask, value=0.0)
         mlm_mask = torch.bernoulli(probability_matrix).bool()
-        labels[~mlm_mask] = ignore_index  # We only compute loss on mlm applied tokens
+        labels[~mlm_mask] = self.ignore_index  # We only compute loss on mlm applied tokens
 
         # mask  (mlm_probability * (1-replace_prob-orginal_prob))
-        mask_prob = 1 - replace_prob - orginal_prob
+        mask_prob = 1 - self.replace_prob - self.original_prob
         mask_token_mask = (
             torch.bernoulli(torch.full(labels.shape, mask_prob, device=device)).bool()
             & mlm_mask
@@ -193,8 +192,8 @@ class ElectraDataCollator(DataCollatorForLanguageModeling):
         inputs[mask_token_mask] = mask_token_index
 
         # replace with a random token (mlm_probability * replace_prob)
-        if int(replace_prob) != 0:
-            rep_prob = replace_prob / (replace_prob + orginal_prob)
+        if int(self.replace_prob) != 0:
+            rep_prob = self.replace_prob / (self.replace_prob + self.orginal_prob)
             replace_token_mask = (
                 torch.bernoulli(
                     torch.full(labels.shape, rep_prob, device=device)
