@@ -175,7 +175,6 @@ class ElectraDataCollator(DataCollatorForLanguageModeling):
 
         # Get positions to apply mlm (mask/replace/not changed). (mlm_probability)
         probability_matrix = torch.full(labels.shape, mlm_probability, device=device)
-        # TODO: might need to uncomment this
         special_tokens_mask = torch.full(
             inputs.shape, False, dtype=torch.bool, device=device
         )
