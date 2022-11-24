@@ -208,7 +208,6 @@ class ElectraDataCollator(DataCollatorForLanguageModeling):
             inputs[replace_token_mask] = random_words[replace_token_mask]
 
         # do nothing (mlm_probability * orginal_prob)
-        pass
 
         return inputs, labels, mlm_mask
 
