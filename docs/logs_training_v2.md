@@ -386,6 +386,20 @@ python src/applications/train/run_mlm_pytorch_stream.py \
     --dataset_name=dcc_v1.1.0 \
     --max_seq_length=512 \
     --learning_rate=3e-4 \
+- K. Enevoldsen (4th November, server: UCloud t4, run_name: `run_mlm_train_01`): Small model finished training
+
+Started a new test run:
+
+```bash
+python3 src/applications/train/run_mlm_pytorch_stream.py \
+    --output_dir=/home/ucloud/data/dfm-data/huggingface-repositories/dfm-debertav2-small-v1-large-batch \
+    --tokenizer_name=/home/ucloud/data/dfm-data/tokenizers/unigram_100000_docs_32000_vocab \
+    --model_type=deberta-v2 \
+    --use_pretrained_tokenizer \
+    --config_name=/home/ucloud/danish-foundation-models/default-models-configs/small-deberta-v2-32000-config.json \
+    --dataset_name=dcc_v1.1.0 \
+    --max_seq_length=512 \
+    --learning_rate=6e-4 \
     --warmup_step=10000 \
     --adam_beta1=0.9 \
     --adam_beta2=0.98 \
@@ -416,3 +430,209 @@ python src/applications/train/run_mlm_pytorch_stream.py \
 
 - K. Enevoldsen (31- October, server: Grundtvig): Restarted large-sized model as GPU
     utilization went to zero.
+    --overwrite_output_dir \
+    --per_device_train_batch_size=64 \
+    --per_device_eval_batch_size=32 \
+    --gradient_accumulation_steps=32 \
+    --optim=adamw_torch
+```
+
+- K. Enevoldsen (9th November, server: UCloud t4): Stopped base sized model as it did not show promising result. 
+
+Starting two small sized roberta models to allow for comparison w. debertaV2.
+
+Note we changed the learning rate to match the learning rate in the roberta paper. Likely also since the exisitng learning rate was too high.
+
+
+```bash
+python3 src/applications/train/run_mlm_pytorch_stream.py \
+    --output_dir=/home/ucloud/data/dfm-data/huggingface-repositories/dfm-roberta-small-v1 \
+    --tokenizer_name=/home/ucloud/data/dfm-data/tokenizers/unigram_100000_docs_32000_vocab \
+    --model_type=roberta \
+    --use_pretrained_tokenizer \
+    --config_name=/home/ucloud/danish-foundation-models/default-models-configs/small-roberta-32000-config.json \
+    --dataset_name=dcc_v1.1.0 \
+    --max_seq_length=512 \
+    --learning_rate=1e-4 \
+    --warmup_step=10000 \
+    --adam_beta1=0.9 \
+    --adam_beta2=0.98 \
+    --adam_epsilon=1e-6 \
+    --max_steps=1000000 \
+    --max_eval_samples=5000 \
+    --logging_steps=100 \
+    --eval_steps=2000 \
+    --save_steps=2000 \
+    --push_to_hub \
+    --weight_decay=0.01 \
+    --do_train \
+    --streaming \
+    --seed=42 \
+    --fp16 \
+    --do_eval \
+    --evaluation_strategy=steps \
+    --nat_weight=0.60 \
+    --danews_weight=0.20 \
+    --hopetwitter_weight=0.10 \
+    --dagw_dfm_weight=0.10 \
+    --per_device_train_batch_size=64 \
+    --per_device_eval_batch_size=32 \
+    --gradient_accumulation_steps=1 \
+    --optim=adamw_torch \
+    --overwrite_output_dir 
+```
+
+The second one, we change the dataset distribution to increase the weight of highly structured texts.
+```bash
+python3 src/applications/train/run_mlm_pytorch_stream.py \
+    --output_dir=/home/ucloud/data/dfm-data/huggingface-repositories/dfm-roberta-small-v1-data_dist \
+    --tokenizer_name=/home/ucloud/data/dfm-data/tokenizers/unigram_100000_docs_32000_vocab \
+    --model_type=roberta \
+    --use_pretrained_tokenizer \
+    --config_name=/home/ucloud/danish-foundation-models/default-models-configs/small-roberta-32000-config.json \
+    --dataset_name=dcc_v1.1.0 \
+    --max_seq_length=512 \
+    --learning_rate=1e-4 \
+    --warmup_step=10000 \
+    --adam_beta1=0.9 \
+    --adam_beta2=0.98 \
+    --adam_epsilon=1e-6 \
+    --max_steps=1000000 \
+    --max_eval_samples=5000 \
+    --logging_steps=100 \
+    --eval_steps=2000 \
+    --save_steps=2000 \
+    --nat_weight=0.40 \
+    --danews_weight=0.25 \
+    --hopetwitter_weight=0.10 \
+    --dagw_dfm_weight=0.25 \
+    --per_device_train_batch_size=64 \
+    --per_device_eval_batch_size=32 \
+    --gradient_accumulation_steps=1 \
+    --optim=adamw_torch \
+    --overwrite_output_dir
+
+- K. Enevoldsen (14th November, server: UCloud t4): After discussion w. Dan we agreed
+that we simply need to run a model for a long time with a large batch size and relatively low learning rate.
+Thus we start a long running small deberta v2 (following the deberta paper)
+
+```
+python3 src/applications/train/run_mlm_pytorch_stream.py \
+    --output_dir=/home/ucloud/data/dfm-data/huggingface-repositories/dfm-debertav2-small-v1-2048bsz-1Msteps \
+    --tokenizer_name=/home/ucloud/data/dfm-data/tokenizers/unigram_100000_docs_32000_vocab \
+    --model_type=deberta-v2 \
+    --use_pretrained_tokenizer \
+    --config_name=/home/ucloud/danish-foundation-models/default-models-configs/small-deberta-v2-32000-config.json \
+    --dataset_name=dcc_v1.1.0 \
+    --max_seq_length=512 \
+    --learning_rate=2e-4 \
+    --warmup_step=10000 \
+    --adam_beta1=0.9 \
+    --adam_beta2=0.98 \
+    --adam_epsilon=1e-6 \
+    --max_steps=1000000 \
+    --max_eval_samples=5000 \
+    --logging_steps=500 \
+    --eval_steps=4000 \
+    --save_steps=4000 \
+    --push_to_hub \
+    --weight_decay=0.01 \
+    --do_train \
+    --streaming \
+    --seed=42 \
+    --fp16 \
+    --do_eval \
+    --evaluation_strategy=steps \
+    --nat_weight=0.45 \
+    --danews_weight=0.25 \
+    --hopetwitter_weight=0.10 \
+    --dagw_dfm_weight=0.20 \
+    --overwrite_output_dir \
+    --per_device_train_batch_size=64 \
+    --per_device_eval_batch_size=32 \
+    --gradient_accumulation_steps=4 \
+    --optim=adamw_torch
+```
+
+as well as a medium deberta v2:
+
+```
+python3 src/applications/train/run_mlm_pytorch_stream.py \
+    --output_dir=/home/ucloud/data/dfm-data/huggingface-repositories/dfm-debertav2-medium-v1-2048bsz-1Msteps \
+    --tokenizer_name=/home/ucloud/data/dfm-data/tokenizers/unigram_100000_docs_32000_vocab \
+    --model_type=deberta-v2 \
+    --use_pretrained_tokenizer \
+    --config_name=/home/ucloud/danish-foundation-models/default-models-configs/base-deberta-v2-32000-config.json \
+    --dataset_name=dcc_v1.1.0 \
+    --max_seq_length=512 \
+    --learning_rate=2e-4 \
+    --warmup_step=10000 \
+    --adam_beta1=0.9 \
+    --adam_beta2=0.98 \
+    --adam_epsilon=1e-6 \
+    --max_steps=1000000 \
+    --max_eval_samples=5000 \
+    --logging_steps=500 \
+    --eval_steps=4000 \
+    --save_steps=4000 \
+    --push_to_hub \
+    --weight_decay=0.01 \
+    --do_train \
+    --streaming \
+    --seed=42 \
+    --fp16 \
+    --do_eval \
+    --evaluation_strategy=steps \
+    --nat_weight=0.45 \
+    --danews_weight=0.25 \
+    --hopetwitter_weight=0.10 \
+    --dagw_dfm_weight=0.20 \
+    --overwrite_output_dir \
+    --per_device_train_batch_size=32 \
+    --per_device_eval_batch_size=32 \
+    --gradient_accumulation_steps=8 \
+    --optim=adamw_torch
+```
+
+- K. Enevoldsen (20th November, server: UCloud t4): After results from evaluating on
+ScandEval it seems like the small deberta did not improve for over 50k steps. Thus we
+decided to stop the run and change the dataset distribution
+
+
+```
+python3 src/applications/train/run_mlm_pytorch_stream.py \
+    --output_dir=/home/ucloud/data/dfm-data/huggingface-repositories/dfm-debertav2-small-v1-2048bsz-1Msteps-60dagw-10twitter-20news-10web \
+    --tokenizer_name=/home/ucloud/data/dfm-data/tokenizers/unigram_100000_docs_32000_vocab \
+    --model_type=deberta-v2 \
+    --use_pretrained_tokenizer \
+    --config_name=/home/ucloud/danish-foundation-models/default-models-configs/small-deberta-v2-32000-config.json \
+    --dataset_name=dcc_v1.1.0 \
+    --max_seq_length=512 \
+    --learning_rate=2e-4 \
+    --warmup_step=10000 \
+    --adam_beta1=0.9 \
+    --adam_beta2=0.98 \
+    --adam_epsilon=1e-6 \
+    --max_steps=1000000 \
+    --max_eval_samples=5000 \
+    --logging_steps=500 \
+    --eval_steps=4000 \
+    --save_steps=4000 \
+    --push_to_hub \
+    --weight_decay=0.01 \
+    --do_train \
+    --streaming \
+    --seed=42 \
+    --fp16 \
+    --do_eval \
+    --evaluation_strategy=steps \
+    --nat_weight=0.05 \
+    --danews_weight=0.10 \
+    --hopetwitter_weight=0.05 \
+    --dagw_dfm_weight=0.80 \
+    --overwrite_output_dir \
+    --per_device_train_batch_size=64 \
+    --per_device_eval_batch_size=32 \
+    --gradient_accumulation_steps=4 \
+    --optim=adamw_torch
+```
