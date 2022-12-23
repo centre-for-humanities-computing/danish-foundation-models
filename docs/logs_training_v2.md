@@ -570,7 +570,6 @@ python3 src/applications/train/run_mlm_pytorch_stream.py \
     --danews_weight=0.25 \
     --hopetwitter_weight=0.10 \
     --dagw_dfm_weight=0.20 \
-    --overwrite_output_dir \
     --per_device_train_batch_size=64 \
     --per_device_eval_batch_size=32 \
     --gradient_accumulation_steps=4 \
@@ -698,3 +697,16 @@ python src/applications/train/run_mlm_pytorch_stream.py \
     --optim=adamw_torch \
     --gradient_accumulation_steps=8
 ```
+
+- K. Enevoldsen (23rd December, server: t4-aau): Small deberta stopped. with warning:
+
+```
+Killed
+ucloud@uc-222374-server-rg7ibiwrcbih:~/danish-foundation-models$ /usr/lib/python3.8/multiprocessing/resource_tracker.py:216: UserWarning: resource_tracker: There appear to be 6 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+```
+
+I will restart it.
+
+
+
