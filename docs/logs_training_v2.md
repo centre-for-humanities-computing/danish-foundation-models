@@ -609,7 +609,7 @@ python3 src/applications/train/run_mlm_pytorch_stream.py \
     --dagw_dfm_weight=0.60 \
     --overwrite_output_dir \
     --per_device_train_batch_size=64 \
-    --per_device_eval_batch_size=3  2 \
+    --per_device_eval_batch_size=32 \
     --gradient_accumulation_steps=4 \
     --optim=adamw_torch
 ``` -->
