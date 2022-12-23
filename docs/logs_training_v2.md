@@ -372,6 +372,48 @@ python3 src/applications/train/run_mlm_pytorch_stream.py \
     --overwrite_output_dir
 ```
 
+- K. Enevoldsen (30- October, server: Grundtvig): Started running large-sized model.
+
+Noted the lower learning rate is derrived from the deberta-v3 paper.
+
+```bash
+python src/applications/train/run_mlm_pytorch_stream.py \
+    --output_dir=/data-big-projects/danish-foundation-models/huggingface-repositories/dfm-debertav2-large-v1 \
+    --tokenizer_name=/data-big-projects/danish-foundation-models/tokenizers/unigram_100000_docs_32000_vocab \
+    --model_type=deberta-v2 \
+    --use_pretrained_tokenizer \
+    --config_name=/home/kenneth/github/danish-foundation-models/default-models-configs/large-deberta-v2-32000-config.json \
+    --dataset_name=dcc_v1.1.0 \
+    --max_seq_length=512 \
+    --learning_rate=3e-4 \
+    --warmup_step=10000 \
+    --adam_beta1=0.9 \
+    --adam_beta2=0.98 \
+    --adam_epsilon=1e-6 \
+    --max_steps=100000 \
+    --max_eval_samples=5000 \
+    --logging_steps=100 \
+    --eval_steps=2000 \
+    --save_steps=2000 \
+    --push_to_hub \
+    --weight_decay=0.01 \
+    --do_train \
+    --streaming \
+    --seed=42 \
+    --fp16 \
+    --do_eval \
+    --evaluation_strategy=steps \
+    --nat_weight=0.60 \
+    --danews_weight=0.20 \
+    --hopetwitter_weight=0.10 \
+    --dagw_dfm_weight=0.10 \
+    --per_device_train_batch_size=64 \
+    --per_device_eval_batch_size=64 \
+    --optim=adamw_torch \
+    --gradient_accumulation_steps=4 
+    # --overwrite_output_dir
+```
+
 - K. Enevoldsen (4th November, server: UCloud t4, run_name: `run_mlm_train_01`): Small model finished training
 
 Started a new test run:
@@ -407,12 +449,15 @@ python3 src/applications/train/run_mlm_pytorch_stream.py \
     --danews_weight=0.20 \
     --hopetwitter_weight=0.10 \
     --dagw_dfm_weight=0.10 \
-    --overwrite_output_dir \
     --per_device_train_batch_size=64 \
-    --per_device_eval_batch_size=32 \
-    --gradient_accumulation_steps=32 \
-    --optim=adamw_torch
+    --per_device_eval_batch_size=64 \
+    --optim=adamw_torch \
+    --gradient_accumulation_steps=4 
+    # --overwrite_output_dir
 ```
+
+- K. Enevoldsen (31- October, server: Grundtvig): Restarted large-sized model as GPU
+    utilization went to zero.
 
 - K. Enevoldsen (9th November, server: UCloud t4): Stopped base sized model as it did not show promising result. 
 
@@ -488,6 +533,7 @@ python3 src/applications/train/run_mlm_pytorch_stream.py \
     --gradient_accumulation_steps=1 \
     --optim=adamw_torch \
     --overwrite_output_dir
+```
 
 - K. Enevoldsen (14th November, server: UCloud t4): After discussion w. Dan we agreed
 that we simply need to run a model for a long time with a large batch size and relatively low learning rate.
@@ -565,13 +611,13 @@ python3 src/applications/train/run_mlm_pytorch_stream.py \
     --hopetwitter_weight=0.10 \
     --dagw_dfm_weight=0.20 \
     --overwrite_output_dir \
-    --per_device_train_batch_size=64 \
+    --per_device_train_batch_size=32 \
     --per_device_eval_batch_size=32 \
-    --gradient_accumulation_steps=4 \
+    --gradient_accumulation_steps=8 \
     --optim=adamw_torch
 ```
 
-<!-- - K. Enevoldsen (20th November, server: UCloud t4): After results from evaluating on
+- K. Enevoldsen (20th November, server: UCloud t4): After results from evaluating on
 ScandEval it seems like the small deberta did not improve for over 50k steps. Thus we
 decided to stop the run and change the dataset distribution
 
@@ -603,13 +649,52 @@ python3 src/applications/train/run_mlm_pytorch_stream.py \
     --fp16 \
     --do_eval \
     --evaluation_strategy=steps \
-    --nat_weight=0.10 \
-    --danews_weight=0.20 \
-    --hopetwitter_weight=0.10 \
-    --dagw_dfm_weight=0.60 \
+    --nat_weight=0.05 \
+    --danews_weight=0.10 \
+    --hopetwitter_weight=0.05 \
+    --dagw_dfm_weight=0.80 \
     --overwrite_output_dir \
     --per_device_train_batch_size=64 \
     --per_device_eval_batch_size=32 \
     --gradient_accumulation_steps=4 \
     --optim=adamw_torch
-``` -->
+```
+
+- K. Enevoldsen (14th December, server: grundtvig): Starting a large debertaV2:
+
+```
+python src/applications/train/run_mlm_pytorch_stream.py \
+    --output_dir=/data-big-projects/danish-foundation-models/huggingface-repositories/dfm-debertav2-large-v1-2048bsz-1Msteps \
+    --tokenizer_name=/data-big-projects/danish-foundation-models/tokenizers/unigram_100000_docs_32000_vocab \
+    --model_type=deberta-v2 \
+    --use_pretrained_tokenizer \
+    --config_name=/home/kenneth/github/danish-foundation-models/default-models-configs/large-deberta-v2-32000-config.json \
+    --dataset_name=dcc_v1.1.0 \
+    --max_seq_length=512 \
+    --learning_rate=2e-4 \
+    --warmup_step=10000 \
+    --adam_beta1=0.9 \
+    --adam_beta2=0.98 \
+    --adam_epsilon=1e-6 \
+    --max_steps=100000 \
+    --max_eval_samples=5000 \
+    --logging_steps=100 \
+    --eval_steps=2000 \
+    --save_steps=2000 \
+    --push_to_hub \
+    --weight_decay=0.01 \
+    --do_train \
+    --streaming \
+    --seed=42 \
+    --fp16 \
+    --do_eval \
+    --evaluation_strategy=steps \
+    --nat_weight=0.45 \
+    --danews_weight=0.25 \
+    --hopetwitter_weight=0.10 \
+    --dagw_dfm_weight=0.20 \
+    --per_device_train_batch_size=64 \
+    --per_device_eval_batch_size=64 \
+    --optim=adamw_torch \
+    --gradient_accumulation_steps=8
+```
