@@ -43,7 +43,6 @@ import transformers
 import wandb
 from datasets import Dataset, DatasetDict, IterableDataset, load_dataset, load_metric
 
-# from dfm.data import load_dcc
 from electra import ElectraDataCollator, ELECTRAModel, ElectraTrainer
 from transformers import (
     CONFIG_MAPPING,
