@@ -249,8 +249,9 @@ if __name__ == "__main__":
     discriminator = ElectraForPreTraining(disc_config)
 
     discriminator.electra.embeddings = generator.electra.embeddings
-    hf_tokenizer = ElectraTokenizerFast.from_pretrained(f"google/electra-small-generator")
-
+    hf_tokenizer = ElectraTokenizerFast.from_pretrained(
+        f"google/electra-small-generator"
+    )
 
     collator = ElectraDataCollator(
         tokenizer=hf_tokenizer,
@@ -261,14 +262,13 @@ if __name__ == "__main__":
     )
 
     electra_model = ELECTRAModel(
-        generator, discriminator, PretrainedConfig(pad_token_id=hf_tokenizer.pad_token_id),
-
+        generator,
+        discriminator,
+        PretrainedConfig(pad_token_id=hf_tokenizer.pad_token_id),
     )
-
 
     # using some random data to test that it works
     dataset = load_dataset("glue", "cola", split="train", streaming=False)
-
 
     def group_texts(examples):
         tokenized_inputs = hf_tokenizer(
@@ -279,12 +279,10 @@ if __name__ == "__main__":
         )
         return tokenized_inputs
 
-
     # preprocess dataset
     tokenized_dataset = dataset.map(
         group_texts, batched=True, remove_columns=["sentence", "idx", "label"]
     )
-
 
     trainer = ElectraTrainer(
         electra_model,
