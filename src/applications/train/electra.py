@@ -24,8 +24,8 @@ from transformers.data.data_collator import _torch_collate_batch
 
 
 class ELECTRAModel(PreTrainedModel):
-    def __init__(self, generator, discriminator, config):
-        super().__init__(config)
+    def __init__(self, generator, discriminator, config, **kwargs):
+        super().__init__(config, **kwargs)
         self.generator, self.discriminator = generator, discriminator
         self.gumbel_dist = torch.distributions.gumbel.Gumbel(0.0, 1.0)
         self.pad_token_id = config.pad_token_id
@@ -242,55 +242,56 @@ class ElectraTrainer(Trainer):
         return (loss, outputs) if return_outputs else loss
 
 
-disc_config = ElectraConfig.from_pretrained(f"google/electra-small-discriminator")
-gen_config = ElectraConfig.from_pretrained(f"google/electra-small-generator")
-generator = ElectraForMaskedLM(gen_config)
-discriminator = ElectraForPreTraining(disc_config)
+if __name__ == "__main__":
+    disc_config = ElectraConfig.from_pretrained(f"google/electra-small-discriminator")
+    gen_config = ElectraConfig.from_pretrained(f"google/electra-small-generator")
+    generator = ElectraForMaskedLM(gen_config)
+    discriminator = ElectraForPreTraining(disc_config)
 
-discriminator.electra.embeddings = generator.electra.embeddings
-hf_tokenizer = ElectraTokenizerFast.from_pretrained(f"google/electra-small-generator")
-
-
-collator = ElectraDataCollator(
-    tokenizer=hf_tokenizer,
-    mlm_probability=0.15,
-    replace_prob=0.1,
-    orginal_prob=0.1,
-    for_electra=True,
-)
-
-electra_model = ELECTRAModel(
-    generator, discriminator, PretrainedConfig(pad_token_id=hf_tokenizer.pad_token_id)
-)
+    discriminator.electra.embeddings = generator.electra.embeddings
+    hf_tokenizer = ElectraTokenizerFast.from_pretrained(f"google/electra-small-generator")
 
 
-# using some random data to test that it works
-dataset = load_dataset("glue", "cola", split="train", streaming=False)
-
-
-def group_texts(examples):
-    tokenized_inputs = hf_tokenizer(
-        examples["sentence"],
-        return_special_tokens_mask=False,
-        truncation=True,
-        max_length=hf_tokenizer.model_max_length,
+    collator = ElectraDataCollator(
+        tokenizer=hf_tokenizer,
+        mlm_probability=0.15,
+        replace_prob=0.1,
+        original_prob=0.1,
+        for_electra=True,
     )
-    return tokenized_inputs
+
+    electra_model = ELECTRAModel(
+        generator, discriminator, PretrainedConfig(pad_token_id=hf_tokenizer.pad_token_id),
+
+    )
 
 
-# preprocess dataset
-tokenized_dataset = dataset.map(
-    group_texts, batched=True, remove_columns=["sentence", "idx", "label"]
-)
+    # using some random data to test that it works
+    dataset = load_dataset("glue", "cola", split="train", streaming=False)
 
 
-trainer = ElectraTrainer(
-    electra_model,
-    tokenizer=hf_tokenizer,
-    train_dataset=tokenized_dataset,
-    data_collator=collator,
-)
+    def group_texts(examples):
+        tokenized_inputs = hf_tokenizer(
+            examples["sentence"],
+            return_special_tokens_mask=False,
+            truncation=True,
+            max_length=hf_tokenizer.model_max_length,
+        )
+        return tokenized_inputs
 
-trainer.train()
 
-trainer.save_model("model")
+    # preprocess dataset
+    tokenized_dataset = dataset.map(
+        group_texts, batched=True, remove_columns=["sentence", "idx", "label"]
+    )
+
+
+    trainer = ElectraTrainer(
+        electra_model,
+        tokenizer=hf_tokenizer,
+        train_dataset=tokenized_dataset,
+        data_collator=collator,
+    )
+
+    trainer.train()
+    trainer.save_model("model")
