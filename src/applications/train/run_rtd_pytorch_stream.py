@@ -42,6 +42,9 @@ import datasets
 import transformers
 import wandb
 from datasets import Dataset, DatasetDict, IterableDataset, load_dataset, load_metric
+
+# from dfm.data import load_dcc
+from electra import ElectraDataCollator, ELECTRAModel, ElectraTrainer
 from transformers import (
     CONFIG_MAPPING,
     MODEL_FOR_MASKED_LM_MAPPING,
@@ -49,9 +52,9 @@ from transformers import (
     AutoModelForMaskedLM,
     AutoTokenizer,
     DataCollatorForLanguageModeling,
-    ElectraForPreTraining,
     ElectraConfig,
     ElectraForMaskedLM,
+    ElectraForPreTraining,
     ElectraTokenizerFast,
     HfArgumentParser,
     PreTrainedTokenizerFast,
@@ -61,9 +64,6 @@ from transformers import (
     set_seed,
 )
 from transformers.trainer_utils import get_last_checkpoint
-
-#from dfm.data import load_dcc
-from electra import ElectraDataCollator, ElectraTrainer, ELECTRAModel
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
@@ -473,9 +473,12 @@ def get_tokenizer_and_model(
             cache_dir=model_args.cache_dir,
             revision=model_args.model_revision,
             use_auth_token=True if model_args.use_auth_token else None,
-            ignore_mismatched_sizes=True,)
+            ignore_mismatched_sizes=True,
+        )
     else:
-        disc_config = ElectraConfig.from_pretrained("google/electra-small-discriminator")
+        disc_config = ElectraConfig.from_pretrained(
+            "google/electra-small-discriminator"
+        )
 
     if model_args.generator_config_name:
         gen_config = ElectraConfig.from_pretrained(model_args.generator_config_name)
