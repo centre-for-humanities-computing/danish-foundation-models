@@ -62,7 +62,7 @@ from transformers import (
 )
 from transformers.trainer_utils import get_last_checkpoint
 
-#from dfm.data import load_dcc
+from dfm.data import load_dcc
 from electra import ElectraDataCollator, ElectraTrainer, ELECTRAModel
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
