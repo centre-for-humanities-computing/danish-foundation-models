@@ -249,7 +249,9 @@ class DataTrainingArguments:
     )
     replace_probability: float = field(
         default=0.1,
-        metadata={"help": "Ratio of tokens to replace for masked language modeling loss"},
+        metadata={
+            "help": "Ratio of tokens to replace for masked language modeling loss"
+        },
     )
     original_probability: float = field(
         default=0.1,
@@ -288,7 +290,6 @@ class DataTrainingArguments:
             )
         },
     )
-
 
     def __post_init__(self):
         if (
@@ -879,7 +880,6 @@ def main():  # noqa: C901
                 max_eval_samples = min(len(eval_dataset), data_args.max_eval_samples)
                 eval_dataset = eval_dataset.select(range(max_eval_samples))
 
-
         # def preprocess_logits_for_metrics(logits, labels):
         #     if isinstance(logits, tuple):
         #         # Depending on the model and config, logits may contain extra tensors,
@@ -908,9 +908,14 @@ def main():  # noqa: C901
             disc_logits = disc_logits[mask]
             is_replaced = is_replaced[mask]
             gen_logits = gen_logits[mask]
-            return {"gen_accuracy":metric.compute(predictions=gen_logits, references=labels)["accuracy"],
-                    "disc_accuracy":metric.compute(predictions=disc_logits, references=is_replaced)["accuracy"]}
-
+            return {
+                "gen_accuracy": metric.compute(
+                    predictions=gen_logits, references=labels
+                )["accuracy"],
+                "disc_accuracy": metric.compute(
+                    predictions=disc_logits, references=is_replaced
+                )["accuracy"],
+            }
 
     # Data collator
     data_collator = ElectraDataCollator(
