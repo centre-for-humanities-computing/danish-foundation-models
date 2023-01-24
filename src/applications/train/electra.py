@@ -41,6 +41,7 @@ class ELECTRAModel(PreTrainedModel):
             torch.tensor(1.0, device=device, dtype=dtype),
         )
 
+
     # N.B.: removed "sentA_lenths" -- didn't figure out what it was for
     def forward(
         self, input_ids, is_mlm_applied, labels, attention_mask, token_type_ids

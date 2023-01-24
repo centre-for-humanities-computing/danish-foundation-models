@@ -247,6 +247,14 @@ class DataTrainingArguments:
         default=0.15,
         metadata={"help": "Ratio of tokens to mask for masked language modeling loss"},
     )
+    replace_probability: float = field(
+        default=0.1,
+        metadata={"help": "Ratio of tokens to replace for masked language modeling loss"},
+    )
+    original_probability: float = field(
+        default=0.1,
+        metadata={"help": "Ratio of tokens to keep for masked language modeling loss"},
+    )
     line_by_line: bool = field(
         default=False,
         metadata={
@@ -280,6 +288,7 @@ class DataTrainingArguments:
             )
         },
     )
+
 
     def __post_init__(self):
         if (
@@ -533,7 +542,6 @@ def get_tokenizer_and_model(
         logger.info("Training new model from scratch")
         model = AutoModelForMaskedLM.from_config(config)
 
-    model.resize_token_embeddings(len(tokenizer))
     return tokenizer, model
 
 
@@ -787,12 +795,12 @@ def main():  # noqa: C901
         model_args, data_args, training_args = parser.parse_args_into_dataclasses()
 
     wandb.init(
-        project="danish-foundation-models",
+        project="danish-foundation-models-test",
         entity="chcaa",
         config=parser.parse_args(),
-        tags=["mlm", "pytorch"],
+        tags=["rtd", "pytorch"],
         save_code=True,
-        group="mlm",
+        group="rtd",
     )
 
     # Setup logging
@@ -871,12 +879,17 @@ def main():  # noqa: C901
                 max_eval_samples = min(len(eval_dataset), data_args.max_eval_samples)
                 eval_dataset = eval_dataset.select(range(max_eval_samples))
 
+
+        # def preprocess_logits_for_metrics(logits, labels):
+        #     if isinstance(logits, tuple):
+        #         # Depending on the model and config, logits may contain extra tensors,
+        #         # like past_key_values, but logits always come first
+        #         logits = logits[0]
+        #     return logits.argmax(dim=-1)
         def preprocess_logits_for_metrics(logits, labels):
-            if isinstance(logits, tuple):
-                # Depending on the model and config, logits may contain extra tensors,
-                # like past_key_values, but logits always come first
-                logits = logits[0]
-            return logits.argmax(dim=-1)
+            gen_predictions = logits[0].argmax(dim=-1)
+            disc_predictions = logits[1] > 0
+            return gen_predictions, disc_predictions, logits[2]
 
         metric = load_metric("accuracy")
         # import evaluate
@@ -887,11 +900,17 @@ def main():  # noqa: C901
             # preds have the same shape as the labels, after the argmax(-1) has been calculated
             # by preprocess_logits_for_metrics
             labels = labels.reshape(-1)
-            preds = preds.reshape(-1)
+            gen_logits = preds[0].reshape(-1)
+            disc_logits = preds[1].reshape(-1)
+            is_replaced = preds[2].reshape(-1)
             mask = labels != -100
             labels = labels[mask]
-            preds = preds[mask]
-            return metric.compute(predictions=preds, references=labels)
+            disc_logits = disc_logits[mask]
+            is_replaced = is_replaced[mask]
+            gen_logits = gen_logits[mask]
+            return {"gen_accuracy":metric.compute(predictions=gen_logits, references=labels)["accuracy"],
+                    "disc_accuracy":metric.compute(predictions=disc_logits, references=is_replaced)["accuracy"]}
+
 
     # Data collator
     data_collator = ElectraDataCollator(
