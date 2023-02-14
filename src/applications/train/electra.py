@@ -8,6 +8,7 @@ from collections.abc import Mapping
 from typing import Any, Dict, List, Union
 
 import torch
+import wandb
 from datasets import load_dataset
 from torch import nn
 from transformers import (
@@ -21,6 +22,12 @@ from transformers import (
     Trainer,
 )
 from transformers.data.data_collator import _torch_collate_batch
+from transformers.utils import is_apex_available
+from transformers.utils.import_utils import is_sagemaker_mp_enabled
+if is_sagemaker_mp_enabled():
+    from transformers.trainer_pt_utils import smp_forward_backward
+if is_apex_available():
+    from apex import amp
 
 
 class ELECTRAModel(PreTrainedModel):
@@ -114,7 +121,7 @@ class ELECTRALoss:
                 ~is_replaced, self.disc_label_smooth
             )
         disc_loss = self.disc_loss_fc(disc_logits.float(), is_replaced.float())
-        return gen_loss * self.loss_weights[0] + disc_loss * self.loss_weights[1]
+        return gen_loss * self.loss_weights[0] + disc_loss * self.loss_weights[1], gen_loss * self.loss_weights[0], disc_loss * self.loss_weights[1]
 
 
 class ElectraDataCollator(DataCollatorForLanguageModeling):
@@ -233,14 +240,56 @@ class ElectraTrainer(Trainer):
     #     super().__init__(**kwargs)
     #     self.data_collator = ...
 
-    def compute_loss(self, model, inputs, return_outputs=False):
+    def training_step(self, model, inputs):
+        model.train()
+        inputs = self._prepare_inputs(inputs)
+
+        if is_sagemaker_mp_enabled():
+            loss_mb = smp_forward_backward(model, inputs, self.args.gradient_accumulation_steps)
+            return loss_mb.reduce_mean().detach().to(self.args.device)
+
+        with self.compute_loss_context_manager():
+            loss, gen_loss, disc_loss = self.compute_loss(model, inputs)
+        self.gen_loss = gen_loss
+        self.disc_loss = disc_loss
+
+        wandb.log({"train/gen_loss" : gen_loss})
+        wandb.log({"train/disc_loss" : disc_loss})
+
+        if self.args.n_gpu > 1:
+            loss = loss.mean()  # mean() to average on multi-gpu parallel training
+
+        if self.args.gradient_accumulation_steps > 1 and not self.deepspeed:
+            # deepspeed handles loss scaling by gradient_accumulation_steps in its `backward`
+            loss = loss / self.args.gradient_accumulation_steps
+
+        if self.do_grad_scaling:
+            self.scaler.scale(loss).backward()
+        elif self.use_apex:
+            with amp.scale_loss(loss, self.optimizer) as scaled_loss:
+                scaled_loss.backward()
+        elif self.deepspeed:
+            # loss gets scaled under gradient_accumulation_steps in deepspeed
+            loss = self.deepspeed.backward(loss)
+        else:
+            loss.backward()
+
+        return loss.detach()
+
+
+    def compute_loss(self, model, inputs, return_outputs=False, return_all_losses=True):
         labels = inputs.get("labels")
         # forward pass
         outputs = model(**inputs)
 
         loss_fct = ELECTRALoss(gen_label_smooth=False, disc_label_smooth=False)
-        loss = loss_fct(outputs, labels)
-        return (loss, outputs) if return_outputs else loss
+        combined_loss, gen_loss, disc_loss = loss_fct(outputs, labels)
+        if return_outputs:
+            return (combined_loss, outputs)
+        elif return_all_losses:
+            return combined_loss, gen_loss, disc_loss
+        else:
+            return combined_loss
 
 
 if __name__ == "__main__":

@@ -705,7 +705,7 @@ def train(
         {"num_trainable_params": num_trainable_params, "num_params": num_params}
     )
 
-    train_result = trainer.train(resume_from_checkpoint=checkpoint)
+    train_result = trainer.train(resume_from_checkpoint=checkpoint)#, return_gen_loss=True)
     trainer.save_model()  # Saves the tokenizer too for easy upload
     metrics = train_result.metrics
 
@@ -801,6 +801,7 @@ def main():  # noqa: C901
         tags=["rtd", "pytorch"],
         save_code=True,
         group="rtd",
+        # mode="dryrun",
     )
 
     # Setup logging
@@ -887,9 +888,9 @@ def main():  # noqa: C901
         #         logits = logits[0]
         #     return logits.argmax(dim=-1)
         def preprocess_logits_for_metrics(logits, labels):
-            gen_predictions = logits[0].argmax(dim=-1)
+            gen_predictions = logits[0]#.argmax(dim=-1)
             disc_predictions = logits[1] > 0
-            return gen_predictions, disc_predictions, logits[2]
+            return gen_predictions, disc_predictions, logits[2], logits #passing logits for bugfixing
 
         metric = load_metric("accuracy")
         # import evaluate
