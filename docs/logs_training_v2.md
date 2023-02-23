@@ -746,4 +746,40 @@ python src/applications/train/run_mlm_pytorch_stream.py \
 
 - K. Enevoldsen (19th of January: Grundtvig): Large model frooze will restart it.
 
+- K. Enevoldsen (23rd of february: Grundtvig): Starting training of small model based on "jonfd/electra-small-nordic"
 
+
+```
+python src/applications/train/run_mlm_pytorch_stream.py \
+    --output_dir=/data-big-projects/danish-foundation-models/huggingface-repositories/dfm-bert-small-v1 \
+    --model_name=jonfd/electra-small-nordic \
+    --dataset_name=dcc_v1.1.0 \
+    --max_seq_length=512 \
+    --learning_rate=2e-4 \
+    --warmup_step=10000 \
+    --adam_beta1=0.9 \
+    --adam_beta2=0.98 \
+    --adam_epsilon=1e-6 \
+    --max_steps=250000 \
+    --max_eval_samples=5000 \
+    --logging_steps=100 \
+    --eval_steps=2000 \
+    --save_steps=2000 \
+    --push_to_hub \
+    --weight_decay=0.01 \
+    --do_train \
+    --streaming \
+    --seed=42 \
+    --fp16 \
+    --do_eval \
+    --evaluation_strategy=steps \
+    --nat_weight=0.45 \
+    --danews_weight=0.25 \
+    --hopetwitter_weight=0.10 \
+    --dagw_dfm_weight=0.20 \
+    --per_device_train_batch_size=512 \
+    --per_device_eval_batch_size=512 \
+    --optim=adamw_torch \
+    --gradient_accumulation_steps=4 \
+    --overwrite_output_dir
+```
