@@ -106,16 +106,16 @@ class ModelArguments:
             "help": "Pretrained config name or path if not the same as model_name"
         },
     )
-    discriminator_config_name: Optional[str] = field(
+    discriminator_name_or_path: Optional[str] = field(
         default=None,
         metadata={
-            "help": "Pretrained config name or path if not the same as model_name for the discriminator"
+            "help": "Pretrained config name or path for the discriminator"
         },
     )
-    generator_config_name: Optional[str] = field(
+    generator_name_or_path: Optional[str] = field(
         default=None,
         metadata={
-            "help": "Pretrained config name or path if not the same as model_name for the generator"
+            "help": "Pretrained config name or path for the generator"
         },
     )
     tokenizer_name: Optional[str] = field(
@@ -462,38 +462,38 @@ def get_tokenizer_and_model(
         "revision": model_args.model_revision,
         "use_auth_token": True if model_args.use_auth_token else None,
     }
-    if model_args.config_name:
-        config = AutoConfig.from_pretrained(model_args.config_name, **config_kwargs)
-    elif model_args.model_name_or_path:
-        config = AutoConfig.from_pretrained(
-            model_args.model_name_or_path, **config_kwargs
+
+    if model_args.discriminator_name_or_path:
+        disc_config = ElectraConfig.from_pretrained(
+            model_args.discriminator_name_or_path,
+            from_tf=bool(".ckpt" in model_args.model_type),
+            ignore_mismatched_sizes=True,
+            **config_kwargs
         )
     else:
-        config = CONFIG_MAPPING[model_args.model_type]()
-        logger.warning("You are instantiating a new config instance from scratch.")
+        disc_config = CONFIG_MAPPING[model_args.model_type]()
+        logger.warning("You are instantiating a new discriminator config instance from scratch.")
         if model_args.config_overrides is not None:
             logger.info(f"Overriding config: {model_args.config_overrides}")
             config.update_from_string(model_args.config_overrides)
             logger.info(f"New config: {config}")
 
-    if model_args.discriminator_config_name:
-        disc_config = ElectraConfig.from_pretrained(
-            model_args.discriminator_config_name,
-            from_tf=bool(".ckpt" in model_args.model_name_or_path),
-            cache_dir=model_args.cache_dir,
-            revision=model_args.model_revision,
-            use_auth_token=True if model_args.use_auth_token else None,
+    if model_args.generator_name_or_path:
+        gen_config = ElectraConfig.from_pretrained(
+            model_args.generator_name_or_path,
+            model_args.discriminator_name_or_path,
+            from_tf=bool(".ckpt" in model_args.model_type),
             ignore_mismatched_sizes=True,
+            **config_kwargs
         )
     else:
-        disc_config = ElectraConfig.from_pretrained(
-            "google/electra-small-discriminator"
-        )
+        gen_config = CONFIG_MAPPING[model_args.model_type]()
+        logger.warning("You are instantiating a new generator config instance from scratch.")
+        if model_args.config_overrides is not None:
+            logger.info(f"Overriding config: {model_args.config_overrides}")
+            config.update_from_string(model_args.config_overrides)
+            logger.info(f"New config: {config}")
 
-    if model_args.generator_config_name:
-        gen_config = ElectraConfig.from_pretrained(model_args.generator_config_name)
-    else:
-        gen_config = ElectraConfig.from_pretrained("google/electra-small-generator")
 
     tokenizer_kwargs = {
         "cache_dir": model_args.cache_dir,
@@ -531,17 +531,18 @@ def get_tokenizer_and_model(
         )
 
     if model_args.model_name_or_path:
+        generator = ElectraForMaskedLM.from_pretrained(model_args.generator_name_or_path)
+        discriminator = ElectraForPreTraining.from_pretrained(model_args.discriminator_name_or_path) 
+    else:
+        logger.info("Training new model from scratch")
         generator = ElectraForMaskedLM(gen_config)
         discriminator = ElectraForPreTraining(disc_config)
 
-        model = ELECTRAModel(
-            generator,
-            discriminator,
-            config=config,
-        )
-    else:
-        logger.info("Training new model from scratch")
-        model = AutoModelForMaskedLM.from_config(config)
+    model = ELECTRAModel(
+        generator,
+        discriminator,
+        config=config,
+    )
 
     return tokenizer, model
 
@@ -802,7 +803,7 @@ def main():  # noqa: C901
         tags=["rtd", "pytorch"],
         save_code=True,
         group="rtd",
-        # mode="dryrun",
+        mode="dryrun",
     )
 
     # Setup logging
@@ -919,12 +920,25 @@ def main():  # noqa: C901
             }
 
     # Data collator
-    data_collator = ElectraDataCollator(
-        tokenizer=tokenizer,
-        mlm_probability=data_args.mlm_probability,
-        replace_prob=data_args.replace_probability,
-        original_prob=data_args.original_probability,
-    )
+    if model_args.model_name_or_path:
+        # This one will take care of randomly masking the tokens.
+        pad_to_multiple_of_8 = (
+            data_args.line_by_line
+            and training_args.fp16
+            and not data_args.pad_to_max_length
+        )
+        data_collator = DataCollatorForLanguageModeling(
+            tokenizer=tokenizer,
+            mlm_probability=data_args.mlm_probability,
+            pad_to_multiple_of=8 if pad_to_multiple_of_8 else None,
+        )
+    elif model_args.model_type:
+        data_collator = ElectraDataCollator(
+            tokenizer=tokenizer,
+            mlm_probability=data_args.mlm_probability,
+            replace_prob=data_args.replace_probability,
+            original_prob=data_args.original_probability,
+        )
 
     # Initialize our Trainer
     _training_args = dict(
@@ -949,7 +963,10 @@ def main():  # noqa: C901
         if training_args.do_eval:
             _training_args["eval_dataset"] = eval_dataset.with_format("torch")
 
-    trainer = ElectraTrainer(**_training_args)
+    if model_args.model_name_or_path:
+        trainer = Trainer(**_training_args)
+    else:
+        trainer = ElectraTrainer(**_training_args)
 
     # Training
     if training_args.do_train:
