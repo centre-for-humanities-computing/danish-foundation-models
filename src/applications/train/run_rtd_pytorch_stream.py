@@ -920,25 +920,12 @@ def main():  # noqa: C901
             }
 
     # Data collator
-    if model_args.model_name_or_path:
-        # This one will take care of randomly masking the tokens.
-        pad_to_multiple_of_8 = (
-            data_args.line_by_line
-            and training_args.fp16
-            and not data_args.pad_to_max_length
-        )
-        data_collator = DataCollatorForLanguageModeling(
-            tokenizer=tokenizer,
-            mlm_probability=data_args.mlm_probability,
-            pad_to_multiple_of=8 if pad_to_multiple_of_8 else None,
-        )
-    elif model_args.model_type:
-        data_collator = ElectraDataCollator(
-            tokenizer=tokenizer,
-            mlm_probability=data_args.mlm_probability,
-            replace_prob=data_args.replace_probability,
-            original_prob=data_args.original_probability,
-        )
+    data_collator = ElectraDataCollator(
+        tokenizer=tokenizer,
+        mlm_probability=data_args.mlm_probability,
+        replace_prob=data_args.replace_probability,
+        original_prob=data_args.original_probability,
+    )
 
     # Initialize our Trainer
     _training_args = dict(
@@ -963,10 +950,7 @@ def main():  # noqa: C901
         if training_args.do_eval:
             _training_args["eval_dataset"] = eval_dataset.with_format("torch")
 
-    if model_args.model_name_or_path:
-        trainer = Trainer(**_training_args)
-    else:
-        trainer = ElectraTrainer(**_training_args)
+    trainer = ElectraTrainer(**_training_args)
 
     # Training
     if training_args.do_train:
