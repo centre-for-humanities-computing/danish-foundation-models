@@ -47,15 +47,12 @@ from transformers import (
     CONFIG_MAPPING,
     MODEL_FOR_MASKED_LM_MAPPING,
     AutoConfig,
-    AutoModelForMaskedLM,
     AutoTokenizer,
-    DataCollatorForLanguageModeling,
     ElectraConfig,
     ElectraForMaskedLM,
     ElectraForPreTraining,
     ElectraTokenizerFast,
     HfArgumentParser,
-    PreTrainedTokenizerFast,
     Trainer,
     TrainingArguments,
     is_torch_tpu_available,
@@ -108,15 +105,11 @@ class ModelArguments:
     )
     discriminator_name_or_path: Optional[str] = field(
         default=None,
-        metadata={
-            "help": "Pretrained config name or path for the discriminator"
-        },
+        metadata={"help": "Pretrained config name or path for the discriminator"},
     )
     generator_name_or_path: Optional[str] = field(
         default=None,
-        metadata={
-            "help": "Pretrained config name or path for the generator"
-        },
+        metadata={"help": "Pretrained config name or path for the generator"},
     )
     tokenizer_name: Optional[str] = field(
         default=None,
@@ -463,37 +456,53 @@ def get_tokenizer_and_model(
         "use_auth_token": True if model_args.use_auth_token else None,
     }
 
-    if model_args.discriminator_name_or_path:
-        disc_config = ElectraConfig.from_pretrained(
-            model_args.discriminator_name_or_path,
-            from_tf=bool(".ckpt" in model_args.model_type),
-            ignore_mismatched_sizes=True,
-            **config_kwargs
+    if model_args.config_name:
+        config = AutoConfig.from_pretrained(model_args.config_name, **config_kwargs)
+    elif model_args.model_name_or_path:
+        config = AutoConfig.from_pretrained(
+            model_args.model_name_or_path, **config_kwargs
         )
     else:
-        disc_config = CONFIG_MAPPING[model_args.model_type]()
-        logger.warning("You are instantiating a new discriminator config instance from scratch.")
+        config = CONFIG_MAPPING[model_args.model_type]()
+        logger.warning("You are instantiating a new config instance from scratch.")
         if model_args.config_overrides is not None:
             logger.info(f"Overriding config: {model_args.config_overrides}")
             config.update_from_string(model_args.config_overrides)
             logger.info(f"New config: {config}")
+
+    if model_args.discriminator_name_or_path:
+        disc_config = ElectraConfig.from_pretrained(
+            model_args.discriminator_name_or_path,
+            from_tf=bool(".ckpt" in model_args.discriminator_name_or_path),
+            ignore_mismatched_sizes=True,
+            **config_kwargs,
+        )
+    else:
+        disc_config = CONFIG_MAPPING[model_args.model_type]()
+        logger.warning(
+            "You are instantiating a new discriminator config instance from scratch."
+        )
+        if model_args.config_overrides is not None:
+            logger.info(f"Overriding config: {model_args.config_overrides}")
+            disc_config.update_from_string(model_args.config_overrides)
+            logger.info(f"New config: {disc_config}")
 
     if model_args.generator_name_or_path:
         gen_config = ElectraConfig.from_pretrained(
             model_args.generator_name_or_path,
-            model_args.discriminator_name_or_path,
-            from_tf=bool(".ckpt" in model_args.model_type),
+            from_tf=bool(".ckpt" in model_args.generator_name_or_path),
             ignore_mismatched_sizes=True,
-            **config_kwargs
+            **config_kwargs,
         )
     else:
         gen_config = CONFIG_MAPPING[model_args.model_type]()
-        logger.warning("You are instantiating a new generator config instance from scratch.")
+        logger.warning(
+            "You are instantiating a new generator config instance from scratch."
+        )
         if model_args.config_overrides is not None:
             logger.info(f"Overriding config: {model_args.config_overrides}")
-            config.update_from_string(model_args.config_overrides)
-            logger.info(f"New config: {config}")
-
+            gen_config.update_from_string(model_args.config_overrides)
+            logger.info(f"New config: {gen_config}")
 
     tokenizer_kwargs = {
         "cache_dir": model_args.cache_dir,
@@ -531,8 +540,12 @@ def get_tokenizer_and_model(
         )
 
     if model_args.model_name_or_path:
-        generator = ElectraForMaskedLM.from_pretrained(model_args.generator_name_or_path)
-        discriminator = ElectraForPreTraining.from_pretrained(model_args.discriminator_name_or_path) 
+        generator = ElectraForMaskedLM.from_pretrained(
+            model_args.generator_name_or_path
+        )
+        discriminator = ElectraForPreTraining.from_pretrained(
+            model_args.discriminator_name_or_path
+        )
     else:
         logger.info("Training new model from scratch")
         generator = ElectraForMaskedLM(gen_config)
@@ -707,7 +720,9 @@ def train(
         {"num_trainable_params": num_trainable_params, "num_params": num_params}
     )
 
-    train_result = trainer.train(resume_from_checkpoint=checkpoint)#, return_gen_loss=True)
+    train_result = trainer.train(
+        resume_from_checkpoint=checkpoint
+    )  # , return_gen_loss=True)
     trainer.save_model()  # Saves the tokenizer too for easy upload
     metrics = train_result.metrics
 
@@ -803,7 +818,6 @@ def main():  # noqa: C901
         tags=["rtd", "pytorch"],
         save_code=True,
         group="rtd",
-        mode="dryrun",
     )
 
     # Setup logging
@@ -882,16 +896,14 @@ def main():  # noqa: C901
                 max_eval_samples = min(len(eval_dataset), data_args.max_eval_samples)
                 eval_dataset = eval_dataset.select(range(max_eval_samples))
 
-        # def preprocess_logits_for_metrics(logits, labels):
-        #     if isinstance(logits, tuple):
-        #         # Depending on the model and config, logits may contain extra tensors,
-        #         # like past_key_values, but logits always come first
-        #         logits = logits[0]
-        #     return logits.argmax(dim=-1)
         def preprocess_logits_for_metrics(logits, labels):
-            gen_predictions = logits[0]#.argmax(dim=-1)
+            gen_predictions = logits[0]  # .argmax(dim=-1)
             disc_predictions = logits[1] > 0
-            return gen_predictions, disc_predictions, logits[2], logits #passing logits for bugfixing
+            return (
+                gen_predictions,
+                disc_predictions,
+                logits[2],
+            )
 
         metric = load_metric("accuracy")
         # import evaluate
