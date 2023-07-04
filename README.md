@@ -24,6 +24,10 @@ A collaborative project for training foundational Danish language model. Which s
   which used the notably more filtered Netarkivet Text v2.
   - Published a [filtered version](https://huggingface.co/datasets/DDSC/dagw_reddit_filtered_v1.0.0) of the Danish Gigaword and Reddit dataset.
 
+2023
+- January:
+  - Three encoder models were published of size [small](https://huggingface.co/chcaa/dfm-encoder-small-v1), [medium](https://huggingface.co/chcaa/dfm-encoder-medium-v1), and [large](https://huggingface.co/chcaa/dfm-encoder-large-v1).
+
 ### Follow along:
 
 |                                                                                                                                             |                                                                                                          |
