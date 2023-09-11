@@ -272,7 +272,6 @@ class QualityFilter:
         short_long_sentence_length_split: int = 30,
         short_long_sentence_threshold: float = 0.5,
     ):
-
         __available_language_detection_tools = ["langdetect", "luga"]
 
         if language_detection_tool not in __available_language_detection_tools:
@@ -802,7 +801,6 @@ class QualityFilter:
 
         for i, _ in enumerate(doc):
             for ngram_size in range(lower, upper + 1):
-
                 min_, max_ = minmax[ngram_size]
                 end = i + ngram_size
 

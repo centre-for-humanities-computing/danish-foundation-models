@@ -60,7 +60,6 @@ class TestDeduper:
         return Deduper(**dict(default_test_args, **kwargs))
 
     def dedup(self, corpus, **kwargs):
-
         # Add a document ID to the corpus, if it isn't there already
         if isinstance(corpus, list) and isinstance(corpus[0], str):
             corpus = list(enumerate(corpus))
@@ -212,7 +211,6 @@ class TestDeduper:
         corpus = ["hej med dig min ven", "hej med dig min ven", "farvel du gamle"]
         corpus = list(enumerate(corpus))
         with tempfile.TemporaryDirectory() as temp:
-
             # Create a deduper loaded from disk, and a different new one
             deduper = self.deduper(split_method="paragraph")
             deduper.deduplicate(corpus, output_dir=temp, overwrite=True)

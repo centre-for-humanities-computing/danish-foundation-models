@@ -72,7 +72,6 @@ class SentenceFilter:
         curly_brackets_threshold: int = 2,
         n_jobs: int = -1,
     ):
-
         # Store arguments as attributes
         self.title_cased_words_threshold = title_cased_words_threshold
         self.min_num_words = min_num_words
@@ -186,7 +185,6 @@ class SentenceFilter:
                 yield filter_sample(doc)
         else:
             with Parallel(n_jobs=n_jobs, backend="threading") as parallel:
-
                 # Set up iterator, depending on whether we have a progress bar or not
                 if progress_bar:
                     itr = tqdm(docs, desc="Filtering corpus", total=total)
@@ -233,7 +231,6 @@ class SentenceFilter:
         """
         # Iterate over all the filter functions
         for filter_name, filter_fn in self.filters.items():
-
             # Apply the filter function, which returns True if the document satisfied
             # the filter, and False if it didn't
             satisfied_filter = filter_fn(doc)

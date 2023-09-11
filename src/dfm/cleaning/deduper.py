@@ -410,7 +410,6 @@ class Deduper:
         # Otherwise we check if the corpus is an iterable of dictionaries, in
         # which case we also convert it to an iterable of tuples
         else:
-
             # extract the first element of the corpus
             corpus = iter(corpus)
             sample = next(corpus)
@@ -470,10 +469,8 @@ class Deduper:
             leave=False,
         )
         with tqdm(batches, **pbar_params) as pbar:
-
             # Initialise the multiprocessing
             with Parallel(n_jobs=self.n_jobs) as parallel:
-
                 # Define the function that will be called in parallel
                 fn = delayed(
                     partial(
@@ -489,7 +486,6 @@ class Deduper:
 
                 # Iterate over the batches
                 for batch in pbar:
-
                     # Create a copy of the batch to ensure that we're not
                     # modifying the original
                     batch, batch_copy = it.tee(batch)
@@ -514,13 +510,11 @@ class Deduper:
                     pbar_params["desc"] = "Deduplicating batch"
                     with tqdm(batch_copy, **pbar_params) as batch_pbar:
                         for (idx, doc), minhash in zip(batch_pbar, minhashes):
-
                             # If the document is not a near-duplicate candidate
                             # then store in the LSH cache and append it to the
                             # JSONL output file
                             candidates = self.lsh_cache.query(minhash)
                             if len(candidates) == 0:
-
                                 # Insert the document into the LSH cache
                                 self.lsh_cache.insert(idx, minhash)
 
