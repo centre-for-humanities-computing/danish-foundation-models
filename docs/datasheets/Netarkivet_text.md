@@ -27,12 +27,11 @@ Following the recommendation and framework of [3], we add the following datashee
 
 **For what purpose was the dataset created? Who created the dataset? Who funded the creation of the dataset?**
 
-Netarkivet is created following the Danish [archival law](https://www.retsinformation.dk/eli/lta/2004/1439),
+Netarkivet was created following the Danish [Legal Deposit Act](https://www.retsinformation.dk/eli/lta/2004/1439),
 from which a text-only corpus was derived for research purposes, see [4,5]. This is the
 part from which this dataset is derived.
-This subsection have then been filtered with the intention of training Danish language
-This part has then been filtered with the intention of training Danish language
-models by a team of researchers at Center for Humanities Computing Aarhus (CHCAA) using
+This subsection has then been filtered with the intention of training the Danish language
+models by a team of researchers at the Center for Humanities Computing Aarhus (CHCAA) using
 a codebase jointly developed with partners from industry (e.g. KMD, Ekstra Bladet) and
 other research institutions (e.g. Bristol University, Alexandra Institute).
 For more on collaborators on this project see the [GitHub repository](https://github.com/centre-for-humanities-computing/danish-foundation-models
