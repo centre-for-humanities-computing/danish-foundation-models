@@ -107,10 +107,10 @@ The dataset include articles from the period 2006 to 2016.
 
 **Were any ethical review processes conducted?**
 
-Netarkivet in collected in adherence to an update to the Danish archival law in 2005,
-which extended the law to also include internet domains.
-Our text subset was constructed for a research project and have thus a project proposal
-have been accepted by the Royal Danish Library. Besides these the author is not aware of
+Netarkivet is collected in adherence to an update to the Danish Legal Deposit Act in 2005,
+which extended the law to include internet domains.
+Our text subset was constructed for a research project and thus a project proposal
+has been accepted by the Royal Danish Library. Besides these, the author is not aware of
 any ethical approvals.
 
 ## Preprocessing/cleaning/labeling
@@ -133,11 +133,11 @@ SpaCy v.3.1.4.
 - Have a token length between 50 and 100,000.
 - Have less than 5,000,000 characters.
 - Have less than 60% of words containing an alphabetic character.
-- Have a symbol to word ratio lower than 10% for hashtags and ellipsis.
+- Have a symbol-to-word ratio lower than 10% for hashtags and ellipsis.
 - Have less than 90% of lines starting with a bullet point.
 - have less than 30% of lines ending with an ellipsis.
 
-- Have low high degree of repetitious text:
+- Have a low high degree of repetitious text:
   - Have less than 20% of characters contained within duplicate lines.
   - Have less than 20% of characters contained within duplicate paragraphs.
   - Where the top 2-4 grams constitute less than 20%, 18%, 16%, respectively, of the text. 
