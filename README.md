@@ -73,6 +73,20 @@ You can contribute both:
 -  Validation tasks can even be private benchmarks where you only wish to share the performance metrics.
 - And probably in many other ways
 
+## Setting up development environment
+### Dev container
+By far the easiest way is to use our included development container. If you're using VSCode:
+
+* Ensure you have either [Orbstack](https://orbstack.dev) or [Docker](https://docker.com) installed 
+* Ensure you have the [VSCode dev container extension](vscode:extension/ms-vscode-remote.remote-containers) installed
+
+Then, all you have to do is run the following command from the command palette:
+![](docs/_static/dev_container.png)
+
+A more detailed guide is available on [VSCode's website](https://code.visualstudio.com/docs/devcontainers/tutorial).
+
+### Manual install
+Install as you usually would, replicating the commands in the `Dockerfile.dev`.
 
 ## Current Contributors and Collaborators
 This project has collaborators across industry, national institutions and research centers. This project uses compute resources supplied by [Ucloud](https://docs.cloud.sdu.dk/index.html) through the [DeiC e-infrastructure grant](https://www.deic.dk/en/supercomputing/Apply-for-HPC-resources).
