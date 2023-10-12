@@ -2,7 +2,9 @@ test: ## Run tests
 	pytest src
 
 lint: ## Format code
-	pre-commit run --all-files
+	ruff check src --fix
+	black .
+	
 
 type-check: ## Type-check code
 	pyright src

@@ -13,11 +13,6 @@ RUN pip install -r requirements-dev.txt
 COPY makefile ./
 RUN make type-check
 
-## Initialise pre-commit
-### Remove the .git repo afterwards, since the dev container bind-mounts the development repo
-COPY .pre-commit-config.yaml ./
-RUN git init . && make lint
-
 # App install
 ## Each on their own line to have them be their own layers, optimising caching
 COPY requirements.txt .
