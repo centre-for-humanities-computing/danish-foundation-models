@@ -10,8 +10,7 @@ COPY requirements-dev.txt ./
 RUN pip install -r requirements-dev.txt
 
 ## Run static-type-checks to initialise the cache
-COPY Makefile ./
-RUN make type-check
+RUN pyright .
 
 ## Initialise pre-commit
 ### Remove the .git repo afterwards, since the dev container bind-mounts the development repo
