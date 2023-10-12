@@ -1,0 +1,116 @@
+[project]
+name = "dfm"
+version = "2.0.0"
+description = "Code for the Danish Foundation Models"
+classifiers = [
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: POSIX :: Linux",
+  "Operating System :: MacOS :: MacOS X",
+  "Operating System :: Microsoft :: Windows",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+]
+requires-python = "3.10"
+
+[project.license]
+license = "MIT"
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[tool.pyright]
+exclude = ["**/.*venv*", ".tox", "build"]
+typeCheckingMode = "strict"
+
+[tool.ruff]
+select = [
+  "A",
+  "ANN",
+  "ARG",
+  "B",
+  "C4",
+  "COM",
+  "D417",
+  "E",
+  "ERA",
+  "F",
+  "I",
+  "ICN",
+  "NPY001",
+  "PD002",
+  "PIE",
+  "PLE",
+  "PLW",
+  "PT",
+  "UP",
+  "Q",
+  "PTH",
+  "RSE",
+  "RET",
+  "RUF",
+  "SIM",
+  "TCH",
+  "W",
+]
+ignore = ["ANN101", "ANN401", "B007", "E402", "E501", "F401", "F841", "RET504"]
+ignore-init-module-imports = true
+
+# Allow autofix for all enabled rules (when `--fix`) is provided.
+unfixable = ["ERA"]
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+  ".bzr",
+  ".direnv",
+  ".eggs",
+  ".git",
+  ".hg",
+  ".nox",
+  ".pants.d",
+  ".pytype",
+  ".ruff_cache",
+  ".svn",
+  ".tox",
+  ".venv",
+  "__pypackages__",
+  "_build",
+  "buck-out",
+  "build",
+  "dist",
+  "node_modules",
+  "venv",
+  "__init__.py",
+  "docs/conf.py",
+]
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+target-version = "py39"
+
+[tool.ruff.flake8-annotations]
+mypy-init-return = true
+suppress-none-returning = true
+
+[tool.ruff.isort]
+known-third-party = ["wandb", "joblib"]
+
+[tool.ruff.mccabe]
+# Unlike Flake8, default to a complexity level of 10.
+max-complexity = 10
+
+[tool.ruff.per-file-ignores]
+"psycop/projects/restraint/model_evaluation/figures/feature_importance/shap/get_shap_values.py" = [
+  "I001",
+]
+"psycop/projects/restraint/model_evaluation/data/load_true_data.py" = ["I001"]
+"psycop/common/global_utils/cache.py" = ["I001"]
+
+[tool.pytest.ini_options]
+norecursedirs = [".venv", "*.egg-info", ".git", ".tox"]
