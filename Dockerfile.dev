@@ -10,7 +10,7 @@ COPY requirements-dev.txt ./
 RUN pip install -r requirements-dev.txt
 
 ## Run static-type-checks to initialise the cache
-COPY Makefile ./
+COPY makefile ./
 RUN make type-check
 
 ## Initialise pre-commit
