@@ -128,9 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# vscode
-.vscode/
-
 # data files
 **/*.jsonl
 *.ndjson
