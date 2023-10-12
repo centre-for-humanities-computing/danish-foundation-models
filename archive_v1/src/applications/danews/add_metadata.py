@@ -272,8 +272,8 @@ news.save_to_disk(save_path)
 news_sub = news.remove_columns(
     [
         c
-        for c in news.features.keys()
+        for c in news.features
         if c not in {"n_tokens", "is_duplicate", "passed_quality_filter", "Source"}
-    ]
+    ],
 )
 news_sub.to_csv("news_meta.csv")

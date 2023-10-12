@@ -11,15 +11,14 @@ Authors:
 
 import glob
 import os
+from collections.abc import Iterable
 from functools import partial
-from typing import Iterable
 
 import ndjson
 import psutil
+from dfm.cleaning import Deduper
 from psutil._common import bytes2human
 from wasabi import msg
-
-from dfm.cleaning import Deduper
 
 
 def filter_example(example, already_checked):
@@ -36,8 +35,10 @@ def get_id_from_path(x):
 
 
 def create_paths(
-    years=[2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016]
+    years=None,
 ):
+    if years is None:
+        years = [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016]
     for year in years:
         read_path = os.path.join("/work", "netarkivet-cleaned", f"{year}")
         path = os.path.join(read_path, "**", "*.jsonl")

@@ -27,11 +27,10 @@ import datasets
 import hydra
 from datasets import load_dataset
 from datasets.utils import disable_progress_bar
+from dfm.cleaning import QualityFilter, SentenceFilter
 from omegaconf import DictConfig, OmegaConf
 from tqdm import tqdm
 from tqdm.contrib.logging import logging_redirect_tqdm
-
-from dfm.cleaning import QualityFilter, SentenceFilter
 
 CFG_PATH = Path(__file__).parent / "configs"
 VALID_SAVE_FORMATS = {
@@ -120,7 +119,6 @@ def apply_quality_filter(batch: dict, cfg: DictConfig) -> dict:
     qf = create_quality_filter(cfg)
 
     if cfg.save_meta_data:
-
         valid_langs = set(cfg.valid_languages)
         if valid_langs:
 
@@ -189,7 +187,6 @@ def apply_sentence_filter(batch: dict, cfg: DictConfig) -> dict:
     sf = create_sentence_filter(cfg)
 
     if cfg.save_meta_data:
-
         valid_langs = set(cfg.valid_languages)
 
         if valid_langs:
@@ -210,9 +207,7 @@ def apply_sentence_filter(batch: dict, cfg: DictConfig) -> dict:
             batch[cfg.text_col] = sf(batch[cfg.text_col])
 
         # create meta data columns
-        batch["passed_sentence_filter"] = [
-            True if t else False for t in batch[cfg.text_col]
-        ]
+        batch["passed_sentence_filter"] = [bool(t) for t in batch[cfg.text_col]]
         return batch
 
     batch[cfg.text_col] = sf(batch[cfg.text_col])
@@ -278,13 +273,11 @@ def process_files(path: Path, cfg: DictConfig) -> None:
         logging.debug("The columns of the dataset is:\n %s", dataset.column_names)
 
     # filter languages:
-    if not cfg.save_meta_data:
-        if cfg.valid_languages and cfg.lang_col:
-            valid_langs = set(cfg.valid_languages)
-            dataset.filter(lambda example: example[cfg.lang_col] in valid_langs)
+    if not cfg.save_meta_data and cfg.valid_languages and cfg.lang_col:
+        valid_langs = set(cfg.valid_languages)
+        dataset.filter(lambda example: example[cfg.lang_col] in valid_langs)
 
     if cfg.apply_sentence_filter:
-
         dataset = dataset.map(
             lambda batch: apply_sentence_filter(batch, cfg),
             batched=True,
@@ -349,28 +342,24 @@ def main(cfg: DictConfig) -> None:
     with open(save_dir / "clean_config.yaml", "w", encoding="utf-8") as f:
         OmegaConf.save(cfg, f)
 
-    if cfg.num_proc == -1:
-        num_proc = mp.cpu_count() - 1
-    else:
-        num_proc = cfg.num_proc
+    num_proc = mp.cpu_count() - 1 if cfg.num_proc == -1 else cfg.num_proc
 
     paths = glob(cfg.path)
 
     # check save path file extension
     if cfg.save_file_ext not in VALID_SAVE_FORMATS:
         raise ValueError(
-            f"Invalid save path file extension. Must be one of {VALID_SAVE_FORMATS}"
+            f"Invalid save path file extension. Must be one of {VALID_SAVE_FORMATS}",
         )
 
     # group paths in batches
     files = tqdm(paths, desc="files")
 
     _process_files = partial(process_files, cfg=cfg)
-    with logging_redirect_tqdm():
-        with mp.Pool(num_proc) as pool:
-            # process files in parallel
-            for _ in pool.imap_unordered(_process_files, files, chunksize=1):
-                pass
+    with logging_redirect_tqdm(), mp.Pool(num_proc) as pool:
+        # process files in parallel
+        for _ in pool.imap_unordered(_process_files, files, chunksize=1):
+            pass
 
     logging.info("Finished cleaning %s files", len(paths))
 

@@ -20,20 +20,20 @@ Authors:
 
 import logging
 import multiprocessing as mp
+from collections.abc import Generator, Iterable
 from glob import glob
 from pathlib import Path
-from typing import Callable, Generator, Iterable, Union
+from typing import Callable, Union
 
 import datasets
 import hydra
 import ndjson
 from datasets import Dataset, load_dataset
 from datasets.utils import disable_progress_bar
+from dfm.cleaning import Deduper
 from omegaconf import DictConfig, OmegaConf
 from tqdm import tqdm
 from tqdm.contrib.logging import logging_redirect_tqdm
-
-from dfm.cleaning import Deduper
 
 CFG_PATH = Path(__file__).parent / "configs"
 VALID_SAVE_FORMATS = {
@@ -86,7 +86,10 @@ def multigen(gen_func: Callable) -> Callable:
 
 
 def dataset_to_disk(
-    dataset: Union[Dataset, Iterable[dict]], path: Path, ext: str, streaming: bool
+    dataset: Union[Dataset, Iterable[dict]],
+    path: Path,
+    ext: str,
+    streaming: bool,
 ) -> None:
     """Save a dataset to disk
 
@@ -104,7 +107,7 @@ def dataset_to_disk(
     if streaming and ext not in {"jsonl", "json"}:
         raise ValueError(
             f"Streaming is only supported for jsonl files not for {ext}. "
-            "Please use a different save format."
+            "Please use a different save format.",
         )
     if streaming:
         # write each row to path as a jsonl file
@@ -141,13 +144,12 @@ def create_dataset_generator(path: Union[Path, str]) -> Generator[dict, None, No
     if ext not in {"json", "jsonl"}:
         raise ValueError(
             "Only json and jsonl files are supported when use_huggingface_loader is"
-            + f" False, not {ext}. Please use a different save format."
+            + f" False, not {ext}. Please use a different save format.",
         )
-    with open(path, "r") as file:  # pylint: disable=unspecified-encoding
+    with open(path) as file:  # pylint: disable=unspecified-encoding
         reader = ndjson.reader(file)
 
-        for post in reader:
-            yield post
+        yield from reader
 
 
 def process_path(path: Union[Path, str], deduper: Deduper, cfg: DictConfig) -> None:
@@ -170,7 +172,10 @@ def process_path(path: Union[Path, str], deduper: Deduper, cfg: DictConfig) -> N
     ext = VALID_SAVE_FORMATS[file_ext[1:]]  # remove the "."
     if cfg.use_huggingface_loader:
         dataset = load_dataset(
-            ext, data_files=str(path), split="train", streaming=cfg.streaming
+            ext,
+            data_files=str(path),
+            split="train",
+            streaming=cfg.streaming,
         )
     else:
         dataset = multigen(create_dataset_generator)(path)
@@ -197,7 +202,7 @@ def process_path(path: Union[Path, str], deduper: Deduper, cfg: DictConfig) -> N
 
         if cfg.use_huggingface_loader:
             dataset_filtered = dataset.filter(
-                lambda x: x["passed_quality_filter"] is True
+                lambda x: x["passed_quality_filter"] is True,
             )
         else:
             dataset_filtered = (
@@ -255,7 +260,7 @@ def process_path(path: Union[Path, str], deduper: Deduper, cfg: DictConfig) -> N
         # filter out duplicates
         if cfg.use_huggingface_loader:
             dataset_deduplicated = dataset_dedup.filter(
-                lambda x: x["is_duplicate"] is False
+                lambda x: x["is_duplicate"] is False,
             )
         else:
             dataset_deduplicated = (
@@ -266,7 +271,10 @@ def process_path(path: Union[Path, str], deduper: Deduper, cfg: DictConfig) -> N
 
     # save dataset with new file extension
     dataset_to_disk(
-        dataset_deduplicated, save_path, cfg.save_file_ext, streaming=cfg.streaming
+        dataset_deduplicated,
+        save_path,
+        cfg.save_file_ext,
+        streaming=cfg.streaming,
     )
 
 
@@ -294,17 +302,15 @@ def main(cfg: DictConfig) -> None:
         logging.basicConfig(filename=save_dir / "deduplication.log", level=logging.INFO)
     if cfg.verbosity_level == 2:
         logging.basicConfig(
-            filename=save_dir / "deduplication.log", level=logging.DEBUG
+            filename=save_dir / "deduplication.log",
+            level=logging.DEBUG,
         )
 
     # save config to folder
     with open(save_dir / "deduplication_config.yaml", "w", encoding="utf-8") as file:
         OmegaConf.save(cfg, file)
 
-    if cfg.num_proc == -1:
-        num_proc = mp.cpu_count() - 1
-    else:
-        num_proc = cfg.num_proc
+    num_proc = mp.cpu_count() - 1 if cfg.num_proc == -1 else cfg.num_proc
 
     paths = glob(cfg.path)
     paths = [

@@ -25,7 +25,7 @@ class TestMatchCounter:
     @pytest.fixture(scope="class")
     def term_pattern_list(self):
         return MatchCounter.term_list_to_spacy_match_patterns(
-            term_list=["heks", "soldat"]
+            term_list=["heks", "soldat"],
         )
 
     @pytest.fixture(scope="class")
@@ -39,7 +39,7 @@ class TestMatchCounter:
     @pytest.fixture(scope="class")
     def pæn_matcher(self, nlp):
         pæn_match_patterns = MatchCounter.term_list_to_spacy_match_patterns(
-            term_list=["pæn"]
+            term_list=["pæn"],
         )
 
         return MatchCounter(match_patterns=pæn_match_patterns, nlp=nlp)
@@ -52,7 +52,7 @@ class TestMatchCounter:
 
     def test_matcher_object_generation(self, regex_patterns, mc_basic):
         matcher_objects = mc_basic.create_matcher_object_from_pattern_list(
-            pattern_container_list=regex_patterns
+            pattern_container_list=regex_patterns,
         )
 
         assert len(matcher_objects) == 2
@@ -99,7 +99,8 @@ class TestMatchCounter:
         labelled_term_list = [{"christian": ["christian", "christianity"]}]
 
         output = MatchCounter.list_of_labelled_term_lists_to_spacy_match_patterns(
-            list_of_labelled_term_lists=labelled_term_list, lowercase=True
+            list_of_labelled_term_lists=labelled_term_list,
+            lowercase=True,
         )
 
         assert output == [

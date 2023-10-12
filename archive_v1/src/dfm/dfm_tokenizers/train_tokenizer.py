@@ -1,7 +1,8 @@
 """Script to train tokenizers"""
 
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable, Union
+from typing import Union
 
 from datasets.arrow_dataset import Dataset
 from datasets.iterable_dataset import IterableDataset
@@ -52,16 +53,16 @@ def train_tokenizer(  # noqa C901
         config = TokenizerConfig(**config)
 
     # Convert corpus to an iterable of strings if a Dataset is given
-    if isinstance(corpus, Dataset) or isinstance(corpus, IterableDataset):
+    if isinstance(corpus, (Dataset, IterableDataset)):
         corpus = (sample["text"] for sample in corpus)
 
     # Instantiate the tokenizer model
     if config.tokenizer_type == "bpe":
         model = models.BPE(unk_token=config.unk_token)
     elif config.tokenizer_type == "wordpiece":
-        model = models.WordPiece(unk_token=config.unk_token)  # noqa
+        model = models.WordPiece(unk_token=config.unk_token)
     elif config.tokenizer_type == "unigram":
-        model = models.Unigram()  # noqa
+        model = models.Unigram()
 
     # Instantiate the tokenizer
     tokenizer = tokenizers.Tokenizer(model)
@@ -77,19 +78,19 @@ def train_tokenizer(  # noqa C901
     tokenizer.add_special_tokens(special_tokens)
 
     # Initialise the normalizer and add it to the tokenizer
-    normalizer_list = list()
+    normalizer_list = []
     if config.nfkc_normalization:
         normalizer_list.append(normalizers.NFKC())
     if config.lower_case:
         normalizer_list.append(normalizers.Lowercase())
-    normalizer = normalizers.Sequence(normalizer_list)  # noqa
+    normalizer = normalizers.Sequence(normalizer_list)
     tokenizer.normalizer = normalizer
 
     # Shorthand for whether a prefix whitespace should be added to words
     pre_ws = config.add_prefix_space
 
     # Initialise the pre-tokenizer and add it to the tokenizer
-    pre_tok_list = list()
+    pre_tok_list = []
     if config.byte_level:
         pre_tok_list.append(pre_tokenizers.ByteLevel(add_prefix_space=pre_ws))
     if config.sentence_piece:
@@ -101,12 +102,12 @@ def train_tokenizer(  # noqa C901
 
     # Initialise the post-processor
     if config.add_sep_and_cls_tokens:
-        params = dict(
-            cls=(config.bos_token, 1),
-            sep=(config.eos_token, 2),
-            trim_offsets=True,
-            add_prefix_space=pre_ws,
-        )
+        params = {
+            "cls": (config.bos_token, 1),
+            "sep": (config.eos_token, 2),
+            "trim_offsets": True,
+            "add_prefix_space": pre_ws,
+        }
         tokenizer.post_processor = processors.RobertaProcessing(**params)
     elif config.byte_level:
         tokenizer.post_processor = processors.ByteLevel(trim_offsets=True)

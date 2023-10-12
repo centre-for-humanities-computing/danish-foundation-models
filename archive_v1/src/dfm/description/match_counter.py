@@ -1,5 +1,6 @@
 from collections import defaultdict
-from typing import Dict, Iterable, List, Optional
+from collections.abc import Iterable
+from typing import Optional
 
 from spacy.language import Language
 from spacy.matcher import Matcher
@@ -14,18 +15,18 @@ class MatchCounter:
         nlp (Language): The spacy language to use
     """
 
-    def __init__(self, match_patterns: List[Dict[str, list]], nlp: Language):
+    def __init__(self, match_patterns: list[dict[str, list]], nlp: Language):
         self.nlp = nlp
         self.matcher_objects = self.create_matcher_object_from_pattern_list(
-            match_patterns
+            match_patterns,
         )
 
     @staticmethod
     def list_of_labelled_term_lists_to_spacy_match_patterns(
-        list_of_labelled_term_lists: List[Dict[str, List[str]]],
+        list_of_labelled_term_lists: list[dict[str, list[str]]],
         label_prefix: Optional[str] = "",
         lowercase: bool = True,
-    ) -> List[str]:
+    ) -> list[str]:
         """Takes a list of strings and converts it to a list of spacy match patterns
 
         Args:
@@ -43,7 +44,9 @@ class MatchCounter:
         for labelled_term_list in list_of_labelled_term_lists:
             for label, term_list in labelled_term_list.items():
                 match_patterns = MatchCounter.term_list_to_spacy_match_patterns(
-                    term_list=term_list, label_prefix=label_prefix, label=label
+                    term_list=term_list,
+                    label_prefix=label_prefix,
+                    label=label,
                 )
                 out_list += match_patterns
 
@@ -51,11 +54,11 @@ class MatchCounter:
 
     @staticmethod
     def term_list_to_spacy_match_patterns(
-        term_list: List[str],
+        term_list: list[str],
         label_prefix: Optional[str] = "",
         label: Optional[str] = None,
         lowercase: bool = True,
-    ) -> List[str]:
+    ) -> list[str]:
         """Takes a list of strings and converts it to a list of spacy match patterns
 
         Args:
@@ -75,17 +78,15 @@ class MatchCounter:
         attribute = "LOWER" if lowercase else "TEXT"
 
         for term in term_list:
-            if label is None:
-                cur_label = label_prefix + term
-            else:
-                cur_label = label_prefix + label
+            cur_label = label_prefix + term if label is None else label_prefix + label
 
             out_list.append({cur_label: [{attribute: term}]})
 
         return out_list
 
     def create_matcher_object_from_pattern_list(
-        self, pattern_container_list: List[Dict[str, List]]
+        self,
+        pattern_container_list: list[dict[str, list]],
     ) -> Matcher:
         """
         Generates a matcher object from a list of dictionaries with {matcher_label (str): pattern (list)}
@@ -114,7 +115,7 @@ class MatchCounter:
 
         return matcher_object
 
-    def count(self, texts: Iterable[str]) -> Dict[str, List[int]]:
+    def count(self, texts: Iterable[str]) -> dict[str, list[int]]:
         """Generates counts from the match patterns in the MatchCounter object.
 
         Args:
@@ -130,10 +131,11 @@ class MatchCounter:
 
         for doc in docs:
             doc_match_counts = self._get_match_counts_from_doc(
-                doc, self.matcher_objects
+                doc,
+                self.matcher_objects,
             )
 
-            for pattern_label in doc_match_counts.keys():
+            for pattern_label in doc_match_counts:
                 pattern_match_count = doc_match_counts.get(pattern_label, 0)
 
                 aggregated_match_counts[pattern_label].append(pattern_match_count)
@@ -160,7 +162,7 @@ class MatchCounter:
 
             counts[pattern_label] = 0
 
-        for match_id, start, end in matcher_object(doc):
+        for match_id, _start, _end in matcher_object(doc):
             counts[self.nlp.vocab.strings[match_id]] += 1
 
         return dict(counts)

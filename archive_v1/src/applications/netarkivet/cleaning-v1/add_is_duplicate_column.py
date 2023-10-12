@@ -42,7 +42,7 @@ def main(netarkivet_path=Path("/work/netarkivet-cleaned")):
             meta = load_dataset("csv", data_files=meta_path)
             meta = meta["train"]
             assert len(meta) == len(
-                ds
+                ds,
             ), "length of dataset and its metadata is not the same."
             ds = ds.add_column("is_duplicate", meta["is_duplicate"])
             ds.to_json(jsonl_file)

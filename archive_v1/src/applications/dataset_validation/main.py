@@ -1,6 +1,7 @@
 """Script for rating text quality of NAT."""
+from collections.abc import Iterable
 from datetime import date
-from typing import Iterable, Optional
+from typing import Optional
 
 from dfm.cleaning import QualityFilter, SentenceFilter
 from dfm.dataset_validation.rating_interface import ExampleRater
@@ -10,7 +11,9 @@ n_char_total = 0
 
 
 def text_generator(
-    seed, n_texts: Optional[int], max_texts: Optional[int]
+    seed,
+    n_texts: Optional[int],
+    max_texts: Optional[int],
 ) -> Iterable[str]:
     """
     Create text generator

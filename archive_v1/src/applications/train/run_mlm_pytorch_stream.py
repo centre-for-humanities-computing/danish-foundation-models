@@ -34,7 +34,7 @@ import os
 import sys
 from dataclasses import dataclass, field
 from itertools import chain
-from typing import Optional, Tuple, Union
+from typing import Optional, Union
 
 import datasets
 import transformers
@@ -68,14 +68,14 @@ class ModelArguments:
         metadata={
             "help": (
                 "The model checkpoint for weights initialization.Don't set if you want to train a model from scratch."
-            )
+            ),
         },
     )
     model_type: Optional[str] = field(
         default=None,
         metadata={
             "help": "If training from scratch, pass a model type from the list: "
-            + ", ".join(MODEL_TYPES)
+            + ", ".join(MODEL_TYPES),
         },
     )
     config_overrides: Optional[str] = field(
@@ -84,37 +84,37 @@ class ModelArguments:
             "help": (
                 "Override some existing default config settings when a model is trained from scratch. Example: "
                 "n_embd=10,resid_pdrop=0.2,scale_attn_weights=false,summary_type=cls_index"
-            )
+            ),
         },
     )
     config_name: Optional[str] = field(
         default=None,
         metadata={
-            "help": "Pretrained config name or path if not the same as model_name"
+            "help": "Pretrained config name or path if not the same as model_name",
         },
     )
     tokenizer_name: Optional[str] = field(
         default=None,
         metadata={
-            "help": "Pretrained tokenizer name or path if not the same as model_name"
+            "help": "Pretrained tokenizer name or path if not the same as model_name",
         },
     )
     cache_dir: Optional[str] = field(
         default=None,
         metadata={
-            "help": "Where do you want to store the pretrained models downloaded from huggingface.co"
+            "help": "Where do you want to store the pretrained models downloaded from huggingface.co",
         },
     )
     use_fast_tokenizer: bool = field(
         default=True,
         metadata={
-            "help": "Whether to use one of the fast tokenizer (backed by the tokenizers library) or not."
+            "help": "Whether to use one of the fast tokenizer (backed by the tokenizers library) or not.",
         },
     )
     model_revision: str = field(
         default="main",
         metadata={
-            "help": "The specific model version to use (can be a branch name, tag name or commit id)."
+            "help": "The specific model version to use (can be a branch name, tag name or commit id).",
         },
     )
     use_auth_token: bool = field(
@@ -123,7 +123,7 @@ class ModelArguments:
             "help": (
                 "Will use the token generated when running `transformers-cli login` (necessary to use this script "
                 "with private models)."
-            )
+            ),
         },
     )
 
@@ -132,7 +132,7 @@ class ModelArguments:
             self.config_name is not None or self.model_name_or_path is not None
         ):
             raise ValueError(
-                "--config_overrides can't be used in combination with --config_name or --model_name_or_path"
+                "--config_overrides can't be used in combination with --config_name or --model_name_or_path",
             )
 
 
@@ -147,7 +147,7 @@ class DataTrainingArguments:
     dataset_config_name: Optional[str] = field(
         default=None,
         metadata={
-            "help": "The configuration name of the dataset to use (via the datasets library)."
+            "help": "The configuration name of the dataset to use (via the datasets library).",
         },
     )
     streaming: bool = field(
@@ -155,12 +155,13 @@ class DataTrainingArguments:
         metadata={"help": "Whether to load the dataset using streaming"},
     )
     train_file: Optional[str] = field(
-        default=None, metadata={"help": "The input training data file (a text file)."}
+        default=None,
+        metadata={"help": "The input training data file (a text file)."},
     )
     validation_file: Optional[str] = field(
         default=None,
         metadata={
-            "help": "An optional input evaluation data file to evaluate the perplexity on (a text file)."
+            "help": "An optional input evaluation data file to evaluate the perplexity on (a text file).",
         },
     )
     overwrite_cache: bool = field(
@@ -171,7 +172,7 @@ class DataTrainingArguments:
         default=5,
         metadata={
             "help": "The percentage of the train set used as validation set in case"
-            + "there's no validation split. If streaming is True then this will be the count"
+            + "there's no validation split. If streaming is True then this will be the count",
         },
     )
     max_seq_length: Optional[int] = field(
@@ -180,7 +181,7 @@ class DataTrainingArguments:
             "help": (
                 "The maximum total input sequence length after tokenization. Sequences longer "
                 "than this will be truncated."
-            )
+            ),
         },
     )
     preprocessing_num_workers: Optional[int] = field(
@@ -194,7 +195,7 @@ class DataTrainingArguments:
     line_by_line: bool = field(
         default=False,
         metadata={
-            "help": "Whether distinct lines of text in the dataset are to be handled as distinct sequences."
+            "help": "Whether distinct lines of text in the dataset are to be handled as distinct sequences.",
         },
     )
     pad_to_max_length: bool = field(
@@ -203,7 +204,7 @@ class DataTrainingArguments:
             "help": (
                 "Whether to pad all samples to `max_seq_length`. "
                 "If False, will pad the samples dynamically when batching to the maximum length in the batch."
-            )
+            ),
         },
     )
     max_train_samples: Optional[int] = field(
@@ -212,7 +213,7 @@ class DataTrainingArguments:
             "help": (
                 "For debugging purposes or quicker training, truncate the number of training examples to this "
                 "value if set."
-            )
+            ),
         },
     )
     max_eval_samples: Optional[int] = field(
@@ -221,7 +222,7 @@ class DataTrainingArguments:
             "help": (
                 "For debugging purposes or quicker training, truncate the number of evaluation examples to this "
                 "value if set."
-            )
+            ),
         },
     )
 
@@ -232,25 +233,26 @@ class DataTrainingArguments:
             and self.validation_file is None
         ):
             raise ValueError(
-                "Need either a dataset name or a training/validation file."
+                "Need either a dataset name or a training/validation file.",
             )
         else:
             if self.train_file is not None:
                 extension = self.train_file.split(".")[-1]
                 if extension not in ["csv", "json", "txt"]:
                     raise ValueError(
-                        "`train_file` should be a csv, a json or a txt file."
+                        "`train_file` should be a csv, a json or a txt file.",
                     )
             if self.validation_file is not None:
                 extension = self.validation_file.split(".")[-1]
                 if extension not in ["csv", "json", "txt"]:
                     raise ValueError(
-                        "`validation_file` should be a csv, a json or a txt file."
+                        "`validation_file` should be a csv, a json or a txt file.",
                     )
 
 
 def get_dataset(
-    model_args: ModelArguments, data_args: DataTrainingArguments
+    model_args: ModelArguments,
+    data_args: DataTrainingArguments,
 ) -> DatasetDict:
     """Get the datasets.
 
@@ -284,7 +286,7 @@ def get_dataset(
             use_auth_token=True if model_args.use_auth_token else None,
             streaming=data_args.streaming,
         )
-        if "validation" not in raw_datasets.keys():
+        if "validation" not in raw_datasets:
             if data_args.streaming is False:
                 raw_datasets["validation"] = load_dataset(
                     data_args.dataset_name,
@@ -304,10 +306,10 @@ def get_dataset(
                 )
             else:
                 raw_datasets["validation"] = raw_datasets["train"].take(
-                    data_args.validation_split
+                    data_args.validation_split,
                 )
                 raw_datasets["train"] = raw_datasets["train"].skip(
-                    data_args.validation_split
+                    data_args.validation_split,
                 )
 
     else:
@@ -329,7 +331,7 @@ def get_dataset(
         )
 
         # If no validation data is there, validation_split will be used to divide the dataset.
-        if "validation" not in raw_datasets.keys():
+        if "validation" not in raw_datasets:
             if data_args.streaming is False:
                 raw_datasets["validation"] = load_dataset(
                     extension,
@@ -349,10 +351,10 @@ def get_dataset(
                 )
             else:
                 raw_datasets["validation"] = raw_datasets["train"].take(
-                    data_args.validation_split
+                    data_args.validation_split,
                 )
                 raw_datasets["train"] = raw_datasets["train"].skip(
-                    data_args.validation_split
+                    data_args.validation_split,
                 )
 
     # See more about loading any type of standard or custom dataset (from files, python
@@ -363,7 +365,7 @@ def get_dataset(
 
 def get_tokenizer_and_model(
     model_args: ModelArguments,
-) -> Tuple[AutoTokenizer, AutoModelForMaskedLM]:
+) -> tuple[AutoTokenizer, AutoModelForMaskedLM]:
     """Load pretrained model and tokenizer.
 
     Distributed training:
@@ -386,7 +388,8 @@ def get_tokenizer_and_model(
         config = AutoConfig.from_pretrained(model_args.config_name, **config_kwargs)
     elif model_args.model_name_or_path:
         config = AutoConfig.from_pretrained(
-            model_args.model_name_or_path, **config_kwargs
+            model_args.model_name_or_path,
+            **config_kwargs,
         )
     else:
         config = CONFIG_MAPPING[model_args.model_type]()
@@ -404,16 +407,18 @@ def get_tokenizer_and_model(
     }
     if model_args.tokenizer_name:
         tokenizer = AutoTokenizer.from_pretrained(
-            model_args.tokenizer_name, **tokenizer_kwargs
+            model_args.tokenizer_name,
+            **tokenizer_kwargs,
         )
     elif model_args.model_name_or_path:
         tokenizer = AutoTokenizer.from_pretrained(
-            model_args.model_name_or_path, **tokenizer_kwargs
+            model_args.model_name_or_path,
+            **tokenizer_kwargs,
         )
     else:
         raise ValueError(
             "You are instantiating a new tokenizer from scratch. This is not supported by this script."
-            "You can do it from another script, save it, and load it from here, using --tokenizer_name."
+            "You can do it from another script, save it, and load it from here, using --tokenizer_name.",
         )
 
     if model_args.model_name_or_path:
@@ -433,7 +438,7 @@ def get_tokenizer_and_model(
     return tokenizer, model
 
 
-def preprocess_dataset(  # noqa: C901
+def preprocess_dataset(
     data_args: DataTrainingArguments,
     training_args: TrainingArguments,
     raw_datasets: DatasetDict,
@@ -460,14 +465,14 @@ def preprocess_dataset(  # noqa: C901
         if max_seq_length > 1024:
             logger.warning(
                 f"The tokenizer picked seems to have a very large `model_max_length` ({tokenizer.model_max_length}). "
-                "Picking 1024 instead. You can change that default value by passing --max_seq_length xxx."
+                "Picking 1024 instead. You can change that default value by passing --max_seq_length xxx.",
             )
             max_seq_length = 1024
     else:
         if data_args.max_seq_length > tokenizer.model_max_length:
             logger.warning(
                 f"The max_seq_length passed ({data_args.max_seq_length}) is larger than the maximum length for the"
-                f"model ({tokenizer.model_max_length}). Using max_seq_length={tokenizer.model_max_length}."
+                f"model ({tokenizer.model_max_length}). Using max_seq_length={tokenizer.model_max_length}.",
             )
         max_seq_length = min(data_args.max_seq_length, tokenizer.model_max_length)
 
@@ -499,17 +504,18 @@ def preprocess_dataset(  # noqa: C901
         # efficient when it receives the `special_tokens_mask`.
         def tokenize_function(examples):
             return tokenizer(
-                examples[text_column_name], return_special_tokens_mask=True
+                examples[text_column_name],
+                return_special_tokens_mask=True,
             )
 
         desc = "Running tokenizer on every text in dataset"
 
     with training_args.main_process_first(desc="dataset map tokenization"):
-        _map_config = dict(
-            function=tokenize_function,
-            batched=True,
-            remove_columns=column_names,
-        )
+        _map_config = {
+            "function": tokenize_function,
+            "batched": True,
+            "remove_columns": column_names,
+        }
         if data_args.streaming is False:
             _map_config["num_proc"] = data_args.preprocessing_num_workers
             _map_config["load_from_cache_file"] = not data_args.overwrite_cache
@@ -521,10 +527,8 @@ def preprocess_dataset(  # noqa: C901
         # max_seq_length.
         def group_texts(examples):
             # Concatenate all texts.
-            concatenated_examples = {
-                k: list(chain(*examples[k])) for k in examples.keys()
-            }
-            total_length = len(concatenated_examples[list(examples.keys())[0]])
+            concatenated_examples = {k: list(chain(*examples[k])) for k in examples}
+            total_length = len(concatenated_examples[next(iter(examples.keys()))])
             # We drop the small remainder, we could add padding if the model supported it instead of this drop, you can
             # customize this part to your needs.
             if total_length >= max_seq_length:
@@ -547,10 +551,10 @@ def preprocess_dataset(  # noqa: C901
         # https://huggingface.co/docs/datasets/package_reference/main_classes.html#datasets.Dataset.map
 
         with training_args.main_process_first(desc="grouping texts together"):
-            _map_config = dict(
-                function=group_texts,
-                batched=True,
-            )
+            _map_config = {
+                "function": group_texts,
+                "batched": True,
+            }
             if data_args.streaming is False:
                 _map_config["num_proc"] = (data_args.preprocessing_num_workers,)
                 _map_config["load_from_cache_file"] = (not data_args.overwrite_cache,)
@@ -592,7 +596,7 @@ def train(
         max_train_samples = data_args.max_train_samples
         if max_train_samples is None:
             raise ValueError(
-                "When specifying --streaming, then you must also specify --max_train_samples"
+                "When specifying --streaming, then you must also specify --max_train_samples",
             )
         metrics["train_samples"] = data_args.max_train_samples
     else:
@@ -660,19 +664,19 @@ def evaluate(
     return kwargs
 
 
-def main():  # noqa
+def main():
     # See all possible arguments in src/transformers/training_args.py
     # or by passing the --help flag to this script.
     # We now keep distinct sets of args, for a cleaner separation of concerns.
 
     parser = HfArgumentParser(
-        (ModelArguments, DataTrainingArguments, TrainingArguments)
+        (ModelArguments, DataTrainingArguments, TrainingArguments),
     )
     if len(sys.argv) == 2 and sys.argv[1].endswith(".json"):
         # If we pass only one argument to the script and it's the path to a json file,
         # let's parse it to get our arguments.
         model_args, data_args, training_args = parser.parse_json_file(
-            json_file=os.path.abspath(sys.argv[1])
+            json_file=os.path.abspath(sys.argv[1]),
         )
     else:
         model_args, data_args, training_args = parser.parse_args_into_dataclasses()
@@ -694,7 +698,7 @@ def main():  # noqa
     # Log on each process the small summary:
     logger.warning(
         f"Process rank: {training_args.local_rank}, device: {training_args.device}, n_gpu: {training_args.n_gpu}"
-        + f"distributed training: {bool(training_args.local_rank != -1)}, 16-bits training: {training_args.fp16}"
+        + f"distributed training: {bool(training_args.local_rank != -1)}, 16-bits training: {training_args.fp16}",
     )
     # Set the verbosity to info of the Transformers logger (on main process only):
     logger.info(f"Training/evaluation parameters {training_args}")
@@ -710,14 +714,14 @@ def main():  # noqa
         if last_checkpoint is None and len(os.listdir(training_args.output_dir)) > 0:
             raise ValueError(
                 f"Output directory ({training_args.output_dir}) already exists and is not empty. "
-                "Use --overwrite_output_dir to overcome."
+                "Use --overwrite_output_dir to overcome.",
             )
         elif (
             last_checkpoint is not None and training_args.resume_from_checkpoint is None
         ):
             logger.info(
                 f"Checkpoint detected, resuming training at {last_checkpoint}. To avoid this behavior, change "
-                "the `--output_dir` or add `--overwrite_output_dir` to train from scratch."
+                "the `--output_dir` or add `--overwrite_output_dir` to train from scratch.",
             )
 
     # Set seed before initializing model.
@@ -728,7 +732,10 @@ def main():  # noqa
     tokenizer, model = get_tokenizer_and_model(model_args)
 
     tokenized_datasets = preprocess_dataset(
-        data_args, training_args, raw_datasets, tokenizer
+        data_args,
+        training_args,
+        raw_datasets,
+        tokenizer,
     )
 
     if training_args.do_train:
@@ -784,20 +791,20 @@ def main():  # noqa
     )
 
     # Initialize our Trainer
-    _training_args = dict(
-        model=model,
-        args=training_args,
-        train_dataset=train_dataset if training_args.do_train else None,
-        eval_dataset=eval_dataset if training_args.do_eval else None,
-        tokenizer=tokenizer,
-        data_collator=data_collator,
-        compute_metrics=compute_metrics
+    _training_args = {
+        "model": model,
+        "args": training_args,
+        "train_dataset": train_dataset if training_args.do_train else None,
+        "eval_dataset": eval_dataset if training_args.do_eval else None,
+        "tokenizer": tokenizer,
+        "data_collator": data_collator,
+        "compute_metrics": compute_metrics
         if training_args.do_eval and not is_torch_tpu_available()
         else None,
-        preprocess_logits_for_metrics=preprocess_logits_for_metrics
+        "preprocess_logits_for_metrics": preprocess_logits_for_metrics
         if training_args.do_eval and not is_torch_tpu_available()
         else None,
-    )
+    }
 
     if data_args.streaming:
         # convert to pytorch iterable dataset

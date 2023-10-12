@@ -15,7 +15,7 @@ import os
 import shutil
 from collections import Counter
 from pathlib import Path
-from typing import List, Tuple, Union
+from typing import Union
 
 import pandas as pd
 from wasabi import msg
@@ -26,7 +26,7 @@ def get_paths(
     nested: bool = True,
     folder_suffix=".parquet",
     file_suffix=".parquet",
-) -> Union[List[str], dict]:
+) -> Union[list[str], dict]:
     """extracts paths from netarkivet either in a nested format"""
     folders = [
         os.path.join(path, f) for f in os.listdir(path) if f.endswith(folder_suffix)
@@ -44,7 +44,7 @@ def get_paths(
     ]
 
 
-def split_mult_extension(path: str) -> Tuple[str, str]:
+def split_mult_extension(path: str) -> tuple[str, str]:
     """An extension of os.path.splitext which splits extentions until there is none
     left"""
     ext = ""
@@ -56,8 +56,10 @@ def split_mult_extension(path: str) -> Tuple[str, str]:
         path = path_
 
 
-def process(path, lang_codes={"da"}):
+def process(path, lang_codes=None):
     """process a single file path, calculating domain counts and timestamps"""
+    if lang_codes is None:
+        lang_codes = {"da"}
     df = pd.read_parquet(path, engine="pyarrow")
 
     # filter
@@ -74,7 +76,7 @@ def main(n_process: int, read_path: str, write_path: str):
     """Applied process to each file obtained using get_paths (all of netarkivet). Write
     {script_name}__SUCCESS file when finished. Will skill already processed folders."""
     paths = get_paths(read_path)
-    list(paths.keys())[0]
+    next(iter(paths.keys()))
 
     if n_process == -1:
         n_process = mp.cpu_count()

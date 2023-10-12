@@ -12,7 +12,8 @@ References:
 
 import multiprocessing as mp
 from collections import Counter
-from typing import Any, Callable, Dict, Iterable, Optional, Sequence, Tuple, Union
+from collections.abc import Iterable, Sequence
+from typing import Any, Callable, Optional, Union
 
 import emoji
 from joblib import Parallel, delayed
@@ -72,7 +73,6 @@ class SentenceFilter:
         curly_brackets_threshold: int = 2,
         n_jobs: int = -1,
     ):
-
         # Store arguments as attributes
         self.title_cased_words_threshold = title_cased_words_threshold
         self.min_num_words = min_num_words
@@ -80,15 +80,15 @@ class SentenceFilter:
         self.n_jobs = n_jobs
 
         # Create a dictionary with all the sentence filters
-        _all_filters: Dict[str, Callable[[str], bool]] = dict(
-            ends_with_punctuation_or_emoji=self._ends_with_punctuation_or_emoji,
-            has_few_title_cased_words=self._has_few_title_cased_words,
-            has_enough_words=self._has_enough_words,
-            has_few_curly_brackets=self._has_few_curly_brackets,
-        )
+        _all_filters: dict[str, Callable[[str], bool]] = {
+            "ends_with_punctuation_or_emoji": self._ends_with_punctuation_or_emoji,
+            "has_few_title_cased_words": self._has_few_title_cased_words,
+            "has_enough_words": self._has_enough_words,
+            "has_few_curly_brackets": self._has_few_curly_brackets,
+        }
 
         # Create variable storing the filters to be used
-        self.filters: Dict[str, Callable[[str], bool]] = dict()
+        self.filters: dict[str, Callable[[str], bool]] = {}
         if filter_names is None:
             self.filters = _all_filters
         else:
@@ -99,12 +99,12 @@ class SentenceFilter:
         # Create a counter for keeping track of how many documents each filter removed
         self.filter_counts = Counter()
 
-    def filter_corpus(  # noqa: C901
+    def filter_corpus(
         self,
-        texts: Union[Iterable[str], Iterable[Tuple[str, Optional[Any]]]],
+        texts: Union[Iterable[str], Iterable[tuple[str, Optional[Any]]]],
         progress_bar: bool = True,
         total: Optional[int] = None,
-    ) -> Union[Iterable[str], Iterable[Tuple[str, Union[Any, None]]]]:
+    ) -> Union[Iterable[str], Iterable[tuple[str, Union[Any, None]]]]:
         """Filters a corpus using the sentence filters.
 
         Args:
@@ -127,8 +127,8 @@ class SentenceFilter:
         docs = iter(texts)
 
         def filter_sample(
-            sample: Union[str, Tuple[str, Optional[Any]]]
-        ) -> Union[str, Tuple[str, Optional[Any]]]:
+            sample: Union[str, tuple[str, Optional[Any]]],
+        ) -> Union[str, tuple[str, Optional[Any]]]:
             """Filter a sample.
 
             Args:
@@ -148,7 +148,7 @@ class SentenceFilter:
                 context = None
             else:
                 raise TypeError(
-                    f"Expected either a string or a tuple, got {type(sample)}."
+                    f"Expected either a string or a tuple, got {type(sample)}.",
                 )
 
             # Split the document into sentences, splitting on newlines
@@ -177,16 +177,12 @@ class SentenceFilter:
                 return new_doc
 
         # Main filtering loop
-        if self.n_jobs == -1:
-            n_jobs = mp.cpu_count() - 1
-        else:
-            n_jobs = self.n_jobs
+        n_jobs = mp.cpu_count() - 1 if self.n_jobs == -1 else self.n_jobs
         if n_jobs == 1:
             for doc in docs:
                 yield filter_sample(doc)
         else:
             with Parallel(n_jobs=n_jobs, backend="threading") as parallel:
-
                 # Set up iterator, depending on whether we have a progress bar or not
                 if progress_bar:
                     itr = tqdm(docs, desc="Filtering corpus", total=total)
@@ -202,8 +198,10 @@ class SentenceFilter:
                     itr.close()
 
     def __call__(
-        self, *args, **kwargs
-    ) -> Union[Iterable[str], Iterable[Tuple[str, Union[Any, None]]]]:
+        self,
+        *args,
+        **kwargs,
+    ) -> Union[Iterable[str], Iterable[tuple[str, Union[Any, None]]]]:
         """Calls the `filter_corpus` method on the inputs.
 
         Args:
@@ -233,7 +231,6 @@ class SentenceFilter:
         """
         # Iterate over all the filter functions
         for filter_name, filter_fn in self.filters.items():
-
             # Apply the filter function, which returns True if the document satisfied
             # the filter, and False if it didn't
             satisfied_filter = filter_fn(doc)
@@ -245,6 +242,7 @@ class SentenceFilter:
             if not satisfied_filter:
                 self.filter_counts[filter_name] += 1
                 return filter_name
+        return None
 
     def _ends_with_punctuation_or_emoji(self, sentence: str) -> bool:
         """Checks if a sentence ends with punctuation or an emoji.
@@ -258,7 +256,7 @@ class SentenceFilter:
                 True if the sentence ends with punctuation, False otherwise.
         """
         # Initialise the list of emojis
-        emojis = list()
+        emojis = []
 
         # Add all unicode emojis as well as the codes for them, like :blush:. The codes
         # are the keys in the `emoji.UNICODE_EMOJI["en"]` dictionary, and the emojis
@@ -371,7 +369,7 @@ if __name__ == "__main__":
     t0 = time.time()
 
     # Filter the texts
-    for doc in filtered_docs:
+    for _doc in filtered_docs:
         pass
 
     # Record the time taken

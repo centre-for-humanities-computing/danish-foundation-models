@@ -8,11 +8,11 @@ from src.dfm.cleaning.sentence_filter import SentenceFilter
 class TestEndsWithPunctuationOrEmoji:
     @pytest.fixture(scope="class")
     def sentence_filter(self):
-        yield SentenceFilter(filter_names=["ends_with_punctuation_or_emoji"])
+        return SentenceFilter(filter_names=["ends_with_punctuation_or_emoji"])
 
     @pytest.fixture(scope="class")
     def sentences(self):
-        yield [
+        return [
             "Det her er en sætning, som slutter med et punktum.",
             "Denne her sætning, skrevet af Hr. Mortensen, slutter med en smiley 🎉",
             "Denne her slutter ikke",
@@ -22,18 +22,21 @@ class TestEndsWithPunctuationOrEmoji:
 
     @pytest.fixture(scope="class")
     def clean_sentence_indices(self):
-        yield [0, 1, 3]
+        return [0, 1, 3]
 
     @pytest.fixture(scope="class")
     def document(self, sentences):
-        yield "\n".join(sentences)
+        return "\n".join(sentences)
 
     @pytest.fixture(scope="class")
     def cleaned_document(self, sentences, clean_sentence_indices):
-        yield "\n".join([sentences[i] for i in clean_sentence_indices])
+        return "\n".join([sentences[i] for i in clean_sentence_indices])
 
     def test_sentence_ends_with_punctuation_or_emoji(
-        self, sentences, sentence_filter, clean_sentence_indices
+        self,
+        sentences,
+        sentence_filter,
+        clean_sentence_indices,
     ) -> None:
         """Tests that the sentences are correctly."""
         filter_outputs = [
@@ -54,11 +57,11 @@ class TestEndsWithPunctuationOrEmoji:
 class TestHasFewTitleCasedWords:
     @pytest.fixture(scope="class")
     def sentence_filter(self):
-        yield SentenceFilter(filter_names=["has_few_title_cased_words"])
+        return SentenceFilter(filter_names=["has_few_title_cased_words"])
 
     @pytest.fixture(scope="class")
     def sentences(self):
-        yield [
+        return [
             "Det her er en sætning, som kun har ét ord, der starter med stort bogstav.",
             "Om os Indkøbskurv Shop Find butik Kontakt",
             "Han hedder John Hansen, blev der sagt.",
@@ -66,18 +69,21 @@ class TestHasFewTitleCasedWords:
 
     @pytest.fixture(scope="class")
     def clean_sentence_indices(self):
-        yield [0, 2]
+        return [0, 2]
 
     @pytest.fixture(scope="class")
     def document(self, sentences):
-        yield "\n".join(sentences)
+        return "\n".join(sentences)
 
     @pytest.fixture(scope="class")
     def cleaned_document(self, sentences, clean_sentence_indices):
-        yield "\n".join([sentences[i] for i in clean_sentence_indices])
+        return "\n".join([sentences[i] for i in clean_sentence_indices])
 
     def test_has_few_title_cased_words(
-        self, sentences, sentence_filter, clean_sentence_indices
+        self,
+        sentences,
+        sentence_filter,
+        clean_sentence_indices,
     ) -> None:
         """Tests that the sentences are correctly filtered."""
         filter_outputs = [
@@ -98,11 +104,11 @@ class TestHasFewTitleCasedWords:
 class TestHasEnoughWords:
     @pytest.fixture(scope="class")
     def sentence_filter(self):
-        yield SentenceFilter(filter_names=["has_enough_words"])
+        return SentenceFilter(filter_names=["has_enough_words"])
 
     @pytest.fixture(scope="class")
     def sentences(self):
-        yield [
+        return [
             "Det her er en sætning, som har nok ord.",
             "Få ord!",
             "Hej",
@@ -112,18 +118,21 @@ class TestHasEnoughWords:
 
     @pytest.fixture(scope="class")
     def clean_sentence_indices(self):
-        yield [0, 4]
+        return [0, 4]
 
     @pytest.fixture(scope="class")
     def document(self, sentences):
-        yield "\n".join(sentences)
+        return "\n".join(sentences)
 
     @pytest.fixture(scope="class")
     def cleaned_document(self, sentences, clean_sentence_indices):
-        yield "\n".join([sentences[i] for i in clean_sentence_indices])
+        return "\n".join([sentences[i] for i in clean_sentence_indices])
 
     def test_has_enough_words(
-        self, sentences, sentence_filter, clean_sentence_indices
+        self,
+        sentences,
+        sentence_filter,
+        clean_sentence_indices,
     ) -> None:
         """Tests that the sentences are correctly filtered."""
         filter_outputs = [
@@ -143,11 +152,11 @@ class TestHasEnoughWords:
 class TestFewCurlyBrackets:
     @pytest.fixture(scope="class")
     def sentence_filter(self):
-        yield SentenceFilter(filter_names=["has_few_curly_brackets"])
+        return SentenceFilter(filter_names=["has_few_curly_brackets"])
 
     @pytest.fixture(scope="class")
     def sentences(self):
-        yield [
+        return [
             "Det her er bare en helt normal sætning.",
             "En sætning må gerne have nogle krølleparanteser :-}",
             "Men den må ikke have {nogle stykker}.",
@@ -156,18 +165,21 @@ class TestFewCurlyBrackets:
 
     @pytest.fixture(scope="class")
     def clean_sentence_indices(self):
-        yield [0, 1]
+        return [0, 1]
 
     @pytest.fixture(scope="class")
     def document(self, sentences):
-        yield "\n".join(sentences)
+        return "\n".join(sentences)
 
     @pytest.fixture(scope="class")
     def cleaned_document(self, sentences, clean_sentence_indices):
-        yield "\n".join([sentences[i] for i in clean_sentence_indices])
+        return "\n".join([sentences[i] for i in clean_sentence_indices])
 
     def test_has_few_curly_brackets(
-        self, sentences, sentence_filter, clean_sentence_indices
+        self,
+        sentences,
+        sentence_filter,
+        clean_sentence_indices,
     ) -> None:
         """Tests that the sentences are correctly filtered."""
         filter_outputs = [

@@ -42,25 +42,27 @@ def identity_fn(doc: str) -> str:
 class TestDeduper:
     @pytest.fixture(scope="class")
     def shingle_params(self):
-        yield dict(normalization_func=default_normalization, split_method="word_ngram")
+        return {
+            "normalization_func": default_normalization,
+            "split_method": "word_ngram",
+        }
 
     @pytest.fixture(scope="class")
     def minhash_params(self):
-        yield dict(
-            normalization_func=default_normalization,
-            split_method="paragraph",
-            ngram_size=1,
-            ngram_stride=1,
-            num_minhashes=128,
-            random_seed=42,
-        )
+        return {
+            "normalization_func": default_normalization,
+            "split_method": "paragraph",
+            "ngram_size": 1,
+            "ngram_stride": 1,
+            "num_minhashes": 128,
+            "random_seed": 42,
+        }
 
     def deduper(self, **kwargs):
-        default_test_args = dict(ngram_size=1, random_seed=42, verbose=False)
+        default_test_args = {"ngram_size": 1, "random_seed": 42, "verbose": False}
         return Deduper(**dict(default_test_args, **kwargs))
 
     def dedup(self, corpus, **kwargs):
-
         # Add a document ID to the corpus, if it isn't there already
         if isinstance(corpus, list) and isinstance(corpus[0], str):
             corpus = list(enumerate(corpus))
@@ -80,20 +82,20 @@ class TestDeduper:
             "én, to, tre! én, to, tre!",
         ]
         misses = 0
-        for i in range(0, iterations):
+        for i in range(iterations):
             if len(self.dedup(corpus, random_seed=i, **kwargs)) == 2:
                 misses += 1
         return (100.0 * misses) / iterations
 
     def test_stream(self):
         corpus = iter(
-            [(0, "hej med dig min ven"), (1, "hej med dig"), (2, "farvel du gamle")]
+            [(0, "hej med dig min ven"), (1, "hej med dig"), (2, "farvel du gamle")],
         )
         self.dedup(corpus) == ["hej med dig min ven", "farvel du gamle"]
 
     def test_removes_exact_duplicates(self):
         assert self.dedup(
-            ["hej med dig min ven", "hej med dig min ven", "farvel du gamle"]
+            ["hej med dig min ven", "hej med dig min ven", "farvel du gamle"],
         ) == ["hej med dig min ven", "farvel du gamle"]
 
     def test_removes_near_duplicates(self):
@@ -103,15 +105,16 @@ class TestDeduper:
                 "én, to, tre! én, to, tre!",
                 "Da kom en soldat marcherende hen ad landevejen:\n "
                 "én, to, tre! én, to, tre!",
-            ]
+            ],
         ) == [
             "Der kom en soldat marcherende hen ad landevejen:\n "
-            "én, to, tre! én, to, tre!"
+            "én, to, tre! én, to, tre!",
         ]
 
     def test_document_shorter_than_shingles(self):
         assert self.dedup(
-            ["Hej med dig", "Hej med dig", "Gå din vej"], ngram_size=13
+            ["Hej med dig", "Hej med dig", "Gå din vej"],
+            ngram_size=13,
         ) == ["Hej med dig", "Gå din vej"]
 
     def test_split_by_word_ngram(self):
@@ -186,19 +189,28 @@ class TestDeduper:
 
     def test_2_ngram_shingles(self, shingle_params):
         shingles = get_shingles(
-            "Hej med dig Kim", ngram_size=2, ngram_stride=1, **shingle_params
+            "Hej med dig Kim",
+            ngram_size=2,
+            ngram_stride=1,
+            **shingle_params,
         )
         assert shingles == ["Hej med", "med dig", "dig Kim"]
 
     def test_3_ngram_shingles(self, shingle_params):
         shingles = get_shingles(
-            "Hej med dig Kim", ngram_size=3, ngram_stride=1, **shingle_params
+            "Hej med dig Kim",
+            ngram_size=3,
+            ngram_stride=1,
+            **shingle_params,
         )
         assert shingles == ["Hej med dig", "med dig Kim"]
 
     def test_double_stride_shingles(self, shingle_params):
         shingles = get_shingles(
-            "Hej med dig Kim", ngram_size=1, ngram_stride=2, **shingle_params
+            "Hej med dig Kim",
+            ngram_size=1,
+            ngram_stride=2,
+            **shingle_params,
         )
         assert shingles == ["Hej", "dig"]
 
@@ -212,7 +224,6 @@ class TestDeduper:
         corpus = ["hej med dig min ven", "hej med dig min ven", "farvel du gamle"]
         corpus = list(enumerate(corpus))
         with tempfile.TemporaryDirectory() as temp:
-
             # Create a deduper loaded from disk, and a different new one
             deduper = self.deduper(split_method="paragraph")
             deduper.deduplicate(corpus, output_dir=temp, overwrite=True)

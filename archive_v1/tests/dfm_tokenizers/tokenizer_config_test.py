@@ -14,24 +14,24 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 @pytest.fixture(scope="module")
 def valid_config_dict():
-    yield dict(
-        tokenizer_type="bpe",
-        vocab_size=1000,
-        lower_case=False,
-        sentence_piece=False,
-        add_prefix_space=False,
-        byte_level=False,
-        add_sep_and_cls_tokens=False,
-        padding=False,
-        truncation=False,
-        max_length=512,
-        nfkc_normalization=False,
-        pad_token="<pad>",
-        bos_token="<bos>",
-        eos_token="<eos>",
-        unk_token="<unk>",
-        mask_token="<mask>",
-    )
+    return {
+        "tokenizer_type": "bpe",
+        "vocab_size": 1000,
+        "lower_case": False,
+        "sentence_piece": False,
+        "add_prefix_space": False,
+        "byte_level": False,
+        "add_sep_and_cls_tokens": False,
+        "padding": False,
+        "truncation": False,
+        "max_length": 512,
+        "nfkc_normalization": False,
+        "pad_token": "<pad>",
+        "bos_token": "<bos>",
+        "eos_token": "<eos>",
+        "unk_token": "<unk>",
+        "mask_token": "<mask>",
+    }
 
 
 class TestTokenizerConfig:
@@ -39,7 +39,7 @@ class TestTokenizerConfig:
 
     @pytest.fixture(scope="class")
     def config_path(self):
-        yield Path("test_config.json")
+        return Path("test_config.json")
 
     def test_tokenizer_config_init(self, valid_config_dict):
         TokenizerConfig(**valid_config_dict)

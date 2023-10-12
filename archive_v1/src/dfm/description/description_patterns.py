@@ -1,5 +1,3 @@
-from typing import Dict, List
-
 from .match_counter import MatchCounter
 
 # Terms for religions are:
@@ -17,7 +15,7 @@ religion_labelled_match_patterns = [
             "kristendomme",
             "kristendommen",
             "kristendommene",
-        ]
+        ],
     },
     {
         "jew": [
@@ -30,7 +28,7 @@ religion_labelled_match_patterns = [
             "jødedommen",
             "jødedomme",
             "jødedommene",
-        ]
+        ],
     },
     {
         "buddhist": [
@@ -43,7 +41,7 @@ religion_labelled_match_patterns = [
             "buddhismen",
             "buddhismer",
             "buddhismerne",
-        ]
+        ],
     },
     {
         "hindu": [
@@ -60,7 +58,7 @@ religion_labelled_match_patterns = [
             "hinduismen",
             "hinduismer",
             "hinduismerne",
-        ]
+        ],
     },
     {
         "atheist": [
@@ -73,14 +71,15 @@ religion_labelled_match_patterns = [
             "ahteismen",
             "atheismer",
             "atheismerne",
-        ]
+        ],
     },
 ]
 
 
 def get_religion_patterns():
     return MatchCounter.list_of_labelled_term_lists_to_spacy_match_patterns(
-        religion_labelled_match_patterns, label_prefix="rel_"
+        religion_labelled_match_patterns,
+        label_prefix="rel_",
     )
 
 
@@ -99,7 +98,7 @@ occupation_labelled_match_patterns = [
             "administratoren",
             "administratorer",
             "administratorerne",
-        ]
+        ],
     },
     {
         "analytiker": [
@@ -107,7 +106,7 @@ occupation_labelled_match_patterns = [
             "analytikeren",
             "analytikere",
             "analytikerne",
-        ]
+        ],
     },
     {
         "arkitekt": [
@@ -115,7 +114,7 @@ occupation_labelled_match_patterns = [
             "arkitekten",
             "arkitekter",
             "arkitekterne",
-        ]
+        ],
     },
     {
         "assistent": [
@@ -123,7 +122,7 @@ occupation_labelled_match_patterns = [
             "assistenten",
             "assistenter",
             "assistenterne",
-        ]
+        ],
     },
     {
         "bager": [
@@ -131,7 +130,7 @@ occupation_labelled_match_patterns = [
             "bageren",
             "bagere",
             "bagerne",
-        ]
+        ],
     },
     {
         "bartender": [
@@ -139,7 +138,7 @@ occupation_labelled_match_patterns = [
             "bartenderen",
             "bartendere",
             "bartenderne",
-        ]
+        ],
     },
     {
         "ejendomsmægler": [
@@ -147,7 +146,7 @@ occupation_labelled_match_patterns = [
             "ejendomsmægleren",
             "ejendomsmæglere",
             "ejendomsmæglerne",
-        ]
+        ],
     },
     {
         "tømrer": [
@@ -155,7 +154,7 @@ occupation_labelled_match_patterns = [
             "tømreren",
             "tømrere",
             "tømrerne",
-        ]
+        ],
     },
     {
         "kassemedarbejder": [
@@ -163,7 +162,7 @@ occupation_labelled_match_patterns = [
             "kassemedearbejderen",
             "kassemedarbejdere",
             "kassemedarbejderne",
-        ]
+        ],
     },
     {
         "kok": [
@@ -171,7 +170,7 @@ occupation_labelled_match_patterns = [
             "kokken",
             "kokke",
             "kokkene",
-        ]
+        ],
     },
     {
         "kemiker": [
@@ -179,7 +178,7 @@ occupation_labelled_match_patterns = [
             "kemikeren",
             "kemikere",
             "kemikerne",
-        ]
+        ],
     },
     {
         "chef": [
@@ -187,7 +186,7 @@ occupation_labelled_match_patterns = [
             "chefen",
             "chefer",
             "cheferne",
-        ]
+        ],
     },
     {
         "rengøringshjælp": [
@@ -195,7 +194,7 @@ occupation_labelled_match_patterns = [
             "rengøringshjælpen",
             "rengøringshjælpere",
             "rengøringshjælperne",
-        ]
+        ],
     },
     {
         "ekspedient": [
@@ -203,7 +202,7 @@ occupation_labelled_match_patterns = [
             "ekspedienten",
             "ekspedienter",
             "ekspedienterne",
-        ]
+        ],
     },
     {
         "terapeut": [
@@ -211,7 +210,7 @@ occupation_labelled_match_patterns = [
             "terapeuten",
             "terapeuter",
             "terapeuterne",
-        ]
+        ],
     },
     {
         "advokat": [
@@ -219,7 +218,7 @@ occupation_labelled_match_patterns = [
             "advokaten",
             "advokater",
             "advokaterne",
-        ]
+        ],
     },
     {
         "diætist": [
@@ -227,7 +226,7 @@ occupation_labelled_match_patterns = [
             "diætisten",
             "diætister",
             "diætisterne",
-        ]
+        ],
     },
     {
         "læge": [
@@ -235,7 +234,7 @@ occupation_labelled_match_patterns = [
             "lægen",
             "læger",
             "lægerne",
-        ]
+        ],
     },
     {
         "chauffør": [
@@ -243,7 +242,7 @@ occupation_labelled_match_patterns = [
             "chaufføren",
             "chauffører",
             "chaufførerne",
-        ]
+        ],
     },
     {
         "redaktør": [
@@ -251,7 +250,7 @@ occupation_labelled_match_patterns = [
             "redatøren",
             "redaktører",
             "redaktørerne",
-        ]
+        ],
     },
     {
         "elektriker": [
@@ -259,7 +258,7 @@ occupation_labelled_match_patterns = [
             "elektrikeren",
             "elektrikere",
             "elektrikerne",
-        ]
+        ],
     },
     {
         "ingeniør": [
@@ -267,7 +266,7 @@ occupation_labelled_match_patterns = [
             "ingeniøren",
             "ingeniører",
             "ingeniørerne",
-        ]
+        ],
     },
     {
         "landmand": [
@@ -275,7 +274,7 @@ occupation_labelled_match_patterns = [
             "landmanden",
             "landmænd",
             "landmændene",
-        ]
+        ],
     },
     {
         "brandmand": [
@@ -283,7 +282,7 @@ occupation_labelled_match_patterns = [
             "brandmanden",
             "brandmænd",
             "brandmændene",
-        ]
+        ],
     },
     {
         "vagt": [
@@ -291,7 +290,7 @@ occupation_labelled_match_patterns = [
             "vagten",
             "vagter",
             "vagterne",
-        ]
+        ],
     },
     {
         "frisør": [
@@ -299,7 +298,7 @@ occupation_labelled_match_patterns = [
             "frisøren",
             "frisører",
             "frisørerne",
-        ]
+        ],
     },
     {
         "instruktør": [
@@ -307,7 +306,7 @@ occupation_labelled_match_patterns = [
             "instruktøren",
             "instruktører",
             "instruktørerne",
-        ]
+        ],
     },
     {
         "efterforsker": [
@@ -315,7 +314,7 @@ occupation_labelled_match_patterns = [
             "efterforskeren",
             "efterforskere",
             "efterforskerne",
-        ]
+        ],
     },
     {
         "pedel": [
@@ -323,7 +322,7 @@ occupation_labelled_match_patterns = [
             "pedellen",
             "pedeller",
             "pedellerne",
-        ]
+        ],
     },
     {
         "advokat": [
@@ -331,7 +330,7 @@ occupation_labelled_match_patterns = [
             "advokaten",
             "advokater",
             "advokaterne",
-        ]
+        ],
     },
     {
         "biliotekar": [
@@ -339,7 +338,7 @@ occupation_labelled_match_patterns = [
             "bibliotekaren",
             "bibliotekarer",
             "bibliotekarerne",
-        ]
+        ],
     },
     {
         "mekaniker": [
@@ -347,7 +346,7 @@ occupation_labelled_match_patterns = [
             "makanikeren",
             "mekanikere",
             "mekanikerne",
-        ]
+        ],
     },
     {
         "sygeplejerske": [
@@ -355,7 +354,7 @@ occupation_labelled_match_patterns = [
             "sygeplersken",
             "sygeplejersker",
             "sygeplejeskerne",
-        ]
+        ],
     },
     {
         "politibetjent": [
@@ -363,7 +362,7 @@ occupation_labelled_match_patterns = [
             "politibetjenten",
             "politibetjente",
             "politibetjentene",
-        ]
+        ],
     },
     {
         "maler": [
@@ -371,7 +370,7 @@ occupation_labelled_match_patterns = [
             "maleren",
             "malerne",
             "malere",
-        ]
+        ],
     },
     {
         "ambulanceredder": [
@@ -379,7 +378,7 @@ occupation_labelled_match_patterns = [
             "ambulanceredderen",
             "ambulancereddere",
             "ambulanceredderne",
-        ]
+        ],
     },
     {
         "ambulancebehandler": [
@@ -387,7 +386,7 @@ occupation_labelled_match_patterns = [
             "ambulancebehandleren",
             "ambulancebehandlere",
             "ambulancebehandlerne",
-        ]
+        ],
     },
     {
         "patolog": [
@@ -395,7 +394,7 @@ occupation_labelled_match_patterns = [
             "patologen",
             "patologer",
             "patologerne",
-        ]
+        ],
     },
     {
         "farmaceut": [
@@ -403,7 +402,7 @@ occupation_labelled_match_patterns = [
             "farmaceuten",
             "farmaceuter",
             "farmaceuterne",
-        ]
+        ],
     },
     {
         "blikkenslager": [
@@ -411,7 +410,7 @@ occupation_labelled_match_patterns = [
             "blikkenslageren",
             "blikkenslagere",
             "blikkenslagerne",
-        ]
+        ],
     },
     {
         "programmør": [
@@ -419,7 +418,7 @@ occupation_labelled_match_patterns = [
             "programmøren",
             "programmører",
             "programmørerne",
-        ]
+        ],
     },
     {
         "psykolog": [
@@ -427,7 +426,7 @@ occupation_labelled_match_patterns = [
             "psykologen",
             "psykologer",
             "psykologerne",
-        ]
+        ],
     },
     {
         "receptionist": [
@@ -435,7 +434,7 @@ occupation_labelled_match_patterns = [
             "receptionisten",
             "receptionister",
             "receptionisterne",
-        ]
+        ],
     },
     {
         "sekretær": [
@@ -443,7 +442,7 @@ occupation_labelled_match_patterns = [
             "sekretæren",
             "sekretærer",
             "sekretærerne",
-        ]
+        ],
     },
     {
         "kirurg": [
@@ -451,7 +450,7 @@ occupation_labelled_match_patterns = [
             "kirurgen",
             "kirurger",
             "kirurgerne",
-        ]
+        ],
     },
     {
         "skrædder": [
@@ -459,7 +458,7 @@ occupation_labelled_match_patterns = [
             "skrædderen",
             "skræddere",
             "skrædderne",
-        ]
+        ],
     },
     {
         "tekniker": [
@@ -467,7 +466,7 @@ occupation_labelled_match_patterns = [
             "teknikeren",
             "teknikere",
             "teknikerne",
-        ]
+        ],
     },
     {
         "terapeut": [
@@ -475,7 +474,7 @@ occupation_labelled_match_patterns = [
             "terapeuten",
             "terapeuter",
             "terapeuterne",
-        ]
+        ],
     },
     {
         "dyrlæge": [
@@ -483,7 +482,7 @@ occupation_labelled_match_patterns = [
             "dyrlægen",
             "dyrlæger",
             "dyrlægerne",
-        ]
+        ],
     },
     {
         "forfatter": [
@@ -491,311 +490,309 @@ occupation_labelled_match_patterns = [
             "forfatteren",
             "forfattere",
             "forfatterne",
-        ]
+        ],
     },
 ]
 
 
 def get_occupation_patterns():
     return MatchCounter.list_of_labelled_term_lists_to_spacy_match_patterns(
-        occupation_labelled_match_patterns, label_prefix="occu_"
+        occupation_labelled_match_patterns,
+        label_prefix="occu_",
     )
 
 
 # List is a partial translation of Rae et al. 2022, p. 95
-female_gendered_terms = set(
-    [
-        "pige",
-        "pigen",
-        "piger",
-        "pigerne",
-        "søster",
-        "søsteren",
-        "søstere",
-        "søsterne",
-        "mor",
-        "moren",
-        "mødre",
-        "mødrene",
-        "kone",
-        "konen",
-        "koner",
-        "konerne",
-        "brud",
-        "bruden",
-        "brude",
-        "brudene",
-        "dame",
-        "damen",
-        "damer",
-        "damerne",
-        "datter",
-        "datteren",
-        "døtre",
-        "døtrene",
-    ]
-)
+female_gendered_terms = {
+    "pige",
+    "pigen",
+    "piger",
+    "pigerne",
+    "søster",
+    "søsteren",
+    "søstere",
+    "søsterne",
+    "mor",
+    "moren",
+    "mødre",
+    "mødrene",
+    "kone",
+    "konen",
+    "koner",
+    "konerne",
+    "brud",
+    "bruden",
+    "brude",
+    "brudene",
+    "dame",
+    "damen",
+    "damer",
+    "damerne",
+    "datter",
+    "datteren",
+    "døtre",
+    "døtrene",
+}
 
 
 def get_female_gendered_patterns():
     return MatchCounter.term_list_to_spacy_match_patterns(
-        female_gendered_terms, label="gender_female_terms"
+        female_gendered_terms,
+        label="gender_female_terms",
     )
 
 
-male_gendered_terms = set(
-    [
-        "dreng",
-        "drengen",
-        "drenge",
-        "drengene",
-        "bror",
-        "broren",
-        "brødre",
-        "brødrene",
-        "far",
-        "faren",
-        "fædre",
-        "fædrene",
-        "mand",
-        "manden",
-        "mænd",
-        "mændene",
-        "brudgom",
-        "brudgommen",
-        "brudgomme",
-        "brudgommene",
-        "herre",
-        "herren",
-        "herrer",
-        "herrerne",
-        "søn",
-        "sønnen",
-        "sønner",
-        "sønnerne",
-    ]
-)
+male_gendered_terms = {
+    "dreng",
+    "drengen",
+    "drenge",
+    "drengene",
+    "bror",
+    "broren",
+    "brødre",
+    "brødrene",
+    "far",
+    "faren",
+    "fædre",
+    "fædrene",
+    "mand",
+    "manden",
+    "mænd",
+    "mændene",
+    "brudgom",
+    "brudgommen",
+    "brudgomme",
+    "brudgommene",
+    "herre",
+    "herren",
+    "herrer",
+    "herrerne",
+    "søn",
+    "sønnen",
+    "sønner",
+    "sønnerne",
+}
 
 
 def get_male_gendered_patterns():
     return MatchCounter.term_list_to_spacy_match_patterns(
-        male_gendered_terms, label="gender_male_terms"
+        male_gendered_terms,
+        label="gender_male_terms",
     )
 
 
-danish_adult_words = set(
-    [
-        "amatør",
-        "anal",
-        "anus",
-        "babes",
-        "bdsm",
-        "begær",
-        "bestialitet",
-        "blodig",
-        "blowjob",
-        "bordel",
-        "bordeller",
-        "bryster",
-        "bøsse",
-        "bøssefilm",
-        "c-skål",
-        "damer",
-        "dating",
-        "dildo",
-        "dildoer",
-        "dildomaskine",
-        "dyrisk",
-        "ejakulation",
-        "ejakulere",
-        "ejakulerede",
-        "ejakulerer",
-        "elskerinde",
-        "endetarm",
-        "erotik",
-        "erotisk",
-        "erotiske",
-        "escort",
-        "escortpige",
-        "escortpiger",
-        "escortpigerne",
-        "fanden",
-        "fisse",
-        "fisser",
-        "fræk",
-        "frække",
-        "frækt",
-        "fucked",
-        "fucker",
-        "gangbang",
-        "gay",
-        "hardcore",
-        "hentai",
-        "homo",
-        "hore",
-        "intim",
-        "intime",
-        "kinky",
-        "klitoris",
-        "kneppe",
-        "kusse",
-        "kvinder",
-        "latex",
-        "latino",
-        "lesbisk",
-        "liderlig",
-        "liderlige",
-        "lort",
-        "lorte",
-        "luder",
-        "masochist",
-        "massage",
-        "massageescort",
-        "massageklinik",
-        "massagen",
-        "massagepige",
-        "massagepiger",
-        "massagepigerne",
-        "milf",
-        "nigger",
-        "niggere",
-        "nøgenbillede",
-        "nøgenbilleder",
-        "nøgenbillederne",
-        "nøgne",
-        "onanere",
-        "orgasme",
-        "orgasmer",
-        "patter",
-        "pecker",
-        "penis",
-        "piger",
-        "pigesex",
-        "pik",
-        "pis",
-        "pisse",
-        "pisser",
-        "pisses",
-        "porn",
-        "porno",
-        "porno-casting",
-        "pornofilm",
-        "pornografi",
-        "pornostar",
-        "pornostjerne",
-        "pornostjernen",
-        "pornostjerner",
-        "prostitueret",
-        "røv",
-        "røvhul",
-        "røvhuller",
-        "sadist",
-        "samleje",
-        "sex",
-        "sexcam",
-        "sexdating",
-        "sexdatingsites",
-        "sexfilm",
-        "sexfoto",
-        "sexhistorier",
-        "sexparadis",
-        "sexshop",
-        "sexstillinger",
-        "sexvideo",
-        "sexvideoer",
-        "sexvideoerne",
-        "sexvideoen",
-        "sexy",
-        "shemale",
-        "shemales",
-        "sjofelhed",
-        "sjofelheder",
-        "sjofelhederne",
-        "skamlæber",
-        "skider",
-        "sluger",
-        "sm",
-        "spanking",
-        "sprække",
-        "sprøjteorgasme",
-        "sprøjteorgasmer",
-        "sprøjteorgasmen",
-        "sprøjteorgasmerne",
-        "strip",
-        "svans",
-        "swinger",
-        "swingerdating",
-        "swingerklub",
-        "sæd",
-        "sædafgang",
-        "tantra",
-        "telefonsex",
-        "testikel",
-        "thai",
-        "thaimassage",
-        "thaipiger",
-        "tranny",
-        "tæve",
-        "tæver",
-        "tøs",
-        "tøser",
-        "urin",
-        "vagina",
-        "vaginaen",
-        "viagra",
-        "viagraen",
-        "voldtage",
-        "voldtager",
-        "voldtægt" "vulva",
-        "webcam",
-        "webcam-chat",
-        "x-bedømt",
-        "xxx",
-    ]
-)
+danish_adult_words = {
+    "amatør",
+    "anal",
+    "anus",
+    "babes",
+    "bdsm",
+    "begær",
+    "bestialitet",
+    "blodig",
+    "blowjob",
+    "bordel",
+    "bordeller",
+    "bryster",
+    "bøsse",
+    "bøssefilm",
+    "c-skål",
+    "damer",
+    "dating",
+    "dildo",
+    "dildoer",
+    "dildomaskine",
+    "dyrisk",
+    "ejakulation",
+    "ejakulere",
+    "ejakulerede",
+    "ejakulerer",
+    "elskerinde",
+    "endetarm",
+    "erotik",
+    "erotisk",
+    "erotiske",
+    "escort",
+    "escortpige",
+    "escortpiger",
+    "escortpigerne",
+    "fanden",
+    "fisse",
+    "fisser",
+    "fræk",
+    "frække",
+    "frækt",
+    "fucked",
+    "fucker",
+    "gangbang",
+    "gay",
+    "hardcore",
+    "hentai",
+    "homo",
+    "hore",
+    "intim",
+    "intime",
+    "kinky",
+    "klitoris",
+    "kneppe",
+    "kusse",
+    "kvinder",
+    "latex",
+    "latino",
+    "lesbisk",
+    "liderlig",
+    "liderlige",
+    "lort",
+    "lorte",
+    "luder",
+    "masochist",
+    "massage",
+    "massageescort",
+    "massageklinik",
+    "massagen",
+    "massagepige",
+    "massagepiger",
+    "massagepigerne",
+    "milf",
+    "nigger",
+    "niggere",
+    "nøgenbillede",
+    "nøgenbilleder",
+    "nøgenbillederne",
+    "nøgne",
+    "onanere",
+    "orgasme",
+    "orgasmer",
+    "patter",
+    "pecker",
+    "penis",
+    "piger",
+    "pigesex",
+    "pik",
+    "pis",
+    "pisse",
+    "pisser",
+    "pisses",
+    "porn",
+    "porno",
+    "porno-casting",
+    "pornofilm",
+    "pornografi",
+    "pornostar",
+    "pornostjerne",
+    "pornostjernen",
+    "pornostjerner",
+    "prostitueret",
+    "røv",
+    "røvhul",
+    "røvhuller",
+    "sadist",
+    "samleje",
+    "sex",
+    "sexcam",
+    "sexdating",
+    "sexdatingsites",
+    "sexfilm",
+    "sexfoto",
+    "sexhistorier",
+    "sexparadis",
+    "sexshop",
+    "sexstillinger",
+    "sexvideo",
+    "sexvideoer",
+    "sexvideoerne",
+    "sexvideoen",
+    "sexy",
+    "shemale",
+    "shemales",
+    "sjofelhed",
+    "sjofelheder",
+    "sjofelhederne",
+    "skamlæber",
+    "skider",
+    "sluger",
+    "sm",
+    "spanking",
+    "sprække",
+    "sprøjteorgasme",
+    "sprøjteorgasmer",
+    "sprøjteorgasmen",
+    "sprøjteorgasmerne",
+    "strip",
+    "svans",
+    "swinger",
+    "swingerdating",
+    "swingerklub",
+    "sæd",
+    "sædafgang",
+    "tantra",
+    "telefonsex",
+    "testikel",
+    "thai",
+    "thaimassage",
+    "thaipiger",
+    "tranny",
+    "tæve",
+    "tæver",
+    "tøs",
+    "tøser",
+    "urin",
+    "vagina",
+    "vaginaen",
+    "viagra",
+    "viagraen",
+    "voldtage",
+    "voldtager",
+    "voldtægt" "vulva",
+    "webcam",
+    "webcam-chat",
+    "x-bedømt",
+    "xxx",
+}
 
 
-def get_muslim_name_patterns() -> List[Dict[str, list]]:
+def get_muslim_name_patterns() -> list[dict[str, list]]:
     """Gets a list of all muslim first names in Denmark from DaCy, and converts to a list of lowercase spacy patterns.
 
     Returns:
         List[Dict[str, list]]: list of lowercase spacy match patterns
     """
     from dacy.datasets import muslim_names
-
     from dfm.description.match_counter import MatchCounter
 
     muslim_names_list = [name.lower() for name in muslim_names()["first_name"]]
 
     return MatchCounter.term_list_to_spacy_match_patterns(
-        term_list=muslim_names_list, label="rel_muslim_names"
+        term_list=muslim_names_list,
+        label="rel_muslim_names",
     )
 
 
-def get_gender_name_patterns() -> List[Dict[str, list]]:
+def get_gender_name_patterns() -> list[dict[str, list]]:
     """Gets a list of all gendered first names in Denmark from DaCy, and converts to a list of lowercase spacy patterns.
 
     Returns:
         List[Dict[str, list]]: list of lowercase spacy match patterns
     """
     from dacy.datasets import female_names, male_names
-
     from dfm.description.match_counter import MatchCounter
 
     female_names_list = [name.lower() for name in female_names()["first_name"]]
     female_names_patterns = MatchCounter.term_list_to_spacy_match_patterns(
-        female_names_list, label="gender_female_names"
+        female_names_list,
+        label="gender_female_names",
     )
 
     male_names_list = [name.lower() for name in male_names()["first_name"]]
     male_name_patterns = MatchCounter.term_list_to_spacy_match_patterns(
-        male_names_list, label="gender_male_names"
+        male_names_list,
+        label="gender_male_names",
     )
 
     return female_names_patterns + male_name_patterns
 
 
-def get_positive_word_patterns() -> List[Dict[str, list]]:
+def get_positive_word_patterns() -> list[dict[str, list]]:
     """Loads a list of word- and sentiment pairs from "da_lexicon_afinn_v1.txt", splits it by tabs, then sorts them into lists depending on whether the sentiment is positive or negative.
 
     Returns:
@@ -807,7 +804,7 @@ def get_positive_word_patterns() -> List[Dict[str, list]]:
 
     path = pathlib.Path(__file__).parent / "da_lexicon_afinn_v1.txt"
 
-    with open(path, "r") as f:
+    with open(path) as f:
         lines = f.readlines()
 
     lines = [line.split("\t") for line in lines]
@@ -815,13 +812,14 @@ def get_positive_word_patterns() -> List[Dict[str, list]]:
     positive_words = [line[0] for line in lines if int(line[1]) > 0]
 
     positive_patterns = MatchCounter.term_list_to_spacy_match_patterns(
-        positive_words, label="positive_words"
+        positive_words,
+        label="positive_words",
     )
 
     return positive_patterns
 
 
-def get_negative_word_patterns() -> List[Dict[str, list]]:
+def get_negative_word_patterns() -> list[dict[str, list]]:
     """Loads a list of word- and sentiment pairs from "da_lexicon_afinn_v1.txt", splits it by tabs, then sorts them into lists depending on whether the sentiment is positive or negative.
 
     Returns:
@@ -833,7 +831,7 @@ def get_negative_word_patterns() -> List[Dict[str, list]]:
 
     path = pathlib.Path(__file__).parent / "da_lexicon_afinn_v1.txt"
 
-    with open(path, "r") as f:
+    with open(path) as f:
         lines = f.readlines()
 
     lines = [line.split("\t") for line in lines]
@@ -841,7 +839,8 @@ def get_negative_word_patterns() -> List[Dict[str, list]]:
     negative_words = [line[0] for line in lines if int(line[1]) < 0]
 
     negative_patterns = MatchCounter.term_list_to_spacy_match_patterns(
-        negative_words, label="negative_words"
+        negative_words,
+        label="negative_words",
     )
 
     return negative_patterns

@@ -14,9 +14,8 @@ from functools import partial
 from pathlib import Path
 
 from datasets import load_dataset
-from wasabi import msg
-
 from dfm.cleaning import Deduper
+from wasabi import msg
 
 
 def filter_batch(batch, i):
@@ -67,7 +66,8 @@ def main(
     json_files = glob.glob(path, recursive=True)
 
     w_path = os.path.join(
-        write_path, "twitter_da_stopwords_2019-01-01_2021-04-30.arrow"
+        write_path,
+        "twitter_da_stopwords_2019-01-01_2021-04-30.arrow",
     )
     deduper = Deduper(ngram_size=10)
 

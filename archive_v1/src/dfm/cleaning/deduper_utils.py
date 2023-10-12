@@ -5,7 +5,7 @@ Author:
 """
 
 import re
-from typing import Callable, List
+from typing import Callable
 from unicodedata import normalize
 
 from datasketch import LeanMinHash, MinHash
@@ -17,7 +17,7 @@ def get_shingles(
     split_method: str,
     ngram_size: int,
     ngram_stride: int,
-) -> List[str]:
+) -> list[str]:
     """Extracts the shingles from a document.
 
     Args:

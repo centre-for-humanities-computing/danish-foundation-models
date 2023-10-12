@@ -12,9 +12,8 @@ import os
 from functools import partial
 
 from datasets import load_from_disk
-from wasabi import msg
-
 from dfm.cleaning import Deduper
+from wasabi import msg
 
 
 def filter_batch(batch, i):
@@ -54,7 +53,6 @@ def dedupe(batch, deduper: Deduper, dedupe_path: str):
 def main(
     path,
 ) -> None:
-
     deduper = Deduper()
 
     msg.info("Loading Dataset")
@@ -63,7 +61,9 @@ def main(
 
     msg.info("Starting deduping")
     deduper = partial(
-        dedupe, deduper=deduper, dedupe_path=os.path.join(path, "deduplicated")
+        dedupe,
+        deduper=deduper,
+        dedupe_path=os.path.join(path, "deduplicated"),
     )
     # dedupe dataset
     ds = ds.map(

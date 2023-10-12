@@ -12,11 +12,11 @@ import json
 import os
 import pickle
 import ssl
-import sys
 import time
+from collections.abc import Iterable
 from concurrent.futures import ThreadPoolExecutor
 from itertools import islice
-from typing import Iterable, Optional, Tuple
+from typing import Optional
 
 import aiohttp
 from aiohttp import ClientTimeout
@@ -35,18 +35,17 @@ else:
     SSL_PROTOCOLS = (*SSL_PROTOCOLS, uvloop.loop.SSLProtocol)
 
 
-def get_domains(limit=None, checked={}):
+def get_domains(limit=None, checked=None):
     """Extract a list of domains"""
-    with open(path, "r") as f:
+    if checked is None:
+        checked = {}
+    with open(path) as f:
         ss_domains = json.load(f)
-    if limit:
-        domains = ss_domains["false"][:limit]
-    else:
-        domains = ss_domains["false"]
+    domains = ss_domains["false"][:limit] if limit else ss_domains["false"]
     return ["http://" + d for d in domains if "http://" + d not in checked]
 
 
-async def check_sites(session, ssl_context, url) -> Tuple[str, int]:
+async def check_sites(session, ssl_context, url) -> tuple[str, int]:
     """check if sites is fetchable return the url along with status code"""
     async with session.get(
         url,
@@ -118,8 +117,7 @@ def ignore_aiohttp_ssl_eror(loop):
     or 3.8.
     """
 
-    if sys.version_info >= (3, 7, 4):
-        return
+    return
 
     orig_handler = loop.get_exception_handler()
 
@@ -189,7 +187,7 @@ def dns_filter(
             checked = set()
 
         for i, sites in enumerate(
-            batch(get_domains(limit=None, checked=checked), batch_size)
+            batch(get_domains(limit=None, checked=checked), batch_size),
         ):
             msg.info(f"Currently at batch {i} with a batch size of {batch_size}")
             start_time = time.time()
@@ -210,7 +208,7 @@ def dns_filter(
                     pickle.dump(output, f)
 
     msg.info(
-        "Comparing diff between checking Google public DNS and Cleanbrowsing adult DNS"
+        "Comparing diff between checking Google public DNS and Cleanbrowsing adult DNS",
     )
     domains = {
         d: (output["google public DNS"][d], c) for d, c in output["cleanweb"].items()
@@ -227,7 +225,7 @@ def dns_filter(
 
     msg.info(
         "Performing 10 additional checks to see to using to ensure the sites isn't"
-        + " fetchable using cleanBrowsing"
+        + " fetchable using cleanBrowsing",
     )
 
     output["unsafe_sites_double_checked"] = output["unsafe_sites"]
@@ -238,7 +236,7 @@ def dns_filter(
         ignore_aiohttp_ssl_eror(loop)
         loop.set_default_executor(ThreadPoolExecutor(n_threads))
         t = loop.run_until_complete(
-            check_all_sites(output["unsafe_sites_double_checked"], ssl_context)
+            check_all_sites(output["unsafe_sites_double_checked"], ssl_context),
         )
         output["unsafe_sites_double_checked"] = [
             site
@@ -254,7 +252,6 @@ def dns_filter(
 
 
 if __name__ == "__main__":
-
     path = os.path.join("/work/netarkivet-cleaned/safe_search_domains.json")
 
     save_path = os.path.join("/work/netarkivet-cleaned/safe_search_domains_safe.pkl")

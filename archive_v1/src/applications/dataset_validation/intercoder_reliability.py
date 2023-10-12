@@ -47,7 +47,7 @@ Additionally, each block was tagged for pornography (yes/no) and offensiveness (
 ## Text proportions
 
 ----
-"""
+""",
 )
 
 
@@ -61,7 +61,7 @@ def get_proportions(taggers, md):
         md.add(
             f"- *Date: {date}*"
             + f"\n- *Sentences tagged: {len(df)}*"
-            + f"\n- *Documents tagged: {n_docs}*"
+            + f"\n- *Documents tagged: {n_docs}*",
         )
 
         n_char = sum(len(t) for t in df["text"].values)
@@ -100,20 +100,21 @@ for pair in pairs:
     tagger1_name, _, session_n1, __, n_docs1, date1 = tagger1.split("_")
     tagger2_name, _, session_n2, __, n_docs2, date2 = tagger2.split("_")
     md.add(
-        f"**{tagger1_name.capitalize()}** (Session: {session_n1}) vs **{tagger2_name.capitalize()}** - (Session: {session_n2})"
+        f"**{tagger1_name.capitalize()}** (Session: {session_n1}) vs **{tagger2_name.capitalize()}** - (Session: {session_n2})",
     )
     # merge
     df = pd.merge(taggers[pair[0]], taggers[pair[1]], on="text", suffixes=("_1", "_2"))
     kappa = cohen_kappa_score(df["category_1"], df["category_2"])
     md.add(
-        f"- Cohen's Kappa (all categories): {kappa:.4f} (Overlap in sentences: {df.shape[0]})"
+        f"- Cohen's Kappa (all categories): {kappa:.4f} (Overlap in sentences: {df.shape[0]})",
     )
 
     kappa = cohen_kappa_score(
-        df["category_1"] == "correct_language", df["category_2"] == "correct_language"
+        df["category_1"] == "correct_language",
+        df["category_2"] == "correct_language",
     )
     md.add(
-        f"- Cohen's Kappa (correct_language vs not correct_language): {kappa:.4f} (Overlap in sentences: {df.shape[0]})"
+        f"- Cohen's Kappa (correct_language vs not correct_language): {kappa:.4f} (Overlap in sentences: {df.shape[0]})",
     )
 
 
@@ -131,7 +132,7 @@ Comparison with mC4
 ```
 
 While non-language texts in NAT was often menu bars, contact information, or navigation.
-"""
+""",
 )
 
 
