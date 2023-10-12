@@ -10,9 +10,10 @@ Authors:
 import glob
 import os
 import random
+from collections.abc import Iterable
 from contextlib import ExitStack
 from pathlib import Path
-from typing import Iterable, List, Optional, Union
+from typing import Optional, Union
 
 import ndjson
 from wasabi import msg
@@ -55,7 +56,7 @@ def shuffle_buffer(x: Iterable, buffer_size: int) -> Iterable:
 
 
 def jsonl_merge(  # noqa C901
-    jsonl_files: List[Union[Path, str]],
+    jsonl_files: list[Union[Path, str]],
     buffer_size: Optional[int] = None,
     sample: bool = True,
 ) -> Iterable[dict]:
@@ -81,8 +82,7 @@ def jsonl_merge(  # noqa C901
 
     def __iterative_yield(readers: list) -> Iterable:
         for reader in readers:
-            for sample in reader:
-                yield sample
+            yield from reader
 
     yield_fn = __sample_yield if sample is True else __iterative_yield
 
@@ -102,7 +102,9 @@ def jsonl_merge(  # noqa C901
                 yield sample
 
 
-def apply_filter(dataset=Iterable[dict], columns_to_keep=["text"]) -> Iterable[dict]:
+def apply_filter(dataset=Iterable[dict], columns_to_keep=None) -> Iterable[dict]:
+    if columns_to_keep is None:
+        columns_to_keep = ["text"]
     for sample in dataset:
         if sample["is_duplicate"] is False:
             yield {k: sample[k] for k in columns_to_keep}

@@ -12,7 +12,6 @@ import json
 import os
 import sys
 from collections import Counter
-from typing import List
 
 import pandas as pd
 
@@ -20,12 +19,12 @@ dfm_path = os.path.join("/work", "danish-foundation-models")
 
 sys.path.append(dfm_path)
 
-from src.applications.netarkivet.content_filtering.count_domains_netarkivet import (  # noqa E402
+from src.applications.netarkivet.content_filtering.count_domains_netarkivet import (  # E402
     get_paths,
 )
 
 
-def sum_counters(counters: List[Counter]) -> Counter:
+def sum_counters(counters: list[Counter]) -> Counter:
     """
     Recursive counter with a O(log(n)) Complexity
     """
@@ -40,7 +39,7 @@ def sum_counters(counters: List[Counter]) -> Counter:
 
 def read_counter_json(path):
     """read jsons consisting of multiple counters in as one counter"""
-    with open(path, "r") as f:
+    with open(path) as f:
         c = json.load(f)
     return sum_counters([Counter(counts) for counts in c])
 

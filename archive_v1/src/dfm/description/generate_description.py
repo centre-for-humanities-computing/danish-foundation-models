@@ -1,10 +1,8 @@
 import os
 import time
-from typing import List
 
 import spacy
 from datasets import load_dataset
-
 from dfm.description.description_patterns import (
     danish_adult_words,
     get_female_gendered_patterns,
@@ -19,7 +17,7 @@ from dfm.description.description_patterns import (
 from dfm.description.match_counter import MatchCounter
 
 
-def create_patterns() -> List:
+def create_patterns() -> list:
     """Generates the patterns we've selected for the present analyses.
 
     Returns:
@@ -34,7 +32,8 @@ def create_patterns() -> List:
 
     # Adult words
     adult_patterns = MatchCounter.term_list_to_spacy_match_patterns(
-        danish_adult_words, label_prefix="porn_"
+        danish_adult_words,
+        label_prefix="porn_",
     )
 
     return (
@@ -59,7 +58,8 @@ if __name__ == "__main__":
 
     ds = load_dataset("DDSC/partial-danish-gigaword-no-twitter")
     ds_sharded = ds.shuffle()["train"].shard(
-        num_shards=10000, index=0
+        num_shards=10000,
+        index=0,
     )  # Work on 1/100th of DGW
 
     nlp = spacy.blank("da")
@@ -83,7 +83,7 @@ if __name__ == "__main__":
     save_path.mkdir(parents=False, exist_ok=True)  # only create if needed
 
     dgw_processed = dgw_processed.remove_columns(
-        ["text", "doc_id", "LICENSE", "uri", "date_built"]
+        ["text", "doc_id", "LICENSE", "uri", "date_built"],
     )  # Remove irrelevant columns
 
     dgw_processed.to_csv("csv/output_100.csv")

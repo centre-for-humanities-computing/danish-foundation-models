@@ -76,7 +76,7 @@ for year in range(2006, 2017):
         domains.update(domains_)
         lang_sites += Counter(ds["language"])
         n_passed_quality_filter_ = len(
-            [i for i in ds["passed_quality_filter"] if i is True]
+            [i for i in ds["passed_quality_filter"] if i is True],
         )
         n_passed_quality_filter += n_passed_quality_filter_
         n_tokens += sum(ds["n_tokens"])

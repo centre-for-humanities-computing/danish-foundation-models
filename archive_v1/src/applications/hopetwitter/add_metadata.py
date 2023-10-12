@@ -15,10 +15,14 @@ from datasets import load_from_disk
 from wasabi import msg
 
 path = os.path.join(
-    "/work", "twitter_cleaned", "twitter_da_stopwords_2019-01-01_2021-04-30"
+    "/work",
+    "twitter_cleaned",
+    "twitter_da_stopwords_2019-01-01_2021-04-30",
 )
 write_path = os.path.join(
-    "/work", "twitter_cleaned", "twitter_da_stopwords_2019-01-01_2021-04-30.arrow"
+    "/work",
+    "twitter_cleaned",
+    "twitter_da_stopwords_2019-01-01_2021-04-30.arrow",
 )
 ds = load_from_disk(path)
 

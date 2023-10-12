@@ -1,6 +1,5 @@
 """Test for the quality filter"""
 
-from typing import List
 
 import pytest
 from pytest_lazyfixture import lazy_fixture
@@ -65,14 +64,14 @@ class TestQualityFilter:
 
     @pytest.fixture(scope="class")
     def all_texts(self, tweet_texts, long_text, bullets_texts):
-        return tweet_texts + [long_text] + [bullets_texts]
+        return [*tweet_texts, long_text, bullets_texts]
 
     @pytest.fixture(scope="class")
     def quality_filter(self):
         return QualityFilter(top_ngram_min_count=1)
 
     @pytest.mark.parametrize(
-        "text,expected",
+        ("text", "expected"),
         [
             ("jeg er glad", True),
             ("56789okd23456789098765sds", False),
@@ -82,13 +81,13 @@ class TestQualityFilter:
         assert quality_filter.stop_word(quality_filter.nlp(text), n=2) is expected
 
     @pytest.mark.parametrize(
-        "texts,expected",
+        ("texts", "expected"),
         [
             (lazy_fixture("bullets_texts"), False),
             (["56789okd23456789098765sds"], True),
         ],
     )
-    def test_line_bullets(self, quality_filter, texts: List[str], expected: bool):
+    def test_line_bullets(self, quality_filter, texts: list[str], expected: bool):
         for t in texts:
             assert (
                 quality_filter.line_bullets_or_ellipsis(
@@ -102,7 +101,7 @@ class TestQualityFilter:
             )
 
     @pytest.mark.parametrize(
-        "text,expected",
+        ("text", "expected"),
         [("jeg er glad", True), ("jeg er glad...", False), ("jeg er glad…", False)],
     )
     def test_line_ellipsis(self, quality_filter, text: str, expected: bool):
@@ -118,24 +117,27 @@ class TestQualityFilter:
         )
 
     @pytest.mark.parametrize(
-        "text,expected", [("jeg er glad", True), ("67 54 13 B7", False)]
+        ("text", "expected"),
+        [("jeg er glad", True), ("67 54 13 B7", False)],
     )
     def test_find_alpha(self, quality_filter, text: str, expected: bool):
         assert quality_filter.alpha(quality_filter.nlp(text), ratio=0.8) is expected
 
     @pytest.mark.parametrize(
-        "text,expected", [("jeg er glad", True), ("56789okd23456789098765sds", False)]
+        ("text", "expected"),
+        [("jeg er glad", True), ("56789okd23456789098765sds", False)],
     )
     def test_mean_word_length(self, quality_filter, text: str, expected: bool):
         assert (
             quality_filter.mean_word_length(
-                quality_filter.nlp(text), mean_word_length=(3, 10)
+                quality_filter.nlp(text),
+                mean_word_length=(3, 10),
             )
             is expected
         )
 
     @pytest.mark.parametrize(
-        "text,expected",
+        ("text", "expected"),
         [(pytest.lazy_fixture("long_text"), True), ("jeg er glad", False)],
     )
     def test_doc_length(self, quality_filter, text: str, expected: bool):
@@ -150,35 +152,41 @@ class TestQualityFilter:
         assert sum(quality_filter.filtered.values()) == (len(all_texts) - 1)
 
     @pytest.mark.parametrize(
-        "text, expected",
+        ("text", "expected"),
         [
             ("dasdsadasdasdddddddddd\njeg er glad\n" * 2, False),
             ("jeg er glad\n\n" * 4, False),
         ],
     )
     def test_duplicate_line_chr_fraction(
-        self, quality_filter, text: str, expected: bool
+        self,
+        quality_filter,
+        text: str,
+        expected: bool,
     ):
         filter_func = quality_filter.filters["duplicate_lines_chr_fraction"]
         nlp = quality_filter.nlp
         assert filter_func(nlp(text)) is expected
 
     @pytest.mark.parametrize(
-        "text, expected",
+        ("text", "expected"),
         [
             ("dasdsadasdasdddddddddd\njeg er glad\n" * 2, True),
             ("jeg er glad\n\n" * 4, False),
         ],
     )
     def test_duplicate_para_chr_fraction(
-        self, quality_filter, text: str, expected: bool
+        self,
+        quality_filter,
+        text: str,
+        expected: bool,
     ):
         filter_func = quality_filter.filters["duplicate_paragraph_chr_fraction"]
         nlp = quality_filter.nlp
         assert filter_func(nlp(text)) is expected
 
     @pytest.mark.parametrize(
-        "text, expected",
+        ("text", "expected"),
         [
             ("Jeg er jeg er jeg, JeG ER, jeg er", False),
             ("jeg er glad, men også noglegange sur...", True),
@@ -190,21 +198,24 @@ class TestQualityFilter:
         assert filter_func(nlp(text)) is expected
 
     @pytest.mark.parametrize(
-        "text,expected",
+        ("text", "expected"),
         [
             ("jeg er glad, men også noglegange sur måske hvertfald." * 10, False),
             ("jeg er glad, men også noglegange sur...", True),
         ],
     )
     def test_duplicate_ngram_chr_fraction(
-        self, quality_filter, text: str, expected: bool
+        self,
+        quality_filter,
+        text: str,
+        expected: bool,
     ):
         filter_func = quality_filter.filters["duplicate_ngram_chr_fraction"]
         nlp = quality_filter.nlp
         assert filter_func(nlp(text)) is expected
 
     @pytest.mark.parametrize(
-        "documents_language, correct_document_indicies",
+        ("documents_language", "correct_document_indicies"),
         [
             (
                 [
@@ -244,11 +255,14 @@ class TestQualityFilter:
         """,
                 ],
                 [1, 2],
-            )
+            ),
         ],
     )
     def test_language_detection_luga(
-        self, quality_filter, documents_language, correct_document_indicies
+        self,
+        quality_filter,
+        documents_language,
+        correct_document_indicies,
     ):
         filter = quality_filter.filters["detect_language"]
         nlp = quality_filter.nlp
@@ -258,7 +272,7 @@ class TestQualityFilter:
         assert passed_indicies == correct_document_indicies
 
     @pytest.mark.parametrize(
-        "documents_language, expected",
+        ("documents_language", "expected"),
         [
             (
                 """Denne paragraf
@@ -279,7 +293,10 @@ class TestQualityFilter:
         ],
     )
     def test_short_long_sentence(
-        self, quality_filter, documents_language: str, expected: bool
+        self,
+        quality_filter,
+        documents_language: str,
+        expected: bool,
     ):
         filter = quality_filter.filters["short_long_sentece"]
         nlp = quality_filter.nlp

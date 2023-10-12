@@ -7,9 +7,8 @@ from functools import partial
 from pathlib import Path
 
 from datasets import concatenate_datasets, load_dataset
-from wasabi import msg
-
 from dfm.cleaning import Deduper, QualityFilter
+from wasabi import msg
 
 
 def q_filter(batch):
@@ -75,7 +74,9 @@ def dedupe_batch(batch, deduper: Deduper):
     return batch
 
 
-def filter_categories(examples, remove_cat={"danavis"}):
+def filter_categories(examples, remove_cat=None):
+    if remove_cat is None:
+        remove_cat = {"danavis"}
     i = 0
     while i < len(examples["source"]):
         s = examples["source"][i]
@@ -99,7 +100,8 @@ def main(
     reddit_da = reddit_da.rename_columns({"id": "doc_id"})
     reddit_da = reddit_da.add_column("LICENSE", ["MIT"] * len(reddit_da))
     reddit_da = reddit_da.add_column(
-        "date_built", ["Wed Dec 15 00:00:00 2021 CEST +0200"] * len(reddit_da)
+        "date_built",
+        ["Wed Dec 15 00:00:00 2021 CEST +0200"] * len(reddit_da),
     )
     reddit_da = reddit_da.add_column("source", ["reddit-da"] * len(reddit_da))
     reddit_da = reddit_da.add_column("uri", ["NA"] * len(reddit_da))

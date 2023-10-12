@@ -18,9 +18,10 @@ import json
 import multiprocessing as mp
 import pickle
 import shutil
+from collections.abc import Iterable
 from functools import partial
 from pathlib import Path
-from typing import Callable, Dict, Iterable, Optional, Tuple, Union
+from typing import Callable, Optional, Union
 
 import more_itertools as mit
 from datasets.arrow_dataset import Dataset
@@ -111,17 +112,19 @@ class Deduper:
         self.verbose = verbose
         self.save_mask = save_mask
         if save_mask:
-            self.mask = list()
+            self.mask = []
         self.lsh_cache = MinHashLSH(
-            threshold=self.similarity_threshold, num_perm=self.num_minhashes
+            threshold=self.similarity_threshold,
+            num_perm=self.num_minhashes,
         )
 
     def reset(self):
         """Reset the deduplicator, removing the mask and the LSH cache"""
         if self.save_mask:
-            self.mask = list()
+            self.mask = []
         self.lsh_cache = MinHashLSH(
-            threshold=self.similarity_threshold, num_perm=self.num_minhashes
+            threshold=self.similarity_threshold,
+            num_perm=self.num_minhashes,
         )
         return self
 
@@ -158,7 +161,7 @@ class Deduper:
         # Load the mask if it exists
         mask_path = directory / "mask.jsonl"
         if mask_path.exists():
-            with open(mask_path, "r") as f:
+            with open(mask_path) as f:
                 mask = [json.loads(line) for line in f]
             deduper.mask = mask
 
@@ -175,18 +178,18 @@ class Deduper:
         Returns:
             dict: The configuration of the deduplicator.
         """
-        config = dict(
-            split_method=self.split_method,
-            ngram_size=self.ngram_size,
-            ngram_stride=self.ngram_stride,
-            similarity_threshold=self.similarity_threshold,
-            num_minhashes=self.num_minhashes,
-            batch_size=self.batch_size,
-            n_jobs=self.n_jobs,
-            random_seed=self.random_seed,
-            normalization_func=self.normalization_func,
-            verbose=self.verbose,
-        )
+        config = {
+            "split_method": self.split_method,
+            "ngram_size": self.ngram_size,
+            "ngram_stride": self.ngram_stride,
+            "similarity_threshold": self.similarity_threshold,
+            "num_minhashes": self.num_minhashes,
+            "batch_size": self.batch_size,
+            "n_jobs": self.n_jobs,
+            "random_seed": self.random_seed,
+            "normalization_func": self.normalization_func,
+            "verbose": self.verbose,
+        }
         return config
 
     def _store_document(self, output_path: Union[str, Path], **kwargs):
@@ -211,8 +214,8 @@ class Deduper:
         corpus: Union[
             Dataset,
             IterableDataset,
-            Iterable[Tuple[Union[str, int], str]],
-            Iterable[Dict[str, Union[str, int]]],
+            Iterable[tuple[Union[str, int], str]],
+            Iterable[dict[str, Union[str, int]]],
         ],
         id_column: str = "id",
         text_column: str = "text",
@@ -278,6 +281,7 @@ class Deduper:
         else:
             for _ in iterable:
                 pass
+            return None
 
     def save_to_disk(
         self,
@@ -316,7 +320,7 @@ class Deduper:
                 "the files. If you are loading an existing "
                 "Deduper from the directory then the previous "
                 "config, mask and LSH cache will still will "
-                "not be lost and will be stored in the directory."
+                "not be lost and will be stored in the directory.",
             )
         elif output_dir.exists() and overwrite:
             # Delete the output directory
@@ -344,13 +348,13 @@ class Deduper:
             with config_path.open("wb") as f:
                 pickle.dump(config, f)
 
-    def _deduplicate(  # noqa: C901
+    def _deduplicate(
         self,
         corpus: Union[
             Dataset,
             IterableDataset,
-            Iterable[Tuple[Union[str, int], str]],
-            Iterable[Dict[str, Union[str, int]]],
+            Iterable[tuple[Union[str, int], str]],
+            Iterable[dict[str, Union[str, int]]],
         ],
         id_column: str = "id",
         text_column: str = "text",
@@ -404,13 +408,12 @@ class Deduper:
 
         # If the corpus is a Dataset or IterableDataset then convert it to an
         # iterable of tuples
-        if isinstance(corpus, Dataset) or isinstance(corpus, IterableDataset):
+        if isinstance(corpus, (Dataset, IterableDataset)):
             corpus = ((sample[id_column], sample[text_column]) for sample in corpus)
 
         # Otherwise we check if the corpus is an iterable of dictionaries, in
         # which case we also convert it to an iterable of tuples
         else:
-
             # extract the first element of the corpus
             corpus = iter(corpus)
             sample = next(corpus)
@@ -463,17 +466,15 @@ class Deduper:
         # Iterate over the corpus and store documents that are not duplicates
         duplicates = 0
         num_processed = 0
-        pbar_params = dict(
-            desc="Deduplicating",
-            total=num_docs,
-            disable=(not self.verbose),
-            leave=False,
-        )
+        pbar_params = {
+            "desc": "Deduplicating",
+            "total": num_docs,
+            "disable": (not self.verbose),
+            "leave": False,
+        }
         with tqdm(batches, **pbar_params) as pbar:
-
             # Initialise the multiprocessing
             with Parallel(n_jobs=self.n_jobs) as parallel:
-
                 # Define the function that will be called in parallel
                 fn = delayed(
                     partial(
@@ -484,12 +485,11 @@ class Deduper:
                         ngram_stride=self.ngram_stride,
                         num_minhashes=self.num_minhashes,
                         random_seed=self.random_seed,
-                    )
+                    ),
                 )
 
                 # Iterate over the batches
                 for batch in pbar:
-
                     # Create a copy of the batch to ensure that we're not
                     # modifying the original
                     batch, batch_copy = it.tee(batch)
@@ -501,9 +501,11 @@ class Deduper:
                     batch_size = new_num_processed - num_processed
 
                     # Define parameters used in batch progress bars
-                    pbar_params = dict(
-                        total=batch_size, leave=False, disable=(not self.verbose)
-                    )
+                    pbar_params = {
+                        "total": batch_size,
+                        "leave": False,
+                        "disable": (not self.verbose),
+                    }
 
                     # Compute the fingerprint for the document
                     pbar_params["desc"] = "Computing minhashes"
@@ -514,13 +516,11 @@ class Deduper:
                     pbar_params["desc"] = "Deduplicating batch"
                     with tqdm(batch_copy, **pbar_params) as batch_pbar:
                         for (idx, doc), minhash in zip(batch_pbar, minhashes):
-
                             # If the document is not a near-duplicate candidate
                             # then store in the LSH cache and append it to the
                             # JSONL output file
                             candidates = self.lsh_cache.query(minhash)
                             if len(candidates) == 0:
-
                                 # Insert the document into the LSH cache
                                 self.lsh_cache.insert(idx, minhash)
 
@@ -528,11 +528,13 @@ class Deduper:
                                 # output
                                 if store_corpus_to_disk:
                                     self._store_document(
-                                        id=idx, text=doc, output_path=output_path
+                                        id=idx,
+                                        text=doc,
+                                        output_path=output_path,
                                     )
 
                                 # Compute the mask for the document
-                                mask_entry = dict(id=idx, duplicate=False)
+                                mask_entry = {"id": idx, "duplicate": False}
 
                             # Otherwise, increment the number of duplicate
                             # documents
@@ -540,7 +542,7 @@ class Deduper:
                                 duplicates += 1
 
                                 # Compute the mask for the document
-                                mask_entry = dict(id=idx, duplicate=True)
+                                mask_entry = {"id": idx, "duplicate": True}
 
                             # Add the mask to the mask attribute
                             if self.save_mask:
@@ -553,7 +555,8 @@ class Deduper:
                             # Store the mask to disk
                             if store_mask_to_disk:
                                 self._store_document(
-                                    output_path=mask_path, **mask_entry
+                                    output_path=mask_path,
+                                    **mask_entry,
                                 )
 
                     # Store the LSH cache to disk

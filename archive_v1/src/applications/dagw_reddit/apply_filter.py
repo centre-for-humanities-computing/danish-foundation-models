@@ -14,13 +14,16 @@ if __name__ == "__main__":
     ds = load_from_disk(path)
 
     ds_filtered = ds.filter(
-        lambda example: example["is_13_gram_duplicate"] is False, num_proc=16
+        lambda example: example["is_13_gram_duplicate"] is False,
+        num_proc=16,
     )
     assert len(set(ds_filtered["is_13_gram_duplicate"])) == 1
 
     # write dataset with added metadata
     save_path = os.path.join(
-        "/work", "dagw-clean", f"dagw_reddit_filtered_v{ds.version}.arrow"
+        "/work",
+        "dagw-clean",
+        f"dagw_reddit_filtered_v{ds.version}.arrow",
     )
     msg.info(f"Saving to disk: {save_path}")
     ds_filtered.save_to_disk(save_path)

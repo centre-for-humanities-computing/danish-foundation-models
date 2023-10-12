@@ -2,9 +2,10 @@
 Datasets loaders for DFM datasets.
 """
 
+from collections.abc import Iterable
 from functools import partial
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Union
+from typing import Optional, Union
 
 from datasets import DatasetDict, IterableDatasetDict, interleave_datasets, load_dataset
 
@@ -20,7 +21,8 @@ def __add_column(example, value, column: str):
 
 
 def __select_columns(
-    dataset: Union[IterableDatasetDict, DatasetDict], columns: List[str]
+    dataset: Union[IterableDatasetDict, DatasetDict],
+    columns: list[str],
 ) -> Union[IterableDatasetDict, DatasetDict]:
     """Select columns in dataset to keep and removes the rest.
 
@@ -34,16 +36,16 @@ def __select_columns(
             desired columns.
     """
     # extract a sample from a subset (typically train) to get column names.
-    subset = dataset[list(dataset.keys())[0]]
+    subset = dataset[next(iter(dataset.keys()))]
     sample = next(iter(subset))
-    col_to_remove = [c_name for c_name in sample.keys() if c_name not in columns]
+    col_to_remove = [c_name for c_name in sample if c_name not in columns]
 
     return dataset.remove_columns(col_to_remove)
 
 
 def load_hopetwitter(
     path_to_hopetwitter: Union[str, Path] = HOPETWITTER_PATH,
-    columns_to_keep: Optional[List[str]] = None,
+    columns_to_keep: Optional[list[str]] = None,
     n_training_repeats: int = 1,
     **kwargs,
 ) -> IterableDatasetDict:
@@ -94,7 +96,7 @@ def load_hopetwitter(
 
 def load_dagw_dfm(
     path_to_dagw: Union[str, Path] = DAGW_DFM_PATH,
-    columns_to_keep: Optional[List[str]] = None,
+    columns_to_keep: Optional[list[str]] = None,
     n_training_repeats: int = 1,
     **kwargs,
 ) -> IterableDatasetDict:
@@ -133,7 +135,7 @@ def load_dagw_dfm(
 
 def load_danews(
     path_to_danews: Union[str, Path] = DANEWS_PATH,
-    columns_to_keep: Optional[List[str]] = None,
+    columns_to_keep: Optional[list[str]] = None,
     n_training_repeats: int = 1,
     **kwargs,
 ) -> IterableDatasetDict:
@@ -177,8 +179,8 @@ def load_danews(
 def load_nat(
     path_to_nat: Union[str, Path] = NAT_PATH,
     years: Iterable[int] = range(2006, 2017),
-    probabilities: Optional[List[float]] = None,
-    columns_to_keep: Optional[List[str]] = None,
+    probabilities: Optional[list[float]] = None,
+    columns_to_keep: Optional[list[str]] = None,
     n_training_repeats: int = 10,
     seed: Optional[int] = None,
     **kwargs,
@@ -234,23 +236,13 @@ def load_nat(
 
 def load_dcc(
     version: str = "1.0.0",
-    probabilities: Dict[str, float] = {
-        "danews": 0.06,
-        "dagw_dfm": 0.06,
-        "hopetwitter": 0.03,
-        "nat": 0.85,
-    },
-    n_training_repeats: Dict[str, int] = {
-        "danews": 1_000,
-        "dagw_dfm": 1_000,
-        "hopetwitter": 1_000,
-        "nat": 100,
-    },
+    probabilities: Optional[dict[str, float]] = None,
+    n_training_repeats: Optional[dict[str, int]] = None,
     path_to_hopetwitter: Union[str, Path] = HOPETWITTER_PATH,
     path_to_dagw: Union[str, Path] = DAGW_DFM_PATH,
     path_to_danews: Union[str, Path] = DANEWS_PATH,
     path_to_nat: Union[str, Path] = NAT_PATH,
-    columns_to_keep: List[str] = ["text", "source"],
+    columns_to_keep: Optional[list[str]] = None,
     **kwargs,
 ):
     """
@@ -276,11 +268,27 @@ def load_dcc(
     Returns:
         IterableDatasetDict: A datasets IterableDatasetDict
     """
+    if columns_to_keep is None:
+        columns_to_keep = ["text", "source"]
+    if n_training_repeats is None:
+        n_training_repeats = {
+            "danews": 1000,
+            "dagw_dfm": 1000,
+            "hopetwitter": 1000,
+            "nat": 100,
+        }
+    if probabilities is None:
+        probabilities = {
+            "danews": 0.06,
+            "dagw_dfm": 0.06,
+            "hopetwitter": 0.03,
+            "nat": 0.85,
+        }
     versions_options = ["1.0.0"]
     if version != "1.0.0":
         raise ValueError(
             "Version {version} is not available. Available versions"
-            + f": {versions_options}"
+            + f": {versions_options}",
         )
     datasets = {}
 
@@ -346,5 +354,5 @@ def load_dcc(
             "train": train,
             "validation": dcc_test_val["validation"],
             "test": dcc_test_val["test"],
-        }
+        },
     )

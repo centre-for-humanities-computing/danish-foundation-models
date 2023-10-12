@@ -12,7 +12,6 @@ Authors:
 import json
 import os
 from collections import Counter, defaultdict
-from typing import List
 
 from pysafebrowsing import SafeBrowsing
 from wasabi import msg
@@ -27,7 +26,7 @@ previous_lookups = os.path.join(read_path, "safe_search_domains.json")
 daily_api_calls = 10_000
 
 
-def sum_counters(counters: List[Counter]) -> Counter:
+def sum_counters(counters: list[Counter]) -> Counter:
     """
     Recursive counter with a O(log(n)) Complexity
     """
@@ -42,7 +41,7 @@ def sum_counters(counters: List[Counter]) -> Counter:
 
 def read_counter_json(path):
     """read jsons consisting of multiple counters in as one counter"""
-    with open(path, "r") as f:
+    with open(path) as f:
         c = json.load(f)
     return sum_counters([Counter(counts) for counts in c])
 
@@ -50,7 +49,7 @@ def read_counter_json(path):
 def main():
     # load in existing lookups if any
     if os.path.isfile(previous_lookups):
-        with open(previous_lookups, "r") as f:
+        with open(previous_lookups) as f:
             prev = json.load(f)
     else:
         msg.warn("Did not find any previous lookups.")
@@ -76,19 +75,19 @@ def main():
     domains = [(dom, count) for dom, count in counter.most_common() if count > 1]
 
     # load api key
-    with open(API_key_path, "r") as f:
+    with open(API_key_path) as f:
         key = f.read()
     safebrowse = SafeBrowsing(key)
 
     n = len(domains)
     msg.info(
         f"A total of  {len(counter)} unique domains and {n} unique domains with more"
-        + " than one entry."
+        + " than one entry.",
     )
     msg.info(
         f"There was a total of {n_domains_entries} entries and"
         + f" {n_domains_entries - sum([c for d,c in domains])}"
-        + " were unique domain entries."
+        + " were unique domain entries.",
     )
 
     # call safe search API

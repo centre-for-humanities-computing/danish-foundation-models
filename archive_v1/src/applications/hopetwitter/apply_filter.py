@@ -14,14 +14,17 @@ from wasabi import msg
 
 if __name__ == "__main__":
     path = os.path.join(
-        "/work", "twitter_cleaned", "twitter_da_stopwords_2019-01-01_2021-04-30.arrow"
+        "/work",
+        "twitter_cleaned",
+        "twitter_da_stopwords_2019-01-01_2021-04-30.arrow",
     )
 
     msg.info(f"loading: {path}")
     ds = load_from_disk(path)
 
     ds_filtered = ds.filter(
-        lambda example: example["is_duplicate"] is False, num_proc=16
+        lambda example: example["is_duplicate"] is False,
+        num_proc=16,
     )
     assert len(set(ds_filtered["is_duplicate"])) == 1
 

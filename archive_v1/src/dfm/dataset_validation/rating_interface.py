@@ -1,6 +1,6 @@
 import curses
 import os
-from typing import Iterable
+from collections.abc import Iterable
 
 
 class ExampleRater:
@@ -61,13 +61,13 @@ class ExampleRater:
             win.addstr("Tags (non-exclusive):\n")
             win.addstr(f"{left_spacing*2}[P]orn: {self.sign_from_bool(is_porn)} \n")
             win.addstr(
-                f"{left_spacing*2}[O]ffensive: {self.sign_from_bool(is_offensive)}"
+                f"{left_spacing*2}[O]ffensive: {self.sign_from_bool(is_offensive)}",
             )
             win.addstr("\n" * 2)
 
             win.addstr("Category (exclusive):\n")
             win.addstr(
-                f"{left_spacing*2}[N]ot language | [W]rong language | [C]orrect language | [S]kip \n"
+                f"{left_spacing*2}[N]ot language | [W]rong language | [C]orrect language | [S]kip \n",
             )
             win.addstr(f"{left_spacing*2}[U]ndo")
             win.addstr("\n" * 2)
@@ -104,11 +104,11 @@ class ExampleRater:
                 "example_str": current_item_str,
                 "is_porn": is_porn,
                 "is_offensive": is_offensive,
-            }
+            },
         )
 
         # Remove the line from the .c
-        with open(self.output_path, "r") as f:
+        with open(self.output_path) as f:
             lines = f.readlines()
             lines_to_write = lines[:-1]
             with open(self.output_path, "w") as f:
@@ -131,7 +131,7 @@ class ExampleRater:
                 "example_str": example_str,
                 "is_porn": is_porn,
                 "is_offensive": is_offensive,
-            }
+            },
         )
 
         self.write_example_to_csv(

@@ -13,11 +13,10 @@ import os
 from pathlib import Path
 
 from datasets import load_dataset
-from tqdm import tqdm
-from wasabi import msg
-
 from dfm.cleaning import QualityFilter
 from dfm.utils import batch
+from tqdm import tqdm
+from wasabi import msg
 
 
 def filter_batch(batch, i):

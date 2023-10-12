@@ -14,9 +14,8 @@ import os
 from pathlib import Path
 
 from datasets import load_dataset
-from wasabi import msg
-
 from dfm.cleaning import QualityFilter
+from wasabi import msg
 
 
 def filter_batch(batch, i):

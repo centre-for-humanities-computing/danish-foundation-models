@@ -44,7 +44,7 @@ def preprocess_dataset(
     """
 
     # Only use text columns
-    for key in dataset.keys():
+    for key in dataset:
         cols = dataset[key].column_names
         cols.remove("text")
         dataset[key] = dataset[key].remove_columns(cols)
@@ -52,7 +52,10 @@ def preprocess_dataset(
     # Tokenize texts
     tokenize_func_ = partial(tokenize_func, tokenizer=tokenizer)
     dataset = dataset.map(
-        tokenize_func_, batched=True, num_proc=num_proc, remove_columns=["text"]
+        tokenize_func_,
+        batched=True,
+        num_proc=num_proc,
+        remove_columns=["text"],
     )
 
     # Group texts into blocks of `block_size`.
@@ -72,7 +75,8 @@ def preprocess_dataset(
 
 
 def tokenize_func(
-    examples: dict, tokenizer: Union[PreTrainedTokenizerFast, PreTrainedTokenizerBase]
+    examples: dict,
+    tokenizer: Union[PreTrainedTokenizerFast, PreTrainedTokenizerBase],
 ) -> BatchEncoding:
     """Wrapper for tokenization.
 
@@ -98,8 +102,8 @@ def group_texts(examples: dict, block_size: int) -> dict:
     """
 
     # Concatenate all texts.
-    concatenated_examples = {k: sum(examples[k], []) for k in examples.keys()}
-    total_length = len(concatenated_examples[list(examples.keys())[0]])
+    concatenated_examples = {k: sum(examples[k], []) for k in examples}
+    total_length = len(concatenated_examples[next(iter(examples.keys()))])
 
     # We drop the small remainder, we could add padding if the model supported it instead of this drop, you can
     # customize this part to your needs.

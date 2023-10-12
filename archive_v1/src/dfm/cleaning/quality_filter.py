@@ -23,8 +23,9 @@ References:
 """
 
 from collections import Counter, defaultdict
+from collections.abc import Iterable, Sequence
 from functools import partial
-from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tuple, Union
+from typing import Any, Callable, Optional, Union
 
 import spacy
 from spacy.tokens import Doc
@@ -52,7 +53,7 @@ def duplicate_chr_fraction_getter(doc: Doc, attr: str) -> float:
     return frac
 
 
-def n_gram_counter(doc: Doc, ngram_range: Tuple[int, int]) -> Dict[str, Counter]:
+def n_gram_counter(doc: Doc, ngram_range: tuple[int, int]) -> dict[str, Counter]:
     """Calculate the counts of n-grams in the specified range.
 
     Args:
@@ -98,7 +99,10 @@ def duplicate_fraction_getter(doc: Doc, attr: str = "lines_counter") -> float:
 
 
 def set_dynamic_ext(
-    ext_name: str, func: Callable, dynamic_ext_prefix: str = "_", object=Doc
+    ext_name: str,
+    func: Callable,
+    dynamic_ext_prefix: str = "_",
+    object=Doc,
 ) -> None:
     """Sets a dynamic extension to reduce redundant computation.
 
@@ -240,8 +244,8 @@ class QualityFilter:
     def __init__(
         self,
         min_stop_words: int = 2,
-        mean_word_length: Tuple[int, int] = (3, 10),
-        doc_length: Tuple[int, int] = (50, 100_000),
+        mean_word_length: tuple[int, int] = (3, 10),
+        doc_length: tuple[int, int] = (50, 100_000),
         alpha_ratio: float = 0.6,
         symbol_2_word_hashtag: float = 0.1,
         symbol_2_word_ellipsis: float = 0.1,
@@ -251,34 +255,32 @@ class QualityFilter:
         min_ellipsis: int = 2,
         duplicate_lines_chr_fraction: float = 0.2,
         duplicate_paragraph_chr_fraction: float = 0.2,
-        top_ngram_chr_fraction_thresholds: List[float] = [0.20, 0.18, 0.16],
-        top_ngram_chr_fraction_range: Tuple[int, int] = (2, 4),
+        top_ngram_chr_fraction_thresholds: Optional[list[float]] = None,
+        top_ngram_chr_fraction_range: tuple[int, int] = (2, 4),
         top_ngram_min_count: int = 3,
-        duplicate_n_gram_fraction_thresholds: List[float] = [
-            0.25,
-            0.24,
-            0.23,
-            0.22,
-            0.21,
-            0.20,
-        ],
-        duplicate_n_gram_fraction_range: Tuple[int, int] = (5, 10),
+        duplicate_n_gram_fraction_thresholds: Optional[list[float]] = None,
+        duplicate_n_gram_fraction_range: tuple[int, int] = (5, 10),
         max_length: int = 5_000_000,
         string_filter: Optional[str] = None,
-        ignore_filters: List[str] = [],
+        ignore_filters: Optional[list[str]] = None,
         language_detection_tool: str = "luga",
         language_threshold: float = 0.90,
         languages: Sequence[str] = ["da"],
         short_long_sentence_length_split: int = 30,
         short_long_sentence_threshold: float = 0.5,
     ):
-
+        if ignore_filters is None:
+            ignore_filters = []
+        if duplicate_n_gram_fraction_thresholds is None:
+            duplicate_n_gram_fraction_thresholds = [0.25, 0.24, 0.23, 0.22, 0.21, 0.2]
+        if top_ngram_chr_fraction_thresholds is None:
+            top_ngram_chr_fraction_thresholds = [0.2, 0.18, 0.16]
         __available_language_detection_tools = ["langdetect", "luga"]
 
         if language_detection_tool not in __available_language_detection_tools:
             raise AttributeError(
                 f"{language_detection_tool} is not a valid language detection "
-                f"packages - must be in {__available_language_detection_tools}"
+                f"packages - must be in {__available_language_detection_tools}",
             )
 
         # Load Danish spaCy model
@@ -291,15 +293,20 @@ class QualityFilter:
         self.filters = {
             "doc_length": partial(self.doc_length, doc_length=doc_length),
             "mean_word_length": partial(
-                self.mean_word_length, mean_word_length=mean_word_length
+                self.mean_word_length,
+                mean_word_length=mean_word_length,
             ),
             "alpha_ratio": partial(self.alpha, ratio=alpha_ratio),
             "stop_word": partial(self.stop_word, n=min_stop_words),
             "symbol_2_word_hashtag": partial(
-                self.symbol_2_word, ratio=symbol_2_word_hashtag, symbol="#"
+                self.symbol_2_word,
+                ratio=symbol_2_word_hashtag,
+                symbol="#",
             ),
             "symbol_2_word_ellipsis": partial(
-                self.symbol_2_word, ratio=symbol_2_word_ellipsis, symbol="…"
+                self.symbol_2_word,
+                ratio=symbol_2_word_ellipsis,
+                symbol="…",
             ),
             "line_bullets_or_ellipsis": partial(
                 self.line_bullets_or_ellipsis,
@@ -309,7 +316,8 @@ class QualityFilter:
                 min_ellipsis=min_ellipsis,
             ),
             "duplicate_lines_chr_fraction": partial(
-                self.duplicate_lines_chr_filter, fraction=duplicate_lines_chr_fraction
+                self.duplicate_lines_chr_filter,
+                fraction=duplicate_lines_chr_fraction,
             ),
             "duplicate_paragraph_chr_fraction": partial(
                 self.duplicate_paragraph_chr_fraction_filter,
@@ -341,7 +349,8 @@ class QualityFilter:
 
         if string_filter:
             self.filters["string_filter"] = partial(
-                self.string_filter, string=string_filter
+                self.string_filter,
+                string=string_filter,
             )
 
         for f in ignore_filters:
@@ -369,7 +378,8 @@ class QualityFilter:
 
         set_dynamic_ext("lines_counter", func=lambda doc: Counter(doc._.lines))
         set_dynamic_ext(
-            "paragraphs_counter", func=lambda doc: Counter(doc._.paragraphs)
+            "paragraphs_counter",
+            func=lambda doc: Counter(doc._.paragraphs),
         )
 
         set_dynamic_ext(
@@ -394,8 +404,11 @@ class QualityFilter:
         set_dynamic_ext("chr_len", func=lambda doc: len(doc.text))
 
     def filter_corpus(
-        self, texts: Iterable[str], as_tuples: bool = False, **kwargs
-    ) -> Union[Iterable[str], Iterable[Tuple[str, Union[Any, None]]]]:
+        self,
+        texts: Iterable[str],
+        as_tuples: bool = False,
+        **kwargs,
+    ) -> Union[Iterable[str], Iterable[tuple[str, Union[Any, None]]]]:
         """Applies quality filter.
 
         Args:
@@ -441,8 +454,10 @@ class QualityFilter:
                 break
 
     def __call__(
-        self, *args, **kwargs
-    ) -> Union[Iterable[str], Iterable[Tuple[str, Union[Any, None]]]]:
+        self,
+        *args,
+        **kwargs,
+    ) -> Union[Iterable[str], Iterable[tuple[str, Union[Any, None]]]]:
         """Applies quality filter.
 
         Args:
@@ -474,6 +489,7 @@ class QualityFilter:
                 # log filtered documents
                 self.filtered[filter] += 1
                 return filter
+        return None
 
     def describe_filter(self, texts: Iterable[tuple], **kwargs) -> Iterable[str]:
         """
@@ -563,7 +579,9 @@ class QualityFilter:
         """
 
         def luga_detect(
-            doc: Doc, languages: Sequence[str], language_threshold: float
+            doc: Doc,
+            languages: Sequence[str],
+            language_threshold: float,
         ) -> bool:
             from luga import language
 
@@ -572,17 +590,16 @@ class QualityFilter:
                     sentence.strip()
                     for sentence in doc.text.split("\n")
                     if len(sentence.strip()) > 0
-                ]
+                ],
             )
             detected = language(doc_joined)  # type: ignore
             lang, score = detected.name, detected.score
-            if score >= language_threshold and lang in languages:
-                return True
-            else:
-                return False
+            return bool(score >= language_threshold and lang in languages)
 
         def langdetect_detect(
-            doc: Doc, languages: Sequence[str], language_threshold: float
+            doc: Doc,
+            languages: Sequence[str],
+            language_threshold: float,
         ) -> bool:
             from langdetect import detect_langs
 
@@ -592,7 +609,7 @@ class QualityFilter:
                     return True
             return False
 
-        detectors: Dict[str, Callable[[Doc, Sequence[str], float], bool]] = {
+        detectors: dict[str, Callable[[Doc, Sequence[str], float], bool]] = {
             "luga": luga_detect,
             "langdetect": langdetect_detect,
         }
@@ -600,7 +617,7 @@ class QualityFilter:
         return detectors[language_detection_tool](doc, languages, language_threshold)
 
     @staticmethod
-    def doc_length(doc: Doc, doc_length: Tuple[int, int]) -> bool:
+    def doc_length(doc: Doc, doc_length: tuple[int, int]) -> bool:
         """
         A filter that removes any document that does not contain between {doc_length[0]}
         and {doc_length[1]} words
@@ -616,7 +633,7 @@ class QualityFilter:
         return doc_length[0] <= doc._.n_words <= doc_length[1]
 
     @staticmethod
-    def mean_word_length(doc: Doc, mean_word_length: Tuple[int, int]) -> bool:
+    def mean_word_length(doc: Doc, mean_word_length: tuple[int, int]) -> bool:
         """
         Filter document whose mean word length is outside the range of
         {mean_word_length[0]} to {mean_word_length[1]} characters
@@ -652,10 +669,7 @@ class QualityFilter:
         """
 
         def contains_alpha_fn(token: str):
-            for c in token:
-                if c.isalpha():
-                    return True
-            return False
+            return any(c.isalpha() for c in token)
 
         # min number of word to satisfy the ratio
         min_alpha_token = int(doc._.n_words * ratio)
@@ -770,8 +784,8 @@ class QualityFilter:
     @staticmethod
     def duplicate_ngram_fraction_filter(
         doc: Doc,
-        ngram_range: Tuple[int, int],
-        thresholds: List[float],
+        ngram_range: tuple[int, int],
+        thresholds: list[float],
     ) -> bool:
         """calculates the character fraction of duplicate n-gram over the overall text,
         taking care not to count overlapping n-grams twice.
@@ -802,7 +816,6 @@ class QualityFilter:
 
         for i, _ in enumerate(doc):
             for ngram_size in range(lower, upper + 1):
-
                 min_, max_ = minmax[ngram_size]
                 end = i + ngram_size
 
@@ -840,8 +853,8 @@ class QualityFilter:
     @staticmethod
     def top_ngram_chr_fraction_filter(
         doc: Doc,
-        ngram_range: Tuple[int, int],
-        thresholds: List[float],
+        ngram_range: tuple[int, int],
+        thresholds: list[float],
         min_count: int,
     ) -> bool:
         """Calculated whether the character fraction of the top n-grams is below the
@@ -949,7 +962,7 @@ if __name__ == "__main__":
     t0 = time.time()
 
     # Filter the texts
-    for doc in filtered_docs:
+    for _doc in filtered_docs:
         pass
 
     # Record the time taken

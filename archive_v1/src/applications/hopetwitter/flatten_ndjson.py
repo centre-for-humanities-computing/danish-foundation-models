@@ -15,8 +15,17 @@ import ndjson
 
 def flatten_post(
     post: dict,
-    keys_to_keep=["text", "id", "possibly_sensitive", "author_id", "source", "lang"],
+    keys_to_keep=None,
 ):
+    if keys_to_keep is None:
+        keys_to_keep = [
+            "text",
+            "id",
+            "possibly_sensitive",
+            "author_id",
+            "source",
+            "lang",
+        ]
     return {k: post[k] for k in keys_to_keep}
 
 
@@ -29,7 +38,7 @@ def flatten_ndjson(path: str, write_folder: str):
     print(f"Flattening: {path} to {write_path}")
 
     # stream in json from orgin to write_path
-    with open(path, "r") as f:
+    with open(path) as f:
         reader = ndjson.reader(f)
 
         with open(write_path, "w") as f:

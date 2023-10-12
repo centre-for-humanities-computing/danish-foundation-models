@@ -30,7 +30,8 @@ if __name__ == "__main__":
         y_path = path / str(year) / "*.jsonl"
         j_files = glob.glob(str(y_path))
         j_files = sorted(
-            j_files, key=lambda path: int(os.path.splitext(path)[0].split("/")[-1])
+            j_files,
+            key=lambda path: int(os.path.splitext(path)[0].split("/")[-1]),
         )
         for f in j_files:
             f_, ext = os.path.splitext(f)
@@ -45,7 +46,7 @@ if __name__ == "__main__":
             ds_subset = ds.remove_columns(
                 [
                     c
-                    for c in ds.features.keys()
+                    for c in ds.features
                     if c
                     not in {
                         "text",
@@ -56,7 +57,7 @@ if __name__ == "__main__":
                         "language",
                         "domain_key",
                     }
-                ]
+                ],
             )
             ds_subset = ds_subset.map(
                 word_count,
