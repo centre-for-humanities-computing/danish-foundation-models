@@ -12,15 +12,12 @@ classifiers = [
   "Operating System :: POSIX :: Linux",
   "Operating System :: MacOS :: MacOS X",
   "Operating System :: Microsoft :: Windows",
-  "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.7",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
 ]
-requires-python = "3.10"
+requires-python = ">=3.10"
 
 [project.license]
-license = "MIT"
+file = "LICENSE"
 
 [project.readme]
 file = "README.md"
@@ -29,6 +26,7 @@ content-type = "text/markdown"
 [tool.pyright]
 exclude = ["**/.*venv*", ".tox", "build"]
 typeCheckingMode = "strict"
+reportMissingTypeStubs = "none"
 
 [tool.ruff]
 select = [
