@@ -26,8 +26,8 @@ jobs:
       - name: Pre-build dev container image
         uses: devcontainers/ci@v0.3
         with:
-          imageName: ghcr.io/centre-for-humanities-computing/danish-foundation-models-devcontainer:latest
-          cacheFrom: ghcr.io/centre-for-humanities-computing/danish-foundation-models-devcontainer:latest
+          imageName: ghcr.io/centre-for-humanities-computing/danish-foundation-models-devcontainer
+          cacheFrom: ghcr.io/centre-for-humanities-computing/danish-foundation-models-devcontainer
           push: never
           runCmd:
             make type-check
