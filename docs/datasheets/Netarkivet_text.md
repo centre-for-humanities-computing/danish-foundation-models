@@ -30,7 +30,8 @@ Following the recommendation and framework of [3], we add the following datashee
 Netarkivet was created following the Danish [Legal Deposit Act](https://www.retsinformation.dk/eli/lta/2004/1439),
 from which a text-only corpus was derived for research purposes, see [4,5]. This is the
 part from which this dataset is derived.
-This subsection has then been filtered with the intention of training the Danish language
+This part has then been filtered with the intention of training Danish language
+
 models by a team of researchers at the Center for Humanities Computing Aarhus (CHCAA) using
 a codebase jointly developed with partners from industry (e.g. KMD, Ekstra Bladet) and
 other research institutions (e.g. Bristol University, Alexandra Institute).
@@ -65,7 +66,7 @@ Where `harvest_id` is the id of the associated Netarkivet web harvest. Each web 
 consists of jobs, each with their associated `job-id`. 
 
 Language is the language classified using the following language detection [library](https://github.com/optimaize/language-detector). `uri` is the URI of the site e.g. `"http://www.apple.com/podcasting"`. 
-`timestamp` is the date given on the format `"20060612105533"`, indicating year, month, date, time.
+`timestamp` is the date given in the format `"20060612105533"`, indicating year, month, date, and time.
 The `sha1` is the website hash.
 `mime_*` indicates the [mime/media type](https://en.wikipedia.org/wiki/Media_type).
 `mime_served` could for instance be `"text/html; charset=iso-8859-1"` and `mime_droid` could be `"text/html; version=2.0"` and is the mime type identified by the server and by [DROID](https://github.com/digital-preservation/droid), respectively.
@@ -81,33 +82,34 @@ These domains are a subset of Netarkivet, which again is a sample of all the Dan
 
 **If the dataset is a sample from a larger set, what was the sampling strategy?**
 
-Netarkivet has being scraped from the internet using the following procedures:
+Netarkivet has been scraped from the internet using the following procedures:
 
 - Cross-sectional collection of all Danish websites up to four times a year.
 - Selective collection of the following domains: All Danish newsmedia (with a frequency
-ranging from 12 times a day to weekly), political parties, organisations and unions,
-legal bodies such as ministeries og agencies, selected social media profiles, YouTube videos. 
-- Event collections of 2-3 events yearly (e.g. elections and the corona pandemic)
-- Miscellaneous/on-demand webscrapes (for instance in collaboration with researchers)
+ranging from 12 times a day to weekly), political parties, organizations and unions,
+legal bodies such as ministries and agencies, selected social media profiles, and YouTube videos. 
+- Event collections of 2-3 events yearly (e.g. elections and the COVID pandemic)
+- Miscellaneous/on-demand web scrapes (for instance in collaboration with researchers)
 
 A selective subset of Netarkivet is then extracted per year from 2006 to 2016 such that 
 it contains no duplicate sites. Apache Tika (v. 1.15) is then used to extract the text from the sites.
 During extraction, all HTML markup is removed, along with javascript and CSS code. 
-The content of textual HTML elements, such as ´<P>´ and ´<H1>´ are concatenated into one piece of text.
+The news media of textual HTML elements, such as `<P>` and `<H1>` are concatenated into one piece of text.
 
 **Who was involved in the data collection process?**
 
-The Royal Danish Library collects Netarkivet and along with Brügger et al. [4,5]
+The Royal Danish Library collects Netarkivet along with Brügger et al. [4,5]
 helped with the construction of NAT.
 
 **Over what timeframe was the data collected?**
 
-The dataset include articles from the period 2006 to 2016.
+The dataset includes articles from the period 2006 to 2016.
 
 **Were any ethical review processes conducted?**
 
-Netarkivet is collected in adherence to an update to the Danish Legal Deposit Act in 2005,
-which extended the law to include internet domains.
+Netarkivet in collected in adherence to an update to the Danish archival law in 2005,
+which extended the law to also include internet domains.
+
 Our text subset was constructed for a research project and thus a project proposal
 has been accepted by the Royal Danish Library. Besides these, the author is not aware of
 any ethical approvals.
@@ -123,10 +125,10 @@ repetitious texts. Following the filtering, the corpus was deduplicated to remov
 near-duplicates.
 
 
-For the quality filtering, NAT applies a filter akin to [2] which contains text
+For quality filtering, NAT applies a filter akin to [2] which contains text
 that:
 
-- Contain at least 2 Danish stopwords. For the stopword list we use the one used in
+- Contain at least 2 Danish stopwords. For the stopword list, we use the one used in
 SpaCy v.3.1.4.
 - Have a mean word length between 3 and 10.
 - Have a token length between 50 and 100,000.
@@ -160,7 +162,7 @@ the scripts use version 0.0.2 of the
 
 Yes, the dataset has been used to pre-train Danish language models.
 Furthermore, the unfiltered dataset has also been used in [4] and [5], for examining
-of the development on the Danish web.
+the development of the Danish web.
 
 **Is there a repository that links to any or all papers or systems that use the dataset?**
 
