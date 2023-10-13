@@ -27,10 +27,11 @@ Following the recommendation and framework of [3], we add the following datashee
 
 **For what purpose was the dataset created? Who created the dataset? Who funded the creation of the dataset?**
 
-Netarkivet was created following the Danish [archival law](https://www.retsinformation.dk/eli/lta/2004/1439),
+Netarkivet was created following the Danish [Legal Deposit Act](https://www.retsinformation.dk/eli/lta/2004/1439),
 from which a text-only corpus was derived for research purposes, see [4,5]. This is the
 part from which this dataset is derived.
 This part has then been filtered with the intention of training Danish language
+
 models by a team of researchers at the Center for Humanities Computing Aarhus (CHCAA) using
 a codebase jointly developed with partners from industry (e.g. KMD, Ekstra Bladet) and
 other research institutions (e.g. Bristol University, Alexandra Institute).
@@ -108,6 +109,7 @@ The dataset includes articles from the period 2006 to 2016.
 
 Netarkivet in collected in adherence to an update to the Danish archival law in 2005,
 which extended the law to also include internet domains.
+
 Our text subset was constructed for a research project and thus a project proposal
 has been accepted by the Royal Danish Library. Besides these, the author is not aware of
 any ethical approvals.
@@ -132,11 +134,11 @@ SpaCy v.3.1.4.
 - Have a token length between 50 and 100,000.
 - Have less than 5,000,000 characters.
 - Have less than 60% of words containing an alphabetic character.
-- Have a symbol to word ratio lower than 10% for hashtags and ellipsis.
+- Have a symbol-to-word ratio lower than 10% for hashtags and ellipsis.
 - Have less than 90% of lines starting with a bullet point.
 - have less than 30% of lines ending with an ellipsis.
 
-- Have low high degree of repetitious text:
+- Have a low high degree of repetitious text:
   - Have less than 20% of characters contained within duplicate lines.
   - Have less than 20% of characters contained within duplicate paragraphs.
   - Where the top 2-4 grams constitute less than 20%, 18%, 16%, respectively, of the text. 
