@@ -31,7 +31,7 @@ The dataset was preprocessed to remove duplicates by a team of researchers at th
 
 **What do the instances that comprise the dataset represent (e.g., documents, photos, people, countries)?**
 
-Instances of the dataset include an mp3 file for each show aired on the two staions within the period. Further metadata include information on date and time of airing, title, short description of the show, and various internal identifiers used by DNL.
+Instances of the dataset include an mp3 file for each show aired on the two staions within the period. Further metadata include information on date and time of airing, title, short description of the show, and various internal identifiers used by RDL.
 
 **How many instances are there in total (of each type, if appropriate)?**
 
@@ -97,11 +97,11 @@ Yes, the dataset has been used to pre-train a [Danish wav2vec2.0 model.](https:/
 
 **Is there a repository that links to any or all papers or systems that use the dataset?**
 
-No.
+No, but as of 23/10/16 no others have used the dataset.
 
 **What (other) tasks could the dataset be used for?**
 
-As the dataset only contains un-labelled data, i.e. no transcriptions, it is mainly useful for pre-training language models without further processing. However, given the metadata and re-occuring hosts, further processing might make it possible to train e.g. text-to-speech systems. 
+As the dataset only contains un-labelled data, i.e. no transcriptions, it is mainly designed for pre-training language models. However, given the metadata and re-occuring hosts, further processing might make it possible to train e.g. text-to-speech systems. 
 
 **Is there anything about the composition of the dataset or the way it was collected and
 preprocessed/cleaned/labeled that might impact future uses?**
