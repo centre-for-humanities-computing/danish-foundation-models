@@ -25,9 +25,6 @@ Data included in DaRadio was collected following the Danish [Legal Deposit Act](
 
 The dataset was preprocessed to remove duplicates by a team of researchers at the Center for Humanities Computing, Aarhus University (CHC) with collaborators from the Danish speech-processing company [Alvenir](alvenir.ai).
 
-**Any other comments?**
-
-No.
 
 
 ## Composition
