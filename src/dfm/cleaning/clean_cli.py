@@ -120,7 +120,6 @@ def apply_quality_filter(batch: dict, cfg: DictConfig) -> dict:
     qf = create_quality_filter(cfg)
 
     if cfg.save_meta_data:
-
         valid_langs = set(cfg.valid_languages)
         if valid_langs:
 
@@ -189,7 +188,6 @@ def apply_sentence_filter(batch: dict, cfg: DictConfig) -> dict:
     sf = create_sentence_filter(cfg)
 
     if cfg.save_meta_data:
-
         valid_langs = set(cfg.valid_languages)
 
         if valid_langs:
@@ -284,7 +282,6 @@ def process_files(path: Path, cfg: DictConfig) -> None:
             dataset.filter(lambda example: example[cfg.lang_col] in valid_langs)
 
     if cfg.apply_sentence_filter:
-
         dataset = dataset.map(
             lambda batch: apply_sentence_filter(batch, cfg),
             batched=True,

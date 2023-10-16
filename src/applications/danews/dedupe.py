@@ -54,7 +54,6 @@ def dedupe(batch, deduper: Deduper, dedupe_path: str):
 def main(
     path,
 ) -> None:
-
     deduper = Deduper()
 
     msg.info("Loading Dataset")

@@ -254,7 +254,6 @@ def dns_filter(
 
 
 if __name__ == "__main__":
-
     path = os.path.join("/work/netarkivet-cleaned/safe_search_domains.json")
 
     save_path = os.path.join("/work/netarkivet-cleaned/safe_search_domains_safe.pkl")
