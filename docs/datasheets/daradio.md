@@ -83,6 +83,7 @@ Reruns/duplicates were identified by the following rules:
 - If the title contained "(G)" (short for "genudsendelse")) 
 - If the show was broadcast between 23:00 and 5:00.
 
+The deduplication was coded and conducted by researchers at CHC.
 
 
 **Is the software used to preprocess/clean/label the instances available?**
