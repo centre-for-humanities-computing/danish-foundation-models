@@ -57,7 +57,7 @@ The dataset is a subset of all Danish radio. The two stations were chosen for th
 
 **Who was involved in the data collection process?**
 
-The Royal Danish Library collects Danish radio shows and constructed DaRadio for handing to researchers at CHC.
+The RDL collects Danish radio shows and constructed DaRadio for handing to researchers at CHC.
 
 
 **Over what timeframe was the data collected?**
@@ -66,7 +66,7 @@ The dataset includes radio shows from the period 2005 to 2021.
 
 **Were any ethical review processes conducted?**
 
-The Royal Danish Library collects radio shows in adherence to Danish Archival laws. DaRadio was constructed for a research project, for which a project proposal was accepted by RDL. No other ethical review processes were conducted.
+The RDL collects radio shows in adherence to Danish Archival laws. DaRadio was constructed for a research project, for which a project proposal was accepted by RDL. No other ethical review processes were conducted.
 
 
 ## Preprocessing/cleaning/labeling
