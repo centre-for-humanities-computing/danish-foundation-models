@@ -73,6 +73,17 @@ You can contribute both:
 -  Validation tasks can even be private benchmarks where you only wish to share the performance metrics.
 - And probably in many other ways
 
+## Setting up development environment
+### Method 1: Dev container
+By far the easiest way is to use our included development container. If you're using VSCode:
+
+* Ensure you have either [Orbstack](https://orbstack.dev) or [Docker](https://docker.com) installed 
+* Press this button: [![Open in Dev Container](https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/centre-for-humanities-computing/danish-foundation-models/)
+* Select "From Dockerfile"
+* Press "OK" on the feature screen
+
+### Method 2: Manual install
+Install as you usually would, replicating the commands in the `Dockerfile.dev`.
 
 ## Current Contributors and Collaborators
 This project has collaborators across industry, national institutions and research centers. This project uses compute resources supplied by [Ucloud](https://docs.cloud.sdu.dk/index.html) through the [DeiC e-infrastructure grant](https://www.deic.dk/en/supercomputing/Apply-for-HPC-resources).
