@@ -1,6 +1,0 @@
-# formatting
-black==23.9.1
-ruff==0.0.292
-
-# static-type-checks
-pyright==1.1.331
