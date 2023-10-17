@@ -31,4 +31,5 @@ jobs:
           push: filter
           refFilterForPush: refs/heads/main
           runCmd:
+            git init && # Init git for pre-commit
             make validate
