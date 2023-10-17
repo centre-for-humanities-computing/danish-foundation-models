@@ -2,6 +2,6 @@ repos:
 - repo: local
   hooks:
     - id: validate
-      name: validate
+      name: Run `make validate`
       entry: bash -c 'make validate'
       language: system
