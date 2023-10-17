@@ -1,27 +1,13 @@
-# Use Python 3.10 slim as the base image
-FROM python:3.10-bullseye
-RUN apt-get install -y git
+FROM python:3.11-bullseye
 
 # Set the working directory to /app
 WORKDIR /app
 
 # Dev experience
-COPY requirements-dev.txt ./
-RUN pip install -r requirements-dev.txt
-
-## Run static-type-checks to initialise the cache
 COPY makefile ./
-RUN make type-check
-
-# App install
-## Each on their own line to have them be their own layers, optimising caching
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-
-COPY requirements-test.txt .
-RUN pip install -r requirements-test.txt
-
 COPY pyproject.toml ./
+RUN make install
 
+# Install the app
 COPY . /app
 RUN pip install -e .
