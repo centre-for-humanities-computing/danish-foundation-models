@@ -11,8 +11,11 @@ lint: ## Format code
 type-check: ## Type-check code
 	pyright src
 
-pr: ## Run relevant tests before PR
+validate: ## Run all checks
 	make lint
 	make type-check
 	make test
+
+pr: ## Run relevant tests before PR
+	make validate
 	gh pr create -w

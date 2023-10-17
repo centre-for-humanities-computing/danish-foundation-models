@@ -7,7 +7,7 @@ on: # rebuild any PRs and main branch changes
 
 
 jobs:
-  build:
+  build-and-test:
     concurrency:
       group: "${{ github.workflow }} @ ${{ github.ref }}"
       cancel-in-progress: true
@@ -31,5 +31,4 @@ jobs:
           push: filter
           refFilterForPush: refs/heads/main
           runCmd:
-            git init &&
-            make lint
+            make validate
