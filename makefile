@@ -1,5 +1,5 @@
 install:
-	pip install -e .
+	pip install -e .[dev,test]
 
 test: ## Run tests
 	pytest src
