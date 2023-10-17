@@ -114,7 +114,7 @@ This dataset is static and does not evolve over time with the language, thus wil
 
 **Will the dataset be distributed to third parties outside of the entity (e.g., company, institution, organization) on behalf of which the dataset was created?**
 
-No.
+Data will only be available at the entity during the project. After the project the data will be archived for a period of five years to comply with the university [policy] for research integrity. After the five years, the data will be registered at the national archives as required by [executive order 514](https://www.retsinformation.dk/eli/lta/2020/514) for potential long-term deposit.
 
 
 ### Citation
