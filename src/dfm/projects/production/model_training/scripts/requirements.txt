@@ -1,0 +1,9 @@
+git+https://github.com/microsoft/DeepSpeed
+--index-url https://download.pytorch.org/whl/nightly/rocm5.7
+torch>=2.2.0.dev20231019+rocm5.7
+datasets
+transformers
+accelerate
+wandb
+peft
+tqdm
