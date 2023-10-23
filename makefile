@@ -19,3 +19,6 @@ validate: ## Run all checks
 pr: ## Run relevant tests before PR
 	make validate
 	gh pr create -w
+
+docs:
+	mkdocs serve
