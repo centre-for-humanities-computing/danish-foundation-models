@@ -20,6 +20,11 @@ dependencies = ["pydantic==1.8.2"]
 
 [project.optional-dependencies]
 dev = ["black==23.9.1", "ruff==0.1.0", "pyright==1.1.331", "pre-commit==3.5.0"]
+docs = [
+  "mkdocs-jupyter==0.24.2",
+  "mkdocs-material==9.1.21",
+  "mkdocstrings[python]==0.22.0",
+]
 test = ["pytest==6.2.5", "pytest-lazy-fixture==0.6.3", "pytest-cov==2.8.1"]
 
 [project.license]
