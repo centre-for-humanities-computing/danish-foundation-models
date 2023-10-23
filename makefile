@@ -20,6 +20,6 @@ pr: ## Run relevant tests before PR
 	make validate
 	gh pr create -w
 
-docs:
+docs:  ## build and serve documentation
 	pip install -e .[docs]
 	mkdocs serve
