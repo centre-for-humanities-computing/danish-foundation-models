@@ -21,4 +21,5 @@ pr: ## Run relevant tests before PR
 	gh pr create -w
 
 docs:
+	pip install -e .[docs]
 	mkdocs serve
