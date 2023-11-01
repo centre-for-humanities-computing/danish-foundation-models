@@ -17,8 +17,8 @@ classifiers = [
 requires-python = ">=3.10"
 
 dependencies = [
-  "pydantic==1.8.2",
-  "dolma>=0.9.1",
+  "pydantic>=2.4.2", # dolma does not work with very old versions of pydantic
+  "dolma@git+https://github.com/peterbjorgensen/dolma.git@extendable_tagger_cli", # Install from fork until pull request makes it into upstream dolma
 ]
 
 [project.optional-dependencies]
