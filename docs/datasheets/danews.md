@@ -23,6 +23,8 @@ Following the recommendation and framework of [5] we add the following datasheet
 **For what purpose was the dataset created? Who created the dataset? Who funded the
 creation of the dataset?**
 
+DANews was collected as a part of the HOPE project, examining news coverage during the COVID-19 pandemic. The purpose was to train a model to understand how the novelty and resonance imprint of COVID-19 as a case of crisis compared to non-crises news imprints.
+
 The preprocessed dataset was created with the purpose of pre-training Danish language models. It was
 created by a team of researchers at the Center for Humanities Computing Aarhus ([CHCAA](https://chcaa.io/#/))  using
 a codebase jointly developed with partners from academia and industry, including KMD,
