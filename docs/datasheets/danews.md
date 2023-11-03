@@ -9,8 +9,8 @@
 
 ---
 
-DaNews consist of articles from Danish news and tabloid media from 1 December 2000 to 
-30 April 2021. It consists of articles derived from infomedia API through the [HOPE project](https://hope-project.dk/#/). The articles stems from multiple news sources such as Politiken, including both online of physical news papers.
+DaNews consist of articles from Danish news and tabloid media from 1 December 2019 to 
+30 April 2021. The articles stems from multiple news sources such as Politiken, including both online of physical news papers.
 DaNews consists of 9.29 billion tokens of which 8.67 Billion (93%) were left after
 quality filtering and deduplication.
 
@@ -125,22 +125,11 @@ Articles often describe content which is considered offensive, insulting or thre
 
 ## Collection Process
 
-**What mechanisms or procedures were used to collect the data (e.g., hardware
-apparatuses or sensors, manual human curation, software programs, software APIs)?**
-
-A team of researchers at the Center for Humanities Computing Aarhus (CHCAA) obtained this
-dataset using the Infomedia API.
-
 **If the dataset is a sample from a larger set, what was the sampling strategy?**
 
 The dataset is not a sample, but _is_ a filtered version of the full dataset, see
 Preprocessing/cleaning/labeling for more on this.
 
-**Who was involved in the data collection process?**
-
-A team of researchers at the Center for Humanities Computing Aarhus (CHCAA) obtained this
-dataset using the Infomedia API and would like to thank the dataset owners for
-access to their articles.
 
 **Over what timeframe was the data collected?**
 
@@ -233,7 +222,7 @@ writing style which is unlikely to reflect the Danish language as a whole.
 **Will the dataset be distributed to third parties outside of the entity (e.g., company, institution, organization) on behalf of which the dataset was created?**
 
 Data will only be available at the entity during the project. If you wish access to the dataset you will have to come to an agreement with the individuals
-Danish newspapers potentially through Infomedia.
+Danish newspapers.
 
 ### Citation
 
