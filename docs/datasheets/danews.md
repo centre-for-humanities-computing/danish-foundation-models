@@ -123,7 +123,7 @@ Articles often describe content that is considered offensive, insulting, or thre
  apparatuses or sensors, manual human curation, software programs, software APIs)?**
 
  A team of researchers at the Center for Humanities Computing Aarhus (CHCAA) obtained this
- dataset using the Infomedia API as well as a manual transfer from one of the parties. The API was limited
+ dataset using a third-party API as well as a manual transfer from one of the parties. The API was limited
  to only a subset of articles agreed upon within the agreements.
 
 **If the dataset is a sample from a larger set, what was the sampling strategy?**
@@ -134,7 +134,7 @@ Preprocessing/cleaning/labeling for more on this.
 
 **Who was involved in the data collection process?**
 A team of researchers at the Center for Humanities Computing Aarhus (CHCAA) obtained this
-dataset using the Infomedia API as well as a manual transfer from som of the parties and would like to thank the dataset owners for
+dataset using a third party API as well as a manual transfer from some of the parties and would like to thank the dataset owners for
  access to their articles.
 
  
