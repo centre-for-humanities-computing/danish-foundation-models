@@ -12,6 +12,9 @@
 DaNews consists of articles from Danish news and tabloid media from 1 December 2019 to 
 30 April 2021. The articles stem from multiple news sources, including both online of physical newspapers.
 
+DaNews consists of 403 million tokens 93% were left after
+ quality filtering and deduplication.
+
 ## Datasheet
 
 Following the recommendation and framework of [5] we add the following datasheet. 
@@ -28,6 +31,10 @@ DANews was collected as a part of the HOPE project, examining news coverage duri
 No.
 
 ## Composition
+
+**How many instances are there in total (of each type, if appropriate)?**
+
+The unfiltered dataset consists of 713 429 documents including a total of 403 089 625 tokens.
 
 **What do the instances that comprise the dataset represent (e.g., documents, photos,
 people, countries)?**
@@ -112,12 +119,25 @@ Articles often describe content that is considered offensive, insulting, or thre
 
 ## Collection Process
 
+**What mechanisms or procedures were used to collect the data (e.g., hardware
+ apparatuses or sensors, manual human curation, software programs, software APIs)?**
+
+ A team of researchers at the Center for Humanities Computing Aarhus (CHCAA) obtained this
+ dataset using the Infomedia API as well as a manual transfer from one of the parties. The API was limited
+ to only a subset of articles agreed upon within the agreements.
+
 **If the dataset is a sample from a larger set, what was the sampling strategy?**
 
 The dataset is not a sample, but _is_ a filtered version of the full dataset, see
 Preprocessing/cleaning/labeling for more on this.
 
 
+**Who was involved in the data collection process?**
+A team of researchers at the Center for Humanities Computing Aarhus (CHCAA) obtained this
+dataset using the Infomedia API as well as a manual transfer from som of the parties and would like to thank the dataset owners for
+ access to their articles.
+
+ 
 **Over what timeframe was the data collected?**
 
 The dataset includes articles from 1 December 2019 to 
