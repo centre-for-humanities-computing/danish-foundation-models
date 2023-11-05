@@ -63,8 +63,9 @@ def process_file(file: Path, write_folder: Path, progress_folder: Path) -> None:
     create_done_file(done_path)
 
 def main(n_processes: int = 32):
-    path = Path("/data-big-projects/005_twitter-stopword")
-    write_folder = Path("/data-big-projects/twitter_threads")
+    path = Path("/work/dfm-data/v3.0.0/twitter/005_twitter-stopword")
+    write_folder = Path("/work/dfm-data/v3.0.0/twitter/twitter_threads")
+    write_folder.mkdir(exist_ok=True, parents=True)
     progress_folder = Path("progress_folder")
     progress_folder.mkdir(exist_ok=True, parents=True)
 

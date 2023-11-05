@@ -22,7 +22,7 @@ def load_conversation(file: Path) -> Iterable[Tweet]:
 
 
 def get_conversation_paths() -> Generator[Path, None, None]:
-    folder = Path("/data-big-projects/twitter_threads")
+    folder = Path("/work/dfm-data/v3.0.0/twitter/twitter_threads")
     files = folder.glob("*")
     return files
 
@@ -93,7 +93,8 @@ def process_conversation(conversation: Iterable[Tweet]) -> Union[Tweet, None]:
 def main():
     conversations = get_conversation_paths()
 
-    for conv in conversations:
+    for i, conv in conversations:
+        print(i)
 
         conversation = load_conversation(conv)
         
@@ -103,6 +104,7 @@ def main():
 
         if len(conv) > 2:
             break
+
 
 if __name__ == "__main__":
     main()
