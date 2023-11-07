@@ -51,7 +51,7 @@ def reformat_dataset(ds: Dataset, num_proc: int) -> Dataset:
 
     # add domain
     ds = ds.map(  # type: ignore
-        lambda x: {"domain": domain_mapping_dict[x["source"]]},
+        lambda x: {"domain": domain_mapping_dict[x["source"]]},  # type: ignore
         num_proc=num_proc,  # type: ignore
     )
 
