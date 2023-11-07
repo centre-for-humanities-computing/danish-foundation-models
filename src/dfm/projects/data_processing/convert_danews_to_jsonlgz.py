@@ -12,30 +12,30 @@ Converts infomedia to a .jsonl.gz file with the format:
 """
 
 from pathlib import Path
+from typing import Any
 
-from datasets import Dataset, load_dataset
+from datasets import Dataset, load_dataset  # type: ignore
 
 
-def create_text(example):
+def create_text(example: dict[str, Any]) -> dict[str, Any]:
     """
     create the full text from the different text fields
     """
-    text = ""
+    text: str = ""
     text += f"# {example['Heading']}\n\n"
     if example["SubHeading"]:
         text += f"## {example['SubHeading']}\n\n"
 
     if example["Lead"]:
-        text += example["Lead"] + "\n"
-    # text += example["Paragraph"] + "\n"
-    text += example["BodyText"] + "\n"
-    text = text.strip()
+        text += example["Lead"] + "\n"  # type: ignore
+    text += example["BodyText"] + "\n"  # type: ignore
+    text = text.strip()  # type: ignore
 
     example["text"] = text
-    return example
+    return example  # type: ignore
 
 
-def create_metadata(example):
+def create_metadata(example: dict[str, Any]) -> dict[str, Any]:
     """
     create the metadata from the different fields
     """
@@ -53,18 +53,12 @@ def create_metadata(example):
 
 
 def reformat_dataset(ds: Dataset, num_proc: int = 8) -> Dataset:
-    # add text
-    ds = ds.map(create_text, num_proc=num_proc)
-    # add new column source
-    ds = ds.map(lambda x: {"source": "infomedia"}, num_proc=num_proc)
-    # added (today is 2022-10-24)
-    ds = ds.map(lambda x: {"added": "2022-10-24"}, num_proc=num_proc)
-    # add metadata
-    ds = ds.map(create_metadata, num_proc=num_proc)
-    # add id
-    ds = ds.map(lambda x: {"id": x["ArticleId"]}, num_proc=num_proc)
-    # add created
-    ds = ds.map(lambda x: {"created": x["PublishDate"]}, num_proc=num_proc)
+    ds = ds.map(create_text, num_proc=num_proc)  # type: ignore
+    ds = ds.map(lambda x: {"source": "infomedia"}, num_proc=num_proc)  # type: ignore # noqa: ARG005
+    ds = ds.map(lambda x: {"added": "2022-10-24"}, num_proc=num_proc)  # type: ignore # noqa: ARG005
+    ds = ds.map(create_metadata, num_proc=num_proc)  # type: ignore
+    ds = ds.map(lambda x: {"id": x["ArticleId"]}, num_proc=num_proc)  # type: ignore
+    ds = ds.map(lambda x: {"created": x["PublishDate"]}, num_proc=num_proc)  # type: ignore
 
     # remove unnecessary columns
     ds = ds.remove_columns(
@@ -83,7 +77,7 @@ def reformat_dataset(ds: Dataset, num_proc: int = 8) -> Dataset:
             "ArticleId",
             "PageIds",
             "Section",
-        ]
+        ],
     )
     return ds
 
@@ -95,23 +89,19 @@ def main():
 
     ds: Dataset = load_dataset("json", data_files=files, split="train")  # type: ignore
     # current keys are:
-    # dict_keys(['ArticleUrl', 'Heading', 'SubHeading', 'Lead', 'Paragraph', 'PublishDate', 'BodyText', 'Captions', 'Authors', 'Source', 'WordCount', 'ArticleId', 'PageIds', 'Section'])
+    # dict_keys(['ArticleUrl', 'Heading', 'SubHeading', 'Lead', 'Paragraph', 'PublishDate', 'BodyText', 'Captions', 'Authors', 'Source', 'WordCount', 'ArticleId', 'PageIds', 'Section'])  # noqa
 
-    # check that article id is unique
-    # ids = ds["ArticleId"]
-    # assert len(ids) == len(set(ids))
-    # ids are not unique
+    # ids in file are not are not unique -->
     # create new id:
     ids = list(range(len(ds)))
-    ds = ds.add_column("id", ids)
-
+    ds = ds.add_column("id", ids)  # type: ignore
 
     # reformat dataset
-    ds = reformat_dataset(ds)
+    ds = reformat_dataset(ds)  # type: ignore
 
     # save
-    ds.to_json(
-        "dfm-data/v3.0.0/danews/data.jsonl.gz",
+    ds.to_json(  # type: ignore
+        save_path,
         orient="records",
         lines=True,
         compression="gzip",

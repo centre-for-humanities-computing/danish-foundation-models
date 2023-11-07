@@ -7,8 +7,9 @@ import json
 import logging
 import os
 from collections import defaultdict
+from collections.abc import Generator, Iterable
 from pathlib import Path
-from typing import Any, Generator, Iterable, Union
+from typing import Any, Union
 
 Tweet = dict[str, Any]
 Tweets = list[Tweet]
@@ -24,12 +25,14 @@ def _load_conversation(file: Path) -> Iterable[Tweet]:
         for line in f:
             yield json.loads(line)
 
-def load_conversation(file: Path)-> list[Tweet]:
+
+def load_conversation(file: Path) -> list[Tweet]:
     try:
         return list(_load_conversation(file))
-    except:
+    except:  # noqa
         logging.warning(f"Failed to load conversation {file}")
         return []
+
 
 def get_conversation_paths() -> Generator[Path, None, None]:
     folder = Path("/work/dfm-data/v3.0.0/twitter/twitter_threads")
@@ -41,7 +44,7 @@ def get_conversation_paths() -> Generator[Path, None, None]:
 def get_replied_to(tweet: Tweet) -> Union[str, None]:
     ref_tweets = tweet.get("referenced_tweets", [])
     assert isinstance(ref_tweets, list)
-    for meta in ref_tweets:  # type: ignore
+    for meta in ref_tweets:  # type: ignore # noqa
         if meta["type"] == "replied_to":
             return meta["id"]  # type: ignore
 
@@ -76,7 +79,7 @@ def is_quote_tweet(root_tweet: Tweet) -> bool:
                 return True
 
         logging.warning(
-            f"Root tweet has referenced tweets \n {root_tweet['referenced_tweets']} created at {root_tweet['created_at']}"
+            f"Root tweet has referenced tweets \n {root_tweet['referenced_tweets']} created at {root_tweet['created_at']}",
         )
     return False
 
@@ -97,9 +100,9 @@ def process_conversation(conversation: list[Tweet]) -> Union[Tweet, None]:
 
     if root_tweet is None:
         logging.warning(
-            f"There is no root tweet (conversation length: {len(conversation)})"
+            f"There is no root tweet (conversation length: {len(conversation)})",
         )
-        return
+        return None
     if is_quote_tweet(root_tweet):
         return None
 
@@ -155,7 +158,7 @@ def convert_to_standard_format(root_tweet: TweetWithResponses) -> dict[str, Any]
     }
     """
 
-    id = root_tweet["conversation_id"]
+    id_ = root_tweet["conversation_id"]
     text = convert_conversation_to_thread(root_tweet)
     source = "HopeTwitter"
     added = "2019-01-01 00:00:00"
@@ -170,7 +173,7 @@ def convert_to_standard_format(root_tweet: TweetWithResponses) -> dict[str, Any]
         "root_tweet_quote_count": root_tweet["public_metrics"]["quote_count"],
     }
     return {
-        "id": id,
+        "id": id_,
         "text": text,
         "source": source,
         "added": added,
@@ -182,13 +185,13 @@ def convert_to_standard_format(root_tweet: TweetWithResponses) -> dict[str, Any]
 def created_at_to_timestamp(created_at: str) -> str:
     """
     Convert created_at to timestamp
+    created_at: "2021-04-13T12:52:46.000Z" -->
+    timestamp: "2021-04-13 12:52:46"
     """
-    # created_at: "2021-04-13T12:52:46.000Z"
-    # timestamp: "2021-04-13 12:52:46"
     return created_at.replace("T", " ").replace(".000Z", "")
 
 
-def main(overwrite=True):
+def main(overwrite: bool = True):
     logging.basicConfig(
         filename="conversations_to_threads.log",
         filemode="w",
@@ -202,7 +205,6 @@ def main(overwrite=True):
         else:
             raise FileExistsError(f"{write_file} already exists")
 
-
     conversations = get_conversation_paths()
 
     for i, conv in enumerate(conversations):
@@ -214,7 +216,6 @@ def main(overwrite=True):
         root_tweet = process_conversation(conversation)
 
         if root_tweet is None:
-            # logging.info("root tweet is none")
             continue
 
         standard_format = convert_to_standard_format(root_tweet)
