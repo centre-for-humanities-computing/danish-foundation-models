@@ -11,7 +11,6 @@ from typing import Type, TypeVar
 import blingfire
 import kenlm
 import requests
-
 from dolma.core.data_types import DocResult, Document, Span
 from dolma.core.registry import TaggerRegistry
 from dolma.core.taggers import BaseTagger
@@ -90,7 +89,7 @@ def _get_ccnet_pretrained_lm(lang: str):
             sha256 = hashlib.sha256(response.content).hexdigest()
             if sha256 != ccnet_sha256[filename]:
                 raise RuntimeError(f"Checksum mismatch {sha256} != {ccnet_sha256[filename]}")
-            with open(file_path, 'wb') as file:
+            with open(file_path, "wb") as file:
                 file.write(response.content)
             logging.info(f"{lang} model downloaded and saved at {file_path}")
         else:
@@ -104,7 +103,7 @@ def pp(log_score: float, length: float) -> float:
     """Convert total log-probability to perplexity"""
     return 10.0 ** (-log_score / length)
 
-def create_ccnet_perplexity_tagger(lang: str) -> Type[BaseTagger]:
+def create_ccnet_perplexity_tagger(lang: str) -> type[BaseTagger]:
     """Dynamically create tagger class for a given language"""
     T = TypeVar("T")
     def __init__(self: T) -> T:
@@ -129,12 +128,12 @@ def create_ccnet_perplexity_tagger(lang: str) -> Type[BaseTagger]:
             doc_log_prob += log_prob
             doc_length += length
             paragraph_span = Span(
-                start=paragraph.start, end=paragraph.end, type="perplexity", score=pp(log_prob, length)
+                start=paragraph.start, end=paragraph.end, type="perplexity", score=pp(log_prob, length),
             )
             spans.append(paragraph_span)
 
         paragraph_span = Span(
-            start=0, end=len(doc.text), type="doc_perplexity", score=pp(doc_log_prob, doc_length)
+            start=0, end=len(doc.text), type="doc_perplexity", score=pp(doc_log_prob, doc_length),
         )
         return DocResult(doc=doc, spans=spans)
 
@@ -142,8 +141,8 @@ def create_ccnet_perplexity_tagger(lang: str) -> Type[BaseTagger]:
         f"CCNetPerplexity{lang}", (BaseTagger, ),
         {
             "__init__": __init__,
-            "predict": predict
-        }
+            "predict": predict,
+        },
     )
     cls = TaggerRegistry.add(f"ccnet_perplexity_paragraph_w_doc_{lang}")(cls)
     return cls

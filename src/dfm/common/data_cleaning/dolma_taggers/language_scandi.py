@@ -66,7 +66,7 @@ class Cld2LanguageFilterScandi(BaseTagger):
 
             positive_span = Span(start=0, end=len(doc.text), type=lang_code, score=score)
             negative_span = Span(
-                start=0, end=len(doc.text), type=f"not_{lang_code}", score=1.0 - score
+                start=0, end=len(doc.text), type=f"not_{lang_code}", score=1.0 - score,
             )
             spans.append(positive_span)
             spans.append(negative_span)
@@ -86,7 +86,7 @@ class Cld2LanguageFilterParagraphScandi(Cld2LanguageFilterScandi):
                     score = 0.0
 
                 positive_span = Span(
-                    start=paragraph.start, end=paragraph.end, type=lang_code, score=score
+                    start=paragraph.start, end=paragraph.end, type=lang_code, score=score,
                 )
                 negative_span = Span(
                     start=paragraph.start,
@@ -104,12 +104,12 @@ class FastTextScandiLanguageDocumentTagger(BaseFastTextTagger):
 
     def __init__(self):
         super().__init__(
-            model_path=self.MODEL_PATH, model_mode=self.DOCUMENT_LEVEL_TAGGER
+            model_path=self.MODEL_PATH, model_mode=self.DOCUMENT_LEVEL_TAGGER,
         )
 
     def predict_slice(self, text_slice: TextSlice) -> Iterable[Prediction]:
         pred = self.classifier.predict(
-            text_slice.text.lower().replace("\n", " ").strip(), k=-1
+            text_slice.text.lower().replace("\n", " ").strip(), k=-1,
         )
         # Initialize scores to 0
         scores = {k: 0.0 for k in LANGS.values()}
@@ -121,7 +121,7 @@ class FastTextScandiLanguageDocumentTagger(BaseFastTextTagger):
                 scores[label_code] = score
             if label == "__label__da":
                 return Prediction(label="da", score=score), Prediction(
-                    label="not_da", score=1.0 - score
+                    label="not_da", score=1.0 - score,
                 )
 
         predictions_positive = [Prediction(label=k, score=v) for k,v in scores.items()]
@@ -133,7 +133,7 @@ class FastTextScandiLanguageDocumentTagger(BaseFastTextTagger):
 class FastTextScandiLanguageParagraphTagger(FastTextScandiLanguageDocumentTagger):
     def __init__(self):
         BaseFastTextTagger.__init__(
-            self, model_path=self.MODEL_PATH, model_mode=self.PARAGRAPH_LEVEL_TAGGER
+            self, model_path=self.MODEL_PATH, model_mode=self.PARAGRAPH_LEVEL_TAGGER,
         )
 
 
@@ -154,7 +154,7 @@ def add_global_language_score_from_slice_score(result: DocResult) -> DocResult:
         doc_level = (
             Span(start=0, end=len(result.doc.text), type=f"doc_{lang}", score=doc_lang_score),
             Span(
-                start=0, end=len(result.doc.text), type=f"doc_not_{lang}", score=doc_not_lang_score
+                start=0, end=len(result.doc.text), type=f"doc_not_{lang}", score=doc_not_lang_score,
             ),
         )
         result.spans.extend(doc_level)
@@ -173,7 +173,7 @@ class Cld2LanguageFilterParagraphWithDocScoreTaggerScandi(Cld2LanguageFilterPara
 # Composite tagger that provides both paragraph and doc scores
 @TaggerRegistry.add("ft_lang_id_scandi_paragraph_with_doc_score")
 class FastTextScandiLanguageParagraphWithDocScoreTagger(
-    FastTextScandiLanguageParagraphTagger
+    FastTextScandiLanguageParagraphTagger,
 ):
     def predict(self, doc: Document) -> DocResult:
         doc_result = super().predict(doc)

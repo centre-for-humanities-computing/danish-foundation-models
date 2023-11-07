@@ -48,7 +48,7 @@ UNICODE_PUNCT_RE = re.compile(f"[{''.join(UNICODE_PUNCT.keys())}]")
 
 
 def replace_unicode_punct(text: str) -> str:
-    return "".join((UNICODE_PUNCT.get(c, c) for c in text))
+    return "".join(UNICODE_PUNCT.get(c, c) for c in text)
 
 
 def remove_unicode_punct(text: str) -> str:
@@ -67,11 +67,11 @@ def strip_accents(line: str) -> str:
 
 # Build a regex matching all control characters.
 NON_PRINTING_CHARS_RE = re.compile(
-    f"[{''.join(map(chr, list(range(0,32)) + list(range(127,160))))}]"
+    f"[{''.join(map(chr, list(range(32)) + list(range(127,160))))}]",
 )
 DIGIT_RE = re.compile(r"\d")
 PUNCT_OR_NON_PRINTING_CHARS_RE = re.compile(
-    (UNICODE_PUNCT_RE.pattern + NON_PRINTING_CHARS_RE.pattern).replace("][", "")
+    (UNICODE_PUNCT_RE.pattern + NON_PRINTING_CHARS_RE.pattern).replace("][", ""),
 )
 
 
@@ -139,7 +139,7 @@ def normalize_spacing_for_tok(text: str, language: str = "en") -> str:
     else:
         res = res.replace(',"', '",')
         res = re.sub(
-            r"(\.+)\"(\s*[^<])", r"\"\1\2", res
+            r"(\.+)\"(\s*[^<])", r"\"\1\2", res,
         )  # don't fix period at end of sentence
 
     if (
