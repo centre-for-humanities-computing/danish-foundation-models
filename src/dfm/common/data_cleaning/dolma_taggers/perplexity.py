@@ -6,14 +6,18 @@ This module contain taggers based on language models
 import hashlib
 import logging
 import os
-import requests
+from typing import Type, TypeVar
 
+import blingfire
 import kenlm
+import requests
 
 from dolma.core.data_types import DocResult, Document, Span
 from dolma.core.registry import TaggerRegistry
 from dolma.core.taggers import BaseTagger
 from dolma.core.utils import split_paragraphs
+
+from dfm.common.data_cleaning.text_normalizer import normalize
 
 ccnet_sha256 = {
 "af.arpa.bin":"7278e70cb22e29e94942b103c0ba49f406a9369c2949199fdf8d4bee4b0ce48e",
@@ -96,24 +100,32 @@ def _get_ccnet_pretrained_lm(lang: str):
 
     return file_path
 
-def pp(log_score: float, length: float):
+def pp(log_score: float, length: float) -> float:
     """Convert total log-probability to perplexity"""
     return 10.0 ** (-log_score / length)
 
-@TaggerRegistry.add("ccnet_paragraph_w_doc_da")
-class CCNetDa(BaseTagger):
-    def __init__(self):
-        model_bin_path = _get_ccnet_pretrained_lm("da")
+def create_ccnet_perplexity_tagger(lang: str) -> Type[BaseTagger]:
+    """Dynamically create tagger class for a given language"""
+    T = TypeVar("T")
+    def __init__(self: T) -> T:
+        model_bin_path = _get_ccnet_pretrained_lm(lang)
         self.model = kenlm.Model(model_bin_path)
+        return self
 
-    def predict(self, doc: Document) -> DocResult:
+    def predict(self: BaseTagger, doc: Document) -> DocResult:
         paragraphs = split_paragraphs(doc.text)
         spans: list[Span] = []
         doc_log_prob: float = 0.0
         doc_length: float = 0.0
         for paragraph in paragraphs:
-            log_prob = self.model.score(paragraph.text)
-            length = len(paragraph.text.split()) + 1
+            # To get proper scores from the language model we need to normalize the text
+            # Do not remove accents as it removes æøå and others.
+            normalized_text = blingfire.normalize_spaces(normalize(paragraph.text, accent=False))
+            # The kenlm model expects end of sentence punctuation to be separated from words with spaces
+            # so we separate the words using blingfire.
+            normalized_words = blingfire.text_to_words(normalized_text)
+            log_prob = self.model.score(normalized_words)
+            length = len(normalized_words.split()) + 1
             doc_log_prob += log_prob
             doc_length += length
             paragraph_span = Span(
@@ -125,3 +137,16 @@ class CCNetDa(BaseTagger):
             start=0, end=len(doc.text), type="doc_perplexity", score=pp(doc_log_prob, doc_length)
         )
         return DocResult(doc=doc, spans=spans)
+
+    cls = type(
+        f"CCNetPerplexity{lang}", (BaseTagger, ),
+        {
+            "__init__": __init__,
+            "predict": predict
+        }
+    )
+    cls = TaggerRegistry.add(f"ccnet_perplexity_paragraph_w_doc_{lang}")(cls)
+    return cls
+
+for lang in ["da", "en", "is", "no", "sv"]:
+    create_ccnet_perplexity_tagger(lang)
