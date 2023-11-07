@@ -5,7 +5,6 @@ This module contain taggers based on language models
 """
 import hashlib
 import logging
-import os
 from pathlib import Path
 from typing import TypeVar
 

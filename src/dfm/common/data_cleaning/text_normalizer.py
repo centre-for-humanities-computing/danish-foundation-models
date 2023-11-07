@@ -65,8 +65,6 @@ def strip_accents(line: str) -> str:
     """Strips accents from a piece of text."""
     nfd = unicodedata.normalize("NFD", line)
     output = [c for c in nfd if unicodedata.category(c) != "Mn"]
-    if len(output) == line:
-        return line
     return "".join(output)
 
 
