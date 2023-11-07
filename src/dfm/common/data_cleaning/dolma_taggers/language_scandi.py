@@ -20,13 +20,13 @@ LANGS = {
     "SWEDISH": "sv",
     "NORWEGIAN": "no",
     "ICELANDIC": "is",
-    "FAROESE": "fo", # Note that FAROESE is not supported by cld2
+    "FAROESE": "fo",  # Note that FAROESE is not supported by cld2
 }
+
 
 @TaggerRegistry.add("cld2_scandi_doc")
 class Cld2LanguageFilterScandi(BaseTagger):
     RE_BAD_CHARS = regex.compile(r"[\p{Cc}\p{Cs}]+")
-
 
     def _sanitize_input(self, text: str) -> str:
         return self.RE_BAD_CHARS.sub("", text)
@@ -58,19 +58,22 @@ class Cld2LanguageFilterScandi(BaseTagger):
     def predict(self, doc: Document) -> DocResult:
         lang_scores = self._predict_text(doc.text)
         spans: list[Span] = []
-        for lang, lang_code in LANGS.items():
-            if lang_code in lang_scores:
-                score = lang_scores[lang_code]
-            else:
-                score = 0
+        for lang_code in LANGS.values():
+            score = lang_scores.get(lang_code, 0)
 
-            positive_span = Span(start=0, end=len(doc.text), type=lang_code, score=score)
+            positive_span = Span(
+                start=0, end=len(doc.text), type=lang_code, score=score
+            )
             negative_span = Span(
-                start=0, end=len(doc.text), type=f"not_{lang_code}", score=1.0 - score,
+                start=0,
+                end=len(doc.text),
+                type=f"not_{lang_code}",
+                score=1.0 - score,
             )
             spans.append(positive_span)
             spans.append(negative_span)
         return DocResult(doc=doc, spans=spans)
+
 
 @TaggerRegistry.add("cld2_scandi_paragraph")
 class Cld2LanguageFilterParagraphScandi(Cld2LanguageFilterScandi):
@@ -80,13 +83,13 @@ class Cld2LanguageFilterParagraphScandi(Cld2LanguageFilterScandi):
         for paragraph in paragraphs:
             lang_scores = self._predict_text(paragraph.text)
             for lang_code in LANGS.values():
-                if lang_code in lang_scores:
-                    score = lang_scores[lang_code]
-                else:
-                    score = 0.0
+                score = lang_scores.get(lang_code, 0.0)
 
                 positive_span = Span(
-                    start=paragraph.start, end=paragraph.end, type=lang_code, score=score,
+                    start=paragraph.start,
+                    end=paragraph.end,
+                    type=lang_code,
+                    score=score,
                 )
                 negative_span = Span(
                     start=paragraph.start,
@@ -104,12 +107,14 @@ class FastTextScandiLanguageDocumentTagger(BaseFastTextTagger):
 
     def __init__(self):
         super().__init__(
-            model_path=self.MODEL_PATH, model_mode=self.DOCUMENT_LEVEL_TAGGER,
+            model_path=self.MODEL_PATH,
+            model_mode=self.DOCUMENT_LEVEL_TAGGER,
         )
 
     def predict_slice(self, text_slice: TextSlice) -> Iterable[Prediction]:
         pred = self.classifier.predict(
-            text_slice.text.lower().replace("\n", " ").strip(), k=-1,
+            text_slice.text.lower().replace("\n", " ").strip(),
+            k=-1,
         )
         # Initialize scores to 0
         scores = {k: 0.0 for k in LANGS.values()}
@@ -121,19 +126,25 @@ class FastTextScandiLanguageDocumentTagger(BaseFastTextTagger):
                 scores[label_code] = score
             if label == "__label__da":
                 return Prediction(label="da", score=score), Prediction(
-                    label="not_da", score=1.0 - score,
+                    label="not_da",
+                    score=1.0 - score,
                 )
 
-        predictions_positive = [Prediction(label=k, score=v) for k,v in scores.items()]
-        predictions_negative = [Prediction(label=k, score=1.0 - v) for k,v in scores.items()]
+        predictions_positive = [Prediction(label=k, score=v) for k, v in scores.items()]
+        predictions_negative = [
+            Prediction(label=k, score=1.0 - v) for k, v in scores.items()
+        ]
 
         return predictions_positive + predictions_negative
+
 
 @TaggerRegistry.add("ft_lang_id_scandi_paragraph")
 class FastTextScandiLanguageParagraphTagger(FastTextScandiLanguageDocumentTagger):
     def __init__(self):
         BaseFastTextTagger.__init__(
-            self, model_path=self.MODEL_PATH, model_mode=self.PARAGRAPH_LEVEL_TAGGER,
+            self,
+            model_path=self.MODEL_PATH,
+            model_mode=self.PARAGRAPH_LEVEL_TAGGER,
         )
 
 
@@ -152,9 +163,17 @@ def add_global_language_score_from_slice_score(result: DocResult) -> DocResult:
             doc_lang_score = doc_not_lang_score = 0.0
 
         doc_level = (
-            Span(start=0, end=len(result.doc.text), type=f"doc_{lang}", score=doc_lang_score),
             Span(
-                start=0, end=len(result.doc.text), type=f"doc_not_{lang}", score=doc_not_lang_score,
+                start=0,
+                end=len(result.doc.text),
+                type=f"doc_{lang}",
+                score=doc_lang_score,
+            ),
+            Span(
+                start=0,
+                end=len(result.doc.text),
+                type=f"doc_not_{lang}",
+                score=doc_not_lang_score,
             ),
         )
         result.spans.extend(doc_level)
@@ -163,7 +182,9 @@ def add_global_language_score_from_slice_score(result: DocResult) -> DocResult:
 
 # Composite tagger that provides both paragraph and doc scores
 @TaggerRegistry.add("cld2_scandi_paragraph_with_doc_score")
-class Cld2LanguageFilterParagraphWithDocScoreTaggerScandi(Cld2LanguageFilterParagraphScandi):
+class Cld2LanguageFilterParagraphWithDocScoreTaggerScandi(
+    Cld2LanguageFilterParagraphScandi
+):
     def predict(self, doc: Document) -> DocResult:
         doc_result = super().predict(doc)
         doc_result = add_global_language_score_from_slice_score(doc_result)

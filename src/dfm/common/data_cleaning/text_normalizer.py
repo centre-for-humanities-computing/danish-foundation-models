@@ -1,11 +1,16 @@
+# This file has initially been copied from the ccnet repository from Facebook.
+#
 # Copyright (c) Facebook, Inc. and its affiliates.
 #
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 #
+# This file is full of ambigous characters, so disable ruff check for those.
+# ruff: noqa: RUF001
 
 import re
 import unicodedata
+from typing import Literal
 
 UNICODE_PUNCT = {
     "，": ",",
@@ -139,7 +144,9 @@ def normalize_spacing_for_tok(text: str, language: str = "en") -> str:
     else:
         res = res.replace(',"', '",')
         res = re.sub(
-            r"(\.+)\"(\s*[^<])", r"\"\1\2", res,
+            r"(\.+)\"(\s*[^<])",
+            r"\"\1\2",
+            res,
         )  # don't fix period at end of sentence
 
     if (
@@ -155,7 +162,13 @@ def normalize_spacing_for_tok(text: str, language: str = "en") -> str:
     return res
 
 
-def normalize(line: str, accent=True, case=True, numbers=True, punct=1) -> str:
+def normalize(
+    line: str,
+    accent: bool = True,
+    case: bool = True,
+    numbers: bool = True,
+    punct: Literal[1, 2] = 1,
+) -> str:
     line = line.strip()
     if not line:
         return line
