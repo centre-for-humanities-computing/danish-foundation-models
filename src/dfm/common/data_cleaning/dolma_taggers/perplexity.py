@@ -6,7 +6,7 @@ This module contain taggers based on language models
 import hashlib
 import logging
 from pathlib import Path
-from typing import TypeVar
+from typing import Self, Any
 
 import blingfire
 import kenlm
@@ -110,16 +110,21 @@ def pp(log_score: float, length: float) -> float:
     return 10.0 ** (-log_score / length)
 
 
-def create_ccnet_perplexity_tagger(lang: str) -> type[BaseTagger]:
+class PerplexityBaseTagger(BaseTagger):
+    @property
+    def model(self: Self) -> kenlm.Model:
+        return self._model
+    @model.setter
+    def model(self: Self, model: kenlm.Model):
+        self._model = model
+
+def create_ccnet_perplexity_tagger(lang: str) -> type[PerplexityBaseTagger]:
     """Dynamically create tagger class for a given language"""
-    T = TypeVar("T", bound=BaseTagger)
-
-    def __init__(self: T) -> T:
+    def __init__(self: Any) -> None:
         model_bin_path = _get_ccnet_pretrained_lm(lang)
-        self.model = kenlm.Model(model_bin_path)
-        return self
+        self.model = kenlm.Model(str(model_bin_path))
 
-    def predict(self: BaseTagger, doc: Document) -> DocResult:
+    def predict(self: PerplexityBaseTagger, doc: Document) -> DocResult:
         paragraphs = split_paragraphs(doc.text)
         spans: list[Span] = []
         doc_log_prob: float = 0.0
@@ -157,7 +162,7 @@ def create_ccnet_perplexity_tagger(lang: str) -> type[BaseTagger]:
     # and methods.
     cls = type(
         f"CCNetPerplexity{lang}",
-        (BaseTagger,),
+        (PerplexityBaseTagger,),
         {
             "__init__": __init__,
             "predict": predict,
