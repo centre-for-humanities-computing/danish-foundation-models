@@ -62,7 +62,10 @@ class Cld2LanguageFilterScandi(BaseTagger):
             score = lang_scores.get(lang_code, 0)
 
             positive_span = Span(
-                start=0, end=len(doc.text), type=lang_code, score=score
+                start=0,
+                end=len(doc.text),
+                type=lang_code,
+                score=score,
             )
             negative_span = Span(
                 start=0,
@@ -183,7 +186,7 @@ def add_global_language_score_from_slice_score(result: DocResult) -> DocResult:
 # Composite tagger that provides both paragraph and doc scores
 @TaggerRegistry.add("cld2_scandi_paragraph_with_doc_score")
 class Cld2LanguageFilterParagraphWithDocScoreTaggerScandi(
-    Cld2LanguageFilterParagraphScandi
+    Cld2LanguageFilterParagraphScandi,
 ):
     def predict(self, doc: Document) -> DocResult:
         doc_result = super().predict(doc)

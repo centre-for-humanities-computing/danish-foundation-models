@@ -6,7 +6,7 @@ This module contain taggers based on language models
 import hashlib
 import logging
 from pathlib import Path
-from typing import Self, Any
+from typing import Any, Self
 
 import blingfire
 import kenlm
@@ -90,14 +90,14 @@ def _get_ccnet_pretrained_lm(lang: str) -> Path:
             sha256 = hashlib.sha256(response.content).hexdigest()
             if sha256 != ccnet_sha256[filename]:
                 raise RuntimeError(
-                    f"Checksum mismatch {sha256} != {ccnet_sha256[filename]}"
+                    f"Checksum mismatch {sha256} != {ccnet_sha256[filename]}",
                 )
             with Path.open(file_path, "wb") as file:
                 file.write(response.content)
             logging.info(f"{lang} model downloaded and saved at {file_path}")
         else:
             raise RuntimeError(
-                f"Failed to download {lang} model. Status code: {response.status_code}"
+                f"Failed to download {lang} model. Status code: {response.status_code}",
             )
     else:
         logging.info(f"{lang} model already exists at {file_path}")
@@ -114,12 +114,15 @@ class PerplexityBaseTagger(BaseTagger):
     @property
     def model(self: Self) -> kenlm.Model:
         return self._model
+
     @model.setter
     def model(self: Self, model: kenlm.Model):
         self._model = model
 
+
 def create_ccnet_perplexity_tagger(lang: str) -> type[PerplexityBaseTagger]:
     """Dynamically create tagger class for a given language"""
+
     def __init__(self: Any) -> None:
         model_bin_path = _get_ccnet_pretrained_lm(lang)
         self.model = kenlm.Model(str(model_bin_path))
@@ -133,7 +136,7 @@ def create_ccnet_perplexity_tagger(lang: str) -> type[PerplexityBaseTagger]:
             # To get proper scores from the language model we need to normalize the text
             # Do not remove accents as it removes æøå and others.
             normalized_text = blingfire.normalize_spaces(
-                normalize(paragraph.text, accent=False)
+                normalize(paragraph.text, accent=False),
             )
             # The kenlm model expects end of sentence punctuation to be separated from words with spaces
             # so we separate the words using blingfire.
