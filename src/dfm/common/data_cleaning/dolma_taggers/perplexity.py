@@ -112,7 +112,7 @@ def pp(log_score: float, length: float) -> float:
 
 def create_ccnet_perplexity_tagger(lang: str) -> type[BaseTagger]:
     """Dynamically create tagger class for a given language"""
-    T = TypeVar("T")
+    T = TypeVar("T", bound=BaseTagger)
 
     def __init__(self: T) -> T:
         model_bin_path = _get_ccnet_pretrained_lm(lang)
@@ -153,6 +153,8 @@ def create_ccnet_perplexity_tagger(lang: str) -> type[BaseTagger]:
         )
         return DocResult(doc=doc, spans=spans)
 
+    # Build the class dynamiccaly from base class
+    # and methods.
     cls = type(
         f"CCNetPerplexity{lang}",
         (BaseTagger,),
@@ -161,6 +163,7 @@ def create_ccnet_perplexity_tagger(lang: str) -> type[BaseTagger]:
             "predict": predict,
         },
     )
+    # Add the class decorator explicitly to add the tagger to the registry
     cls = TaggerRegistry.add(f"ccnet_perplexity_paragraph_w_doc_{lang}")(cls)
     return cls
 

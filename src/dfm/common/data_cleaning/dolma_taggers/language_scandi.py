@@ -49,7 +49,7 @@ class Cld2LanguageFilterScandi(BaseTagger):
 
         scores: dict[str, float] = {}
         if is_reliable:
-            for lang, lang_code, score, _ in details:
+            for lang, _, score, _ in details:
                 if lang in LANGS:
                     scores[LANGS[lang]] = score / 100.0
 
