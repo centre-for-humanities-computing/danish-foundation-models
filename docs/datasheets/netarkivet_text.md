@@ -9,4 +9,4 @@
 
 ---
 
-This datasheet is currently being revised
+This datasheet is currently being revised 🛠️
