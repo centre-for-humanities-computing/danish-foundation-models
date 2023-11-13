@@ -38,11 +38,13 @@ class Cld2LanguageFilterScandi(BaseTagger):
         return text
 
     def _predict_text(self, text: str) -> dict[str, float]:
-        details = []
         is_reliable = False
+        details: Iterable[tuple[str, str, int, float]] = []
         for fn in (self._identity_fn, self._to_ascii_input, self._sanitize_input):
             try:
-                is_reliable, _, details = cld2.detect(fn(text))
+                retvals = cld2.detect(fn(text))
+                assert len(retvals) == 3
+                is_reliable, _, details = retvals
                 break
             except cld2.error:
                 ...
