@@ -129,15 +129,10 @@ class FastTextScandiLanguageDocumentTagger(BaseFastTextTagger):
             label_code = label[-2:]
             if label_code in scores:
                 scores[label_code] = score
-            if label == "__label__da":
-                return Prediction(label="da", score=score), Prediction(
-                    label="not_da",
-                    score=1.0 - score,
-                )
 
         predictions_positive = [Prediction(label=k, score=v) for k, v in scores.items()]
         predictions_negative = [
-            Prediction(label=k, score=1.0 - v) for k, v in scores.items()
+            Prediction(label=f"not_{k}", score=1.0 - v) for k, v in scores.items()
         ]
 
         return predictions_positive + predictions_negative
