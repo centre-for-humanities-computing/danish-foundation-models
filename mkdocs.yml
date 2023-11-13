@@ -2,6 +2,7 @@ site_name: Danish Foundation Models
 docs_dir: "docs/"
 repo_url: https://github.com/centre-for-humanities-computing/danish-foundation-models
 watch: [docs/]
+edit_uri: 'blob/main/docs/'
 theme:
   name: material
   favicon: _static/icon.png
@@ -21,6 +22,7 @@ theme:
     - toc.follow
     - pymdownx.caret
     - pymdownx.tilde
+    - content.action.edit
   palette:
     primary: white
     accent: light blue
@@ -37,16 +39,14 @@ copyright: Copyright &copy; 2023 Danish Foundation Models Project
 
 nav:
   - About: index.md
-  - Models: 
-    - Text: models_text.md
-    - Speech: models_speech.md
-  - Datasets: 
-    - DCC: dcc.md
-    - Datasheets:
-      - DaNews: datasheets/danews.md
-      - HopeTwitter: datasheets/hopetwitter.md
-      - NAT: datasheets/netarkivet_text.md
-      - DaRadio: datasheets/daradio.md
+  - Models: models.md
+  - Datasets:
+      - DCC: dcc.md
+      - Datasheets:
+          - DaNews: datasheets/danews.md
+          - HopeTwitter: datasheets/hopetwitter.md
+          - NAT: datasheets/netarkivet_text.md
+          - DaRadio: datasheets/daradio.md
 
 plugins:
   - mkdocs-jupyter
