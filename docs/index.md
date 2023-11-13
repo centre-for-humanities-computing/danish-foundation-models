@@ -22,10 +22,11 @@ You can read more about the argument for Danish Language models in our [publicat
 
 ##  Open-source models on closed-source data
 
-As the datasets many of the datasets we use either contain personally sensitive information or fall under copyright they can't be shared publicly. However, we want to share as
+As many of the datasets we use either contain personally sensitive information or fall under copyright they can't be shared publicly. However, we want to share as
 much as possible from the project, while protecting privacy and adhering to copyright law. 
 Thus we organize it such that all parts of the project that can be shared and those which
-can't are well-documented using datasheets and training logs. Furthermore during the data processing and training the data stored on UCloud which follows the highest standards of information security management with a [formal ISO27001 certification](https://docs.cloud.sdu.dk/intro/security.html).
+can't are well-documented using datasheets and training logs. 
+Furthermore, during data processing and training, the data is stored on UCloud which follows the highest standards of information security management with a [formal ISO27001 certification](https://docs.cloud.sdu.dk/intro/security.html).
 
 ![](_static/structure.png)
 
@@ -39,5 +40,5 @@ We invite collaboration and contributions from industry professionals, researche
 | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
 | 🗣 [**DDSC Slack**](https://join.slack.com/t/danskdatascie-o8m9638/shared_invite/zt-1jh2dwmj4-D_mjywfXERvVP75n9O0ykg) | Join the discussion in the "danish-foundation-models-text"-channel |
 | 💬 [**GitHub Discussion**](https://github.com/centre-for-humanities-computing/danish-foundation-models/discussions)   | Ask questions or start a discussion                                |
-| 🚨 [**GitHub Issues**](https://github.com/centre-for-humanities-computing/danish-foundation-models/issues)            | Notices a bug in the code? Please create an issue                  |
+| 🚨 [**GitHub Issues**](https://github.com/centre-for-humanities-computing/danish-foundation-models/issues)            | Noticed a bug in the code? Please create an issue                  |
 
