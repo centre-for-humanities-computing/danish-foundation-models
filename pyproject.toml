@@ -18,7 +18,7 @@ requires-python = ">=3.10"
 
 dependencies = [
   "pydantic>=2.4.2", # dolma does not work with very old versions of pydantic
-  "dolma@git+https://github.com/allenai/dolma.git", # Install from git until a 0.9.2 package is released
+  "dolma@git+https://github.com/allenai/dolma.git@5a010a2685914b1db7744426abfb4b9ece52da95", # Install from git until a 0.9.2 package is released
   "kenlm>=0.2.0", # Used for perplexity tagging
   "blingfire>=0.1.8", # Used for perplexity tagging
   "requests>=2.31.0",
