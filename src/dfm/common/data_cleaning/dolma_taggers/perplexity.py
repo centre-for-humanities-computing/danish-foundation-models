@@ -75,8 +75,7 @@ def _get_ccnet_pretrained_lm(lang: str) -> Path:
     url = f"http://dl.fbaipublicfiles.com/cc_net/lm/{lang}.arpa.bin"
     data_folder = Path("data_lm")
 
-    if not Path.exists(data_folder):
-        Path.mkdir(data_folder, parents=True)
+    Path.mkdir(data_folder, parents=True, exist_ok=True)
 
     filename = f"{lang}.arpa.bin"
     file_path = data_folder / filename
