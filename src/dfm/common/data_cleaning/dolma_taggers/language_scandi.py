@@ -20,12 +20,16 @@ LANGS = {
     "SWEDISH": "sv",
     "NORWEGIAN": "no",
     "ICELANDIC": "is",
-    "FAROESE": "fo",  # Note that FAROESE is not supported by cld2
+    "FAROESE": "fo",  # Note that FAROESE is not supported by cld2 or fasttext
 }
 
 
 @TaggerRegistry.add("cld2_scandi_doc")
 class Cld2LanguageFilterScandi(BaseTagger):
+    """This tagger runs the Compact Language Detect 2 model on a full document
+    and will return a score between 0 and 1 for each language in LANGS.
+    It uses the pretrained model from the pycld2 package."""
+
     RE_BAD_CHARS = regex.compile(r"[\p{Cc}\p{Cs}]+")
 
     def _sanitize_input(self, text: str) -> str:
@@ -82,6 +86,9 @@ class Cld2LanguageFilterScandi(BaseTagger):
 
 @TaggerRegistry.add("cld2_scandi_paragraph")
 class Cld2LanguageFilterParagraphScandi(Cld2LanguageFilterScandi):
+    """This tagger runs the Compact Language Detect 2 model on each paragraph,
+    and will save a score between 0 and 1 for each language in LANGS"""
+
     def predict(self, doc: Document) -> DocResult:
         paragraphs = split_paragraphs(doc.text)
         spans: list[Span] = []
@@ -108,6 +115,29 @@ class Cld2LanguageFilterParagraphScandi(Cld2LanguageFilterScandi):
 
 @TaggerRegistry.add("ft_lang_id_scandi_doc")
 class FastTextScandiLanguageDocumentTagger(BaseFastTextTagger):
+    """This tagger runs the FastText language detection model on each document.
+    The score is between 0 and 1 and provided for each language in LANGS.
+
+    The method is described in the following papers:
+
+    @article{joulin2016bag,
+      title={Bag of Tricks for Efficient Text Classification},
+      author={Joulin, Armand and Grave, Edouard and Bojanowski, Piotr and Mikolov, Tomas},
+      journal={arXiv preprint arXiv:1607.01759},
+      year={2016}
+    }
+    @article{joulin2016fasttext,
+      title={FastText.zip: Compressing text classification models},
+      author={Joulin, Armand and Grave, Edouard and Bojanowski, Piotr and Douze, Matthijs and J{\'e}gou, H{\'e}rve and Mikolov, Tomas},
+      journal={arXiv preprint arXiv:1612.03651},
+      year={2016}
+    }
+
+    The pretrained model is automatically downloaded (link publically available at):
+    https://fasttext.cc/docs/en/language-identification.html
+
+    """
+
     MODEL_PATH = "https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin"
 
     def __init__(self):
@@ -140,6 +170,10 @@ class FastTextScandiLanguageDocumentTagger(BaseFastTextTagger):
 
 @TaggerRegistry.add("ft_lang_id_scandi_paragraph")
 class FastTextScandiLanguageParagraphTagger(FastTextScandiLanguageDocumentTagger):
+    """This tagger runs the FastText language detection model on each paragraph.
+    The score is between 0 and 1 and provided for each language in LANGS.
+    """
+
     def __init__(self):
         BaseFastTextTagger.__init__(
             self,
@@ -185,6 +219,10 @@ def add_global_language_score_from_slice_score(result: DocResult) -> DocResult:
 class Cld2LanguageFilterParagraphWithDocScoreTaggerScandi(
     Cld2LanguageFilterParagraphScandi,
 ):
+    """This tagger runs the Compact Language Detect 2 model on each paragraph
+    and will also provide a total score for each document.
+    The score is between 0 and 1 and provided for each language in LANGS."""
+
     def predict(self, doc: Document) -> DocResult:
         doc_result = super().predict(doc)
         doc_result = add_global_language_score_from_slice_score(doc_result)
@@ -196,6 +234,11 @@ class Cld2LanguageFilterParagraphWithDocScoreTaggerScandi(
 class FastTextScandiLanguageParagraphWithDocScoreTagger(
     FastTextScandiLanguageParagraphTagger,
 ):
+    """This tagger runs the FastText language detection model on each paragraph,
+    and will also provide a total score for each document.
+    The score is between 0 and 1 and provided for each language in LANGS.
+    """
+
     def predict(self, doc: Document) -> DocResult:
         doc_result = super().predict(doc)
         doc_result = add_global_language_score_from_slice_score(doc_result)

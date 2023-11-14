@@ -111,6 +111,8 @@ def pp(log_score: float, length: float) -> float:
 
 
 class PerplexityBaseTagger(BaseTagger):
+    """Base class for CCNet based perplexity tagger"""
+
     @property
     def model(self: Self) -> kenlm.Model:
         return self._model
@@ -121,7 +123,20 @@ class PerplexityBaseTagger(BaseTagger):
 
 
 def create_ccnet_perplexity_tagger(lang: str) -> type[PerplexityBaseTagger]:
-    """Dynamically create tagger class for a given language"""
+    """Dynamically create perplexity tagger class for a given language.
+    The class for each language is based on a CCNet pretrained model [1].
+    The pretrained models are available throught the Github project page https://github.com/facebookresearch/cc_net.
+    The models are small language models trained on the Wikipedia of the corresponding language.
+
+    [1]
+    @inproceedings{wenzek2020ccnet,
+      title={CCNet: Extracting High Quality Monolingual Datasets from Web Crawl Data},
+      author={Wenzek, Guillaume and Lachaux, Marie-Anne and Conneau, Alexis and Chaudhary, Vishrav and Guzm{\'a}n, Francisco and Joulin, Armand and Grave, {\'E}douard},
+      booktitle={Proceedings of The 12th Language Resources and Evaluation Conference},
+      pages={4003--4012},
+      year={2020}
+    }
+    """
 
     def __init__(self: Any) -> None:
         model_bin_path = _get_ccnet_pretrained_lm(lang)
@@ -161,7 +176,7 @@ def create_ccnet_perplexity_tagger(lang: str) -> type[PerplexityBaseTagger]:
         )
         return DocResult(doc=doc, spans=spans)
 
-    # Build the class dynamiccaly from base class
+    # Build the class dynamically from base class
     # and methods.
     cls = type(
         f"CCNetPerplexity{lang}",
