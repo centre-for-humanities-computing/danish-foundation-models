@@ -1,4 +1,7 @@
 # This file has initially been copied from the ccnet repository from Facebook.
+# https://github.com/facebookresearch/cc_net/blob/main/cc_net/text_normalizer.py
+# The utility functions can be used to normalize text before processing it
+# with ccnet models, but might not be the best general purpose implementation.
 #
 # Copyright (c) Facebook, Inc. and its affiliates.
 #
