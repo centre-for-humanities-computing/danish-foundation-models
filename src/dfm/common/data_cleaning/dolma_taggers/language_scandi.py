@@ -1,6 +1,6 @@
 """
 
-Filters.
+Dolma taggers for Scandinavian language detection.
 
 """
 from collections.abc import Iterable
@@ -25,7 +25,7 @@ LANGS = {
 
 
 @TaggerRegistry.add("cld2_scandi_doc")
-class Cld2LanguageFilterScandi(BaseTagger):
+class Cld2ScandiLanguageTagger(BaseTagger):
     """This tagger runs the Compact Language Detect 2 model on a full document
     and will return a score between 0 and 1 for each language in LANGS.
     It uses the pretrained model from the pycld2 package."""
@@ -42,6 +42,7 @@ class Cld2LanguageFilterScandi(BaseTagger):
         return text
 
     def _predict_text(self, text: str) -> dict[str, float]:
+        """Predict the language of a string and return the detected languages in a dictionary."""
         is_reliable = False
         details: Iterable[tuple[str, str, int, float]] = []
         for fn in (self._identity_fn, self._to_ascii_input, self._sanitize_input):
@@ -49,6 +50,11 @@ class Cld2LanguageFilterScandi(BaseTagger):
                 retvals = cld2.detect(fn(text))
                 assert len(retvals) == 3
                 is_reliable, _, details = retvals
+                # is_reliable is True if the detection is "high confidence"
+                # details is a Tuple of up to three detected languages, where each is
+                # tuple is (languageName, languageCode, percent, score).  percent is
+                # what percentage of the original text was detected as this language
+                # and score is the confidence score for that language.
                 break
             except cld2.error:
                 ...
@@ -65,6 +71,8 @@ class Cld2LanguageFilterScandi(BaseTagger):
         lang_scores = self._predict_text(doc.text)
         spans: list[Span] = []
         for lang_code in LANGS.values():
+            # If the language was not detected we will still tag
+            # the sentence with a score of 0
             score = lang_scores.get(lang_code, 0)
 
             positive_span = Span(
@@ -85,7 +93,7 @@ class Cld2LanguageFilterScandi(BaseTagger):
 
 
 @TaggerRegistry.add("cld2_scandi_paragraph")
-class Cld2LanguageFilterParagraphScandi(Cld2LanguageFilterScandi):
+class Cld2ScandiLanguageParagraphTagger(Cld2ScandiLanguageTagger):
     """This tagger runs the Compact Language Detect 2 model on each paragraph,
     and will save a score between 0 and 1 for each language in LANGS"""
 
@@ -216,8 +224,8 @@ def add_global_language_score_from_slice_score(result: DocResult) -> DocResult:
 
 # Composite tagger that provides both paragraph and doc scores
 @TaggerRegistry.add("cld2_scandi_paragraph_with_doc_score")
-class Cld2LanguageFilterParagraphWithDocScoreTaggerScandi(
-    Cld2LanguageFilterParagraphScandi,
+class Cld2ScandiLanguageParagraphWithDocScoreTagger(
+    Cld2ScandiLanguageParagraphTagger,
 ):
     """This tagger runs the Compact Language Detect 2 model on each paragraph
     and will also provide a total score for each document.

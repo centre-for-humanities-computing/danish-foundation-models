@@ -178,7 +178,7 @@ def create_ccnet_perplexity_tagger(lang: str) -> type[PerplexityBaseTagger]:
     # Build the class dynamically from base class
     # and methods.
     cls = type(
-        f"CCNetPerplexity{lang}",
+        f"CCNetPerplexity{lang}Tagger",
         (PerplexityBaseTagger,),
         {
             "__init__": __init__,
