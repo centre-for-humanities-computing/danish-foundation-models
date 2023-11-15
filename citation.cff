@@ -1,0 +1,57 @@
+cff-version: 1.2.0
+title: Danish Foundation Models
+message: >-
+  If you use this software or associated models, please cite
+  it as below.
+type: software
+authors:
+  - family-names: Enevoldsen
+    given-names: Kenneth
+  - family-names: Hansen
+    given-names: Lasse
+  - family-names: Nielsen
+    given-names: Dan S.
+  - family-names: Egebæk
+    given-names: Rasmus A. F.
+  - family-names: Holm
+    given-names: Søren V.
+  - family-names: Nielsen
+    given-names: Martin C.
+  - family-names: Bernstorff
+    given-names: Martin
+  - family-names: Larsen
+    given-names: Rasmus
+  - family-names: Jørgensen
+    given-names: Peter B.
+  - family-names: Højmark-Bertelsen
+    given-names: Malte
+  - family-names: Vahlstrup
+    given-names: Peter B.
+  - family-names: Møldrup-Dalum
+    given-names: Per
+  - family-names: Nielbo
+    given-names: Kristoffer
+identifiers:
+  - type: url
+    value: "https://arxiv.org/abs/2311.07264"
+repository-code: >-
+  https://github.com/centre-for-humanities-computing/danish-foundation-models
+url: >-
+  https://centre-for-humanities-computing.github.io/danish-foundation-models/
+abstract: >-
+  Large language models, sometimes referred to as foundation
+  models, have transformed multiple fields of research.
+  However, smaller languages risk falling behind due to high
+  training costs and small incentives for large companies to
+  train these models. To combat this, the Danish Foundation
+  Models project seeks to provide and maintain open,
+  well-documented, and high-quality foundation models for
+  the Danish language. This is achieved through broad
+  cooperation with public and private institutions, to
+  ensure high data quality and applicability of the trained
+  models. We present the motivation of the project, the
+  current status, and future perspectives.
+keywords:
+  - Danish
+  - natural language processing
+date-released: "2023-11-14"

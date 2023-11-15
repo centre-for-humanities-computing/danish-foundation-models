@@ -21,7 +21,7 @@ For more information please check out the following links:
 |                                                                                                         |                                                                                                         |
 | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
 | 📑 [**About**](https://centre-for-humanities-computing.github.io/danish-foundation-models/)              | A overview of the DFM project                                                                           |
-| [**Research Paper**](inreview)                                                                           | An paper introducing DFM and its rationale                                                              |
+| [**Research Paper**](https://arxiv.org/abs/2311.07264)                                                  | An paper introducing DFM and its rationale                                                              |
 | 🚀 [**Models**](https://centre-for-humanities-computing.github.io/danish-foundation-models/models_text/) | A overview of current models available through the DFM project                                          |
 | 💽 [**Datasets**](https://centre-for-humanities-computing.github.io/danish-foundation-models/dcc/)       | Includes datasheets about the datasets which includes preprocessing, reason for constructions and more. |
 

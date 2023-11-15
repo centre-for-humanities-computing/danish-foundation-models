@@ -17,7 +17,7 @@ Welcome to the Danish Foundation Models (DFM) project, a pioneering initiative i
 3. To maintain a high standard of **documentation** of models such as model cards \[[Mitchell et al., 2019](https://arxiv.org/abs/1810.03993)\] and datasheets \[[Gebru et al., 2021](https://cacm.acm.org/magazines/2021/12/256932-datasheets-for-datasets/abstract)\].
 4. To **open-source** not only the models but also all components required for reproducibility such as pre-processing, training, and validation code.
 
-You can read more about the argument for Danish Language models in our [publication](inreview).
+You can read more about the argument for Danish Language models in our [publication](https://arxiv.org/abs/2311.07264).
 
 
 ##  Open-source models on closed-source data
