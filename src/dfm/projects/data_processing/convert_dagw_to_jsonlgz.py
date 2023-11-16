@@ -22,7 +22,7 @@ def reformat_dataset(ds: Dataset, num_proc: int) -> Dataset:
     # date-built --> added
     ds = ds.rename_column("date_built", "added")
 
-    domain_mapping_dict = {
+    source2domain = {
         "retsinformationdk": "Legal",
         "skat": "Legal",
         "retspraksis": "Legal",
@@ -51,41 +51,41 @@ def reformat_dataset(ds: Dataset, num_proc: int) -> Dataset:
 
     # add domain
     ds = ds.map(  # type: ignore
-        lambda x: {"domain": domain_mapping_dict[x["source"]]},  # type: ignore
+        lambda x: {"domain": source2domain[x["source"]]},  # type: ignore
         num_proc=num_proc,  # type: ignore
     )
 
-    time_mapping_dict = {
-        "retsinformationdk": "contemporary (2021)",
-        "skat": "contemporary (2021)",
-        "retspraksis": "contemporary (2021)",
-        "hest": "contemporary (2021)",
-        "cc": "contemporary (2021)",
-        "adl": " 1700-2021",
-        "botxt": "contemporary (2021)",
-        "danavis": "1999-2003",
-        "dannet": "contemporary (2021)",
-        "depbank": "contemporary (2021)",
-        "ep": "2004-2008",
-        "ft": "2009-2019",
-        "gutenberg": "1700-now",
-        "jvj": "-",
-        "naat": "1930-now",
-        "opensub": "contemporary (2021)",
-        "relig": "-",
-        "spont": "2019",
-        "synne": "contemporary (2021)",
-        "tv2r": "2015-2019",
-        "wiki": "2019-2020",
-        "wikibooks": "2019-2020",
-        "wikisource": "1700-now",
-        "twfv19": "contemporary (2021)",  # not present in this version of the dataset
+    source2time = {
+        "retsinformationdk": "2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
+        "skat": "2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
+        "retspraksis": "2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
+        "hest": "2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
+        "cc": "2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
+        "adl": "1700-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
+        "botxt": "2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
+        "danavis": "1999-01-01T00:00:00.000Z, 2004-01-01T00:00:00.000Z",
+        "dannet": "2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
+        "depbank": "2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
+        "ep": "2004-01-01T00:00:00.000Z, 2009-01-01T00:00:00.000Z",
+        "ft": "2009-01-01T00:00:00.000Z, 2019-01-01T00:00:00.000Z",
+        "gutenberg": "1700-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
+        "jvj": "1873-01-01T00:00:00.000Z, 1951-01-01T00:00:00.000Z",
+        "naat": "1930-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
+        "opensub": "2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
+        "relig": "NA",
+        "spont": "2019-01-01T00:00:00.000Z, 2020-01-01T00:00:00.000Z",
+        "synne": "2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
+        "tv2r": "2015-01-01T00:00:00.000Z, 2020-01-01T00:00:00.000Z",
+        "wiki": "2019-01-01T00:00:00.000Z, 2021-01-01T00:00:00.000Z",
+        "wikibooks": "2019-01-01T00:00:00.000Z, 2021-01-01T00:00:00.000Z",
+        "wikisource": "1700-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
+        "twfv19": "2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",  # not present in this version of the dataset
     }
 
     # add created
-    ds = ds.map(lambda x: {"created": time_mapping_dict[x["source"]]}, num_proc=num_proc)  # type: ignore
+    ds = ds.map(lambda x: {"created": source2time[x["source"]]}, num_proc=num_proc)  # type: ignore
 
-    longname_mapping_dict = {
+    source2longname = {
         "retsinformationdk": "retsinformation.dk (Danish legal information)",
         "skat": "Skat (Danish tax authority)",
         "retspraksis": "retspraksis (Danish legal information)",
@@ -113,7 +113,7 @@ def reformat_dataset(ds: Dataset, num_proc: int) -> Dataset:
     }
 
     # update source
-    ds = ds.map(lambda x: {"source": longname_mapping_dict[x["source"]]}, num_proc=num_proc)  # type: ignore
+    ds = ds.map(lambda x: {"source": source2longname[x["source"]]}, num_proc=num_proc)  # type: ignore
 
     # move license, domain to metadata
     ds = ds.map(  # type: ignore

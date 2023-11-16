@@ -55,7 +55,7 @@ def create_metadata(example: dict[str, Any]) -> dict[str, Any]:
 def reformat_dataset(ds: Dataset, num_proc: int = 8) -> Dataset:
     ds = ds.map(create_text, num_proc=num_proc)  # type: ignore
     ds = ds.map(lambda x: {"source": "infomedia"}, num_proc=num_proc)  # type: ignore # noqa: ARG005
-    ds = ds.map(lambda x: {"added": "2022-10-24"}, num_proc=num_proc)  # type: ignore # noqa: ARG005
+    ds = ds.map(lambda x: {"added": "2022-10-24T00:00:00.000Z"}, num_proc=num_proc)  # type: ignore # noqa: ARG005
     ds = ds.map(create_metadata, num_proc=num_proc)  # type: ignore
     ds = ds.map(lambda x: {"id": x["ArticleId"]}, num_proc=num_proc)  # type: ignore
     ds = ds.map(lambda x: {"created": x["PublishDate"]}, num_proc=num_proc)  # type: ignore

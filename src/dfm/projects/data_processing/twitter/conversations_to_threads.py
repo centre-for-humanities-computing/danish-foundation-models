@@ -161,8 +161,8 @@ def convert_to_standard_format(root_tweet: TweetWithResponses) -> dict[str, Any]
     id_ = root_tweet["conversation_id"]
     text = convert_conversation_to_thread(root_tweet)
     source = "HopeTwitter"
-    added = "2019-01-01 00:00:00"
-    created = created_at_to_timestamp(root_tweet["created_at"])
+    added = "2019-01-01 00:00:00.000Z"
+    created = root_tweet["created_at"]
     metadata = {
         "root_tweet_id": root_tweet["id"],
         "possibly_sensitive": root_tweet["possibly_sensitive"],
@@ -186,9 +186,9 @@ def created_at_to_timestamp(created_at: str) -> str:
     """
     Convert created_at to timestamp
     created_at: "2021-04-13T12:52:46.000Z" -->
-    timestamp: "2021-04-13 12:52:46"
+    timestamp: "2021-04-13T12:52:46.000Z, 2021-04-13T12:52:46.000Z"
     """
-    return created_at.replace("T", " ").replace(".000Z", "")
+    return f"{created_at}, {created_at}"
 
 
 def main(overwrite: bool = True):
