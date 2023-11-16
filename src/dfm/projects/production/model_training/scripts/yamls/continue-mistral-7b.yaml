@@ -1,0 +1,147 @@
+# Continue-pretrain a Mistral-7b model
+# This is NOT a finetuning run
+max_seq_len: 2048
+global_seed: 17
+data_local: /scratch/project_465000670/my-copy-c4
+data_remote: # If blank, files must be present in data_local
+pretrained_model_name: meta-llama/Llama-2-7b-hf #mistralai/Mistral-7B-v0.1
+tokenizer_name: meta-llama/Llama-2-7b-hf #mistralai/Mistral-7B-v0.1
+
+# Run Name
+run_name: continue-mistral # If left blank, will be read from env var $RUN_NAME
+
+# HF
+#model:
+#  name: hf_causal_lm
+#  pretrained: true
+#  pretrained_model_name_or_path: ${pretrained_model_name}
+#  token: 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
+#  config_overrides:
+#    #sliding_window: ${max_seq_len}
+#    max_position_embeddings: ${max_seq_len}
+model:
+  name: mpt_causal_lm
+  init_device: meta
+  d_model: 4096
+  n_heads: 64
+  n_layers: 32
+  expansion_ratio: 4
+  max_seq_len: ${max_seq_len}
+  vocab_size: 50368
+  loss_fn: torch_crossentropy
+  attn_config:
+    attn_impl: flash
+    rope: True
+    rope_impl: hf
+
+# Tokenizer
+tokenizer:
+  name: ${tokenizer_name}
+  kwargs:
+    model_max_length: ${max_seq_len}
+
+
+# Dataloaders
+train_loader:
+  name: text
+  dataset:
+    local: ${data_local}
+    remote: ${data_remote}
+    #hf_name: mosaicml/dolly_hhrlhf
+    split: train_small
+    max_seq_len: ${max_seq_len}
+    # # Use packing_ratio: 'auto' to automatically profile and select the highest observed packing ratio with
+    # # zero waste. In practice, this may result in > 0 waste because profiling is done on only a portion
+    # # of the dataset.
+    # # Or use `python llmfoundry/scripts/misc/profile_packing.py --yaml-path /path/to/this/yaml/ ...`
+    # # to profile this run's optimal packing_ratio as it depends on GPU count,
+    # # batch size, sequence length
+    # packing_ratio:
+    shuffle: true
+  drop_last: true
+  num_workers: 8
+  pin_memory: false
+  prefetch_factor: 2
+  persistent_workers: true
+  timeout: 0
+
+eval_loader:
+  name: text
+  dataset:
+    #hf_name: mosaicml/dolly_hhrlhf
+    local: ${data_local}
+    remote: ${data_remote}
+    split: val_small
+    max_seq_len: ${max_seq_len}
+    # packing_ratio:
+    shuffle: false
+  drop_last: false
+  num_workers: 8
+  pin_memory: false
+  prefetch_factor: 2
+  persistent_workers: true
+  timeout: 0
+
+# Optimization
+scheduler:
+  name: cosine_with_warmup
+  t_warmup: 100ba
+  alpha_f: 0.1
+
+optimizer:
+  name: decoupled_adamw
+  lr: 5.0e-6
+  betas:
+  - 0.9
+  - 0.999
+  eps: 1.0e-8
+  weight_decay: 0
+
+algorithms:
+  gradient_clipping:
+    clipping_type: norm
+    clipping_threshold: 1.0
+
+max_duration: 2ep
+eval_interval: 1ep
+# eval_subset_num_batches: -1
+eval_first: false
+global_train_batch_size: 1024
+
+# System
+seed: ${global_seed}
+device_eval_batch_size: 16
+device_train_microbatch_size: 16
+# device_train_microbatch_size: auto
+precision: amp_bf16
+
+# FSDP
+fsdp_config:
+  sharding_strategy: FULL_SHARD
+  mixed_precision: PURE
+  activation_checkpointing: true
+  activation_checkpointing_reentrant: false
+  activation_cpu_offload: false
+  limit_all_gathers: true
+  verbose: false
+
+# Logging
+progress_bar: false
+log_to_console: true
+console_log_interval: 1ba
+
+callbacks:
+  speed_monitor:
+    window_size: 5
+  lr_monitor: {}
+  memory_monitor: {}
+  runtime_estimator: {}
+
+# loggers:
+#   wandb: {}
+
+# Checkpoint to local filesystem or remote object store
+save_interval: 50ba # 2 mil tokens per batch = 100 mil tokens per checkpoint
+save_num_checkpoints_to_keep: 10  # Important, this cleans up checkpoints saved to DISK
+save_folder: ./{run_name}/checkpoints
+# save_folder: s3://my-bucket/my-folder/{run_name}/checkpoints

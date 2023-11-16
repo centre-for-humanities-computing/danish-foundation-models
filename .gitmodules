@@ -1,0 +1,3 @@
+[submodule "llm-foundry"]
+	path = llm-foundry
+	url = https://github.com/rlrs/llm-foundry
