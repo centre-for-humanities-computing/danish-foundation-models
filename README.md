@@ -3,7 +3,7 @@
 ![](docs/_static/logo.png)
 
 [![Code style: black](https://img.shields.io/badge/Code%20Style-Black-black)](https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html)
-[![github actions pytest](https://github.com/centre-for-humanities-computing/danish-foundation-models/actions/workflows/pytest.yml/badge.svg)](https://github.com/centre-for-humanities-computing/danish-foundation-models/actions)
+
 
 A collaborative project for training foundational Danish language model. Which seeks to:
 
@@ -14,27 +14,17 @@ A collaborative project for training foundational Danish language model. Which s
 
 *Note*: This repository is intended for the text model of DFM.
 
-## Progress
 
-2022
-- January: Project started
-- June: We replicated the performance of the existing Danish BERT using a BERT architecture and the DCC v1.0.0 (This model can be found at [chcaa/dfm-bert-base-v1](https://huggingface.co/chcaa/dfm-bert-base-v1?text=Paris+is+the+%5BMASK%5D+of+France.))
-- October: 
-  - Model trained started using the DeBERTaV2 architecture using the DCC v1.1.0
-  which used the notably more filtered Netarkivet Text v2.
-  - Published a [filtered version](https://huggingface.co/datasets/DDSC/dagw_reddit_filtered_v1.0.0) of the Danish Gigaword and Reddit dataset.
+### More information:
+For more information please check out the following links:
 
-2023
-- January:
-  - Three encoder models were published of size [small](https://huggingface.co/chcaa/dfm-encoder-small-v1), [medium](https://huggingface.co/chcaa/dfm-encoder-medium-v1), and [large](https://huggingface.co/chcaa/dfm-encoder-large-v1).
+|                                                                                                         |                                                                                                         |
+| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| 📑 [**About**](https://centre-for-humanities-computing.github.io/danish-foundation-models/)              | A overview of the DFM project                                                                           |
+| [**Research Paper**](https://arxiv.org/abs/2311.07264)                                                  | An paper introducing DFM and its rationale                                                              |
+| 🚀 [**Models**](https://centre-for-humanities-computing.github.io/danish-foundation-models/models_text/) | A overview of current models available through the DFM project                                          |
+| 💽 [**Datasets**](https://centre-for-humanities-computing.github.io/danish-foundation-models/dcc/)       | Includes datasheets about the datasets which includes preprocessing, reason for constructions and more. |
 
-### Follow along:
-
-|                                                                                                                                             |                                                                                                          |
-| ------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| 🚀 [**Model training**](https://wandb.ai/chcaa/danish-foundation-models/reports/dfm-debertav2-v1--VmlldzoyODc3NTA5)                          | A weight and biases report of model training                                                             |
-| 🕵️‍♂️ [**Hyperparameters search**](https://wandb.ai/chcaa/danish-foundation-models/reports/Grid-Search-1--VmlldzoyODE5NDE5)                     | A weight and biases report of hyperparameters search                                                     |
-| 🛠️ [**Training Logs**](https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/trainingv2/docs/logs_training_v2.md) | A markdown for noting the progress we went through during the training of the second iteration of models |
 
 
 ## Danish Collosal Corpus
@@ -48,14 +38,6 @@ We currently use the Danish Colossal Corpus (DCC) version 1.1.0 to train Danish 
 | 📰 [DaNews](https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/docs/datasheets/danews.md)                   | A dataset consisting of Danish newspapers                                | 8.67                              | v1      |
 | 🌐 [Netarkivet Text](https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/docs/datasheets/Netarkivet_text.md) | A subsection of the "Danish" internet collected the royal Danish library | >100                              | v2      |
 
-
-## Open-source models on closed-source data
-As the datasets, DaNews, HopeTwitter and Netarkivet Text either contain personally sensitive information or fall under copyright they can't be shared publicly. However, we want to share as
-much as possible from the project, while protecting privacy and adhering to copyright law. 
-Thus we organize it such that all parts of the project that can be shared and those which
-can't are well-documented using datasheets and training logs. Furthermore during the data processing and training the data stored on UCloud which follows the highest standards of information security management with a [formal ISO27001 certification](https://docs.cloud.sdu.dk/intro/security.html).
-
-![](docs/_static/structure.png)
 
 # Wish to contribute?
 DFM is considered a collaborative project for training and maintaining Danish Language models. If you wish to contribute don't hesitate to reach out using one of the following channels:
