@@ -2,6 +2,10 @@
 
 Welcome to the Danish Foundation Models (DFM) project, a pioneering initiative in the field of machine learning and natural language processing (NLP) dedicated to the Danish language. Our mission is to develop, maintain, and provide open access to high-quality foundation models tailored for Danish, promoting innovation and inclusivity in language technologies.
 
+!!! abstract "Read the paper"
+
+    You can read more about the argument for Danish Language models in our [publication](https://arxiv.org/abs/2311.07264).
+
 ## Why Danish Foundation Models?
 
 ### Bridging the Digital Language Divide
@@ -17,7 +21,7 @@ Welcome to the Danish Foundation Models (DFM) project, a pioneering initiative i
 3. To maintain a high standard of **documentation** of models such as model cards \[[Mitchell et al., 2019](https://arxiv.org/abs/1810.03993)\] and datasheets \[[Gebru et al., 2021](https://cacm.acm.org/magazines/2021/12/256932-datasheets-for-datasets/abstract)\].
 4. To **open-source** not only the models but also all components required for reproducibility such as pre-processing, training, and validation code.
 
-You can read more about the argument for Danish Language models in our [publication](https://arxiv.org/abs/2311.07264).
+
 
 
 ##  Open-source models on closed-source data
@@ -36,9 +40,10 @@ Furthermore, during data processing and training, the data is stored on UCloud w
 We invite collaboration and contributions from industry professionals, researchers, and the open-source community. Together, we can advance the field of Danish NLP and create a more inclusive digital future. You can reach out to us using the following channels:
 
 
-|                                                                                                                      |                                                                    |
-| -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| 🗣 [**DDSC Slack**](https://join.slack.com/t/danskdatascie-o8m9638/shared_invite/zt-1jh2dwmj4-D_mjywfXERvVP75n9O0ykg) | Join the discussion in the "danish-foundation-models-text"-channel |
-| 💬 [**GitHub Discussion**](https://github.com/centre-for-humanities-computing/danish-foundation-models/discussions)   | Ask questions or start a discussion                                |
-| 🚨 [**GitHub Issues**](https://github.com/centre-for-humanities-computing/danish-foundation-models/issues)            | Noticed a bug in the code? Please create an issue                  |
+|                                                                                                                                                   |                                                                    |
+| ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| :octicons-people-24: - [**DDSC Slack**](https://join.slack.com/t/danskdatascie-o8m9638/shared_invite/zt-1jh2dwmj4-D_mjywfXERvVP75n9O0ykg)           | Join the discussion in the "danish-foundation-models-text"-channel |
+| :octicons-comment-discussion-24: -  [**GitHub Discussion**](https://github.com/centre-for-humanities-computing/danish-foundation-models/discussions) | Ask questions or start a discussion                                |
+| :octicons-issue-tracks-24: - [**GitHub Issues**](https://github.com/centre-for-humanities-computing/danish-foundation-models/issues)                | Noticed a bug in the code? Please create an issue                  |
 
+[Contact us :fontawesome-solid-paper-plane:](mailto:kenneth.enevoldsen@cas.au.dk){ .md-button }

@@ -1,5 +1,5 @@
 install:
-	pip install -e .[dev,test]
+	pip install -e .[dev,test,docs]
 
 test: ## Run tests
 	pytest src
@@ -20,6 +20,7 @@ pr: ## Run relevant tests before PR
 	make validate
 	gh pr create -w
 
-docs:  ## build and serve documentation
-	pip install -e .[docs]
+docs-serve:  ## build and serve documentation
+	# make sure you have installed docs:
+	# pip install -e .[docs]
 	mkdocs serve
