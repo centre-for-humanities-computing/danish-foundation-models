@@ -23,8 +23,6 @@ def get_nat_paths() -> Generator[Path, None, None]:
     year_subfolders = folder.glob("*.parquet")
     for year_subfolder in year_subfolders:
         yield from year_subfolder.glob("*.parquet")
-        # for file in year_subfolder.glob("*.parquet"):
-        #    yield file
 
 
 def convert_nat_to_standard_format(nat_df: pl.LazyFrame) -> list[NatEntry]:
