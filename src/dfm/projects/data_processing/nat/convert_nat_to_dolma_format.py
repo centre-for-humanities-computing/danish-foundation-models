@@ -50,8 +50,11 @@ def convert_nat_to_standard_format(nat_df: pl.LazyFrame, year: str) -> list[NatE
             .alias("created"),
             pl.lit("NAT").alias("source"),
             pl.lit("2017-01-01 00:00:00.000Z").alias("added"),
-            pl.struct(pl.col("domain_key"), pl.col("uri")).alias("metadata"),
-            pl.lit(year).alias("sub-source"),
+            pl.struct(
+                pl.col("domain_key"),
+                pl.col("uri"),
+                pl.lit(year).alias("sub-source"),
+            ).alias("metadata"),
         )
         .with_columns(
             pl.col("timestamp"),
