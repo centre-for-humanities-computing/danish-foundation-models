@@ -2,37 +2,37 @@
 # This is NOT a finetuning run
 max_seq_len: 2048
 global_seed: 17
-data_local: /scratch/project_465000670/my-copy-c4
+data_local: /scratch/project_465000670/danish-foundation-models/da-gigaword-mds
 data_remote: # If blank, files must be present in data_local
-pretrained_model_name: meta-llama/Llama-2-7b-hf #mistralai/Mistral-7B-v0.1
-tokenizer_name: meta-llama/Llama-2-7b-hf #mistralai/Mistral-7B-v0.1
+pretrained_model_name: mistralai/Mistral-7B-v0.1 #meta-llama/Llama-2-7b-hf
+tokenizer_name: mistralai/Mistral-7B-v0.1 #mistralai/Mistral-7B-v0.1
 
 # Run Name
 run_name: continue-mistral # If left blank, will be read from env var $RUN_NAME
 
 # HF
-#model:
-#  name: hf_causal_lm
-#  pretrained: true
-#  pretrained_model_name_or_path: ${pretrained_model_name}
-#  token: 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
-#  config_overrides:
-#    #sliding_window: ${max_seq_len}
-#    max_position_embeddings: ${max_seq_len}
 model:
-  name: mpt_causal_lm
-  init_device: meta
-  d_model: 4096
-  n_heads: 64
-  n_layers: 32
-  expansion_ratio: 4
-  max_seq_len: ${max_seq_len}
-  vocab_size: 50368
-  loss_fn: torch_crossentropy
-  attn_config:
-    attn_impl: flash
-    rope: True
-    rope_impl: hf
+ name: hf_causal_lm
+ pretrained: true
+ pretrained_model_name_or_path: ${pretrained_model_name}
+ token: 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
+ config_overrides:
+   #sliding_window: ${max_seq_len}
+   max_position_embeddings: ${max_seq_len}
+# model:
+#   name: mpt_causal_lm
+#   init_device: meta
+#   d_model: 4096
+#   n_heads: 64
+#   n_layers: 32
+#   expansion_ratio: 4
+#   max_seq_len: ${max_seq_len}
+#   vocab_size: 50368
+#   loss_fn: torch_crossentropy
+#   attn_config:
+#     attn_impl: flash
+#     rope: True
+#     rope_impl: hf
 
 # Tokenizer
 tokenizer:
@@ -48,7 +48,7 @@ train_loader:
     local: ${data_local}
     remote: ${data_remote}
     #hf_name: mosaicml/dolly_hhrlhf
-    split: train_small
+    split: train
     max_seq_len: ${max_seq_len}
     # # Use packing_ratio: 'auto' to automatically profile and select the highest observed packing ratio with
     # # zero waste. In practice, this may result in > 0 waste because profiling is done on only a portion
@@ -68,10 +68,10 @@ train_loader:
 eval_loader:
   name: text
   dataset:
-    #hf_name: mosaicml/dolly_hhrlhf
+    #hf_name: mosaicml/instruct-v3
     local: ${data_local}
-    remote: ${data_remote}
-    split: val_small
+    #remote: ${data_remote}
+    split: test
     max_seq_len: ${max_seq_len}
     # packing_ratio:
     shuffle: false
@@ -85,17 +85,17 @@ eval_loader:
 # Optimization
 scheduler:
   name: cosine_with_warmup
-  t_warmup: 100ba
+  t_warmup: 0ba
   alpha_f: 0.1
 
 optimizer:
   name: decoupled_adamw
-  lr: 5.0e-6
+  lr: 3.0e-4
   betas:
   - 0.9
   - 0.999
   eps: 1.0e-8
-  weight_decay: 0
+  weight_decay: 0.1
 
 algorithms:
   gradient_clipping:
@@ -103,21 +103,21 @@ algorithms:
     clipping_threshold: 1.0
 
 max_duration: 2ep
-eval_interval: 1ep
+eval_interval: 50ba
 # eval_subset_num_batches: -1
-eval_first: false
+eval_first: true
 global_train_batch_size: 1024
 
 # System
 seed: ${global_seed}
-device_eval_batch_size: 16
-device_train_microbatch_size: 16
+device_eval_batch_size: 8
+device_train_microbatch_size: 8
 # device_train_microbatch_size: auto
 precision: amp_bf16
 
 # FSDP
 fsdp_config:
-  sharding_strategy: FULL_SHARD
+  sharding_strategy: HYBRID_SHARD
   mixed_precision: PURE
   activation_checkpointing: true
   activation_checkpointing_reentrant: false
@@ -133,15 +133,16 @@ console_log_interval: 1ba
 callbacks:
   speed_monitor:
     window_size: 5
+    gpu_flops_available: 1.915e+14
   lr_monitor: {}
   memory_monitor: {}
   runtime_estimator: {}
 
-# loggers:
-#   wandb: {}
+loggers:
+  wandb: {}
 
 # Checkpoint to local filesystem or remote object store
-save_interval: 50ba # 2 mil tokens per batch = 100 mil tokens per checkpoint
+save_interval: 5ba # 2M tokens per batch = 10M tokens per checkpoint
 save_num_checkpoints_to_keep: 10  # Important, this cleans up checkpoints saved to DISK
 save_folder: ./{run_name}/checkpoints
 # save_folder: s3://my-bucket/my-folder/{run_name}/checkpoints
