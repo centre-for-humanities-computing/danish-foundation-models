@@ -24,7 +24,7 @@ WORKDIR /app
 # Dev experience
 COPY makefile ./
 COPY pyproject.toml ./
-RUN make install
+RUN --mount=type=cache,target=/root/.cache/pip make install
 
 # Install the app
 COPY . /app
