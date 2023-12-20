@@ -1,26 +1,33 @@
 install:
+	@echo "Installing package and required dependencies"
 	pip install -e .[dev,test,docs]
 
-test: ## Run tests
+test:
+	@echo "Running tests"
 	pytest src
 
-lint: ## Format code
+lint: 
+	@echo "Linting code"
 	ruff check src --fix
 	black .
 
-type-check: ## Type-check code
+type-check:
+	@echo "Type-checking code-base"
 	pyright src
 
-validate: ## Run all checks
+validate:
+	@echo "Running all checks"
 	make lint
 	make type-check
 	make test
 
-pr: ## Run relevant tests before PR
+pr: 
+	@echo "Running relevant checks before PR"
 	make validate
 	gh pr create -w
 
-docs-serve:  ## build and serve documentation
-	# make sure you have installed docs:
-	# pip install -e .[docs]
+docs-serve:
+	@echo "Serving documentation"
+	@echo "Make sure you have installed docs:"
+	@echo "pip install -e .[docs]"
 	mkdocs serve

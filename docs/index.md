@@ -35,15 +35,21 @@ Furthermore, during data processing and training, the data is stored on UCloud w
 ![](_static/structure.png)
 
 
+## Improving the Danish Language Technology Landscape
+
+The Danish Foundations models collaborate with the [Danish Data Science Community](https://danskdatascience.dk/), [Centre for Humanities Computing Aarhus](https://chcaa.io/), [The Alexandra Institute](https://alexandra.dk) to promote the development of Danish language tools. We continually gather information about how to improve the Danish language technologies and how to best support the community. To this end we have created a [list of missing pieces for Danish NLP](https://github.com/centre-for-humanities-computing/danish-foundation-models/discussions/categories/missing-pieces-for-danish-nlp) and we invite any 1) to add to the list, 2) solve one of the problems or 3) upvote the problems you think are most important.
+
+
 ## Join Us
 
 We invite collaboration and contributions from industry professionals, researchers, and the open-source community. Together, we can advance the field of Danish NLP and create a more inclusive digital future. You can reach out to us using the following channels:
 
 
-|                                                                                                                                                   |                                                                    |
-| ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| :octicons-people-24: - [**DDSC Slack**](https://join.slack.com/t/danskdatascie-o8m9638/shared_invite/zt-1jh2dwmj4-D_mjywfXERvVP75n9O0ykg)           | Join the discussion in the "danish-foundation-models-text"-channel |
-| :octicons-comment-discussion-24: -  [**GitHub Discussion**](https://github.com/centre-for-humanities-computing/danish-foundation-models/discussions) | Ask questions or start a discussion                                |
-| :octicons-issue-tracks-24: - [**GitHub Issues**](https://github.com/centre-for-humanities-computing/danish-foundation-models/issues)                | Noticed a bug in the code? Please create an issue                  |
+|                                                                                                                                                                         |                                                                                                                            |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| :octicons-people-24: - [**DDSC Slack**](https://join.slack.com/t/danskdatascie-o8m9638/shared_invite/zt-1jh2dwmj4-D_mjywfXERvVP75n9O0ykg)                               | Join the discussion in the "danish-foundation-models-text"-channel                                                         |
+| :octicons-comment-discussion-24: -  [**GitHub Discussion**](https://github.com/centre-for-humanities-computing/danish-foundation-models/discussions)                    | Ask questions or start a discussion                                                                                        |
+| :octicons-issue-tracks-24: - [**GitHub Issues**](https://github.com/centre-for-humanities-computing/danish-foundation-models/issues)                                    | Noticed a bug in the code? Please create an issue                                                                          |
+| :octicons-feed-rocket-16: - [**Using the model?**](https://github.com/centre-for-humanities-computing/danish-foundation-models/discussions/categories/using-our-models) | If you use the model, let us know it makes it easier for us to apply for funding and justify the devopment of the project. |
 
 [Contact us :fontawesome-solid-paper-plane:](mailto:kenneth.enevoldsen@cas.au.dk){ .md-button }
