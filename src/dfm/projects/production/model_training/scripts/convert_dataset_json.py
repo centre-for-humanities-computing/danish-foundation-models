@@ -177,9 +177,9 @@ def main(args: Namespace) -> None:
                           batch_size=24*10,
                           remove_columns=['text'])
 
-    # Write samples with parallel processing
+    # Write samples while chunking
     for split in dataset.keys():
-        print(f'Writing {split} split...')
+        print(f'Writing {split} split... (iterations are samples)')
         with MDSWriter(columns=columns,
                        out=os.path.join(args.out_root, split),
                        compression=args.compression) as out:
