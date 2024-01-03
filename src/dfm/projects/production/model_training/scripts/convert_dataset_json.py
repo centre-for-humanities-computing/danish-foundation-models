@@ -27,7 +27,7 @@ def generate_chunks(dataset: Union[hf_datasets.IterableDataset, hf_datasets.Data
             buffer = buffer[chunk_length:] #if should_wrap else np.empty(0, dtype=np.int64, order='C')
             yield {
                 # convert to bytes to store in MDS binary format
-                'tokens': concat_sample.tobytes()
+                'tokens': np.asarray(concat_sample, dtype=np.int64).tobytes() # unsure why the np.asarray is necessary, tbh, but it is
             }
 
 
@@ -183,7 +183,8 @@ def main(args: Namespace) -> None:
         with MDSWriter(columns=columns,
                        out=os.path.join(args.out_root, split),
                        compression=args.compression) as out:
-            for sample in tqdm(generate_chunks(dataset[split], bos_tokens, eos_tokens, args.concat_tokens)):
+            chunks = generate_chunks(dataset[split], bos_tokens, eos_tokens, args.concat_tokens)
+            for sample in tqdm(chunks):
                 out.write(sample)
 
 if __name__ == '__main__':
