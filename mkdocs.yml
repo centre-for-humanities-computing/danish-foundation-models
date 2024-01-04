@@ -2,7 +2,7 @@ site_name: Danish Foundation Models
 docs_dir: "docs/"
 repo_url: https://github.com/centre-for-humanities-computing/danish-foundation-models
 watch: [docs/]
-edit_uri: 'blob/main/docs/'
+edit_uri: "blob/main/docs/"
 theme:
   name: material
   favicon: _static/icon.png
@@ -34,6 +34,13 @@ markdown_extensions:
       alternate_style: true
   - toc:
       permalink: true
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
 
 copyright: Copyright &copy; 2023 Danish Foundation Models Project
 
