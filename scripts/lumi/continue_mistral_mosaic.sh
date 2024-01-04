@@ -68,7 +68,7 @@ ln -f -s $SLURM_JOB_ID.err logs/latest.err
 CHECKPOINT_PATH=checkpoints
 
 GIT_ROOT=$(git rev-parse --show-toplevel)
-PATH_TO_SCRIPTS="src/dfm/projects/production/model_training/scripts"
+PATH_TO_SCRIPTS="scripts/lumi"
 cd ${GIT_ROOT} # ensure that we are in the git root for remaining paths to work
 CMD=" \
     llm-foundry/scripts/train/train.py \
@@ -95,7 +95,7 @@ echo "START $SLURM_JOBID: $(date)"
 srun \
     --label \
     singularity exec -B "$SING_BIND" "$CONTAINER" \
-    /scratch/project_465000670/danish-foundation-models/src/dfm/projects/production/model_training/scripts/mosaic_in_container.sh \
+    /scratch/project_465000670/danish-foundation-models/scripts/lumi/mosaic_in_container.sh \
     $CMD
 
 echo "END $SLURM_JOBID: $(date)"
