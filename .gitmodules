@@ -2,7 +2,3 @@
 	path = llm-foundry
 	url = https://github.com/rlrs/llm-foundry
 	branch = lumi
-[submodule "composer"]
-	path = composer
-	url = https://github.com/mosaicml/composer
-	branch = dev
