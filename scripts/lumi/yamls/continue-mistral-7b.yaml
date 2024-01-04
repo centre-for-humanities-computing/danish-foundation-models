@@ -1,6 +1,6 @@
 # Continue-pretrain a Mistral-7b model
 # This is NOT a finetuning run
-max_seq_len: 2048
+max_seq_len: 4096
 global_seed: 17
 data_local: /scratch/project_465000670/da-gigaword-mds
 data_remote: # If blank, files must be present in data_local
@@ -17,23 +17,6 @@ model:
  pretrained_model_name_or_path: ${pretrained_model_name}
  token: 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
  use_flash_attention_2: true
- config_overrides:
-   #sliding_window: ${max_seq_len}
-   max_position_embeddings: ${max_seq_len}
-# model:
-#   name: mpt_causal_lm
-#   init_device: meta
-#   d_model: 4096
-#   n_heads: 64
-#   n_layers: 32
-#   expansion_ratio: 4
-#   max_seq_len: ${max_seq_len}
-#   vocab_size: 50368
-#   loss_fn: torch_crossentropy
-#   attn_config:
-#     attn_impl: flash
-#     rope: True
-#     rope_impl: hf
 
 # Tokenizer
 tokenizer:
@@ -69,7 +52,6 @@ train_loader:
 eval_loader:
   name: text
   dataset:
-    #hf_name: mosaicml/instruct-v3
     local: ${data_local}
     #remote: ${data_remote}
     split: test
@@ -91,12 +73,12 @@ scheduler:
 
 optimizer:
   name: decoupled_adamw
-  lr: 8.0e-6
+  lr: 1.0e-5
   betas:
   - 0.9
   - 0.95
   eps: 1.0e-8
-  weight_decay: 8.0e-7
+  weight_decay: 1.0e-6
 
 algorithms:
   gradient_clipping:
