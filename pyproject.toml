@@ -30,8 +30,8 @@ dependencies = [
 dev = ["black==23.9.1", "ruff==0.1.0", "pyright==1.1.331", "pre-commit==3.5.0"]
 docs = [
   "mkdocs-jupyter==0.24.6",
-  "mkdocs-material==9.5.3",
-  "mkdocstrings[python]==1.8.0",
+  "mkdocs-material==9.5.",
+  "mkdocstrings[python]==0.24.0",
 ]
 test = ["pytest==6.2.5", "pytest-lazy-fixture==0.6.3", "pytest-cov==2.8.1"]
 
