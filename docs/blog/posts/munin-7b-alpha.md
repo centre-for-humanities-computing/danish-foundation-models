@@ -49,3 +49,7 @@ advancing Danish NLP and acknowledges the extensive work ahead. By sharing this 
 we aim to foster collaborative efforts within the community. The model is now available
 for download and experimentation, and we look forward to your insights and discussions
 on how we can progress.
+
+The development of this model, and the Danish Foundation Models project in general, is
+generously supported by both [Danish e-infrastructure Consortium](https://www.deic.dk/)
+and [the Danish Defence](https://www.forsvaret.dk/).
