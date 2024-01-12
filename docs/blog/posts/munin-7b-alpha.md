@@ -39,7 +39,7 @@ significantly larger corpus of Danish text data, and a legal framework that reli
 allows for training and releasing open models, including for commercial use.
 
 At Danish Foundation Models, we are actively pursuing legal access to extensive Danish
-text data as possible, and are exploring every option for releasing models under the
+text data, and are exploring every option for releasing models under the
 most open license possible. We have already secured agreements that provide us access
 to several large Danish datasets, and we plan to include these into our training
 process in the near future.
