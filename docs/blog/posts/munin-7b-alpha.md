@@ -7,10 +7,11 @@ date: 2024-01-11
 
 We are excited to announce the release of the first model from the Danish Foundation
 Models project, nicknamed Munin 7B Alpha. This model represents the beginning of our
-research into Danish Large Language Models (LLMs), employing [continual pre-training](https://arxiv.org/abs/2308.04014)
-based on the already pre-trained [Mistral-7b-v0.1](https://huggingface.co/mistralai/Mistral-7B-v0.1) model. It has been pre-trained on the
-[Danish Gigaword](https://gigaword.dk/) dataset, which has been instrumental in training various Danish
-BERT-style models.
+research into Danish Large Language Models (LLMs), employing [continual
+pre-training](https://arxiv.org/abs/2308.04014) based on the already pre-trained
+[Mistral-7b-v0.1](https://huggingface.co/mistralai/Mistral-7B-v0.1) model. It has been
+pre-trained on the [Danish Gigaword](https://gigaword.dk/) dataset, which has been
+instrumental in training various Danish BERT-style models.
 
 <!-- more -->
 
@@ -30,13 +31,14 @@ the upstream Mistral model.
 | mhenrichsen/danskgpt-tiny              	| 02.95 ± 1.18	  	| 01.77 ± 1.48 	| 02.63 ± 0.61	   	| 04.46 ± 1.46	  	|
 
 See [the full ScandEval
-leaderboard](https://scandeval.github.io/mainland-scandinavian-nlu-benchmark/) for an up-to-date
-comparison. Despite these challenges, we hope that our open approach encourages the
-community to collaborate with us in building the best possible Danish LLM. While the
-current version of the model may not yet be a practical tool for Danish NLP, we believe
-that sharing our findings is valuable. A critical need has been identified: access to a
-significantly larger corpus of Danish text data, and a legal framework that reliably
-allows for training and releasing open models, including for commercial use.
+leaderboard](https://scandeval.github.io/mainland-scandinavian-nlu-benchmark/) for an
+up-to-date comparison. Despite these challenges, we hope that our open approach
+encourages the community to collaborate with us in building the best possible Danish
+LLM. While the current version of the model may not yet be a practical tool for Danish
+NLP, we believe that sharing our findings is valuable. A critical need has been
+identified: access to a significantly larger corpus of Danish text data, and a legal
+framework that reliably allows for training and releasing open models, including for
+commercial use.
 
 At Danish Foundation Models, we are actively pursuing legal access to extensive Danish
 text data, and are exploring every option for releasing models under the
