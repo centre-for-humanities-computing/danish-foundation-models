@@ -30,8 +30,8 @@ the upstream Mistral model.
 | mhenrichsen/danskgpt-tiny              	| 02.95 ± 1.18	  	| 01.77 ± 1.48 	| 02.63 ± 0.61	   	| 04.46 ± 1.46	  	|
 
 See [the full ScandEval
-leaderboard](https://scandeval.github.io/mainland-scandinavian-nlu-benchmark/) for more
-comparisons. Despite these challenges, we hope that our open approach encourages the
+leaderboard](https://scandeval.github.io/mainland-scandinavian-nlu-benchmark/) for an up-to-date
+comparison. Despite these challenges, we hope that our open approach encourages the
 community to collaborate with us in building the best possible Danish LLM. While the
 current version of the model may not yet be a practical tool for Danish NLP, we believe
 that sharing our findings is valuable. A critical need has been identified: access to a
