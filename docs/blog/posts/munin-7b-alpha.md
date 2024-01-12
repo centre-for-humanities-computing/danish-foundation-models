@@ -7,9 +7,9 @@ date: 2024-01-11
 
 We are excited to announce the release of the first model from the Danish Foundation
 Models project, nicknamed Munin 7B Alpha. This model represents the beginning of our
-research into Danish Large Language Models (LLMs), employing “continual pre-training”
-based on the already pre-trained Mistral-7b-v0.1 model. It has been pre-trained on the
-Danish Gigaword dataset, which has been instrumental in training various Danish
+research into Danish Large Language Models (LLMs), employing [continual pre-training](https://arxiv.org/abs/2308.04014)
+based on the already pre-trained [Mistral-7b-v0.1](https://huggingface.co/mistralai/Mistral-7B-v0.1) model. It has been pre-trained on the
+[Danish Gigaword](https://gigaword.dk/) dataset, which has been instrumental in training various Danish
 BERT-style models.
 
 <!-- more -->
