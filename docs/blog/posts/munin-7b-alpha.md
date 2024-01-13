@@ -28,7 +28,7 @@ the upstream Mistral model.
 | gpt-3.5-turbo-0613                      	| 56.18 ± 2.84  	| 51.73 ± 2.60 	| 54.30 ± 2.86    	| 62.52 ± 3.05  	|
 | mistralai/Mistral-7B-v0.1               	| 30.86 ± 2.52	   	| 27.74 ± 2.38 	| 27.26 ± 2.76	   	| 37.59 ± 2.43	 	|
 | danish-foundation-models/munin-7b-alpha 	| 21.46 ± 2.98  	| 20.53 ± 2.82 	| 14.59 ± 3.47    	| 29.25 ± 2.66  	|
-| mhenrichsen/danskgpt-tiny              	| 02.95 ± 1.18	  	| 01.77 ± 1.48 	| 02.63 ± 0.61	   	| 04.46 ± 1.46	  	|
+| mhenrichsen/danskgpt-tiny              	| 08.06 ± 2.91   	| 08.14 ± 2.08 	| 04.77 ± 2.01	   	| 11.26 ± 4.64	  	|
 
 See [the full ScandEval
 leaderboard](https://scandeval.com/mainland-scandinavian-nlu-benchmark/) for an
