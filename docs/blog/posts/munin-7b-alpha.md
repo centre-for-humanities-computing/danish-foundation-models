@@ -58,4 +58,5 @@ generously supported by the following:
 
 - [Danish e-infrastructure Consortium](https://www.deic.dk/)
 - [Acquisition and Logistics Organisation at the Danish Ministry of Defence](https://www.fmi.dk/)
-- [Resultatkontrakter with the Danish Ministry of Higher Education and Science](https://bedreinnovation.dk/)
+- Danish Ministry of Higher Education and Science under [the Digital Security, Trust
+  and Data Ethics performance contract](https://bedreinnovation.dk/)
