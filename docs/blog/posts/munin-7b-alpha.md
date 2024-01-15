@@ -22,14 +22,14 @@ generative Danish tasks available to us have indicated that our current training
 approach may negatively impact performance on these downstream tasks, even compared to
 the upstream Mistral model.
 
-| Model Name                              	| Overall Score 	| Danish Score 	| Norwegian Score 	| Swedish Score 	|
-|-----------------------------------------	|---------------	|--------------	|-----------------	|---------------	|
-| gpt-4-0613                              	| 62.54 ± 2.87  	| 56.78 ± 2.56 	| 62.95 ± 3.63    	| 67.90 ± 2.43  	|
-| gpt-3.5-turbo-0613                      	| 56.18 ± 2.84  	| 51.73 ± 2.60 	| 54.30 ± 2.86    	| 62.52 ± 3.05  	|
-| mistralai/Mistral-7B-v0.1               	| 30.86 ± 2.52	   	| 27.74 ± 2.38 	| 27.26 ± 2.76	   	| 37.59 ± 2.43	 	|
-| AI-Sweden-Models/gpt-sw3-6.7b-v2       	| 21.59 ± 2.33  	| 16.15 ± 2.29	| 17.49 ± 2.57   	| 31.12 ± 2.14  	|
-| danish-foundation-models/munin-7b-alpha 	| 21.46 ± 2.98  	| 20.53 ± 2.82 	| 14.59 ± 3.47    	| 29.25 ± 2.66  	|
-| mhenrichsen/danskgpt-tiny              	| 08.06 ± 2.91   	| 08.14 ± 2.08 	| 04.77 ± 2.01	   	| 11.26 ± 4.64	  	|
+| Model Name                              	 | Overall Score 	| Danish Score 	| Norwegian Score 	| Swedish Score 	|
+|-----------------------------------------	 |---------------	|--------------	|-----------------	|---------------	|
+| gpt-4-0613                              	 | 62.54 ± 2.87  	| 56.78 ± 2.56 	| 62.95 ± 3.63    	| 67.90 ± 2.43  	|
+| gpt-3.5-turbo-0613                      	 | 56.18 ± 2.84  	| 51.73 ± 2.60 	| 54.30 ± 2.86    	| 62.52 ± 3.05  	|
+| mistralai/Mistral-7B-v0.1               	 | 30.86 ± 2.52	   	| 27.74 ± 2.38 	| 27.26 ± 2.76	   	| 37.59 ± 2.43	 	|
+| AI-Sweden-Models/gpt-sw3-6.7b-v2       	 | 21.59 ± 2.33  	| 16.15 ± 2.29	| 17.49 ± 2.57   	| 31.12 ± 2.14  	|
+| **danish-foundation-models/munin-7b-alpha**| 21.46 ± 2.98  	| 20.53 ± 2.82 	| 14.59 ± 3.47    	| 29.25 ± 2.66  	|
+| mhenrichsen/danskgpt-tiny              	 | 08.06 ± 2.91   	| 08.14 ± 2.08 	| 04.77 ± 2.01	   	| 11.26 ± 4.64	  	|
 
 See [the full ScandEval
 leaderboard](https://scandeval.com/mainland-scandinavian-nlu-benchmark/) for an
@@ -54,5 +54,8 @@ for download and experimentation, and we look forward to your insights and discu
 on how we can progress.
 
 The development of this model, and the Danish Foundation Models project in general, is
-generously supported by both [Danish e-infrastructure Consortium](https://www.deic.dk/)
-and [the Danish Defence](https://www.forsvaret.dk/).
+generously supported by the following:
+
+- [Danish e-infrastructure Consortium](https://www.deic.dk/)
+- [Acquisition and Logistics Organisation at the Danish Ministry of Defence](https://www.fmi.dk/)
+- [Resultatkontrakter with the Danish Ministry of Higher Education and Science](https://bedreinnovation.dk/)
