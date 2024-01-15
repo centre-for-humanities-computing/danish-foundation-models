@@ -1,6 +1,10 @@
 
 
-This section gives an overview of the models available through the DFM project. The models are available through the [Huggingface model hub](https://huggingface.co/models?filter=chcaa). To avoid duplicating information surrounding the models and the information regarding the models are available at the models model sheet.
+This section gives an overview of the models available through the DFM project. The
+models are available through the [Huggingface model
+hub](https://huggingface.co/danish-foundation-models). To avoid duplicating information
+surrounding the models and the information regarding the models are available at the
+models model sheet.
 
 ## Text Models
 
