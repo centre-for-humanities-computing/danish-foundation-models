@@ -2,7 +2,7 @@
 # Modified by @rlrs for Danish Foundation Models
 # SPDX-License-Identifier: Apache-2.0
 
-"""Streaming dataset conversion scripts for json files."""
+"""Convert jsonl data to streaming MDS format, while tokenizing and concatenating."""
 import os
 from argparse import ArgumentParser, Namespace
 from glob import glob
@@ -14,21 +14,6 @@ from torch.utils.data import IterableDataset
 from tqdm import tqdm
 from transformers import AutoTokenizer, PreTrainedTokenizerBase
 import numpy as np
-
-
-def generate_chunks(dataset: Union[hf_datasets.IterableDataset, hf_datasets.Dataset], 
-                    bos_tokens: list[int], eos_tokens: list[int], chunk_length: int) -> Iterable[Dict[str, bytes]]:
-    buffer = np.empty(0, dtype=np.int64, order='C')
-    for sample in dataset:
-        iids = sample['input_ids']
-        buffer = np.append(buffer, [*bos_tokens, *iids, *eos_tokens])
-        while len(buffer) >= chunk_length:
-            concat_sample = buffer[:chunk_length]
-            buffer = buffer[chunk_length:] #if should_wrap else np.empty(0, dtype=np.int64, order='C')
-            yield {
-                # convert to bytes to store in MDS binary format
-                'tokens': np.asarray(concat_sample, dtype=np.int64).tobytes() # unsure why the np.asarray is necessary, tbh, but it is
-            }
 
 
 def parse_args() -> Namespace:
@@ -61,6 +46,20 @@ def parse_args() -> Namespace:
     if parsed.eos_text is None:
         parsed.eos_text = ''
     return parsed
+
+def generate_chunks(dataset: Union[hf_datasets.IterableDataset, hf_datasets.Dataset], 
+                    bos_tokens: list[int], eos_tokens: list[int], chunk_length: int) -> Iterable[Dict[str, bytes]]:
+    buffer = np.empty(0, dtype=np.int64, order='C')
+    for sample in dataset:
+        iids = sample['input_ids']
+        buffer = np.append(buffer, [*bos_tokens, *iids, *eos_tokens])
+        while len(buffer) >= chunk_length:
+            concat_sample = buffer[:chunk_length]
+            buffer = buffer[chunk_length:] #if should_wrap else np.empty(0, dtype=np.int64, order='C')
+            yield {
+                # convert to bytes to store in MDS binary format
+                'tokens': np.asarray(concat_sample, dtype=np.int64).tobytes() # unsure why the np.asarray is necessary, tbh, but it is
+            }
 
 
 def build_hf_dataset(
