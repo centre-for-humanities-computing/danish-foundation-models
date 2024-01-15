@@ -54,10 +54,12 @@ nav:
           - HopeTwitter: datasheets/hopetwitter.md
           - NAT: datasheets/netarkivet_text.md
           - DaRadio: datasheets/daradio.md
+  - Blog: blog
 
 plugins:
   - mkdocs-jupyter
   - search
+  - blog
 
 extra:
   social:
