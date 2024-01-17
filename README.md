@@ -71,6 +71,3 @@ Install as you usually would, replicating the commands in the `Dockerfile.dev`.
 This project has collaborators across industry, national institutions and research centers. This project uses compute resources supplied by [Ucloud](https://docs.cloud.sdu.dk/index.html) through the [DeiC e-infrastructure grant](https://www.deic.dk/en/supercomputing/Apply-for-HPC-resources).
 
 
-![](docs/_static/collab.png)
-
-
