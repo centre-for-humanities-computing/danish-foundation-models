@@ -40,6 +40,27 @@ Furthermore, during data processing and training, the data is stored on UCloud w
 The Danish Foundations models collaborate with the [Danish Data Science Community](https://danskdatascience.dk/), [Centre for Humanities Computing Aarhus](https://chcaa.io/), [The Alexandra Institute](https://alexandra.dk) to promote the development of Danish language tools. We continually gather information about how to improve the Danish language technologies and how to best support the community. To this end we have created a [list of missing pieces for Danish NLP](https://github.com/centre-for-humanities-computing/danish-foundation-models/discussions/categories/missing-pieces-for-danish-nlp) and we invite any 1) to add to the list, 2) solve one of the problems or 3) upvote the problems you think are most important.
 
 
+## The Team
+
+- From [the Center for Humanities Computing at Aarhus University](https://chc.au.dk/):
+  - Kenneth Enevoldsen (kenneth.enevoldsen@cas.au.dk)
+  - Lasse Hansen (lasse.hansen@clin.au.dk)
+  - Martin Bernstorff (martinbernstorff@gmail.com)
+  - Peter Vahlstrup (imvpbv@cc.au.dk)
+  - Per Møldrup Dalum (per@cas.au.dk)
+  - Kristoffer Laigaard Nielbo (kln@cas.au.dk)
+
+
+- From [the Alexandra Institute](https://alexandra.dk/):
+  - Peter Bjørn Jørgensen (peter.jorgensen@alexandra.dk)
+  - Rasmus Larsen (rasmus.larsen@alexandra.dk)
+  - Dan Saattrup Nielsen (dan.nielsen@alexandra.dk)
+
+- From [the University of Southern Denmark](https://www.sdu.dk/en):
+  - Peter Schneider-Kamp (petersk@imada.sdu.dk)
+
+
+
 ## Join Us
 
 We invite collaboration and contributions from industry professionals, researchers, and the open-source community. Together, we can advance the field of Danish NLP and create a more inclusive digital future. You can reach out to us using the following channels:
