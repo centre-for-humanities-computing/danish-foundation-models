@@ -50,7 +50,6 @@ The Danish Foundations models collaborate with the [Danish Data Science Communit
   - Per Møldrup Dalum (per@cas.au.dk)
   - Kristoffer Laigaard Nielbo (kln@cas.au.dk)
 
-
 - From [the Alexandra Institute](https://alexandra.dk/):
   - Peter Bjørn Jørgensen (peter.jorgensen@alexandra.dk)
   - Rasmus Larsen (rasmus.larsen@alexandra.dk)
@@ -59,6 +58,9 @@ The Danish Foundations models collaborate with the [Danish Data Science Communit
 - From [the Center for AI Science and Applicaitons at the University of Southern Denmark](https://sdu.dk/casa):
   - Peter Schneider-Kamp (petersk@imada.sdu.dk)
 
+- From [Alvenir](https://www.alvenir.ai/):
+  - Martin Carsten Nielsen (martin@alvenir.ai)
+  - Søren Vejlgaard Holm (swh@alvenir.ai)
 
 
 ## Join Us
