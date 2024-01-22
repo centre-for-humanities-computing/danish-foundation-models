@@ -11,9 +11,9 @@ models model sheet.
 | Model                                                                              | Model type | Size (parameters) |
 | ---------------------------------------------------------------------------------- | ---------- | ----------------- |
 | [munin-7b-alpha](https://huggingface.co/danish-foundation-models/munin-7b-alpha)   | Decoder    | 7.24B             |
-| [dfm-encoder-large-v1](https://huggingface.co/chcaa/dfm-encoder-large-v1)          | Encoder    | large (355M)      |
-| [dfm-encoder-medium-v1](https://huggingface.co/chcaa/dfm-encoder-medium-v1)        | Encoder    | medium (110M)     |
-| [dfm-encoder-small-v1](https://huggingface.co/chcaa/dfm-encoder-small-v1)          | Encoder    | small (22M)       |
+| [encoder-large-v1](https://huggingface.co/danish-foundation-models/encoder-large-v1)          | Encoder    | large (355M)      |
+| [encoder-medium-v1](https://huggingface.co/danish-foundation-models/encoder-medium-v1)        | Encoder    | medium (110M)     |
+| [encoder-small-v1](https://huggingface.co/danish-foundation-models/encoder-small-v1)          | Encoder    | small (22M)       |
 
 
 
