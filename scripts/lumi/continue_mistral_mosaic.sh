@@ -1,18 +1,20 @@
 #!/bin/bash
 
 ##SBATCH --exclude=nid006865,nid005613,nid005988
-#SBATCH --nodes=2
+#SBATCH --nodes=4
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=56
 #SBATCH --mem=0
 #SBATCH --partition=standard-g
-#SBATCH --time=0-01:00:00
+#SBATCH --time=0-24:00:00
 #SBATCH --gpus-per-node=mi250:8
 #SBATCH --exclusive=user
 #SBATCH --hint=nomultithread
 #SBATCH --account=project_465000670
 #SBATCH --output=logs/%j.out
 #SBATCH --error=logs/%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=rasmus.larsen@alexandra.dk
 
 # if run without sbatch, invoke here
 if [ -z $SLURM_JOB_ID ]; then
