@@ -14,7 +14,7 @@ Welcome to the Danish Foundation Models (DFM) project, a pioneering initiative i
 - **Local Focus**: We combat this by focusing on the Danish language, ensuring that it is well-represented in the digital landscape.
 - **Broad Collaboration**: Our project unites public and private institutions, ensuring high data quality and practical applicability of our models.
 
-## Our Objectives  
+## Our Objectives
 
 1. To develop and maintain **state-of-the-art language models for Danish** for applications within both text and speech.
 2. To extensively **validate** foundation models for Danish in a representative set of tasks.
@@ -27,9 +27,9 @@ Welcome to the Danish Foundation Models (DFM) project, a pioneering initiative i
 ##  Open-source models on closed-source data
 
 As many of the datasets we use either contain personally sensitive information or fall under copyright they can't be shared publicly. However, we want to share as
-much as possible from the project, while protecting privacy and adhering to copyright law. 
+much as possible from the project, while protecting privacy and adhering to copyright law.
 Thus we organize it such that all parts of the project that can be shared and those which
-can't are well-documented using datasheets and training logs. 
+can't are well-documented using datasheets and training logs.
 Furthermore, during data processing and training, the data is stored on UCloud which follows the highest standards of information security management with a [formal ISO27001 certification](https://docs.cloud.sdu.dk/intro/security.html).
 
 ![](_static/structure.png)
@@ -42,25 +42,29 @@ The Danish Foundations models collaborate with the [Danish Data Science Communit
 
 ## The Team
 
-- From [the Center for Humanities Computing at Aarhus University](https://chc.au.dk/):
-  - Kenneth Enevoldsen (kenneth.enevoldsen@cas.au.dk)
-  - Lasse Hansen (lasse.hansen@clin.au.dk)
-  - Martin Bernstorff (martinbernstorff@gmail.com)
-  - Peter Vahlstrup (imvpbv@cc.au.dk)
-  - Per Møldrup Dalum (per@cas.au.dk)
-  - Kristoffer Laigaard Nielbo (kln@cas.au.dk)
+From [the Center for Humanities Computing at Aarhus University](https://chc.au.dk/):
 
-- From [the Alexandra Institute](https://alexandra.dk/):
-  - Peter Bjørn Jørgensen (peter.jorgensen@alexandra.dk)
-  - Rasmus Larsen (rasmus.larsen@alexandra.dk)
-  - Dan Saattrup Nielsen (dan.nielsen@alexandra.dk)
+  - Kenneth Enevoldsen ([kenneth.enevoldsen@cas.au.dk](mailto:kenneth.enevoldsen@cas.au.dk))
+  - Lasse Hansen ([lasse.hansen@clin.au.dk](lasse.hansen@clin.au.dk))
+  - Martin Bernstorff ([martinbernstorff@gmail.com](martinbernstorff@gmail.com))
+  - Peter Vahlstrup ([imvpbv@cc.au.dk](imvpbv@cc.au.dk))
+  - Per Møldrup Dalum ([per@cas.au.dk](per@cas.au.dk))
+  - Kristoffer Laigaard Nielbo ([kln@cas.au.dk](kln@cas.au.dk))
 
-- From [the Center for AI Science and Applicaitons at the University of Southern Denmark](https://sdu.dk/casa):
-  - Peter Schneider-Kamp (petersk@imada.sdu.dk)
+From [the Alexandra Institute](https://alexandra.dk/):
 
-- From [Alvenir](https://www.alvenir.ai/):
-  - Martin Carsten Nielsen (martin@alvenir.ai)
-  - Søren Vejlgaard Holm (swh@alvenir.ai)
+  - Peter Bjørn Jørgensen ([peter.jorgensen@alexandra.dk](peter.jorgensen@alexandra.dk))
+  - Rasmus Larsen ([rasmus.larsen@alexandra.dk](rasmus.larsen@alexandra.dk))
+  - Dan Saattrup Nielsen ([dan.nielsen@alexandra.dk](dan.nielsen@alexandra.dk))
+
+From [the Center for AI Science and Applicaitons at the University of Southern Denmark](https://sdu.dk/casa):
+
+  - Peter Schneider-Kamp ([petersk@imada.sdu.dk](petersk@imada.sdu.dk))
+
+From [Alvenir](https://www.alvenir.ai/):
+
+  - Martin Carsten Nielsen ([martin@alvenir.ai](martin@alvenir.ai))
+  - Søren Vejlgaard Holm ([swh@alvenir.ai](swh@alvenir.ai))
 
 
 ## Join Us
