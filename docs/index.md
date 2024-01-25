@@ -26,9 +26,9 @@ Welcome to the Danish Foundation Models (DFM) project, a pioneering initiative i
 
 ##  Open-source Development with Privacy-Focused Data Handling
 
-In our commitment to advancing open-source development, we place a strong emphasis on the ethical handling of data, particularly when it involves personally sensitive information or material under copyright. Our approach ensures that while we share as much as possible from our projects, we protect privacy and adhere to copyright laws.
+In our commitment to advancing open-source development, we strongly emphasise the ethical handling of data, particularly when it involves personally sensitive information or material under copyright. This ensures that we share as much as possible while protecting privacy and adhering to copyright laws.
 
-To achieve this, our project is structured to differentiate between data that can be shared openly and that which cannot. This demarcation is documented through detailed datasheets and training logs, ensuring transparency and accountability in our processes.
+To achieve this, our project is structured to differentiate between data that can be shared openly and that which cannot. This demarcation is documented through detailed datasheets and training logs, hereby ensuring transparency and accountability in our processes.
 
 Additionally, we prioritize the security of the data during its processing and training phases. All data is stored on UCloud, a platform that upholds the highest standards in information security management. This commitment to data security is exemplified by UCloud's adherence to ISO27001, a globally recognized standard, ensuring that our data handling practices meet rigorous international criteria. For more information on our security measures, please visit UCloud's security [documentation](https://docs.cloud.sdu.dk/intro/security.html).
 
