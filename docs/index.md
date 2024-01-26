@@ -24,13 +24,14 @@ Welcome to the Danish Foundation Models (DFM) project, a pioneering initiative i
 
 
 
-##  Open-source models on closed-source data
+##  Open-source Development with Privacy-Focused Data Handling
 
-As many of the datasets we use either contain personally sensitive information or fall under copyright they can't be shared publicly. However, we want to share as
-much as possible from the project, while protecting privacy and adhering to copyright law.
-Thus we organize it such that all parts of the project that can be shared and those which
-can't are well-documented using datasheets and training logs.
-Furthermore, during data processing and training, the data is stored on UCloud which follows the highest standards of information security management with a [formal ISO27001 certification](https://docs.cloud.sdu.dk/intro/security.html).
+In our commitment to advancing open-source development, we strongly emphasise the ethical handling of data, particularly when it involves personally sensitive information or material under copyright. This ensures that we share as much as possible while protecting privacy.
+
+To achieve this, our project is structured to differentiate between data that can be shared openly and that which cannot. 
+This demarcation is documented through detailed datasheets and training logs, hereby ensuring transparency in our processes.
+
+Additionally, we prioritise the security of the data during its processing and training phases. All data is stored on UCloud, a platform that upholds the recognised highest standards in information security management. This commitment to data security is exemplified by UCloud's adherence to ISO27001, a globally recognised standard, ensuring that our data handling practices meet rigorous international criteria. For more information on our security measures, please visit UCloud's security [documentation](https://docs.cloud.sdu.dk/intro/security.html).
 
 ![](_static/structure.png)
 
