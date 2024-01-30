@@ -32,15 +32,12 @@ the upstream Mistral model.
 | mhenrichsen/danskgpt-tiny              	 | 16.87 ± 3.05	   	| 16.66 ± 2.18 	| 15.16 ± 2.64	   	| 18.80 ± 4.35	  	|
 
 See [the full ScandEval leaderboard](https://scandeval.com) for an up-to-date
-See [the full ScandEval
-leaderboard](https://scandeval.com/mainland-scandinavian-nlu-benchmark/) for an
-up-to-date comparison. Despite these challenges, we hope that our open approach
-encourages the community to collaborate with us in building the best possible Danish
-LLM. While the current version of the model may not yet be a practical tool for Danish
-NLP, we believe that sharing our findings is valuable. A critical need has been
-identified: access to a significantly larger corpus of Danish text data, and a legal
-framework that reliably allows for training and releasing open models, including for
-commercial use.
+comparison. Despite these challenges, we hope that our open approach encourages the
+community to collaborate with us in building the best possible Danish LLM. While the
+current version of the model may not yet be a practical tool for Danish NLP, we believe
+that sharing our findings is valuable. A critical need has been identified: access to a
+significantly larger corpus of Danish text data, and a legal framework that reliably
+allows for training and releasing open models, including for commercial use.
 
 At Danish Foundation Models, we are actively pursuing legal access to extensive Danish
 text data, and are exploring every option for releasing models under the
