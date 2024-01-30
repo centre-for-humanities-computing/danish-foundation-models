@@ -25,22 +25,19 @@ the upstream Mistral model.
 
 | Model Name                              	 | Overall Score 	| Danish Score 	| Norwegian Score 	| Swedish Score 	|
 |-----------------------------------------	 |---------------	|--------------	|-----------------	|---------------	|
-| gpt-4-0613                              	 | 62.54 ± 2.87  	| 56.78 ± 2.56 	| 62.95 ± 3.63    	| 67.90 ± 2.43  	|
-| gpt-3.5-turbo-0613                      	 | 56.18 ± 2.84  	| 51.73 ± 2.60 	| 54.30 ± 2.86    	| 62.52 ± 3.05  	|
-| mistralai/Mistral-7B-v0.1               	 | 30.86 ± 2.52	   	| 27.74 ± 2.38 	| 27.26 ± 2.76	   	| 37.59 ± 2.43	 	|
-| AI-Sweden-Models/gpt-sw3-6.7b-v2       	 | 21.59 ± 2.33  	| 16.15 ± 2.29	| 17.49 ± 2.57   	| 31.12 ± 2.14  	|
-| **danish-foundation-models/munin-7b-alpha**| 21.46 ± 2.98  	| 20.53 ± 2.82 	| 14.59 ± 3.47    	| 29.25 ± 2.66  	|
-| mhenrichsen/danskgpt-tiny              	 | 08.06 ± 2.91   	| 08.14 ± 2.08 	| 04.77 ± 2.01	   	| 11.26 ± 4.64	  	|
+| gpt-3.5-turbo-0613                      	 | 58.52 ± 2.42	  	| 56.72 ± 2.44 	| 57.31 ± 2.37	   	| 61.54 ± 2.46	  	|
+| mistralai/Mistral-7B-v0.1               	 | 40.30 ± 2.15	   	| 39.60 ± 1.94 	| 35.98 ± 2.54	   	| 45.31 ± 1.96	 	|
+| **danish-foundation-models/munin-7b-alpha**| 37.50 ± 2.49  	| 39.56 ± 2.70 	| 30.82 ± 2.69    	| 42.13 ± 2.07	  	|
+| AI-Sweden-Models/gpt-sw3-6.7b-v2       	 | 26.67 ± 2.30	  	| 23.65 ± 2.02	| 24.28 ± 2.74	   	| 32.08 ± 2.13	  	|
+| mhenrichsen/danskgpt-tiny              	 | 16.87 ± 3.05	   	| 16.66 ± 2.18 	| 15.16 ± 2.64	   	| 18.80 ± 4.35	  	|
 
-See [the full ScandEval
-leaderboard](https://scandeval.com/mainland-scandinavian-nlu-benchmark/) for an
-up-to-date comparison. Despite these challenges, we hope that our open approach
-encourages the community to collaborate with us in building the best possible Danish
-LLM. While the current version of the model may not yet be a practical tool for Danish
-NLP, we believe that sharing our findings is valuable. A critical need has been
-identified: access to a significantly larger corpus of Danish text data, and a legal
-framework that reliably allows for training and releasing open models, including for
-commercial use.
+See [the full ScandEval leaderboard](https://scandeval.com) for an up-to-date
+comparison. Despite these challenges, we hope that our open approach encourages the
+community to collaborate with us in building the best possible Danish LLM. While the
+current version of the model may not yet be a practical tool for Danish NLP, we believe
+that sharing our findings is valuable. A critical need has been identified: access to a
+significantly larger corpus of Danish text data, and a legal framework that reliably
+allows for training and releasing open models, including for commercial use.
 
 At Danish Foundation Models, we are actively pursuing legal access to extensive Danish
 text data, and are exploring every option for releasing models under the
