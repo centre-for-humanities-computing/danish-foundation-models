@@ -38,7 +38,7 @@ Additionally, we prioritise the security of the data during its processing and t
 
 ### Contributions
 
-Besides our [models](https://www.foundationmodels.dk/models/). The Danish Foundation models project have led to contributions for a series of open-source projects, the following table include some of these contributions:
+Besides our [models](https://www.foundationmodels.dk/models/) DFM have led to a series of positive open-source contributions, the following table include some of these contributions:
 
 
 | Project                                                                                                                | Contribution                                                  |
