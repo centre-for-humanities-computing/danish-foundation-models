@@ -23,8 +23,9 @@ Welcome to the Danish Foundation Models (DFM) project, a pioneering initiative i
 
 
 
+## Open-source
 
-##  Open-source Development with Privacy-Focused Data Handling
+###  Open-source Development with Privacy-Focused Data Handling
 
 In our commitment to advancing open-source development, we strongly emphasise the ethical handling of data, particularly when it involves personally sensitive information or material under copyright. This ensures that we share as much as possible while protecting privacy.
 
@@ -35,6 +36,22 @@ Additionally, we prioritise the security of the data during its processing and t
 
 ![](_static/structure.png)
 
+### Contributions
+
+Besides our [models](https://www.foundationmodels.dk/models/). The Danish Foundation models project have led to contributions for a series of open-source projects, the following table include some of these contributions:
+
+
+| Project                                                                                                                | Contribution                                                  |
+| ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| **Packages**                                                                                                           |                                                               |
+| [NLPDedup](https://github.com/saattrupdan/NLPDedup)                                                                    | A deduplication library derived from DFM's deduplication code |
+| **Code contributions**                                                                                                 |                                                               |
+| [TextDescriptives](https://hlasse.github.io/TextDescriptives/)                                                         | Added heuristic quality measure for texts                     |
+| [dolma](https://github.com/allenai/dolma)                                                                              | Bugfixes and addition of taggers for filtering                |
+| **Datasets**                                                                                                           |                                                               |
+| [dagw_reddit_filtered_v1.0.0](https://huggingface.co/datasets/DDSC/dagw_reddit_filtered_v1.0.0)                        | A filtered version of the Danish Gigaword, including reddit   |
+| **Lexical Resources**                                                                                                  |                                                               |
+| [Detailed Word Frequencies](https://huggingface.co/collections/chcaa/danish-word-frequencies-65ba3f61875c73327d1691b2) | Detailed word frequencies across domain and pos-tags          |
 
 ## Improving the Danish Language Technology Landscape
 
