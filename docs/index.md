@@ -41,17 +41,28 @@ Additionally, we prioritise the security of the data during its processing and t
 Besides our [models](https://www.foundationmodels.dk/models/) DFM have led to a series of positive open-source contributions, the following table include some of these contributions:
 
 
-| Project                                                                                                                | Contribution                                                  |
-| ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| **Packages**                                                                                                           |                                                               |
-| [NLPDedup](https://github.com/saattrupdan/NLPDedup)                                                                    | A deduplication library derived from DFM's deduplication code |
-| **Code contributions**                                                                                                 |                                                               |
-| [TextDescriptives](https://hlasse.github.io/TextDescriptives/)                                                         | Added heuristic quality measure for texts                     |
-| [dolma](https://github.com/allenai/dolma)                                                                              | Bugfixes and addition of taggers for filtering                |
-| **Datasets**                                                                                                           |                                                               |
-| [dagw_reddit_filtered_v1.0.0](https://huggingface.co/datasets/DDSC/dagw_reddit_filtered_v1.0.0)                        | A filtered version of the Danish Gigaword, including reddit   |
+| Project                                                                                                                                                                                                                                                                            | Contribution                                                                                        |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| **Packages**                                                                                                                                                                                                                                                                       |                                                                                                     |
+| [NLPDedup](https://github.com/saattrupdan/NLPDedup)                                                                                                                                                                                                                                | A deduplication library derived from DFM's deduplication code                                       |
+| **Code contributions**                                                                                                                                                                                                                                                             |                                                                                                     |
+| [TextDescriptives](https://hlasse.github.io/TextDescriptives/)                                                                                                                                                                                                                     | Added heuristic quality measure for texts                                                           |
+| [dolma](https://github.com/allenai/dolma)                                                                                                                                                                                                                                          | Bugfixes and addition of taggers for filtering                                                      |
+| **Benchmarks**                                                                                                                                                                                                                                                                     |                                                                                                     |
+| [ScandEval](https://scandeval.com)                                                                                                                                                                                                                                                 | Co-contributors have significant contributions to developing scandinavian benchmark for NLG and NLU |
+| [Scandinavian Embedding Benchmark](https://kennethenevoldsen.github.io/scandinavian-embedding-benchmark/)                                                                                                                                                                          | The benchmark for evaluating Scandinavian embedding has been created as a part of DFM               |
+| **Datasets**                                                                                                                                                                                                                                                                       |                                                                                                     |
+| [m_arc](https://huggingface.co/datasets/alexandrainst/m_arc), [m_mmlu](https://huggingface.co/datasets/alexandrainst/m_mmlu), [m_hellaswag](https://huggingface.co/datasets/alexandrainst/m_hellaswag), [m_truthfulqa](https://huggingface.co/datasets/alexandrainst/m_truthfulqa) | Translated versions of English datasets intended for model evaluation for these domains             |
+
+
+<!-- 
+temp. removed (see DDSC slack channel: NLP)
+
+| [dagw_reddit_filtered_v1.0.0](https://huggingface.co/datasets/DDSC/dagw_reddit_filtered_v1.0.0)                        | A filtered version of the Danish Gigaword, including reddit   | 
 | **Lexical Resources**                                                                                                  |                                                               |
 | [Detailed Word Frequencies](https://huggingface.co/collections/chcaa/danish-word-frequencies-65ba3f61875c73327d1691b2) | Detailed word frequencies across domain and pos-tags          |
+
+-->
 
 ## Improving the Danish Language Technology Landscape
 
