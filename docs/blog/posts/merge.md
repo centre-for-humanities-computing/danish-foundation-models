@@ -52,6 +52,7 @@ If you don't want to supply a token then simply leave it blank!
 
 
 ```python
+import getpass
 HUGGING_FACE_TOKEN = getpass.getpass("Hugging Face Token: ")
 if not HUGGING_FACE_TOKEN:
     print("Not using a Hugging Face token.")
