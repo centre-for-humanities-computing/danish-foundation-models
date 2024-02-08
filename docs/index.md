@@ -14,7 +14,7 @@ Welcome to the Danish Foundation Models (DFM) project, a pioneering initiative i
 - **Local Focus**: We combat this by focusing on the Danish language, ensuring that it is well-represented in the digital landscape.
 - **Broad Collaboration**: Our project unites public and private institutions, ensuring high data quality and practical applicability of our models.
 
-## Our Objectives  
+## Our Objectives
 
 1. To develop and maintain **state-of-the-art language models for Danish** for applications within both text and speech.
 2. To extensively **validate** foundation models for Danish in a representative set of tasks.
@@ -23,17 +23,46 @@ Welcome to the Danish Foundation Models (DFM) project, a pioneering initiative i
 
 
 
+## Open-source
 
-##  Open-source models on closed-source data
+###  Open-source Development with Privacy-Focused Data Handling
 
-As many of the datasets we use either contain personally sensitive information or fall under copyright they can't be shared publicly. However, we want to share as
-much as possible from the project, while protecting privacy and adhering to copyright law. 
-Thus we organize it such that all parts of the project that can be shared and those which
-can't are well-documented using datasheets and training logs. 
-Furthermore, during data processing and training, the data is stored on UCloud which follows the highest standards of information security management with a [formal ISO27001 certification](https://docs.cloud.sdu.dk/intro/security.html).
+In our commitment to advancing open-source development, we strongly emphasise the ethical handling of data, particularly when it involves personally sensitive information or material under copyright. This ensures that we share as much as possible while protecting privacy.
+
+To achieve this, our project is structured to differentiate between data that can be shared openly and that which cannot. 
+This demarcation is documented through detailed datasheets and training logs, hereby ensuring transparency in our processes.
+
+Additionally, we prioritise the security of the data during its processing and training phases. All data is stored on UCloud, a platform that upholds the recognised highest standards in information security management. This commitment to data security is exemplified by UCloud's adherence to ISO27001, a globally recognised standard, ensuring that our data handling practices meet rigorous international criteria. For more information on our security measures, please visit UCloud's security [documentation](https://docs.cloud.sdu.dk/intro/security.html).
 
 ![](_static/structure.png)
 
+### Contributions
+
+Besides our [models](https://www.foundationmodels.dk/models/) DFM have led to a series of positive open-source contributions, the following table include some of these contributions:
+
+
+| Project                                                                                                                                                                                                                                                                            | Contribution                                                                                        |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| **Packages**                                                                                                                                                                                                                                                                       |                                                                                                     |
+| [NLPDedup](https://github.com/saattrupdan/NLPDedup)                                                                                                                                                                                                                                | A deduplication library derived from DFM's deduplication code                                       |
+| **Code contributions**                                                                                                                                                                                                                                                             |                                                                                                     |
+| [TextDescriptives](https://hlasse.github.io/TextDescriptives/)                                                                                                                                                                                                                     | Added heuristic quality measure for texts                                                           |
+| [dolma](https://github.com/allenai/dolma)                                                                                                                                                                                                                                          | Bugfixes and addition of taggers for filtering                                                      |
+| **Benchmarks**                                                                                                                                                                                                                                                                     |                                                                                                     |
+| [ScandEval](https://scandeval.com)                                                                                                                                                                                                                                                 | Co-contributors have significant contributions to developing NLU and NLG benchmarks for Scandinavian and Germanic languages |
+| [Scandinavian Embedding Benchmark](https://kennethenevoldsen.github.io/scandinavian-embedding-benchmark/)                                                                                                                                                                          | The benchmark for evaluating Scandinavian embedding has been created as a part of DFM               |
+| **Datasets**                                                                                                                                                                                                                                                                       |                                                                                                     |
+| [m_arc](https://huggingface.co/datasets/alexandrainst/m_arc), [m_mmlu](https://huggingface.co/datasets/alexandrainst/m_mmlu), [m_hellaswag](https://huggingface.co/datasets/alexandrainst/m_hellaswag), [m_truthfulqa](https://huggingface.co/datasets/alexandrainst/m_truthfulqa) | Translated versions of English datasets intended for model evaluation for these domains             |
+
+
+<!-- 
+temp. removed (see DDSC slack channel: NLP)
+
+| [dagw_reddit_filtered_v1.0.0](https://huggingface.co/datasets/DDSC/dagw_reddit_filtered_v1.0.0)                        | A filtered version of the Danish Gigaword, including reddit   | 
+| **Lexical Resources**                                                                                                  |                                                               |
+| [Detailed Word Frequencies](https://huggingface.co/collections/chcaa/danish-word-frequencies-65ba3f61875c73327d1691b2) | Detailed word frequencies across domain and pos-tags          |
+
+-->
 
 ## Improving the Danish Language Technology Landscape
 
@@ -42,25 +71,29 @@ The Danish Foundations models collaborate with the [Danish Data Science Communit
 
 ## The Team
 
-- From [the Center for Humanities Computing at Aarhus University](https://chc.au.dk/):
-  - Kenneth Enevoldsen (kenneth.enevoldsen@cas.au.dk)
-  - Lasse Hansen (lasse.hansen@clin.au.dk)
-  - Martin Bernstorff (martinbernstorff@gmail.com)
-  - Peter Vahlstrup (imvpbv@cc.au.dk)
-  - Per Møldrup Dalum (per@cas.au.dk)
-  - Kristoffer Laigaard Nielbo (kln@cas.au.dk)
+From [the Center for Humanities Computing at Aarhus University](https://chc.au.dk/):
 
-- From [the Alexandra Institute](https://alexandra.dk/):
-  - Peter Bjørn Jørgensen (peter.jorgensen@alexandra.dk)
-  - Rasmus Larsen (rasmus.larsen@alexandra.dk)
-  - Dan Saattrup Nielsen (dan.nielsen@alexandra.dk)
+  - Kenneth Enevoldsen ([kenneth.enevoldsen@cas.au.dk](mailto:kenneth.enevoldsen@cas.au.dk))
+  - Lasse Hansen ([lasse.hansen@clin.au.dk](lasse.hansen@clin.au.dk))
+  - Martin Bernstorff ([martinbernstorff@gmail.com](martinbernstorff@gmail.com))
+  - Peter Vahlstrup ([imvpbv@cc.au.dk](imvpbv@cc.au.dk))
+  - Per Møldrup Dalum ([per@cas.au.dk](per@cas.au.dk))
+  - Kristoffer Laigaard Nielbo ([kln@cas.au.dk](kln@cas.au.dk))
 
-- From [the Center for AI Science and Applicaitons at the University of Southern Denmark](https://sdu.dk/casa):
-  - Peter Schneider-Kamp (petersk@imada.sdu.dk)
+From [the Alexandra Institute](https://alexandra.dk/):
 
-- From [Alvenir](https://www.alvenir.ai/):
-  - Martin Carsten Nielsen (martin@alvenir.ai)
-  - Søren Vejlgaard Holm (swh@alvenir.ai)
+  - Peter Bjørn Jørgensen ([peter.jorgensen@alexandra.dk](peter.jorgensen@alexandra.dk))
+  - Rasmus Larsen ([rasmus.larsen@alexandra.dk](rasmus.larsen@alexandra.dk))
+  - Dan Saattrup Nielsen ([dan.nielsen@alexandra.dk](dan.nielsen@alexandra.dk))
+
+From [the Center for AI Science and Applicaitons at the University of Southern Denmark](https://sdu.dk/casa):
+
+  - Peter Schneider-Kamp ([petersk@imada.sdu.dk](petersk@imada.sdu.dk))
+
+From [Alvenir](https://www.alvenir.ai/):
+
+  - Martin Carsten Nielsen ([martin@alvenir.ai](martin@alvenir.ai))
+  - Søren Vejlgaard Holm ([swh@alvenir.ai](swh@alvenir.ai))
 
 
 ## Join Us
