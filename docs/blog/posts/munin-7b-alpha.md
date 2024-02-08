@@ -15,6 +15,7 @@ model. It has been pre-trained on the [Danish Gigaword](https://gigaword.dk/) da
 which has been instrumental in training various Danish BERT-style models.
 
 <!-- more -->
+The model has been trained for one epoch over the dataset and ends up with a loss 1.27 on the Danish Gigaword. See more the model training logs [here](missing).
 
 This release underscores our commitment to transparency about our work and the
 challenges we are facing. We want to clearly note that we expect the model to perform
