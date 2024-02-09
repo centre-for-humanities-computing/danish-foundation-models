@@ -1,13 +1,14 @@
 name: 'lint and build dev container' 
 on: # rebuild any PRs and main branch changes
-  pull_request:
   push:
     branches:
       - main
-
+  issue_comment:
+    types: [created]
 
 jobs:
   build-and-test:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'issue_comment' && contains(github.event.comment.body, '/build')
     concurrency:
       group: "${{ github.workflow }} @ ${{ github.ref }}"
       cancel-in-progress: true
