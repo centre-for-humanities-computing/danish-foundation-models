@@ -6,17 +6,17 @@ export LC_ALL=C
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 GIT_ROOT=$(git rev-parse --show-toplevel)
 
-cd ${GIT_ROOT}
+cd ${SCRIPT_DIR}
 python3 -m venv .venv
 source .venv/bin/activate
 
 pip install --upgrade pip
 pip install packaging cmake # build requirements
 
-cd ${GIT_ROOT}/llm-foundry
+cd ${SCRIPT_DIR}/llm-foundry
 pip install -e .
 
-pip install -r ${SCRIPT_DIR}/requirements.txt
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm5.7
 
 # Install flash attention
 TMP_DIR=$(mktemp -d)
