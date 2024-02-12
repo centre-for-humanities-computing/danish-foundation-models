@@ -21,17 +21,18 @@ pip install --pre torch torchvision torchaudio --index-url https://download.pyto
 TMP_DIR=$(mktemp -d)
 git clone --recurse-submodules https://github.com/ROCmSoftwarePlatform/flash-attention ${TMP_DIR}
 cd ${TMP_DIR}
-export GPU_ARCHS="gfx90a"
+export GPU_ARCHS="gfx90a" # for MI250X on LUMI
+export MAX_JOBS=8 # this install breaks on dev nodes (memory?), so install on a login node while being nice
 python3 setup.py install
 
 # Install vllm
 TMP_DIR=$(mktemp -d)
-git clone https://github.com/rlrs/vllm.git ${TMP_DIR} # vllm fork until they fix 
+git clone https://github.com/vllm-project/vllm.git ${TMP_DIR}
 cd ${TMP_DIR}
 pip install xformers==0.0.23 --no-deps # this step is from the vllm docs
 bash patch_xformers.rocm.sh # so is this
 pip install -U -r requirements-rocm.txt
-python setup.py install # builds for GPU_ARCHS
+python setup.py install
 
 # Install scandeval
 pip install scandeval
