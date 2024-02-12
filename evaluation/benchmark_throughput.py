@@ -121,9 +121,9 @@ def run_hf(
     assert not use_beam_search
     llm = AutoModelForCausalLM.from_pretrained(
         model, torch_dtype=torch.float16, trust_remote_code=trust_remote_code)
-    if llm.config.model_type == "llama":
-        # To enable padding in the HF backend.
-        tokenizer.pad_token = tokenizer.eos_token
+    #if llm.config.model_type == "llama":
+    # To enable padding in the HF backend.
+    tokenizer.pad_token = tokenizer.eos_token
     llm = llm.cuda()
 
     pbar = tqdm(total=len(requests))
