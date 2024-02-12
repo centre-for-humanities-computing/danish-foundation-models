@@ -4,11 +4,11 @@ on: # rebuild any PRs and main branch changes
     branches:
       - main
   issue_comment:
-    types: [created]
+    types: [created, edited]
 
 jobs:
   build-and-test:
-    #if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'issue_comment' && contains(github.event.comment.body, '/build')
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'issue_comment' && contains(github.event.comment.body, '/build')
     concurrency:
       group: "${{ github.workflow }} @ ${{ github.ref }}"
       cancel-in-progress: true
