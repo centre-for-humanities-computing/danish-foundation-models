@@ -37,12 +37,13 @@ class Ut1URLClassifier:
         Path.mkdir(self.data_dir, parents=True, exist_ok=True)
 
         # Download list of archives
-        response = requests.get(md5_url)
-        if response.status_code == requests.codes.ok:
-            with open(self.data_dir / "md5sum.lst", "wb") as f:
-                f.write(response.content)
-        else:
-            raise RuntimeError("Failed to download %s" % md5_url)
+        if not Path.exists(self.data_dir / "md5sum.lst"):
+            response = requests.get(md5_url)
+            if response.status_code == requests.codes.ok:
+                with open(self.data_dir / "md5sum.lst", "wb") as f:
+                    f.write(response.content)
+            else:
+                raise RuntimeError("Failed to download %s" % md5_url)
 
         # Open list and build dictionary of md5sum -> list of filenames
         # Some files have multiple aliases, so they will have the same md5sum
