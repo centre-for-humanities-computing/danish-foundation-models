@@ -10,7 +10,7 @@ from trieregex import TrieRegEx
 
 from dolma.core.registry import TaggerRegistry
 from dolma.core.taggers import BaseTaggerWithMetadata
-from dolma.core.data_types import DocResult, DocumentWithMetadata, Span, TextSlice
+from dolma.core.data_types import DocResult, DocumentWithMetadata, Span
 
 
 class Ut1URLClassifier:
