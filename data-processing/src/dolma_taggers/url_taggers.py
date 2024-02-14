@@ -1,11 +1,12 @@
 from collections import defaultdict
 import hashlib
 import io
+import logging
 from pathlib import Path
 import requests
 import re
 import tarfile
-from urllib.parse import urlparse
+import urllib3.util
 from trieregex import TrieRegEx
 
 from dolma.core.registry import TaggerRegistry
@@ -63,6 +64,7 @@ class Ut1URLClassifier:
             output_path = self.data_dir / filenames[0]
             # Only download the file if it does not already exist
             if not Path.exists(output_path):
+                logging.debug(f"downloading to {output_path}")
                 response = requests.get(url)
                 if response.status_code == requests.codes.ok:
                     with open(output_path, "wb") as f:
@@ -119,10 +121,10 @@ class Ut1URLClassifier:
         """Classify url by first extracting the domain from url
         and check if the extracted domain exists in the ban list.
         This method does not always work, because the domain can
-        be parsed differently. The scheme part, i.e. http:// must
-        be part of the url for this parser to work."""
-        parse_res = urlparse(url)
-        url_dom = parse_res.netloc
+        be parsed differently."""
+        parse_res: urllib3.util.Url = urllib3.util.parse_url(url) # type:ignore
+        assert isinstance(parse_res, urllib3.util.Url)
+        url_dom = parse_res.host
 
         cats: list[str] = []
         for md5sum, domains in self.md5_to_domains.items():
