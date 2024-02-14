@@ -1,20 +1,17 @@
 #!/bin/bash
 
-##SBATCH --exclude=nid006865,nid005613,nid005988
-#SBATCH --nodes=4
+#SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=56
 #SBATCH --mem=0
 #SBATCH --partition=standard-g
-#SBATCH --time=0-24:00:00
+#SBATCH --time=0-01:00:00
 #SBATCH --gpus-per-node=mi250:8
 #SBATCH --exclusive=user
 #SBATCH --hint=nomultithread
 #SBATCH --account=project_465000670
-#SBATCH --output=logs/%j.out
-#SBATCH --error=logs/%j.err
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=rasmus.larsen@alexandra.dk
+#SBATCH --output=eval-logs/%j.out
+#SBATCH --error=eval-logs/%j.err
 
 # if run without sbatch, invoke here
 if [ -z $SLURM_JOB_ID ]; then
@@ -39,7 +36,7 @@ export SINGULARITYENV_LD_LIBRARY_PATH=/opt/ompi/lib:${EBROOTAWSMINOFIMINRCCL}/li
 export SINGULARITY_BIND=$(echo $SINGULARITY_BIND | sed 's|,/usr/lib64/libssh.so.4||g') # do not bind host libssh which is built against a wrong libssl for some reason
 export LC_ALL=C
 export HF_DATASETS_CACHE="/scratch/project_465000670/.cache/huggingface" 
-export TRANSFORMERS_CACHE="/scratch/project_465000670/.cache/huggingface"
+export HF_HOME="/scratch/project_465000670/.cache/huggingface"
 
 # values for distributed setup 
 GPUS_PER_NODE=$SLURM_GPUS_PER_NODE

@@ -125,7 +125,7 @@ loggers:
   wandb: {}
 
 # Checkpoint to local filesystem or remote object store
-save_interval: 100ba # 2M tokens per batch = 200M tokens per checkpoint
-save_num_checkpoints_to_keep: 5  # cleans up checkpoints saved to DISK
+save_interval: 100ba # 4M tokens per batch = 400M tokens per checkpoint
+save_num_checkpoints_to_keep: 10  # cleans up checkpoints saved to DISK
 save_folder: ./{run_name}/checkpoints
 # save_folder: s3://my-bucket/my-folder/{run_name}/checkpoints
