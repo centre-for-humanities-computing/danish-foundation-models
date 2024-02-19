@@ -25,6 +25,9 @@ dependencies = [
   "dolma[pii,code]@git+https://github.com/allenai/dolma.git@28727302a34225f4ce70ce97940cb18ad9a91583", # Install from git until a 0.9.2 package is released
   "kenlm>=0.2.0", # Used for perplexity tagging
   "blingfire>=0.1.8", # Used for perplexity tagging
+  "mosaicml-streaming",
+  "orjsonl",
+  "tqdm"
 ]
 
 [project.optional-dependencies]
