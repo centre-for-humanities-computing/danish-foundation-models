@@ -22,7 +22,6 @@ dependencies = [
   "requests>=2.31.0",
   "polars>0.19.1",
   # Data cleaning dependencies:
-  "dolma[pii,code]>=1.0.1",
   "dolma[pii,code]@git+https://github.com/allenai/dolma.git@5b8109d718f1e69a87094623bca109aee1c33378" # install from git until 1.0.2 is released
   "kenlm>=0.2.0", # Used for perplexity tagging
   "blingfire>=0.1.8", # Used for perplexity tagging
