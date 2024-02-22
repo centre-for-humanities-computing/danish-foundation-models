@@ -1,6 +1,6 @@
 import duckdb, glob
 
-crawl = "CC-MAIN-2023-40"
+crawl = "CC-MAIN-2023-50"
 files = glob.glob(f'/mnt/Common_Crawl/data.commoncrawl.org/cc-index/**/crawl={crawl}/subset=warc/*.parquet', recursive=True)
 ccindex = duckdb.read_parquet(files, hive_partitioning=True)
 # Columns:
@@ -43,7 +43,4 @@ ORDER BY total_bytes DESC
 
 result = duckdb.sql(query)
 
-duckdb.sql(f'''COPY result TO '{crawl}.csv' (HEADER, DELIMITER ',')''')
-
-
-
+# duckdb.sql(f'''COPY result TO '{crawl}.csv' (HEADER, DELIMITER ',')''')
