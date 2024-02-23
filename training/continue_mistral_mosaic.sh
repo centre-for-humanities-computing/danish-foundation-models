@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ##SBATCH --exclude=nid006865,nid005613,nid005988
-#SBATCH --nodes=2
+#SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=56
 #SBATCH --mem=0
@@ -67,12 +67,12 @@ ln -f -s $SLURM_JOB_ID.err logs/latest.err
 
 CHECKPOINT_PATH=checkpoints
 
-GIT_ROOT=$(git rev-parse --show-toplevel)
-PATH_TO_SCRIPTS="scripts/lumi"
-cd ${GIT_ROOT} # ensure that we are in the git root for remaining paths to work
+# GIT_ROOT=$(git rev-parse --show-toplevel)
+# PATH_TO_SCRIPTS="scripts/lumi"
+# cd ${GIT_ROOT} # ensure that we are in the git root for remaining paths to work
 CMD=" \
     llm-foundry/scripts/train/train.py \
-    ${PATH_TO_SCRIPTS}/yamls/continue-mistral-7b.yaml
+    yamls/continue-mistral-7b.yaml
     "
 
 # Bind masks from Samuel (TODO: unused for now since composer handles process spawning, but might help performance to use this)
@@ -95,7 +95,7 @@ echo "START $SLURM_JOBID: $(date)"
 srun \
     --label \
     singularity exec -B "$SING_BIND" "$CONTAINER" \
-    /scratch/project_465000670/danish-foundation-models/scripts/lumi/mosaic_in_container.sh \
+    /scratch/project_465000670/danish-foundation-models/training/mosaic_in_container.sh \
     $CMD
 
 echo "END $SLURM_JOBID: $(date)"
