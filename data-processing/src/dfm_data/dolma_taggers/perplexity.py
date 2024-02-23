@@ -16,7 +16,7 @@ from dolma.core.registry import TaggerRegistry
 from dolma.core.taggers import BaseTagger
 from dolma.core.utils import split_paragraphs
 
-from dfm.common.data_cleaning.ccnet_text_normalizer import normalize
+from dfm_data.ccnet_text_normalizer import normalize
 
 ccnet_sha256 = {
     "af.arpa.bin": "7278e70cb22e29e94942b103c0ba49f406a9369c2949199fdf8d4bee4b0ce48e",

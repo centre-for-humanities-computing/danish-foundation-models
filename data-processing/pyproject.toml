@@ -1,6 +1,6 @@
 [project]
-name = "dfm"
-version = "2.0.0"
+name = "dfm_data"
+version = "2.0.1"
 description = "Code for the Danish Foundation Models"
 classifiers = [
   "Environment :: Console",
