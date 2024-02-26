@@ -27,7 +27,7 @@ dependencies = [
   "blingfire>=0.1.8", # Used for perplexity tagging
   "mosaicml-streaming",
   "orjsonl",
-  "tqdm"
+  "tqdm",
   "zstandard",
   "nlp_dedup",
 ]
