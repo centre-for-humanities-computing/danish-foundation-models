@@ -1,6 +1,6 @@
 [project]
-name = "dfm"
-version = "2.0.0"
+name = "dfm_data"
+version = "2.0.1"
 description = "Code for the Danish Foundation Models"
 classifiers = [
   "Environment :: Console",
@@ -22,12 +22,14 @@ dependencies = [
   "requests>=2.31.0",
   "polars>0.19.1",
   # Data cleaning dependencies:
-  "dolma[pii,code]@git+https://github.com/allenai/dolma.git@28727302a34225f4ce70ce97940cb18ad9a91583", # Install from git until a 0.9.2 package is released
+  "dolma[pii,code]@git+https://github.com/allenai/dolma.git@5b8109d718f1e69a87094623bca109aee1c33378", # install from git until 1.0.2 is released
   "kenlm>=0.2.0", # Used for perplexity tagging
   "blingfire>=0.1.8", # Used for perplexity tagging
   "mosaicml-streaming",
   "orjsonl",
   "tqdm"
+  "zstandard",
+  "nlp_dedup",
 ]
 
 [project.optional-dependencies]
