@@ -36,6 +36,7 @@ def main():
                 "metadata": metadata,
             }
             json.dump(new_obj, outputfile)
+            outputfile.write("\n")
             count += 1
         print("Wrote %d documents to %s" % (count, output_path))
 
