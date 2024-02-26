@@ -26,6 +26,7 @@ dependencies = [
   "kenlm>=0.2.0", # Used for perplexity tagging
   "blingfire>=0.1.8", # Used for perplexity tagging
   "zstandard",
+  "nlp_dedup",
 ]
 
 [project.optional-dependencies]
