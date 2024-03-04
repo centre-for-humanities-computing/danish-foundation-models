@@ -1,12 +1,12 @@
 #!/bin/bash
 
 ##SBATCH --exclude=nid006865,nid005613,nid005988
-#SBATCH --nodes=1
+#SBATCH --nodes=2
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=56
 #SBATCH --mem=0
 #SBATCH --partition=standard-g
-#SBATCH --time=0-01:00:00
+#SBATCH --time=2-00:00:00
 #SBATCH --gpus-per-node=mi250:8
 #SBATCH --exclusive=user
 #SBATCH --hint=nomultithread
@@ -32,12 +32,14 @@ export SINGULARITYENV_LD_LIBRARY_PATH="/lib64:/opt/cray/pe/mpich/$local_craympic
 export SINGULARITY_BIND="/opt/cray,/usr/lib64/libbrotlidec.so.1,/usr/lib64/libbrotlicommon.so.1,/usr/lib64/libnl-3.so.200,/usr/lib64/libnl-route-3.so.200,/usr/lib64/libcxi.so.1,/usr/lib64/libcurl.so.4,/usr/lib64/libnghttp2.so.14,/usr/lib64/libidn2.so.0,/usr/lib64/libssh.so.4,/usr/lib64/libpsl.so.5,/usr/lib64/libssl.so.1.1,/usr/lib64/libcrypto.so.1.1,/usr/lib64/libgssapi_krb5.so.2,/usr/lib64/libldap_r-2.4.so.2,/usr/lib64/liblber-2.4.so.2,/usr/lib64/libjson-c.so.3,/usr/lib64/libunistring.so.2,/usr/lib64/libkrb5.so.3,/usr/lib64/libk5crypto.so.3,/usr/lib64/libkrb5support.so.0,/usr/lib64/libsasl2.so.3,/usr/lib64/libkeyutils.so.1,/var/spool/slurmd/mpi_cray_shasta,/usr/lib64/libzstd.so.1,/lib64/libselinux.so.1,/usr/lib64/libpcre.so.1,${SINGULARITY_BIND}"
 
 # These are some more custom exports
+export PROJECT_SCRATCH="/scratch/project_465000670"
+export PROJECT_FLASH="/flash/project_465000670"
 export SINGULARITY_BIND=/users/larsenra/aws-ofi-rccl/install:/opt/aws-ofi-rccl,/usr/lib64/libjitterentropy.so.3,${SINGULARITY_BIND}
 export SINGULARITYENV_LD_LIBRARY_PATH=/opt/ompi/lib:${EBROOTAWSMINOFIMINRCCL}/lib:/opt/cray/xpmem/2.5.2-2.4_3.47__gd0f7936.shasta/lib64:/opt/aws-ofi-rccl/lib:${SINGULARITYENV_LD_LIBRARY_PATH}
 export SINGULARITY_BIND=$(echo $SINGULARITY_BIND | sed 's|,/usr/lib64/libssh.so.4||g') # do not bind host libssh which is built against a wrong libssl for some reason
 export LC_ALL=C
-export HF_DATASETS_CACHE="/scratch/project_465000670/.cache/huggingface" 
-export TRANSFORMERS_CACHE="/scratch/project_465000670/.cache/huggingface"
+export HF_DATASETS_CACHE="${PROJECT_SCRATCH}/.cache/huggingface" 
+export TRANSFORMERS_CACHE="${PROJECT_SCRATCH}/.cache/huggingface"
 
 # values for distributed setup 
 GPUS_PER_NODE=$SLURM_GPUS_PER_NODE
@@ -53,7 +55,7 @@ export CXX=g++-11
 
 CONTAINER="/project/project_465000670/pytorch_rocm5.7_ubuntu22.04_py3.10_pytorch_2.0.1.sif"
 
-SING_BIND="/scratch/project_465000670"
+SING_BIND="${PROJECT_SCRATCH},${PROJECT_FLASH}"
 
 # hold separate logs for easier debugging
 rm -rf separate-logs
