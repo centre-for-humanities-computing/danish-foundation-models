@@ -40,15 +40,15 @@ dolma -c dolma_dedupe_v1.yaml dedupe
 Since we did not run the URL tagger on the non-common-crawl datasets we hack a workaround and put in an empty placeholder attributes file.
 In future datasets this should instead be configured in the mixer by using different streams.
 ```bash
-mkdir /work/pre-training/dagw/v1blockurltaggers/
-mkdir /work/pre-training/scandi-reddit/v1blockurltaggers/
-mkdir /work/pre-training/lexdk/v1blockurltaggers/
-touch /work/pre-training/dagw/v1blockurltaggers/data.jsonl
-touch /work/pre-training/scandi-reddit/v1blockurltaggers/scandi-reddit.jsonl
-touch /work/pre-training/lexdk/v1blockurltaggers/lexdk_articles.jsonl
-gzip /work/pre-training/dagw/v1blockurltaggers/data.jsonl
-gzip /work/pre-training/scandi-reddit/v1blockurltaggers/scandi-reddit.jsonl
-gzip /work/pre-training/lexdk/v1blockurltaggers/lexdk_articles.jsonl
+mkdir /work/dfm-data/pre-training/dagw/v1blockurltaggers/
+mkdir /work/dfm-data/pre-training/scandi-reddit/v1blockurltaggers/
+mkdir /work/dfm-data/pre-training/lexdk/v1blockurltaggers/
+touch /work/dfm-data/pre-training/dagw/v1blockurltaggers/data.jsonl
+touch /work/dfm-data/pre-training/scandi-reddit/v1blockurltaggers/scandi-reddit.jsonl
+touch /work/dfm-data/pre-training/lexdk/v1blockurltaggers/lexdk_articles.jsonl
+gzip /work/dfm-data/pre-training/dagw/v1blockurltaggers/data.jsonl
+gzip /work/dfm-data/pre-training/scandi-reddit/v1blockurltaggers/scandi-reddit.jsonl
+gzip /work/dfm-data/pre-training/lexdk/v1blockurltaggers/lexdk_articles.jsonl
 ```
 
 Finally mix the dataset:

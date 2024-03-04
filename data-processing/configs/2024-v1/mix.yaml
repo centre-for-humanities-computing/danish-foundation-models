@@ -1,13 +1,13 @@
 streams:
     - name: munin_alpha_v0.1_zero_cleaned
       documents:
-        - /work/pre-training/dagw/documents/*.gz
-        - /work/pre-training/hplt/documents/*.gz
-        - /work/pre-training/lexdk/documents/*.gz
-        - /work/pre-training/mC4_da/documents/*.gz
-        - /work/pre-training/scandi-reddit/documents/*.gz
+        - /work/dfm-data/pre-training/dagw/documents/*.gz
+        - /work/dfm-data/pre-training/hplt/documents/*.gz
+        - /work/dfm-data/pre-training/lexdk/documents/*.gz
+        - /work/dfm-data/pre-training/mC4_da/documents/*.gz
+        - /work/dfm-data/pre-training/scandi-reddit/documents/*.gz
       output:
-        path: /work/pre-training/mixed_deduped/documents
+        path: /work/dfm-data/pre-training-clean/2024-v1/documents
         max_size_in_bytes: 1_000_000_000
       attributes:
         - v1blockurltaggers

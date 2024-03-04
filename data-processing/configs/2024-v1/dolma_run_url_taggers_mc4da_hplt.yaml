@@ -1,8 +1,8 @@
 debug: false
 destination: null
 documents:
-- /work/pre-training/mC4_da/documents/*.json.gz
-- /work/pre-training/hplt/documents/*.jsonl.gz
+- /work/dfm-data/pre-training/mC4_da/documents/*.json.gz
+- /work/dfm-data/pre-training/hplt/documents/*.jsonl.gz
 dryrun: false
 experiment: v1blockurltaggers
 ignore_existing: false
