@@ -23,8 +23,11 @@ pip install -e .
 ```
 
 ## Run Taggers
-Run url blocklist tagger:
+```bash
+cd configs/2024-v1
+```
 
+Run url blocklist tagger:
 ```bash
 dolma -c dolma_run_url_taggers_mc4da_hplt.yaml tag
 ```
