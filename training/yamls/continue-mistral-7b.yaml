@@ -1,14 +1,15 @@
 # Continue-pretrain a Mistral-7b model
 # This is NOT a finetuning run
-max_seq_len: 4096
+max_seq_len: 8192
 global_seed: 17
-data_local: /scratch/project_465000670/da-gigaword-mds
+dist_timeout: 300.0  # reduce timeout to 5 minutes for less wasteful timeouts
+data_local: /scratch/project_465000670/munin-mds
 data_remote: # If blank, files must be present in data_local
 pretrained_model_name: mistralai/Mistral-7B-v0.1 #meta-llama/Llama-2-7b-hf
 tokenizer_name: mistralai/Mistral-7B-v0.1 #mistralai/Mistral-7B-v0.1
 
 # Run Name
-run_name: continue-mistral # If left blank, will be read from env var $RUN_NAME
+run_name: munin-7b-8192-exp1 # If left blank, will be read from env var $RUN_NAME
 
 # HF
 model:
@@ -49,21 +50,21 @@ train_loader:
   persistent_workers: true
   timeout: 0
 
-eval_loader:
-  name: text
-  dataset:
-    local: ${data_local}
-    #remote: ${data_remote}
-    split: test
-    max_seq_len: ${max_seq_len}
-    # packing_ratio:
-    shuffle: false
-  drop_last: false
-  num_workers: 8
-  pin_memory: false
-  prefetch_factor: 2
-  persistent_workers: true
-  timeout: 0
+# eval_loader:
+#   name: text
+#   dataset:
+#     local: ${data_local}
+#     #remote: ${data_remote}
+#     split: test
+#     max_seq_len: ${max_seq_len}
+#     # packing_ratio:
+#     shuffle: false
+#   drop_last: false
+#   num_workers: 8
+#   pin_memory: false
+#   prefetch_factor: 2
+#   persistent_workers: true
+#   timeout: 0
 
 # Optimization
 scheduler:
@@ -85,16 +86,16 @@ algorithms:
     clipping_type: norm
     clipping_threshold: 1.0
 
-max_duration: 1ep
-eval_interval: 100ba
+max_duration: 2ep
+eval_interval: 0  # 0 = disable eval
 # eval_subset_num_batches: -1
-eval_first: true
-global_train_batch_size: 576  # 12 * 8 * 6
+# eval_first: true
+global_train_batch_size: 768  # 6 batch * 8 gpu * 16 nodes = 768 * 8192 = 6.3M batch size
 
 # System
 seed: ${global_seed}
 device_eval_batch_size: 16
-device_train_microbatch_size: 12
+device_train_microbatch_size: 6
 # device_train_microbatch_size: auto
 precision: amp_bf16
 
@@ -107,6 +108,9 @@ fsdp_config:
   activation_cpu_offload: false
   limit_all_gathers: true
   verbose: false
+  load_monolith_rank0_only: true  # greatly reduces memory usage for ckpt loading, 100% necessary
+  use_orig_params: false  # necessary due to above
+  sync_module_states: true  # also due to above
 
 # Logging
 progress_bar: false
@@ -125,7 +129,7 @@ loggers:
   wandb: {}
 
 # Checkpoint to local filesystem or remote object store
-save_interval: 100ba # 2M tokens per batch = 200M tokens per checkpoint
-save_num_checkpoints_to_keep: 5  # cleans up checkpoints saved to DISK
-save_folder: ./{run_name}/checkpoints
+save_interval: 2.90e9tok # tokens per checkpoint
+save_num_checkpoints_to_keep: 30  # cleans up checkpoints saved to DISK
+save_folder: /flash/project_465000670/{run_name}/checkpoints
 # save_folder: s3://my-bucket/my-folder/{run_name}/checkpoints
