@@ -25,7 +25,7 @@ git clone --recurse-submodules https://github.com/ROCmSoftwarePlatform/flash-att
 cd ${TMP_DIR}
 
 export GPU_ARCHS="gfx90a"
-export MAX_JOBS=12 # be nice on the login nodesß
+export MAX_JOBS=12 # be nice on the login nodes
 
 # export PYTHON_SITE_PACKAGES=$(python -c 'import site; print(site.getsitepackages()[0])') # this is for older versions of pytorch
 # patch "${PYTHON_SITE_PACKAGES}/torch/utils/hipify/hipify_python.py" hipify_patch.patch
