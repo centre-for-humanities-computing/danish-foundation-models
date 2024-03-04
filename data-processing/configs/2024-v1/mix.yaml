@@ -1,0 +1,24 @@
+streams:
+    - name: munin_alpha_v0.1_zero_cleaned
+      documents:
+        - /work/pre-training/dagw/documents/*.gz
+        - /work/pre-training/hplt/documents/*.gz
+        - /work/pre-training/lexdk/documents/*.gz
+        - /work/pre-training/mC4_da/documents/*.gz
+        - /work/pre-training/scandi-reddit/documents/*.gz
+      output:
+        path: /work/pre-training/mixed_deduped/documents
+        max_size_in_bytes: 1_000_000_000
+      attributes:
+        - v1blockurltaggers
+        - bff_duplicate_paragraph_spans
+      filter:
+        exclude:
+            - "$@.attributes[?(@.v1blockurltaggers__domain_blocklist_utp_v1__url && @.v1blockurltaggers__domain_blocklist_utp_v1__url[0] && @.v1blockurltaggers__domain_blocklist_utp_v1__url[0][2] >=1.0)]"
+
+      span_replacement:
+        - span: "$.attributes.bff_duplicate_paragraph_spans"
+          min_score: 0.5
+          replacement: ''
+
+processes: 16
