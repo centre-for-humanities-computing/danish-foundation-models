@@ -82,7 +82,7 @@ def process_one(output_dir: Path, root_path: Path, input_path: Path) -> None:
                 # Convert relative path colossal-oscar-1.0/11-17/da_meta/da_meta_part_2.jsonl.zst
                 # to output_path/11-17__da_meta__da_meta_part2_{idx}.jsonl.gz
                 rel_input_path_parts = input_path.relative_to(root_path).parts
-                output_path = output_dir / "__".join(rel_input_path_parts[:-1]) / (
+                output_path = output_dir / ("__".join(rel_input_path_parts[:-1]) + "__" + 
                     Path(Path(rel_input_path_parts[-1]).stem).stem + f"_{doc_count//DOCS_PER_FILE}.jsonl.gz"
                 )
                 if out_fh is not None:
@@ -94,7 +94,7 @@ def process_one(output_dir: Path, root_path: Path, input_path: Path) -> None:
                 "text": obj["content"],
                 "source": "colossal_oscar_1.0",
                 "added": datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%dT%H:%M:%S.000Z"),
-                "created": obj["metadata"]["warc-date"], # Copy metadata to root
+                "created": obj["warc_headers"]["warc-date"], # Copy metadata to root
                 "metadata": obj["metadata"],
             }
             new_obj["metadata"]["warc_headers"] = obj["warc_headers"] # type: ignore
