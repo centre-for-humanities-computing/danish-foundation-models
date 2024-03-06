@@ -27,6 +27,7 @@ dependencies = [
   "blingfire>=0.1.8", # Used for perplexity tagging
   "trieregex", # Used by URL tagger
   "zstandard",
+  "nlp_dedup",
 ]
 
 [project.optional-dependencies]
