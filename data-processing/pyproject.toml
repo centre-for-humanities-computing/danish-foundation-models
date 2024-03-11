@@ -1,6 +1,6 @@
 [project]
-name = "dfm"
-version = "2.0.0"
+name = "dfm_data"
+version = "2.0.1"
 description = "Code for the Danish Foundation Models"
 classifiers = [
   "Environment :: Console",
@@ -25,6 +25,8 @@ dependencies = [
   "dolma[pii,code]@git+https://github.com/allenai/dolma.git@476629dc4d8d804dd2123509dc48b549e6b49dfb", # Install from git until a 1.0.2 package is released
   "kenlm>=0.2.0", # Used for perplexity tagging
   "blingfire>=0.1.8", # Used for perplexity tagging
+  "zstandard",
+  "nlp_dedup",
 ]
 
 [project.optional-dependencies]
