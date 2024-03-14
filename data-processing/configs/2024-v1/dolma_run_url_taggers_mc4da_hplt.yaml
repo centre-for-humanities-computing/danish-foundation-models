@@ -1,0 +1,42 @@
+debug: false
+destination: null
+documents:
+- /work/dfm-data/pre-training/mC4_da/documents/*.json.gz
+- /work/dfm-data/pre-training/hplt/documents/*.jsonl.gz
+dryrun: false
+experiment: v1blockurltaggers
+ignore_existing: false
+processes: 4
+profile:
+  enable: false
+  lines: 100
+  output: null
+  sort_key: tottime
+  steps: null
+taggers:
+- domain_blocklist_phishing_v1
+- domain_blocklist_utp_v1
+#- oisd_big_abp_v1
+#- oisd_nsfw_abp_v1
+#- oisd_big_abp_v1
+#- blocklist_firebog_ads_v1
+#- blocklist_firebog_crypto_v1
+#- blocklist_firebog_malicious_v1
+#- blocklist_firebog_nsfw_v1
+#- blocklist_firebog_social_v1
+#- blocklist_firebog_suspicious_v1
+#- blocklist_firebog_trackers_v1
+#- blocklist_hosts_adware_malware_v1
+#- blocklist_hosts_fakenews_v1
+#- blocklist_hosts_gambling_v1
+#- blocklist_hosts_porn_v1
+#- blocklist_hosts_social_v1
+#- blocklist_project_ads_v1
+#- blocklist_project_crime_v1
+#- blocklist_project_nsfw_v1
+#- blocklist_project_social_v1
+#- blocklist_project_vice_v1
+#- brave_core_abp_v1
+#- brave_nsfw_abp_v1
+#- allowlist_wikidata_cleaned_v1
+#- allowlist_wikidata_v1

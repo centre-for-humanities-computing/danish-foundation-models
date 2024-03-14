@@ -1,0 +1,18 @@
+bloom_filter:
+  desired_false_positive_rate: 1.0e-08
+  estimated_doc_count: 1_000_000_000
+  #size_in_bytes: 100_000_000
+  file: /tmp/deduper_bloom_filter_v1.bin
+  read_only: false
+dedupe:
+  name: bff_duplicate_paragraph_spans
+  paragraphs:
+    attribute_name: bff_duplicate_paragraph_spans
+  skip_empty: true
+documents:
+- /work/dfm-data/pre-training/lexdk/documents/*.jsonl.gz
+- /work/dfm-data/pre-training/scandi-reddit/documents/*.jsonl.gz
+- /work/dfm-data/pre-training/hplt/documents/*.jsonl.gz
+- /work/dfm-data/pre-training/dagw/documents/*.jsonl.gz
+- /work/dfm-data/pre-training/mC4_da/documents/*.json.gz
+processes: 16
