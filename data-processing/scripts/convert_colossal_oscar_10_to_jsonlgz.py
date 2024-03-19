@@ -111,16 +111,19 @@ def main():
     ), "Usage: convert_colossal_oscar_10_to_jsonlgz.py colossal_oscar_root output_directory"
 
     oscar_root_dir = Path(sys.argv[1])
-    input_files = oscar_root_dir.glob("./**/da_meta/*.jsonl.zst")
     output_dir = Path(sys.argv[-1])
 
-    with multiprocessing.Pool(processes=8) as pool:
-        results = [
-            pool.apply_async(process_one, (output_dir, oscar_root_dir, fname))
-            for fname in input_files
-        ]
-        for res in results:
-            res.get()
+    lang_codes = ["da", "sv", "no", "nn", "is"]
+    for lang in lang_codes:
+        input_files = oscar_root_dir.glob(f"./**/{lang}_meta/*.jsonl.zst")
+
+        with multiprocessing.Pool(processes=8) as pool:
+            results = [
+                pool.apply_async(process_one, (output_dir, oscar_root_dir, fname))
+                for fname in input_files
+            ]
+            for res in results:
+                res.get()
 
 
 if __name__ == "__main__":
