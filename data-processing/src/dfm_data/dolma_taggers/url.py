@@ -37,3 +37,62 @@ tagger_paths = os.environ.get("DOLMA_URL_CUSTOM_BLOCKLIST_PATH")
 if tagger_paths is not None:
     for path in tagger_paths.split(","):
         create_domain_blocklist_tagger(Path(path))
+
+@TaggerRegistry.add("adult_tld_v1")
+class AdultTldTagger(BaseDomainTagger):
+    ADULT_TLD = (
+        ".adult",
+        ".porn",
+        ".sex",
+        ".sexy",
+        ".xxx",
+        )
+    def check_url(self, url: str) -> bool:
+        return url.endswith(self.ADULT_TLD)
+
+@TaggerRegistry.add("adult_domain_pattern_v1")
+class AdultDomainPatternTagger(BaseDomainTagger):
+    ALLOWLIST_TLD = (
+        ".dk",
+        ".se",
+        ".is",
+        ".no",
+        ".org",
+        )
+    WORD_BANLIST = (
+        'bbw',
+        'beauties',
+        'butt',
+        'butt',
+        'cock',
+        'cum',
+        'cuties',
+        'fap',
+        'fuck',
+        'gay',
+        'granny',
+        'horny',
+        'jerk',
+        'jizz',
+        'mature',
+        'moms',
+        'porn',
+        'pussy',
+        'sex',
+        'shemale',
+        'spicytranny',
+        'tits',
+        'tube',
+        'xvideos',
+        'xxx',
+    )
+    def check_url(self, url: str) -> bool:
+        if url.endswith(self.ALLOWLIST_TLD):
+            return False
+        else:
+            for word in self.WORD_BANLIST:
+                if word in url:
+                    return True
+
+        return False
+
