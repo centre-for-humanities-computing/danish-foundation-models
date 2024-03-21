@@ -2,7 +2,7 @@
 # This is NOT a finetuning run
 max_seq_len: 8192
 global_seed: 17
-dist_timeout: 300.0  # reduce timeout to 5 minutes for less wasteful timeouts
+dist_timeout: 180.0  # reduce timeout for less wasteful timeouts
 data_local: /scratch/project_465000670/munin-mds
 data_remote: # If blank, files must be present in data_local
 pretrained_model_name: mistralai/Mistral-7B-v0.1 #meta-llama/Llama-2-7b-hf
@@ -90,12 +90,12 @@ max_duration: 2ep
 eval_interval: 0  # 0 = disable eval
 # eval_subset_num_batches: -1
 # eval_first: true
-global_train_batch_size: 768  # 6 batch * 8 gpu * 16 nodes = 768 * 8192 = 6.3M batch size
+global_train_batch_size: 512  # 2 microbatch * 8 gpu * 32 nodes * 1 gas = 512 * 8192 = 4.2M tokens in batch
 
 # System
 seed: ${global_seed}
 device_eval_batch_size: 16
-device_train_microbatch_size: 6
+device_train_microbatch_size: 2
 # device_train_microbatch_size: auto
 precision: amp_bf16
 
@@ -103,14 +103,29 @@ precision: amp_bf16
 fsdp_config:
   sharding_strategy: HYBRID_SHARD
   mixed_precision: PURE
+  backward_prefetch: BACKWARD_POST # PRE is faster but only allows 1 mbs??
   activation_checkpointing: true
   activation_checkpointing_reentrant: false
   activation_cpu_offload: false
   limit_all_gathers: true
   verbose: false
-  load_monolith_rank0_only: true  # greatly reduces memory usage for ckpt loading, 100% necessary
-  use_orig_params: false  # necessary due to above
-  sync_module_states: true  # also due to above
+  state_dict_type: sharded
+
+# profiler:
+#   schedule:
+#     wait: 1
+#     warmup: 1
+#     active: 2
+#     repeat: 1
+#   json_trace_handler:
+#     folder: composer_trace/
+#     overwrite: true
+#   torch_prof_folder: torch_trace/
+#   torch_prof_overwrite: true
+#   torch_prof_memory_filename: torch_memory.html # none to disable
+#   torch_prof_record_shapes: true # must be true for memory
+#   torch_prof_profile_memory: true # same
+#   torch_prof_with_stack: true # same
 
 # Logging
 progress_bar: false

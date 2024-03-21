@@ -27,6 +27,10 @@ export TORCH_EXTENSIONS_DIR=torch_extensions
 mkdir -p $TORCH_EXTENSIONS_DIR
 
 export NCCL_DEBUG=INFO
+# export NCCL_DEBUG_SUBSYS=COLL # to debug a specific NCCL subsystem, default is INIT
+# export NCCL_COMM_BLOCKING=1
+# export TORCH_CPP_LOG_LEVEL=INFO
+# export TORCH_DISTRIBUTED_DEBUG=DETAIL
 # export PYTORCH_HIP_ALLOC_CONF=garbage_collection_threshold:0.8,max_split_size_mb:128 # Trying to fix a memory access error
 
 # values for distributed setup (for some reason these have to be set again after continue_mistral_mosaic.sh)

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ##SBATCH --exclude=nid006865,nid005613,nid005988
-#SBATCH --nodes=2
+#SBATCH --nodes=32
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=56
 #SBATCH --mem=0
