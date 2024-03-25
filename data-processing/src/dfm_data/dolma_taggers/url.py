@@ -24,7 +24,7 @@ def create_domain_blocklist_tagger(blocklist_path: Path) -> type[BaseDomainTagge
         class_name,
         (BaseDomainTagger, ),
         {
-            "BLOCKLIST_PATHS": str(blocklist_path)
+            "BLOCKLIST_PATHS": [str(blocklist_path)]
         },
     )
     # Add the class decorator explcitly to add the tagger to the registry
@@ -40,6 +40,7 @@ if tagger_paths is not None:
 
 @TaggerRegistry.add("adult_tld_v1")
 class AdultTldTagger(BaseDomainTagger):
+    BLOCKLIST_PATHS = []
     ADULT_TLD = (
         ".adult",
         ".porn",
@@ -47,11 +48,15 @@ class AdultTldTagger(BaseDomainTagger):
         ".sexy",
         ".xxx",
         )
+    def __init__(self) -> None:
+        pass
+
     def check_url(self, url: str) -> bool:
         return url.endswith(self.ADULT_TLD)
 
 @TaggerRegistry.add("adult_domain_pattern_v1")
 class AdultDomainPatternTagger(BaseDomainTagger):
+    BLOCKLIST_PATHS = []
     ALLOWLIST_TLD = (
         ".dk",
         ".se",
@@ -86,6 +91,9 @@ class AdultDomainPatternTagger(BaseDomainTagger):
         'xvideos',
         'xxx',
     )
+    def __init__(self) -> None:
+        pass
+
     def check_url(self, url: str) -> bool:
         if url.endswith(self.ALLOWLIST_TLD):
             return False
