@@ -1,0 +1,31 @@
+{% block header %}
+#!/bin/bash
+##SBATCH --exclude=nid006865,nid005613,nid005988
+#SBATCH -J {{ job_name }}
+#SBATCH --nodes={{ num_nodes }}
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=56
+#SBATCH --mem=0
+#SBATCH --partition=standard-g
+#SBATCH --time={{ job_time }}
+#SBATCH --gpus-per-node=mi250:8
+#SBATCH --exclusive=user
+#SBATCH --hint=nomultithread
+#SBATCH --account={{ account }}
+#SBATCH --output=logs/%j.out
+#SBATCH --error=logs/%j.err
+{% endblock %}
+
+{% block body %}
+# if run without sbatch, invoke here
+if [ -z $SLURM_JOB_ID ]; then
+    mkdir -p logs
+    sbatch "$0"
+    exit
+fi
+
+{% block setup %}{% endblock %}
+
+{% block cmd %}{% endblock %}
+
+{% endblock %}
