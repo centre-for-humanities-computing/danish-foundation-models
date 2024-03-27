@@ -74,7 +74,8 @@ def main():
     render_template(env, args.containerj2, os.path.join(job_dir, "container.sh"), config)
     os.chmod(os.path.join(job_dir, "sbatch.sh"), stat.S_IRWXU) # make the scripts executable
     os.chmod(os.path.join(job_dir, "container.sh"), stat.S_IRWXU)
-    shutil.copy2(args.config, os.path.join(job_dir, "config.yaml")) # copy the config file to the run directory
+    with open(os.path.join(job_dir, "config.yaml"), "w") as f: # save the configuration
+        yaml.dump(config, f)
     shutil.copy2(args.mosaic_config, os.path.join(job_dir, "mosaic_config.yaml")) # copy the mosaic config (TODO: can we make this more general?)
 
     print(f"Job files generated in: {job_dir}")
