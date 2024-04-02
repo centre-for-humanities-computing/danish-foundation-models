@@ -27,6 +27,7 @@ def convert_file(input_path: Path, output_dir: Path):
                         "text": row["text"],
                         "added": added_time,
                         "created": created_date_str,
+                        "source": "dr_facebook",
                         "metadata": {
                             "platform": row["platform"],
                             "account": row["account"],
