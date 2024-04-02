@@ -25,6 +25,7 @@ def convert_file(input_path: Path, output_dir: Path):
                             "text": text,
                             "added": added_time,
                             "created": created_date_str,
+                            "source": "ftspeech",
                         }
                         json.dump(new_obj, outf)
                         outf.write("\n")
