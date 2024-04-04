@@ -109,7 +109,7 @@ if __name__ == "__main__":
     bos_tokens, eos_tokens = validate_tokenizer_settings(args)
 
     input_path = Path(os.path.abspath(args.input_path))
-    input_files = list(input_path.glob("*.jsonl.zst"))
+    input_files = list(input_path.glob("*.json*.*"))
 
     if not args.output_path:
         args.output_path = os.path.join(os.path.dirname(args.input_path), "mds")
@@ -119,7 +119,8 @@ if __name__ == "__main__":
             # tokenize_and_write_to_mds(input_path, output_path, args.tokenizer, bos_tokens, eos_tokens, args.concat_tokens)
             futures = []
             for input_file in input_files:
-                output_path = Path(os.path.join(args.output_path, os.path.basename(input_file).split(os.extsep)[0])) # a subdirectory per input file
+                subdir = ''.join(os.path.basename(input_file).split(os.extsep)[:-2])
+                output_path = Path(os.path.join(args.output_path, subdir)) # a subdirectory per input file
                 output_path.mkdir(parents=True, exist_ok=True)
                 futures.append(pool.submit(tokenize_and_write_to_mds, input_file, output_path, args.tokenizer, bos_tokens, eos_tokens, args.concat_tokens))
             for _ in tqdm(as_completed(futures), total=len(futures), desc="Tokenizing files"):
