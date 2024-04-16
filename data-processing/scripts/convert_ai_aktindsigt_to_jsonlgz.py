@@ -69,6 +69,7 @@ def main():
     print("Reshaping into dolma format")
     df["id"] = df.apply(lambda row:'%s_%s' % (row.name[0],row.name[1]),axis=1)
     df["sha512"] = df.apply(lambda row:'%s' % row.name[1],axis=1)
+    df["source"] = "AI-aktindsigt"
     df["added"] = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%dT%H:%M:%S.000Z")
     df["created"]: "1970-01-01T00:00:00.000Z,2024-04-01T00:00:00.000Z" # best guess creation time, between 1970 and release time
 
