@@ -50,7 +50,7 @@ def reformat_dataset(ds: Dataset) -> Dataset:
             },
         },
     )  # type: ignore
-    ds.remove_columns(["subreddit", "language", "language_confidence"])  # type: ignore
+    ds = ds.remove_columns(["subreddit", "language", "language_confidence"])  # type: ignore
 
     return ds  # type: ignore
 
