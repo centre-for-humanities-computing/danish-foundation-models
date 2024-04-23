@@ -7,7 +7,12 @@ Download  The Norwegian Colossal Corpus, convert to jsonl.gz with each document 
     "source": "...",         # MANDATORY: source of the data, such as peS2o, common-crawl, etc.
     "added": "...",          # OPTIONAL: timestamp ai2 acquired this data
     "created": "..."         # OPTIONAL: timestamp when orig document was created (best-guess if not available)
-    "metadata": {...}        # OPTIONAL: source-specific metadata
+    "metadata": {            # OPTIONAL: source-specific metadata
+        "doc_type": "...",              # OPTIONAL: see NCC/Document Types
+        "lang_fasttext": "...",         # OPTIONAL: see NCC/Languages
+        "lang_fasttext_conf": float,    # OPTIONAL: see NCC/Languages
+        "license": "..."                # OPTIONAL: see NCC/License
+        }
 }
 """
 
@@ -17,7 +22,7 @@ from functools import partial
 from datasets import load_dataset, Dataset, IterableDataset
 
 
-EXPORT_PATH = "ncc_sample.jsonl.gz"
+EXPORT_PATH = "ncc.jsonl.gz"
 date_added = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
 
@@ -42,6 +47,37 @@ def _remove_existing_jsonlgz() -> None:
         print(f"Removing existing export: {EXPORT_PATH}")
 
 
+def _convert_doctype_to_license(source: str) -> str | None:
+    """Hardcode licenses based on
+    https://huggingface.co/datasets/NbAiLab/NCC#license
+    """
+
+    source2license = {
+        "newspaper_ocr": "CC0 1.0",
+        "newspaper_pdf": "CC0 1.0",
+        "books": "CC0 1.0",
+        "newspapers_online_nb": "CC BY-NC 2.0",
+        "newspapers_online_nn": "CC BY-NC 2.0",
+        "opensubtitles": "CC BY-SA 3.0",
+        "wikipedia": "CC BY-SA 3.0",
+        "government_nb": "NLOD 2.0",
+        "government_nn": "NLOD 2.0",
+        "parliament": "NLOD 2.0",
+        "publicreports": "NLOD 2.0",
+    }
+
+    if source in source2license:
+        license = source2license[source]
+    elif source.startswith("lovdata_cd_") or source.startswith("maalfrid_"):
+        license = "NLOD 2.0"
+    elif source.startswith("wikipedia"):
+        license = "CC BY-SA 3.0"
+    else:
+        license = None
+
+    return license
+
+
 def _structure_records(obs: dict) -> dict:
     """Structure a single observation to Dolma format"""
 
@@ -60,6 +96,7 @@ def _structure_records(obs: dict) -> dict:
             "doc_type": obs["doc_type"],
             "lang_fasttext": obs["lang_fasttext"],
             "lang_fasttext_conf": obs["lang_fasttext_conf"],
+            "license": _convert_doctype_to_license(obs["doc_type"]),
         },
     }
 
