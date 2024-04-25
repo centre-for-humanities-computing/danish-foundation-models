@@ -147,12 +147,14 @@ def main():
     # Domains to filter
     domain_list = ['Danish daily newspapers', 'Common Crawl', 'Open Subtitles']
 
+    print("Start loading the dataset...")
     ds: DatasetDict = load_dataset("DDSC/partial-danish-gigaword-no-twitter")
     ds: Dataset = ds["train"]
-
+    print("Dataset loaded.")
+    print("Start reformatting the dataset...")
     # Reformat and clean the dataset
     ds = reformat_and_clean_dataset(ds, num_proc=num_proc)
-
+    print("Dataset reformatted and cleaned.")
     # Filter dataset based on domains
     ds = filter_by_domains(ds, domain_list)
 
@@ -160,8 +162,10 @@ def main():
     sample = ds[0]
     print("Sample Record:", sample)
 
+    print("Start saving the dataset...")
     # Save to jsonl.gz
     ds.to_json("data.jsonl.gz", orient="records", lines=True, compression="gzip")
+    print("Dataset saved.")
 
     # Load and test dataset
     ds_test = load_dataset("json", data_files="data.jsonl.gz", split="train")
