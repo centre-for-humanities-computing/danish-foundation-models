@@ -14,13 +14,15 @@ downloads dataset and save it as jsonl.gz file with the format:
 from datasets import Dataset, DatasetDict, load_dataset  # type: ignore
 
 
-def reformat_dataset(ds: Dataset, num_proc: int) -> Dataset:
+def reformat_and_clean_dataset(ds: Dataset, num_proc: int) -> Dataset:
     # current keys: dict_keys(['text', 'source', 'doc_id', 'LICENSE', 'uri', 'date_built'])
 
     # doc-id --> id
     ds = ds.rename_column("doc_id", "id")
     # date-built --> added
     ds = ds.rename_column("date_built", "added")
+    # source --> sub-source
+    ds = ds.rename_column("source", "sub-source")
 
     source2domain = {
         "retsinformationdk": "Legal",
@@ -51,7 +53,7 @@ def reformat_dataset(ds: Dataset, num_proc: int) -> Dataset:
 
     # add domain
     ds = ds.map(  # type: ignore
-        lambda x: {"domain": source2domain[x["source"]]},  # type: ignore
+        lambda x: {"domain": source2domain[x["sub-source"]]},  # type: ignore
         num_proc=num_proc,  # type: ignore
     )
 
@@ -83,7 +85,7 @@ def reformat_dataset(ds: Dataset, num_proc: int) -> Dataset:
     }
 
     # add created
-    ds = ds.map(lambda x: {"created": source2time[x["source"]]}, num_proc=num_proc)  # type: ignore
+    ds = ds.map(lambda x: {"created": source2time[x["sub-source"]]}, num_proc=num_proc)  # type: ignore
 
     source2longname = {
         "retsinformationdk": "retsinformation.dk (Danish legal information)",
@@ -112,38 +114,61 @@ def reformat_dataset(ds: Dataset, num_proc: int) -> Dataset:
         "twfv19": "Twitter Folketingsvalget 2019 (Danish election tweets)",  # not present in this version of the dataset
     }
 
-    # update source
-    ds = ds.map(lambda x: {"source": source2longname[x["source"]]}, num_proc=num_proc)  # type: ignore
+    # update sub-source
+    ds = ds.map(lambda x: {"sub-source": source2longname[x["sub-source"]]}, num_proc=num_proc)  # type: ignore
 
-    # move license, domain to metadata
+    # move license, domain, sub-source to metadata
     ds = ds.map(  # type: ignore
-        lambda x: {"metadata": {"license": x["LICENSE"], "domain": x["domain"]}},  # type: ignore
+        lambda x: {"metadata": {"license": x["LICENSE"], "domain": x["domain"], "sub-source": x["sub-source"]}},  # type: ignore
         num_proc=num_proc,
     )
-    ds = ds.remove_columns(["LICENSE", "domain", "uri"])
+    ds = ds.remove_columns(["LICENSE", "domain", "uri", "sub-source"])
+
+    # add a fixed source: dagw
+    ds = ds.map(lambda x: {**x, "source": "dagw"})
+
+    # filter out documents with empty "text" entries:
+    # either empty or totally while space
+    # 162051 out of 673211 empty docs found in total if skipping this step
+    ds = ds.filter(lambda x: x['text'] != '' and not x['text'].isspace(), num_proc=num_proc)
+
     return ds
 
+def filter_by_domains(ds: Dataset, domain_list: list) -> Dataset:
+    """
+    Filters the dataset to exclude records where the 'metadata' field's 'domain'
+    matches one of the domains specified in 'domain_list'.
+    """
+    # Filter dataset based on the domain list
+    return ds.filter(lambda x: x['metadata']['domain'] not in domain_list)
 
 def main():
-    num_proc = 2
-    ds: DatasetDict = load_dataset("DDSC/partial-danish-gigaword-no-twitter")  # type: ignore
-    ds: Dataset = ds["train"]  # type: ignore
+    num_proc = 32
+    # Domains to filter
+    domain_list = ['Danish daily newspapers', 'Common Crawl', 'Open Subtitles']
 
-    # reformat
-    ds = reformat_dataset(ds, num_proc=num_proc)
+    ds: DatasetDict = load_dataset("DDSC/partial-danish-gigaword-no-twitter")
+    ds: Dataset = ds["train"]
 
-    # save to jsonl.gz
-    ds.to_json("data.jsonl.gz", orient="records", lines=True, compression="gzip")  # type: ignore
+    # Reformat and clean the dataset
+    ds = reformat_and_clean_dataset(ds, num_proc=num_proc)
 
+    # Filter dataset based on domains
+    ds = filter_by_domains(ds, domain_list)
+
+    # Print out a sample
+    sample = ds[0]
+    print("Sample Record:", sample)
+
+    # Save to jsonl.gz
+    ds.to_json("data.jsonl.gz", orient="records", lines=True, compression="gzip")
+
+    # Load and test dataset
+    ds_test = load_dataset("json", data_files="data.jsonl.gz", split="train")
+    assert isinstance(ds_test[0], dict)
+    ds_stream = load_dataset("json", data_files="data.jsonl.gz", split="train", streaming=True)
+    example = next(iter(ds_stream))
+    assert isinstance(example, dict)
 
 if __name__ == "__main__":
     main()
-
-    # # test that it load back in
-    ds = load_dataset("json", data_files="data.jsonl.gz", split="train")
-    assert isinstance(ds[0], dict)  # type: ignore
-
-    # test that it can be streamed
-    ds = load_dataset("json", data_files="data.jsonl.gz", split="train", streaming=True)
-    example = next(iter(ds))  # type: ignore
-    assert isinstance(example, dict)
