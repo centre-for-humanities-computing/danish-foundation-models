@@ -9,6 +9,15 @@ from tqdm import tqdm
 import os
 import time
 import aioboto3
+from botocore.config import Config
+
+boto_config = Config(
+   retries = {
+      'max_attempts': 10,
+      'mode': 'standard'
+   }
+)
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--out_root", type=str, default="/mnt/usb/Common_Crawl_DK")
@@ -74,7 +83,7 @@ async def fetch_and_save(client, row):
 
 async def main():
     session = aioboto3.Session()
-    async with session.client('s3') as client:
+    async with session.client('s3', config=boto_config) as client:
         pbar = tqdm(total=num_rows)
         while batch := result.fetchmany(1000): # process in batches for the sake of memory
             if failed:
