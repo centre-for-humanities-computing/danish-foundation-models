@@ -30,6 +30,7 @@ dependencies = [
   "tqdm",
   "zstandard",
   "nlp_dedup",
+  "datatrove",
 ]
 
 [project.optional-dependencies]
