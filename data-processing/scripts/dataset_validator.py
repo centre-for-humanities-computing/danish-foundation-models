@@ -203,11 +203,15 @@ def check_schema(dataset_path: Path) -> str:
     if not document_files:
         msg += f"Folder 'documents' does not contain any document files in dataset {dataset_path.name}\n"
 
+    n_errors = 3 # only print up to 3 errors
     for document_file in document_files:
         try:
             check_first_entry(document_file)
         except Exception as e:
+            n_errors -= 1
             msg += f"Error in document file {document_file.name}: {e}\n"
+        if n_errors < 1:
+            break
 
     return msg
 
@@ -222,9 +226,11 @@ def check_datasets(dataset_folder: str, datasheets_folder: str):
 
     failed_datasets: list[str] = []
 
-    for dataset_path in tqdm(datasets):
+    pbar = tqdm(datasets)
+
+    for dataset_path in pbar:
         # update progress bar description
-        tqdm.set_description(f"Checking dataset: {dataset_path.name}")  # type: ignore
+        pbar.set_description(f"Checking dataset: {dataset_path.name}")  # type: ignore
 
         msg = check_datasheet(dataset_path, datasheets_path)
         msg += check_folder_structure(dataset_path)
