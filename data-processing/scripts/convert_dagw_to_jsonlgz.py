@@ -13,6 +13,7 @@ downloads dataset and save it as jsonl.gz file with the format:
 
 from datasets import Dataset, DatasetDict, load_dataset  # type: ignore
 from typing import Generator
+import os
 
 
 def reformat_and_clean_dataset(ds: Dataset, num_proc: int) -> Dataset:
@@ -150,7 +151,7 @@ def split_by_source(ds: Dataset, num_proc: int) -> Generator[tuple[str, Dataset]
     """
     sources = ds.unique("source")
     for source in sources:
-        yield source, ds.filter(lambda x: x["source"] != source, num_proc=num_proc)
+        yield source, ds.filter(lambda x: x["source"] == source, num_proc=num_proc)
 
 def main():
     num_proc = 32
@@ -173,14 +174,19 @@ def main():
     print("Sample Record:", sample)
 
     print("Start saving the dataset...")
-    for source, ds in split_by_source(ds, num_proc=num_proc):
-        # Save to jsonl.gz
-        ds.to_json(f"{source}.jsonl.gz", orient="records", lines=True, compression="gzip")
 
+    directory_path = "/work/dfm-data/pre-training/dagw/documents"
+    # Create the directory if it does not exist
+    if not os.path.exists(directory_path):
+        os.makedirs(directory_path)
+    for source, ds in split_by_source(ds, num_proc=num_proc):
+        file_path = os.path.join(directory_path, f"{source}.jsonl.gz")
+        # Save to jsonl.gz
+        ds.to_json(file_path, orient="records", lines=True, compression="gzip")
         # Load and test dataset
-        ds_test = load_dataset("json", data_files=f"{source}.jsonl.gz", split="train")
+        ds_test = load_dataset("json", data_files=file_path, split="train")
         assert isinstance(ds_test[0], dict)
-        ds_stream = load_dataset("json", data_files=f"{source}.jsonl.gz", split="train", streaming=True)
+        ds_stream = load_dataset("json", data_files=file_path, split="train", streaming=True)
         example = next(iter(ds_stream))
         assert isinstance(example, dict)
     print("Dataset saved.")
