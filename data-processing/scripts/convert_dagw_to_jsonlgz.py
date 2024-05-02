@@ -137,13 +137,13 @@ def reformat_and_clean_dataset(ds: Dataset, num_proc: int) -> Dataset:
 
     return ds
 
-def filter_by_domains(ds: Dataset, domain_list: list) -> Dataset:
+def filter_by_source_pretty(ds: Dataset, source_pretty_list: list, num_proc: int) -> Dataset:
     """
     Filters the dataset to exclude records where the 'metadata' field's 'domain'
     matches one of the domains specified in 'domain_list'.
     """
     # Filter dataset based on the domain list
-    return ds.filter(lambda x: x['metadata']['domain'] not in domain_list)
+    return ds.filter(lambda x: x['metadata']['source-pretty'] not in source_pretty_list, num_proc=num_proc)
 
 def split_by_source(ds: Dataset, num_proc: int) -> Generator[tuple[str, Dataset], None, None]:
     """
@@ -153,10 +153,152 @@ def split_by_source(ds: Dataset, num_proc: int) -> Generator[tuple[str, Dataset]
     for source in sources:
         yield source, ds.filter(lambda x: x["source"] == source, num_proc=num_proc)
 
+def determine_size_category(num_records):
+    if num_records < 10_000:
+        return "1-10k"
+    elif num_records < 100_000:
+        return "10k-100k"
+    elif num_records < 1_000_000:
+        return "100k-1M"
+    elif num_records < 10_000_000:
+        return "1M-10M"
+    elif num_records < 100_000_000:
+        return "10M-100M"
+    else:
+        return "100M+"
+
+def make_markdown(ds: Dataset, directory: str) -> None:
+    source2licenseIdentifier = {
+    "dagw-jvj": "cc-by-sa-4.0",
+    "dagw-ft": "cc0-1.0",
+    "dagw-retsinformationdk": "other",
+    "dagw-retspraksis": "cc0-1.0",
+    "dagw-adl": "cc0-1.0",
+    "dagw-naat": "cc0-1.0",
+    "dagw-relig": "cc0-1.0",
+    "dagw-depbank": "cc-by-sa-4.0",
+    "dagw-skat": "cc0-1.0",
+    "dagw-hest": "cc0-1.0",
+    "dagw-gutenberg": "Gutenberg License",
+    "dagw-tv2r": "cc-by-sa-4.0",
+    "dagw-wikibooks": "cc0-1.0",
+    "dagw-ep": "cc0-1.0",
+    "dagw-spont": "cc0-1.0",
+    "dagw-wiki": "cc0-1.0",
+    "dagw-botxt": "cc0-1.0",
+    "dagw-synne": "cc0-1.0",
+    "dagw-dannet": "DanNet 1.0 License",
+    "dagw-wikisource": "cc0-1.0"
+    }
+    source2LicenseName = {
+    "dagw-jvj": "Creative Commons Attribution Share Alike 4.0",
+    "dagw-ft": "Creative Commons Zero v1.0 Universal",
+    "dagw-retsinformationdk": "Danish Copyright Law",
+    "dagw-retspraksis": "Creative Commons Zero v1.0 Universal",
+    "dagw-adl": "Creative Commons Zero v1.0 Universal",
+    "dagw-naat": "Creative Commons Zero v1.0 Universal",
+    "dagw-relig": "Creative Commons Zero v1.0 Universal",
+    "dagw-depbank": "Creative Commons Attribution Share Alike 4.0",
+    "dagw-skat": "Creative Commons Zero v1.0 Universal",
+    "dagw-hest": "Creative Commons Zero v1.0 Universal",
+    "dagw-gutenberg": "Gutenberg License",
+    "dagw-tv2r": "Creative Commons Attribution Share Alike 4.0",
+    "dagw-wikibooks": "Creative Commons Zero v1.0 Universal",
+    "dagw-ep": "Creative Commons Zero v1.0 Universal",
+    "dagw-spont": "Creative Commons Zero v1.0 Universal",
+    "dagw-wiki": "Creative Commons Zero v1.0 Universal",
+    "dagw-botxt": "Creative Commons Zero v1.0 Universal",
+    "dagw-synne": "Creative Commons Zero v1.0 Universal",
+    "dagw-dannet": "DanNet 1.0 License",
+    "dagw-wikisource": "Creative Commons Zero v1.0 Universal"
+    }
+    num_records = ds.num_rows
+    num_records_category = determine_size_category(num_records)
+    sample = ds[0]
+    text = sample["text"][:50].replace("'", "\\'")  # Escaping single quotes in the YAML-like example
+    source = sample["source"]
+    id = sample["id"]
+    added = sample["added"]
+    created = sample["created"]
+    domain = sample["metadata"]["domain"]
+    license = sample["metadata"]["license"]
+    licenseIdentifier = source2licenseIdentifier[source]
+    licenseName = source2LicenseName[source]
+    source_pretty = sample["metadata"]["source-pretty"]
+    templete = """---
+pretty_name: {source_pretty}
+language:
+  - da
+license: {licenseIdentifier}
+license_name: {licenseName}
+size_categories:
+  - {num_records_category}
+task_categories:
+  - text-generation
+  - fill-mask
+task_ids:
+  - language-modeling
+---
+# Dataset Card for {source_pretty}
+## Dataset Description
+- **Number of records:** {num_records}
+- **Languages:** Danish
+## Dataset Sturcture
+An example from the dataset looks as follows.
+```yaml
+{{
+    'text': '{text}',
+    'source': '{source}',
+    'id': '{id}',
+    'added': '{added}',
+    'created': '{created}',
+    'metadata': {{
+        'domain': '{domain}',
+        'license': '{license}',
+        'source-pretty': '{source_pretty}'
+        }}
+}}
+```
+
+## Data Fields
+
+- **id**: source-specific identifier.
+- **text**: textual content of the document.
+- **source**: source of the data.
+- **added**: timestamp ai2 acquired this data.
+- **created**": timestamp when original document was created (best-guess if not available)
+- **metadata**: source-specific metadata.
+
+## Lisence Information
+<details>
+<summary>{licenseName}</summary>
+<p>
+{license}
+</p>
+</details>
+"""
+    filled_template = templete.format(
+        source_pretty=source_pretty,
+        licenseIdentifier=licenseIdentifier,
+        licenseName=licenseName,
+        num_records=num_records,
+        num_records_category=num_records_category,
+        text=text,
+        source=source,
+        id=id,
+        added=added,
+        created=created,
+        domain=domain,
+        license=license,
+    )
+    file_path = os.path.join(directory, f"{source}.md")
+    with open(file_path, 'w') as md_file:
+        md_file.write(filled_template)
+
 def main():
     num_proc = 32
     # Domains to filter
-    domain_list = ['Danish daily newspapers', 'Common Crawl', 'Open Subtitles']
+    source_pretty_list = ['Danish daily newspapers', 'Common Crawl', 'Open Subtitles']
 
     print("Start loading the dataset...")
     ds: DatasetDict = load_dataset("DDSC/partial-danish-gigaword-no-twitter")
@@ -167,7 +309,7 @@ def main():
     ds = reformat_and_clean_dataset(ds, num_proc=num_proc)
     print("Dataset reformatted and cleaned.")
     # Filter dataset based on domains
-    ds = filter_by_domains(ds, domain_list)
+    ds = filter_by_source_pretty(ds, source_pretty_list, num_proc=num_proc)
 
     # Print out a sample
     sample = ds[0]
@@ -175,12 +317,15 @@ def main():
 
     print("Start saving the dataset...")
 
-    directory_path = "/work/dfm-data/pre-training/dagw/documents"
+    save_directory_path = "/work/dfm-data/pre-training/dagw/documents"
+    datasheet_path = "/work/github/danish-foundation-models/docs/datasheets"
     # Create the directory if it does not exist
-    if not os.path.exists(directory_path):
-        os.makedirs(directory_path)
+    if not os.path.exists(save_directory_path):
+        os.makedirs(save_directory_path)
     for source, ds in split_by_source(ds, num_proc=num_proc):
-        file_path = os.path.join(directory_path, f"{source}.jsonl.gz")
+        # Make markdown
+        make_markdown(ds, datasheet_path)
+        file_path = os.path.join(save_directory_path, f"{source}.jsonl.gz")
         # Save to jsonl.gz
         ds.to_json(file_path, orient="records", lines=True, compression="gzip")
         # Load and test dataset

@@ -40,7 +40,7 @@ configs:
 ```
 
 # Augmented DAGW
-This is a quick introduction and summarition of an augmented Danish Gigaword Dataset. Here we will describe the different components and how we did the simple cleaning.
+This is a quick introduction and summarization of an augmented Danish Gigaword Dataset. Here we will describe the different components and how we did the simple cleaning.
 
 ## Components
 Currently, the augmented DAGW consists of four components, each a smaller dataset on its own:
