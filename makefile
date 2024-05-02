@@ -1,33 +1,19 @@
-install:
-	@echo "Installing package and required dependencies"
-	pip install -e .[dev,test,docs]
+validate-datasets:
+	@echo "Validate that all datasets are correctly formatted"
+	@echo "Note that this command assumed you have the 'dfm-data' folder and the github repo folder 'danish-foundation-models' during UCloud setup"
+	python data-processing/scripts/dataset_validator.py --dataset_folder /work/dfm-data/pre-training --datasheets_folder /work/danish-foundation-models/docs/datasheets
 
-test:
-	@echo "Running tests"
-	pytest src
+data-processing-install:
+	@echo "Installing package and required dependencies"
+	pip install -e "data-processing/.[dev,test,docs]"
 
 lint: 
 	@echo "Linting code"
 	ruff check src --fix
 	black .
 
-type-check:
-	@echo "Type-checking code-base"
-	pyright src
-
-validate:
-	@echo "Running all checks"
-	make lint
-	make type-check
-	make test
-
-pr: 
-	@echo "Running relevant checks before PR"
-	make validate
-	gh pr create -w
-
 docs-serve:
 	@echo "Serving documentation"
 	@echo "Make sure you have installed docs:"
-	@echo "pip install -e .[docs]"
+	@echo "pip install -r docs/requirements.txt"
 	mkdocs serve
