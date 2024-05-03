@@ -168,7 +168,7 @@ def check_datasheet(dataset_path: Path, datasheets_path: Path) -> str:
         return msg
 
     # check if datasheet contains required fields
-    required_fields = ["license", "languages"]
+    required_fields = ["license", "language"]
     missing_fields = [field for field in required_fields if field not in frontmatter]
     if missing_fields:
         msg += f"Datasheet {datasheet_path.name} is missing the following fields: {missing_fields}\n"
