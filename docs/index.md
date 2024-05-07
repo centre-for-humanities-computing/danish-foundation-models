@@ -86,7 +86,7 @@ From [the Alexandra Institute](https://alexandra.dk/):
   - Rasmus Larsen ([rasmus.larsen@alexandra.dk](rasmus.larsen@alexandra.dk))
   - Dan Saattrup Nielsen ([dan.nielsen@alexandra.dk](dan.nielsen@alexandra.dk))
 
-From [the Center for AI Science and Applicaitons at the University of Southern Denmark](https://sdu.dk/casa):
+From [the Center for AI Science and Applications at the University of Southern Denmark](https://sdu.dk/casa):
 
   - Peter Schneider-Kamp ([petersk@imada.sdu.dk](petersk@imada.sdu.dk))
 
@@ -95,6 +95,9 @@ From [Alvenir](https://www.alvenir.ai/):
   - Martin Carsten Nielsen ([martin@alvenir.ai](martin@alvenir.ai))
   - Søren Vejlgaard Holm ([swh@alvenir.ai](swh@alvenir.ai))
 
+From [the Department of Computer Science at the University of Copenhagen](https://di.ku.dk/):
+
+  - Desmond Elliott
 
 ## Join Us
 
