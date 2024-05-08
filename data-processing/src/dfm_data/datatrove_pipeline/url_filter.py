@@ -307,9 +307,9 @@ class DolmaDomainFilter(BaseFilter):
             raise UrlNotParsedError(f"Invalid line: {ln}")
 
     def download_data(self) -> None:
-        import dolma.core.paths
         if self._downloaded:
             return
+        import dolma.core.paths
         download_dir = cached_assets_path(library_name="dfm_data", namespace="datatrove_pipeline", subfolder="dolma_domain_filter")
 
         for path in self.blocklist_paths:
@@ -336,13 +336,23 @@ class DolmaDomainFilter(BaseFilter):
         assert len(self.blocklist) > 0, f"Blocklist is empty for {self.__class__.__name__} tagger"
 
         self._downloaded = True
+        logger.info(f"Total number of blocked domains {len(self.blocklist)}")
 
     def clean_url_base(self, url: Optional[str]) -> Generator[str, None, None]:
         """Remove query parameters and protocol from a URL."""
         if url is None or not url.strip():
             return
+        # remove non-printable characters
+        if not url.isprintable():
+            url = "".join(c for c in url if c.isprintable())
 
-        parsed = self.parse_url(url)
+        try:
+            parsed = self.parse_url(url)
+        except Exception as e:
+            message = f"Failed to parse url: {url}"
+            logger.info(message)
+            return
+
         yield f"{parsed.host}{(f':{parsed.port}') if parsed.port else ''}{parsed.path or ''}".rstrip("/").lower()
 
     def clean_url_domain(self, url: Optional[str]) -> Generator[str, None, None]:
