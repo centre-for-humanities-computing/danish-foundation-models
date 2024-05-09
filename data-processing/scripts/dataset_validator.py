@@ -40,10 +40,10 @@ An entry in the dataset should adhere to the Document schema (defined below).
     "text": "foo",                    # MANDATORY: textual content of the document
     "source": "...",                  # MANDATORY: source of the data, such as peS2o, common-crawl, etc.
     "added": "...",                   # MANDATORY: timestamp we acquired this data (time file was created), specified as
-                                        # YYYY-MM-DDTHH:MM:SS.TIMEZONE e.g 2021-04-13T12:52:46.000Z
+                                        # YYYY-MM-DD e.g 2021-04-13
     "created": "..."                  # MANDATORY: timestamp when orig document was created (best-guess if not available),
                                          # should be specified as a range;
-                                         # "YYYY-MM-DDTHH:MM:SS.TIMEZONE, YYYY-MM-DDTHH:MM:SS.TIMEZONE"
+                                         # "YYYY-MM-DD, YYYY-MM-DD"
     "metadata": {                     # OPTIONAL: source-specific metadata
          ...
      }
@@ -67,7 +67,7 @@ logger = logging.getLogger(__name__)
 
 
 class Document(BaseModel):
-    id: str
+    id: str  # noqa
     text: str
     source: str
     added: str
@@ -76,14 +76,14 @@ class Document(BaseModel):
 
     @field_validator("added")
     @classmethod
-    def check_timestamp_format(cls, v: str):
+    def check_timestamp_format(cls, v: str):  # noqa
         if not v:
             raise ValueError("Timestamp 'added' is required.")
         try:
             datetime.strptime(v, "%Y-%m-%dT%H:%M:%S.%fZ")
         except ValueError:
             raise ValueError(
-                "Timestamp 'added' should be in the format 'YYYY-MM-DDTHH:MM:SS.TIMEZONE'.",
+                "Timestamp 'added' should be in the format 'YYYY-MM-DD'.",
             )
 
     @field_validator("created")
@@ -93,15 +93,16 @@ class Document(BaseModel):
             raise ValueError("Timestamp 'created' is required.")
         try:
             start, end = v.split(", ")
-            start_date = datetime.strptime(start, "%Y-%m-%dT%H:%M:%S.%fZ")
-            end_date = datetime.strptime(end, "%Y-%m-%dT%H:%M:%S.%fZ")
+            start_date = datetime.strptime(start, "%Y-%m-%d")
+            end_date = datetime.strptime(end, "%Y-%m-%d")
             if start_date > end_date:
                 raise ValueError(
                     "Timestamp 'created' should be in the format 'YYYY-MM-DDTHH:MM:SS.TIMEZONE, YYYY-MM-DDTHH:MM:SS.TIMEZONE'.",
                 )
-        except ValueError:
+        except ValueError as e:
             raise ValueError(
-                "Timestamp 'created' should be in the format 'YYYY-MM-DDTHH:MM:SS.TIMEZONE, YYYY-MM-DDTHH:MM:SS.TIMEZONE'.",
+                "Timestamp 'created' should be in the format 'YYYY-MM-DDTHH:MM:SS.TIMEZONE, YYYY-MM-DDTHH:MM:SS.TIMEZONE'. Got additional error:\n"
+                + str(e),
             )
 
 
@@ -173,6 +174,12 @@ def check_datasheet(dataset_path: Path, datasheets_path: Path) -> str:
     if missing_fields:
         msg += f"Datasheet {datasheet_path.name} is missing the following fields: {missing_fields}\n"
 
+    # check license == "other"
+    if frontmatter.get("license") == "other":
+        # license name should be specified
+        if not frontmatter.get("license_name"):
+            msg += f"Datasheet {datasheet_path.name} has license 'other' but is missing 'license_name' field\n"
+
     return msg
 
 
@@ -203,7 +210,7 @@ def check_schema(dataset_path: Path) -> str:
     if not document_files:
         msg += f"Folder 'documents' does not contain any document files in dataset {dataset_path.name}\n"
 
-    n_errors = 3 # only print up to 3 errors
+    n_errors = 3  # only print up to 3 errors
     for document_file in document_files:
         try:
             check_first_entry(document_file)
