@@ -30,6 +30,7 @@ dependencies = [
   "tqdm",
   "zstandard",
   "nlp_dedup",
+  "pyyaml",
 ]
 
 [project.optional-dependencies]
