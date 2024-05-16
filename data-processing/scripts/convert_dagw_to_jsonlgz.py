@@ -307,7 +307,7 @@ def make_markdown(ds: Dataset, directory: str) -> None:
     num_records = ds.num_rows
     num_records_category = determine_size_category(num_records)
     sample = ds[0]
-    text = sample["text"][:50].replace("'", "\\'")  # Escaping single quotes in the YAML-like example
+    text = sample["text"].strip()[:50].replace("'", "\\'")  # Escaping single quotes in the YAML-like example and strip leading/trailing whitespace
     source = sample["source"]
     id = sample["id"]
     added = sample["added"]
