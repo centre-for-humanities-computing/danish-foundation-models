@@ -20,7 +20,7 @@ def format_created_range(created_date, delay_days=365):
     """Create a formatted string representing a time range starting from `publish_date`."""
     start_date = datetime.strptime(created_date, "%Y-%m-%dT%H:%M:%S.000Z")
     end_date = start_date + timedelta(days=delay_days)
-    return f"{start_date.strftime('%Y-%m-%dT%H:%M:%S.000Z')}, {end_date.strftime('%Y-%m-%dT%H:%M:%S.000Z')}"
+    return f"{start_date.strftime('%Y-%m-%d')}, {end_date.strftime('%Y-%m-%d')}"
 
 def parquet_to_jsonlgz(input_path, output_path):
     """Convert .parquet to newline-delimited json.gz."""
@@ -30,13 +30,14 @@ def parquet_to_jsonlgz(input_path, output_path):
             transformed = {
                 "id": f'nordjylland-news{idx}',
                 "text": row.get("text", ""),
-                "source": "TV2 Nord",
-                "added": datetime.now().strftime('%Y-%m-%dT%H:%M:%S.000Z'),
+                "source": "nordjylland_news",
+                "added": datetime.now().strftime('%Y-%m-%d'),
                 "created": format_created_range(datetime.now().strftime('%Y-%m-%dT%H:%M:%S.000Z')),
                 "metadata": {
                     "summary": row.get("summary", ""),
                     "text_len": row.get("text_len", ""),
                     "summary_len": row.get("summary_len", "")
+                    "sub-source": "TV2 Nord"
                 }
             }
             json_str = json.dumps(transformed)
@@ -44,7 +45,7 @@ def parquet_to_jsonlgz(input_path, output_path):
 
 def main():
     parquet_path = "/work/github/nordjylland-news-summarization/data/train-00000-of-00001-4fb110c0f6314175.parquet"
-    converted_path = "/work/github/nordjylland-news-summarization/data/converted_train.jsonl.gz"
+    converted_path = "/work/dfm-data/pre-training/nordjylland_news/documents/nordjylland_news.jsonl.gz"
 
     parquet_to_jsonlgz(parquet_path, converted_path)
 
