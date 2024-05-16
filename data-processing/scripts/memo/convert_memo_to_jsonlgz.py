@@ -8,8 +8,8 @@ import os
 from tqdm import tqdm
 import datetime
 import uuid
-import nltk
-from nltk.tokenize import word_tokenize
+import nltk # type: ignore
+from nltk.tokenize import word_tokenize # type: ignore
 
 # Ensure nltk punkt tokenizer models are downloaded
 nltk.download('punkt', quiet=True)
@@ -33,9 +33,9 @@ def default_converter(o):
 
 def format_created_range(year):
     """Creates a date range string for the document's creation time."""
-    start_date = f"{year}-01-01T00:00:00.000Z"
+    start_date = f"{year}-01-01"
     end_year = int(year) + 100
-    end_date = f"{end_year}-01-01T00:00:00.000Z"
+    end_date = f"{end_year}-01-01"
     return f"{start_date}, {end_date}"
 
 def convert_txt_and_metadata(metadata_path, txt_folder_path, output_path):
@@ -59,12 +59,12 @@ def convert_txt_and_metadata(metadata_path, txt_folder_path, output_path):
                     
                     file_id = str(row.get('file_id')) if pd.notna(row.get('file_id')) else str(uuid.uuid4())
                     metadata = {key: value for key, value in row.to_dict().items() if key not in ['file_id', 'source']}
-                    
+                    metadata["sub-source"] = source_value # Moving original source to metadata
                     document = {
                         "id": file_id,
                         "text": text,
-                        "source": source_value,
-                        "added": datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S.000Z'),
+                        "source": "memo", # Fixed source value
+                        "added": datetime.datetime.now().strftime('%Y-%m-%d'),
                         "created": format_created_range(row.get('year', '1870')),
                         "metadata": clean_nested_dict(metadata)
                     }

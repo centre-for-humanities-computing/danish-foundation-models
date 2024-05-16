@@ -60,8 +60,8 @@ from pathlib import Path
 from typing import Any
 
 import yaml
-from pydantic import BaseModel, field_validator
-from tqdm import tqdm
+from pydantic import BaseModel, field_validator # type: ignore
+from tqdm import tqdm  # type: ignore
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +80,8 @@ class Document(BaseModel):
         if not v:
             raise ValueError("Timestamp 'added' is required.")
         try:
-            datetime.strptime(v, "%Y-%m-%dT%H:%M:%S.%fZ")
+            # datetime.strptime(v, "%Y-%m-%dT%H:%M:%S.%fZ")
+            datetime.strptime(v, "%Y-%m-%d")
         except ValueError:
             raise ValueError(
                 "Timestamp 'added' should be in the format 'YYYY-MM-DD'.",
@@ -97,11 +98,13 @@ class Document(BaseModel):
             end_date = datetime.strptime(end, "%Y-%m-%d")
             if start_date > end_date:
                 raise ValueError(
-                    "Timestamp 'created' should be in the format 'YYYY-MM-DDTHH:MM:SS.TIMEZONE, YYYY-MM-DDTHH:MM:SS.TIMEZONE'.",
+                    #"Timestamp 'created' should be in the format 'YYYY-MM-DDTHH:MM:SS.TIMEZONE, YYYY-MM-DDTHH:MM:SS.TIMEZONE'.",
+                    "Timestamp 'created' should be in the format 'YYYY-MM-DD, YYYY-MM-DD'.",
                 )
         except ValueError as e:
             raise ValueError(
-                "Timestamp 'created' should be in the format 'YYYY-MM-DDTHH:MM:SS.TIMEZONE, YYYY-MM-DDTHH:MM:SS.TIMEZONE'. Got additional error:\n"
+                # "Timestamp 'created' should be in the format 'YYYY-MM-DDTHH:MM:SS.TIMEZONE, YYYY-MM-DDTHH:MM:SS.TIMEZONE'. Got additional error:\n"
+                "Timestamp 'created' should be in the format 'YYYY-MM-DD, YYYY-MM-DD'. Got additional error:\n"
                 + str(e),
             )
 

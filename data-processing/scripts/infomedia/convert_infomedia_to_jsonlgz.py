@@ -12,7 +12,7 @@ ndjson -> jsonl.gz:
     "metadata": {            # OPTIONAL: source-specific metadata
 										"sub-source": "...", # OPTIONAL: E.g. "newspaper_ocr"
 										...
-								}        
+								}
 }
 '''
 
@@ -30,7 +30,7 @@ def format_created_range(publish_date, delay_days=365):
     """Create a formatted string representing a time range starting from `publish_date`."""
     start_date = datetime.strptime(publish_date, "%Y-%m-%dT%H:%M:%SZ")
     end_date = start_date + timedelta(days=delay_days)
-    return f"{start_date.strftime('%Y-%m-%dT%H:%M:%SZ')}, {end_date.strftime('%Y-%m-%dT%H:%M:%SZ')}"
+    return f"{start_date.strftime('%Y-%m-%d')}, {end_date.strftime('%Y-%m-%d')}"
 
 def remove_html_tags(text: str) -> str:
     """Remove HTML tags from a string."""
@@ -55,7 +55,7 @@ def process_file(filepath):
             with open(filepath, 'r', encoding='utf-8') as file, open(temp_filename, 'w', encoding='utf-8') as temp_file:
                 for line in file:
                     original = json.loads(line)
-                    added = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.000Z')
+                    added = datetime.now().strftime('%Y-%m-%d')
                     # Extract the fields
                     heading = original.get("Heading", "")
                     sub_heading = original.get("SubHeading", "")
@@ -79,13 +79,20 @@ def process_file(filepath):
                     text = remove_whitespace(text)
                     
                     transformed = {
-                        "id": original.get("ArticleId", ""),
-                        "text": text,
-                        "source": original.get("Source", ""),
-                        "added": added,
-                        "created": format_created_range(original.get("PublishDate", "2000-01-01T00:00:00Z")),
-                        "metadata": {key: value for key, value in original.items() if key not in ["ArticleId", "BodyText", "Source", "PublishDate", "Heading", "SubHeading", "Lead", "Paragraph"]}
-                    }
+                            "id": original.get("ArticleId", ""),
+                            "text": text,
+                            "source": "danew2.0",  # Fixed source value
+                            "added": added,
+                            "created": format_created_range(original.get("PublishDate", "2000-01-01T00:00:00Z")),
+                            "metadata": {
+                                "sub-source": original.get("Source", ""),  # Moving original source to metadata
+                            }
+                        }
+                        
+                        # Add remaining metadata fields excluding specific ones already extracted
+                    for key, value in original.items():
+                        if key not in ["ArticleId", "BodyText", "Source", "PublishDate", "Heading", "SubHeading", "Lead", "Paragraph"]:
+                            transformed["metadata"][key] = value
                     json.dump(transformed, temp_file)
                     # Line break
                     temp_file.write('\n')

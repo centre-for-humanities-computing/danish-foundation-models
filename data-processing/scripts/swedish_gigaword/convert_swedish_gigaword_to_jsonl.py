@@ -72,15 +72,15 @@ def process_file(bz2_file_path):
                 year = elem.get('year')
                 datefrom_raw = elem.get('datefrom') if elem.get('datefrom') else f"{year}0101"
                 dateto_raw = elem.get('dateto') if elem.get('dateto') else f"{year}1231"
-                datefrom = datetime.strptime(datefrom_raw, "%Y%m%d").strftime("%Y-%m-%dT%H:%M:%S.000Z")
-                dateto = datetime.strptime(dateto_raw, "%Y%m%d").strftime("%Y-%m-%dT%H:%M:%S.000Z")
+                datefrom = datetime.strptime(datefrom_raw, "%Y%m%d").strftime("%Y-%m-%d")
+                dateto = datetime.strptime(dateto_raw, "%Y%m%d").strftime("%Y-%m-%d")
                 created_range = f"{datefrom}, {dateto}"
-                added_timestamp = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
+                added_timestamp = datetime.now().strftime("%Y-%m-%d")
 
                 json_obj = {
                     "id": corpus_id,
                     "text": document_text,
-                    "source": "Swedish gigaword",
+                    "source": "swedish_gigaword",
                     "added": added_timestamp,
                     "created": created_range,
                     "metadata": {
