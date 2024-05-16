@@ -82,7 +82,7 @@ def convert_txt_and_metadata(metadata_path, txt_folder_path, output_path):
 def main():
     metadata_path =  '/work/github/Corpus-v1.1/MeMo-corpus-metadata-v1.1-2023-06-20.csv'
     txt_folder_path = '/work/github/Corpus-v1.1/normalized'
-    output_path = '/work/dfm-data/pre-training/memo/normalized_memo.jsonl.gz'
+    output_path = '/work/dfm-data/pre-training/memo/documents/memo.jsonl.gz'
     convert_txt_and_metadata(metadata_path, txt_folder_path, output_path)
 
 if __name__ == "__main__":
