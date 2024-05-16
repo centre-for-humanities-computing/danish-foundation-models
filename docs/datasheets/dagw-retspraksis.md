@@ -20,12 +20,12 @@ task_ids:
 An example from the dataset looks as follows.
 ```yaml
 {
-    'text': '                             højesterets dom
-     ',
+    'text': 'højesterets dom
+                        afsagt tor',
     'source': 'dagw-retspraksis',
     'id': 'retspraksis_517',
-    'added': 'Thu Sep 24 10:23:28 2020 CEST +0200',
-    'created': '2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z',
+    'added': '2020-09-24',
+    'created': '2000-01-01, 2022-01-01',
     'metadata': {
         'domain': 'Legal',
         'license': 'Creative Commons Legal Code

@@ -24,8 +24,8 @@ An example from the dataset looks as follows.
 Spillet er lavet af Blizzard Entertainme',
     'source': 'dagw-wikibooks',
     'id': 'wikibooks_1125',
-    'added': 'Sun Mar 28 09:48:55 2021 CEST +0200',
-    'created': '2019-01-01T00:00:00.000Z, 2021-01-01T00:00:00.000Z',
+    'added': '2021-03-28',
+    'created': '2019-01-01, 2021-01-01',
     'metadata': {
         'domain': 'Wiki & Books',
         'license': 'Creative Commons Legal Code

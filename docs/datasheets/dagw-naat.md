@@ -23,8 +23,8 @@ An example from the dataset looks as follows.
     'text': 'Naar jeg i aften sender min nytaarshilsen til det ',
     'source': 'dagw-naat',
     'id': 'naat_1958kongfrederikix',
-    'added': 'Tue Feb 11 14:42:12 2020 CET +0100',
-    'created': '1930-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z',
+    'added': '2020-02-11',
+    'created': '1930-01-01, 2022-01-01',
     'metadata': {
         'domain': 'Conversation',
         'license': 'Creative Commons Legal Code

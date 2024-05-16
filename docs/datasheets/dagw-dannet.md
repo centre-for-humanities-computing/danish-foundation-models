@@ -23,8 +23,8 @@ An example from the dataset looks as follows.
     'text': 'Når fodboldholdet fra 1. division i Ikast spiller ',
     'source': 'dagw-dannet',
     'id': 'dannet_46506',
-    'added': 'Thu Sep 24 20:08:09 2020 +0000',
-    'created': '2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z',
+    'added': '2020-09-24',
+    'created': '2000-01-01, 2022-01-01',
     'metadata': {
         'domain': 'dannet',
         'license': 'Commercial Use of DanNet

@@ -23,8 +23,8 @@ An example from the dataset looks as follows.
     'text': 'JØRGINE JØRGINE KØBENHAVN HAGE & CLAUSENS FORLAG (',
     'source': 'dagw-jvj',
     'id': 'jvj_Jørgine',
-    'added': 'Fri Jun 26 13:06:11 2020 CEST +0200',
-    'created': '1873-01-01T00:00:00.000Z, 1951-01-01T00:00:00.000Z',
+    'added': '2020-06-26',
+    'created': '1873-01-01, 1951-01-01',
     'metadata': {
         'domain': 'Wiki & Books',
         'license': 'Attribution-ShareAlike 4.0 International',

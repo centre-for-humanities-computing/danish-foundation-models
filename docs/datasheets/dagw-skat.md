@@ -23,8 +23,8 @@ An example from the dataset looks as follows.
     'text': 'Andelsboligforeningers levering af brugsrettighede',
     'source': 'dagw-skat',
     'id': 'skat_SKM2010.712.SKAT',
-    'added': 'Thu Oct  1 11:40:33 2020 CEST +0200',
-    'created': '2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z',
+    'added': '2020-10-01',
+    'created': '2000-01-01, 2022-01-01',
     'metadata': {
         'domain': 'Legal',
         'license': 'Creative Commons Legal Code

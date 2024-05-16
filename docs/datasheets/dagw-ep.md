@@ -23,8 +23,8 @@ An example from the dataset looks as follows.
     'text': 'TALER 6703: Jeg har stemt for henstillingen om god',
     'source': 'dagw-ep',
     'id': 'ep_07-02-01-008',
-    'added': 'Wed Nov 20 10:15:08 2019 CET +0100',
-    'created': '2004-01-01T00:00:00.000Z, 2009-01-01T00:00:00.000Z',
+    'added': '2019-11-20',
+    'created': '2004-01-01, 2009-01-01',
     'metadata': {
         'domain': 'Conversation',
         'license': 'Creative Commons Legal Code
