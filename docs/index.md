@@ -79,6 +79,7 @@ From [the Center for Humanities Computing at Aarhus University](https://chc.au.d
   - Peter Vahlstrup ([imvpbv@cc.au.dk](imvpbv@cc.au.dk))
   - Per Møldrup Dalum ([per@cas.au.dk](per@cas.au.dk))
   - Kristoffer Laigaard Nielbo ([kln@cas.au.dk](kln@cas.au.dk))
+  - Tao Tang ([taotang@au.dk](taotang@au.dk))
 
 From [the Alexandra Institute](https://alexandra.dk/):
 
