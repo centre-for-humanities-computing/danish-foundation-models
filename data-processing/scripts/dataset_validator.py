@@ -23,8 +23,7 @@ dataset_folder
 └── dataset_name
     │
     ├── documents
-    │   ├── document1.jsonl.gz   # MANDATORY: one or more files containing the documents in the dataset
-    │   └── ...
+    │   └── dataset_name.jsonl.gz
     │
     └── attributes   # OPTIONAL: folder containing annotations from dataset cleaning
 ```
