@@ -155,7 +155,7 @@ def convert_to_paths(dataset_folder: str, datasheets_folder: str) -> tuple[Path,
 
 
 def check_datasheet(dataset_path: Path, datasheets_path: Path) -> str:
-    datasheet_path = datasheets_path / dataset_path.name
+    datasheet_path = datasheets_path / f'{dataset_path.name}.md'
     msg = ""
 
     if not datasheet_path.exists():
