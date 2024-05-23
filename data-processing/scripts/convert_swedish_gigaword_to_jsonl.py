@@ -113,7 +113,7 @@ def process_files_in_parallel(directories, output_file_path):
 
 def main():
     directories = ['/work/github/swedish_gigaword/gigaword/1950', '/work/github/swedish_gigaword/gigaword/1960', '/work/github/swedish_gigaword/gigaword/1970', '/work/github/swedish_gigaword/gigaword/1980', '/work/github/swedish_gigaword/gigaword/1990', '/work/github/swedish_gigaword/gigaword/2000', '/work/github/swedish_gigaword/gigaword/2010']
-    output_file_path = '/work/github/swedish_gigaword/gigaword/swedish_gigaword_new.jsonl.gz'
+    output_file_path = '/work/github/swedish_gigaword/gigaword/swedish_gigaword.jsonl.gz'
     process_files_in_parallel(directories, output_file_path)
 
 if __name__ == '__main__':

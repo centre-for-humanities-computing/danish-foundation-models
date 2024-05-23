@@ -60,7 +60,7 @@ def convert_txt_to_jsonl_gz(directory, output_file):
 
 def main():
     directory = '/work/github/capital_region/korpus/renset'
-    output_file = 'scrape_hovedstaden.jsonl.gz'
+    output_file = '/work/dfm-data/pre-training/scrape_hovedstaden/documents/scrape_hovedstaden.jsonl.gz'
     convert_txt_to_jsonl_gz(directory, output_file)
 
 if __name__ == '__main__':

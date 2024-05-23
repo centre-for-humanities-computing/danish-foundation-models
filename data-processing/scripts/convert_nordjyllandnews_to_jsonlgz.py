@@ -36,7 +36,7 @@ def parquet_to_jsonlgz(input_path, output_path):
                 "metadata": {
                     "summary": row.get("summary", ""),
                     "text_len": row.get("text_len", ""),
-                    "summary_len": row.get("summary_len", "")
+                    "summary_len": row.get("summary_len", ""),
                     "sub-source": "TV2 Nord"
                 }
             }
