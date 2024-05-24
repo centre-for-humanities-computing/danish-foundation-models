@@ -16,11 +16,11 @@ concatenate reference and summary
 """
 import datetime
 
-from datasets import Dataset, DatasetDict, load_dataset
+from datasets import Dataset, DatasetDict, load_dataset # type: ignore
 
-eu_start_time = "1993-11-01T00:00:00.000Z"
-date_added = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.000Z")
-eu_time_span = ",".join([eu_start_time, date_added])
+eu_start_time = "1993-11-01"
+date_added = datetime.datetime.now().strftime("%Y-%m-%d")
+eu_time_span = ", ".join([eu_start_time, date_added])
 
 
 def reformat_dataset(ds: Dataset) -> Dataset:

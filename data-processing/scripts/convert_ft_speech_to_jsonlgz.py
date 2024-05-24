@@ -7,8 +7,8 @@ import tarfile
 import sys
 
 def convert_file(input_path: Path, output_dir: Path):
-    added_time = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.000Z"),
-    created_date_str = "2017-01-01T00:00:00.000Z, 2024-01-01T00:00:00.000Z"
+    added_time = datetime.datetime.now().strftime("%Y-%m-%d"),
+    created_date_str = "2017-01-01, 2024-01-01"
     with tarfile.open(input_path, "r") as tarf:
         for member in tarf.getmembers():
             iobytes = tarf.extractfile(member)
