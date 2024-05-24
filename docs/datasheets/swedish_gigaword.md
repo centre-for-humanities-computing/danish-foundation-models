@@ -2,8 +2,8 @@
 pretty_name:  Swedish Gigaword
 language:
   - sv
-license: cc0-1.0
-license_name: Creative Commons Zero v1.0 Universal
+license: cc-by-4.0
+license_name: Creative Commons Attribution 4.0 International
 size_categories:
   - 10M<n<100M
 task_categories:
@@ -43,10 +43,10 @@ An example from the dataset looks as follows.
 
 ## Lisence Information
 <details>
-<summary>Creative Commons Zero v1.0 Universal</summary>
+<summary>Creative Commons Attribution 4.0 International</summary>
 <p>
-Creative Commons Legal Code
+Creative Commons Corporation ("Creative Commons") is not a law firm and does not provide legal services or legal advice. Distribution of Creative Commons public licenses does not create a lawyer-client or other relationship. Creative Commons makes its licenses and related information available on an "as-is" basis. Creative Commons gives no warranties regarding its licenses, any material licensed under their terms and conditions, or any related information. Creative Commons disclaims all liability for damages resulting from their use to the fullest extent possible.
 
-CC0 1.0 Universal
+https://huggingface.co/datasets/choosealicense/licenses/blob/main/markdown/cc-by-4.0.md
 </p>
 </details>
