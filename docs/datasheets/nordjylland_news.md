@@ -1,33 +1,35 @@
 ---
-pretty_name:  Swedish Gigaword
+pretty_name:  nordjylland_news
 language:
-  - sv
+  - da
 license: cc0-1.0
 license_name: Creative Commons Zero v1.0 Universal
 size_categories:
-  - 10M<n<100M
+  - 10K<n<100K
 task_categories:
   - text-generation
   - fill-mask
 task_ids:
   - language-modeling
 ---
-# Dataset Card for swedish_gigaword
+# Dataset Card for nordjylland_news
 ## Dataset Description
-- **Number of records:** 50185534
-- **Languages:** Swedish
+- **Number of records:** 75219
+- **Languages:** Danish
 ## Dataset Sturcture
 An example from the dataset looks as follows.
 ```yaml
 {
-    'id': '1950:10',
-    'text': 'National Librar of Sweden Denna bok digitaliserade...', 'source': 'swedish_gigaword',
-    'added': '2024-05-23',
-    'created': '1950-01-01, 1950-12-31',
-    'metadata': {
-        'year': '1950',
-        'genre': 'government',
-        'librisid': '13537973'
+    "id": "nordjylland-news0",
+    "text": "Opdatering: Manden er nu fundet af Nordjyllands Po...",
+    "source": "nordjylland_news",
+    "added": "2024-05-23",
+    "created": "2024-05-23, 2025-05-23",
+    "metadata": {
+        "summary": "Nye oplysninger i sagen om en forsvunden mand har endnu en gang f\u00e5et politiet til at henvende sig til borgerne.",
+        "text_len": 1739,
+        "summary_len": 111,
+        "sub-source": "TV2 Nord"
     }
 }
 ```
