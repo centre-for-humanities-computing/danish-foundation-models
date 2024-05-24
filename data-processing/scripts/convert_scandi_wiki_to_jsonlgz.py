@@ -32,8 +32,8 @@ import tarfile
 def main():
     input_dir = Path("/directory-with-scandi-wiki.tar.gz-inside/")
     output_dir = Path("scandi-wiki")
-    time_added = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%dT%H:%M:%S.000Z")
-    wiki_created = "2001-01-15T00:00:00.000Z"
+    time_added = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d")
+    wiki_created = "2001-01-15"
     with tarfile.open(input_dir / "scandi-wiki.tar.gz") as tarf:
         for member in tarf.getmembers():
             if member.isfile() and member.name.endswith("jsonl"):
