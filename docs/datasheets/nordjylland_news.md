@@ -1,36 +1,35 @@
 ---
-pretty_name:  Danish news 2.0
+pretty_name:  nordjylland_news
 language:
   - da
 license: cc0-1.0
 license_name: Creative Commons Zero v1.0 Universal
 size_categories:
-  - 10M<n<100M
+  - 10K<n<100K
 task_categories:
   - text-generation
   - fill-mask
 task_ids:
   - language-modeling
 ---
-# Dataset Card for Danews2.0
+# Dataset Card for nordjylland_news
 ## Dataset Description
-- **Number of records:** 26254962
+- **Number of records:** 75219
 - **Languages:** Danish
 ## Dataset Sturcture
 An example from the dataset looks as follows.
 ```yaml
 {
-    'id': 'e2a069b9',
-    'text': 'Slottet sænker vindebroen 2011-04-12T00:00:00Z NYB...', 'source': 'danews2.0',
-    'added': '2024-05-16',
-    'created': '2011-04-12, 2012-04-11',
-    'metadata': {
-        'sub-source': 'LokalAvisen Nyborg',
-        'ArticleUrl': 'https://mediaresearchapi.infomedia.dk/api/v1/article?id=e2a069b9',
-        'Captions': [' Også i år skal der foretages arkæologiske udgravninger ved Nyborg Slot. Her fortæller Østfyns Museers Lars Ewald ( i midten med hat) forrige sommer om fundet af " den hemmelige tunnel." ARKIVFOTO: JØRGEN HANSEN'], 'Authors': [''],
-        'WordCount': 169,
-        'PageIds': ['42'],
-        'Section': {'Name': '', 'Id': '1'}
+    "id": "nordjylland-news0",
+    "text": "Opdatering: Manden er nu fundet af Nordjyllands Po...",
+    "source": "nordjylland_news",
+    "added": "2024-05-23",
+    "created": "2024-05-23, 2025-05-23",
+    "metadata": {
+        "summary": "Nye oplysninger i sagen om en forsvunden mand har endnu en gang f\u00e5et politiet til at henvende sig til borgerne.",
+        "text_len": 1739,
+        "summary_len": 111,
+        "sub-source": "TV2 Nord"
     }
 }
 ```
