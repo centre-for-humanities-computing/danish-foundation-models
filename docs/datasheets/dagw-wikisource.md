@@ -25,8 +25,8 @@ Kæmpehøjen.
 Jeg har stået på mindets ',
     'source': 'dagw-wikisource',
     'id': 'wikisource_4804',
-    'added': 'Sun Mar 28 09:53:38 2021 CEST +0200',
-    'created': '1700-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z',
+    'added': '2021-03-28',
+    'created': '1700-01-01, 2022-01-01',
     'metadata': {
         'domain': 'Wiki & Books',
         'license': 'Creative Commons Legal Code

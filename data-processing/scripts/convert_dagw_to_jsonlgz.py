@@ -14,6 +14,65 @@ downloads dataset and save it as jsonl.gz file with the format:
 from datasets import Dataset, DatasetDict, load_dataset  # type: ignore
 from typing import Generator
 import os
+from datetime import datetime
+from dateutil.parser import parse
+
+
+def replace_swedish(timestamp_str):
+    # Mapping of Swedish day and month names to English
+    swedish_to_english = {
+        'mån': 'Mon',
+        'tis': 'Tue',
+        'ons': 'Wed',
+        'tors': 'Thu',
+        'fre': 'Fri',
+        'lör': 'Sat',
+        'sön': 'Sun',
+        'jan': 'Jan',
+        'feb': 'Feb',
+        'mar': 'Mar',
+        'apr': 'Apr',
+        'maj': 'May',
+        'jun': 'Jun',
+        'jul': 'Jul',
+        'aug': 'Aug',
+        'sep': 'Sep',
+        'okt': 'Oct',
+        'nov': 'Nov',
+        'dec': 'Dec'
+    }
+    for swedish, english in swedish_to_english.items():
+        timestamp_str = timestamp_str.replace(swedish, english)
+    return timestamp_str
+
+def parse_added(timestamp_str):
+    # Handling NA
+    if timestamp_str == "NA":
+        return "2024-05-16" # Set a default value
+
+    timestamp_str = replace_swedish(timestamp_str)
+
+    formats = [
+        "%a %b %d %H:%M:%S %Y %z",     # Without timezone name, with UTC offset
+        "%a %b %d %H:%M:%S %Y %Z %z",   # With timezone name and UTC offset
+        "%a %d %b %Y %H:%M:%S %Z %z",  # With day first, e.g., ons 13 nov 2019 12:42:34 CET +0100, Swedish abbreviations
+        "%a %d %b %Y %H:%M:%S %z"      # Without timezone name, with UTC offset, day first
+    ]
+
+    for fmt in formats:
+        try:
+            dt = datetime.strptime(timestamp_str, fmt)
+            return dt.strftime("%Y-%m-%d")
+        except ValueError:
+            continue
+
+    # Fallback using dateutil.parser.parse
+    try:
+        dt = parse(timestamp_str)
+        return dt.strftime("%Y-%m-%d")
+    except ValueError:
+        raise ValueError(f"Timestamp '{timestamp_str}' does not match any known format.")
+
 
 
 def reformat_and_clean_dataset(ds: Dataset, num_proc: int) -> Dataset:
@@ -25,6 +84,11 @@ def reformat_and_clean_dataset(ds: Dataset, num_proc: int) -> Dataset:
     ds = ds.rename_column("date_built", "added")
     ## source --> sub-source
     #ds = ds.rename_column("source", "sub-source")
+    # format added: "%a %b %d %H:%M:%S %Y %Z %z" to "%Y-%m-%d"
+    ds = ds.map(
+        lambda x: {"added": parse_added(x["added"])},  # type: ignore
+        num_proc=num_proc,
+    )
 
     source2domain = {
         "retsinformationdk": "Legal",
@@ -59,31 +123,32 @@ def reformat_and_clean_dataset(ds: Dataset, num_proc: int) -> Dataset:
         num_proc=num_proc,  # type: ignore
     )
 
-    source2time = {
-        "retsinformationdk": "2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
-        "skat": "2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
-        "retspraksis": "2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
-        "hest": "2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
-        "cc": "2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
-        "adl": "1700-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
-        "botxt": "2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
-        "danavis": "1999-01-01T00:00:00.000Z, 2004-01-01T00:00:00.000Z",
-        "dannet": "2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
-        "depbank": "2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
-        "ep": "2004-01-01T00:00:00.000Z, 2009-01-01T00:00:00.000Z",
-        "ft": "2009-01-01T00:00:00.000Z, 2019-01-01T00:00:00.000Z",
-        "gutenberg": "1700-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
-        "jvj": "1873-01-01T00:00:00.000Z, 1951-01-01T00:00:00.000Z",
-        "naat": "1930-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
-        "opensub": "2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
-        "relig": "NA",
-        "spont": "2019-01-01T00:00:00.000Z, 2020-01-01T00:00:00.000Z",
-        "synne": "2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
-        "tv2r": "2015-01-01T00:00:00.000Z, 2020-01-01T00:00:00.000Z",
-        "wiki": "2019-01-01T00:00:00.000Z, 2021-01-01T00:00:00.000Z",
-        "wikibooks": "2019-01-01T00:00:00.000Z, 2021-01-01T00:00:00.000Z",
-        "wikisource": "1700-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",
-        "twfv19": "2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z",  # not present in this version of the dataset
+    source2time ={
+        "retsinformationdk": "2000-01-01, 2022-01-01",
+        "skat": "2000-01-01, 2022-01-01",
+        "retspraksis": "2000-01-01, 2022-01-01",
+        "hest": "2000-01-01, 2022-01-01",
+        "cc": "2000-01-01, 2022-01-01",
+        "adl": "1700-01-01, 2022-01-01",
+        "botxt": "2000-01-01, 2022-01-01",
+        "danavis": "1999-01-01, 2004-01-01",
+        "dannet": "2000-01-01, 2022-01-01",
+        "depbank": "2000-01-01, 2022-01-01",
+        "ep": "2004-01-01, 2009-01-01",
+        "ft": "2009-01-01, 2019-01-01",
+        "gutenberg": "1700-01-01, 2022-01-01",
+        "jvj": "1873-01-01, 1951-01-01",
+        "naat": "1930-01-01, 2022-01-01",
+        "opensub": "2000-01-01, 2022-01-01",
+        # "relig": "NA",
+        "relig" : "1700-01-01, 2022-01-01", # Take a guess instead
+        "spont": "2019-01-01, 2020-01-01",
+        "synne": "2000-01-01, 2022-01-01",
+        "tv2r": "2015-01-01, 2020-01-01",
+        "wiki": "2019-01-01, 2021-01-01",
+        "wikibooks": "2019-01-01, 2021-01-01",
+        "wikisource": "1700-01-01, 2022-01-01",
+        "twfv19": "2000-01-01, 2022-01-01" # not present in this version of the dataset
     }
 
     # add created
@@ -215,7 +280,7 @@ def make_markdown(ds: Dataset, directory: str) -> None:
     num_records = ds.num_rows
     num_records_category = determine_size_category(num_records)
     sample = ds[0]
-    text = sample["text"][:50].replace("'", "\\'")  # Escaping single quotes in the YAML-like example
+    text = sample["text"].strip()[:50].replace("'", "\\'")  # Escaping single quotes in the YAML-like example and strip leading/trailing whitespace
     source = sample["source"]
     id = sample["id"]
     added = sample["added"]

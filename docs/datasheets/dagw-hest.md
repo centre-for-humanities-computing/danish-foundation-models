@@ -24,8 +24,8 @@ An example from the dataset looks as follows.
 Jeg kan ikke forstå at der altid',
     'source': 'dagw-hest',
     'id': 'hest_forum112802271280227_0',
-    'added': 'Mon Oct  5 07:04:31 2020 CEST +0200',
-    'created': '2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z',
+    'added': '2020-10-05',
+    'created': '2000-01-01, 2022-01-01',
     'metadata': {
         'domain': 'Social Media',
         'license': 'Creative Commons Legal Code

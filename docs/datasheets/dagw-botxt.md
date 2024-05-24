@@ -25,8 +25,8 @@ An example from the dataset looks as follows.
 Ræua-Lârs å hans Konna, Stina, bode uda',
     'source': 'dagw-botxt',
     'id': 'botxt_0000040',
-    'added': 'NA',
-    'created': '2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z',
+    'added': '2024-05-16',
+    'created': '2000-01-01, 2022-01-01',
     'metadata': {
         'domain': 'Other',
         'license': 'Creative Commons Legal Code

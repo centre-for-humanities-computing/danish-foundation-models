@@ -23,8 +23,8 @@ An example from the dataset looks as follows.
     'text': 'Mangeægskage Hent printvenligt dokument her – Klik',
     'source': 'dagw-synne',
     'id': 'synne_forening_0140',
-    'added': 'Fri Jun 26 10:36:35 2020 CEST +0200',
-    'created': '2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z',
+    'added': '2020-06-26',
+    'created': '2000-01-01, 2022-01-01',
     'metadata': {
         'domain': 'Other',
         'license': 'Creative Commons Legal Code

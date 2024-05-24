@@ -20,12 +20,11 @@ task_ids:
 An example from the dataset looks as follows.
 ```yaml
 {
-    'text': '
-H.L. Hansen var en usædvanmlig og frodig personli',
+    'text': 'H.L. Hansen var en usædvanmlig og frodig personlig',
     'source': 'dagw-depbank',
     'id': 'depbank_0375',
-    'added': 'NA',
-    'created': '2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z',
+    'added': '2024-05-16',
+    'created': '2000-01-01, 2022-01-01',
     'metadata': {
         'domain': 'Other',
         'license': 'Attribution-ShareAlike 4.0 International',

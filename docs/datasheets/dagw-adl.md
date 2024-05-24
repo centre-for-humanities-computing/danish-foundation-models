@@ -25,8 +25,8 @@ An example from the dataset looks as follows.
 JEPPE AAKJÆR GYLDENDALSKE BOGHANDE',
     'source': 'dagw-adl',
     'id': 'adl_aakjaer06val',
-    'added': 'Mon Sep 14 10:28:26 2020 CEST +0200',
-    'created': '1700-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z',
+    'added': '2020-09-14',
+    'created': '1700-01-01, 2022-01-01',
     'metadata': {
         'domain': 'Wiki & Books',
         'license': 'Creative Commons Legal Code

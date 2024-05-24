@@ -23,8 +23,8 @@ An example from the dataset looks as follows.
     'text': 'Den fulde tekst Pressenævnets kendelse i sag nr. 1',
     'source': 'dagw-retsinformationdk',
     'id': 'retsinformationdk_173889',
-    'added': 'Fri Nov 22 00:51:31 2019 +0100',
-    'created': '2000-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z',
+    'added': '2019-11-22',
+    'created': '2000-01-01, 2022-01-01',
     'metadata': {
         'domain': 'Legal',
         'license': 'Danish Copyright law at https://www.retsinformation.dk/forms/r0710.aspx?id=164796 states 

@@ -23,8 +23,8 @@ An example from the dataset looks as follows.
     'text': 'Afskriverens bemærkninger: Åbenlyse trykfejl er re',
     'source': 'dagw-gutenberg',
     'id': 'gutenberg_43899',
-    'added': 'Sat Sep 12 09:46:31 2020 CEST +0200',
-    'created': '1700-01-01T00:00:00.000Z, 2022-01-01T00:00:00.000Z',
+    'added': '2020-09-12',
+    'created': '1700-01-01, 2022-01-01',
     'metadata': {
         'domain': 'Wiki & Books',
         'license': '*** START: FULL LICENSE ***

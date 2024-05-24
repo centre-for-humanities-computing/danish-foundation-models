@@ -26,8 +26,8 @@ Taler 6: ja
 Taler',
     'source': 'dagw-spont',
     'id': 'spont_PuzzleOfDanish132',
-    'added': 'Tue Jan 21 15:05:46 2020 CET +0100',
-    'created': '2019-01-01T00:00:00.000Z, 2020-01-01T00:00:00.000Z',
+    'added': '2020-01-21',
+    'created': '2019-01-01, 2020-01-01',
     'metadata': {
         'domain': 'Conversation',
         'license': 'Creative Commons Legal Code

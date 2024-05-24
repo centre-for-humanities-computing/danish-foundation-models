@@ -24,8 +24,8 @@ An example from the dataset looks as follows.
 Kys mig, giv mig Kys af din mund t',
     'source': 'dagw-relig',
     'id': 'relig_SON',
-    'added': 'Mon Sep 14 07:29:18 2020 CEST +0200',
-    'created': 'NA',
+    'added': '2020-09-14',
+    'created': '1700-01-01, 2022-01-01',
     'metadata': {
         'domain': 'Wiki & Books',
         'license': 'Creative Commons Legal Code

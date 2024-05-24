@@ -25,8 +25,8 @@ An example from the dataset looks as follows.
 Søndag a',
     'source': 'dagw-tv2r',
     'id': 'tv2r_92548',
-    'added': 'ons 13 nov 2019 12:42:34 CET +0100',
-    'created': '2015-01-01T00:00:00.000Z, 2020-01-01T00:00:00.000Z',
+    'added': '2019-11-13',
+    'created': '2015-01-01, 2020-01-01',
     'metadata': {
         'domain': 'News',
         'license': 'The owner of this content is TV2 Regionerne, Denmark.

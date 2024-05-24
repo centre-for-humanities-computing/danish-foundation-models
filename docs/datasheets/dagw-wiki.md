@@ -23,8 +23,8 @@ An example from the dataset looks as follows.
     'text': 'Vimoutiers er en kommune i departementet Orne i Ba',
     'source': 'dagw-wiki',
     'id': 'wiki_366127',
-    'added': 'Sun Mar 28 09:28:24 2021 CEST +0200',
-    'created': '2019-01-01T00:00:00.000Z, 2021-01-01T00:00:00.000Z',
+    'added': '2021-03-28',
+    'created': '2019-01-01, 2021-01-01',
     'metadata': {
         'domain': 'Wiki & Books',
         'license': 'Creative Commons Legal Code

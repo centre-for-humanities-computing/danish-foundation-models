@@ -23,8 +23,8 @@ An example from the dataset looks as follows.
     'text': 'TALER 50: Mødet er åbnet. I dag er der følgende an',
     'source': 'dagw-ft',
     'id': 'ft_20121M100',
-    'added': 'Sun Mar 28 09:58:44 2021 CEST +0200',
-    'created': '2009-01-01T00:00:00.000Z, 2019-01-01T00:00:00.000Z',
+    'added': '2021-03-28',
+    'created': '2009-01-01, 2019-01-01',
     'metadata': {
         'domain': 'Conversation',
         'license': 'Creative Commons Legal Code
