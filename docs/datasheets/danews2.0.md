@@ -45,4 +45,4 @@ An example from the dataset looks as follows.
 - **metadata**: source-specific metadata.
 
 ## License Information
-Agreement with individual newspapers
+Agreement with individual newspapers. The agreement is for the Danish Foundation Models project and that models trained on the dataset can be published.
