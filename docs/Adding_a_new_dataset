@@ -6,6 +6,7 @@ This guide is intended for internal collaborators. If you want to add a new data
    1) a license (if the license is not a standard once allowed by Huggingface, please use "other" and specify the license in the datasheet)
    2) Languages (e.g. "da" for Danish)
 2) Add a dataset of the same name to the `/danish-foundation-models (193701)/dfm-data/pre-training/` on UCloud. Using the following folder structure:
+
 ```
 pre-training
 │
@@ -16,6 +17,8 @@ pre-training
     │
     └── attributes   # OPTIONAL: folder containing annotations from dataset cleaning
 ```
+
+1) Validate the dataset using the `data-processing/scripts/dataset_validator.py` script. The script will check if the datasets is in the correct format and if the metadata in the datasheet matches the dataset. See the docstring in the script for more information on how to use it.
 
 ## JSONL Schema
 
