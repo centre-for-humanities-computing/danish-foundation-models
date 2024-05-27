@@ -2,8 +2,8 @@
 pretty_name:  Danish news 2.0
 language:
   - da
-license: cc0-1.0
-license_name: Creative Commons Zero v1.0 Universal
+license: other
+license_name: agreement
 size_categories:
   - 10M<n<100M
 task_categories:
@@ -44,12 +44,5 @@ An example from the dataset looks as follows.
 - **created**": timestamp when original document was created (best-guess if not available)
 - **metadata**: source-specific metadata.
 
-## Lisence Information
-<details>
-<summary>Creative Commons Zero v1.0 Universal</summary>
-<p>
-Creative Commons Legal Code
-
-CC0 1.0 Universal
-</p>
-</details>
+## License Information
+Agreement with individual newspapers
