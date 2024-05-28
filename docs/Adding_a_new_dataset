@@ -13,7 +13,9 @@ pre-training
 └── dataset_name
     │
     ├── documents
-    │   └── dataset_name.jsonl.gz
+    │   ├──part1.jsonl.gz
+    │   ├──part2.jsonl.gz
+    │   └── ...
     │
     └── attributes   # OPTIONAL: folder containing annotations from dataset cleaning
 ```
