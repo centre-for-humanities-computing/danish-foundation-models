@@ -51,7 +51,7 @@ def main():
                             "text": entry["text"],
                             "source": "scandi-wiki",
                             "added": time_added,
-                            "created": wiki_created + "," + time_added,
+                            "created": wiki_created + ", " + time_added,
                             "metadata": {"url": entry["url"], "title": entry["title"], "language": Path(member.name).stem}
                         }
                         json.dump(output_entry, outfile)

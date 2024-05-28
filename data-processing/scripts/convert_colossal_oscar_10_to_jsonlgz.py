@@ -93,7 +93,7 @@ def process_one(output_dir: Path, root_path: Path, input_path: Path) -> None:
                 "id": str(obj["warc_headers"]["warc-record-id"]), # Copy metadata id to root
                 "text": obj["content"],
                 "source": "colossal_oscar_1.0",
-                "added": datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+                "added": datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d"),
                 "created": obj["warc_headers"]["warc-date"], # Copy metadata to root
                 "metadata": obj["metadata"],
             }
