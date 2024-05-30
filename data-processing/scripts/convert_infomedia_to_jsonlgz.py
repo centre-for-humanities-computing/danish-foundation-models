@@ -1,7 +1,8 @@
 '''
 Converting infomedia dataset.
+Filtering infomedia records that have 'Information', 'Inormation', 'Information (Papermill)' in the field of 'source'.
 
-ndjson -> json.gz:
+ndjson -> jsonl.gz:
 
 {
     "id": "...",             # MANDATORY: source-specific identifier
@@ -12,7 +13,7 @@ ndjson -> json.gz:
     "metadata": {            # OPTIONAL: source-specific metadata
 										"sub-source": "...", # OPTIONAL: E.g. "newspaper_ocr"
 										...
-								}        
+								}
 }
 '''
 
@@ -26,19 +27,25 @@ from datetime import datetime, timedelta
 from tqdm import tqdm
 from multiprocessing import Pool, cpu_count
 
-def format_created_range(publish_date):
+def format_created_range(publish_date, delay_days=365):
     """Create a formatted string representing a time range starting from `publish_date`."""
     start_date = datetime.strptime(publish_date, "%Y-%m-%dT%H:%M:%SZ")
-    end_date = start_date + timedelta(days=365)
-    return f"{start_date.strftime('%Y-%m-%dT%H:%M:%SZ')}, {end_date.strftime('%Y-%m-%dT%H:%M:%SZ')}"
+    end_date = start_date + timedelta(days=delay_days)
+    return f"{start_date.strftime('%Y-%m-%d')}, {end_date.strftime('%Y-%m-%d')}"
 
-def remove_html_tags(text):
+def remove_html_tags(text: str) -> str:
     """Remove HTML tags from a string."""
-    html_tag_pattern = re.compile('<.*?>')
-    clean_text = re.sub(html_tag_pattern, '', text)
+    html_tag_pattern = re.compile('<.*?>', flags=re.MULTILINE)
+    clean_text = re.sub(html_tag_pattern, " ", text)
     return clean_text
 
-def process_file(filepath):
+def remove_whitespace(text: str) -> str:
+    """remove excess whitespace from text fields"""
+    pat_ws = re.compile(pattern=r"\s\s+", flags=re.MULTILINE)
+    clean_text = re.sub(pat_ws, " ", text)
+    return clean_text
+
+def process_file(filepath, filter_source=['Information', 'Inormation', 'Information (Papermill)']):
     """Process a single file and write its processed contents to a temporary file."""
     # Note: writing to the same file for all workers might lead to some problem.
     articles = []
@@ -49,7 +56,7 @@ def process_file(filepath):
             with open(filepath, 'r', encoding='utf-8') as file, open(temp_filename, 'w', encoding='utf-8') as temp_file:
                 for line in file:
                     original = json.loads(line)
-                    added = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.000Z')
+                    added = datetime.now().strftime('%Y-%m-%d')
                     # Extract the fields
                     heading = original.get("Heading", "")
                     sub_heading = original.get("SubHeading", "")
@@ -69,17 +76,32 @@ def process_file(filepath):
                     text = "\n\n".join(filter(None, text_parts))
                     # Remove HTML tags
                     text = remove_html_tags(text)
+                    # Remove excess whitespace
+                    text = remove_whitespace(text)
+
+                    sub_source = original.get("Source", "")
+                    # Filtering
+                    if sub_source in filter_source:
+                        continue
                     
                     transformed = {
-                        "id": original.get("ArticleId", ""),
-                        "text": text,
-                        "source": original.get("Source", ""),
-                        "added": added,
-                        "created": format_created_range(original.get("PublishDate", "2000-01-01T00:00:00Z")),
-                        "metadata": {key: value for key, value in original.items() if key not in ["ArticleId", "BodyText", "Source", "PublishDate", "Heading", "SubHeading", "Lead", "Paragraph"]}
-                    }
+                            "id": original.get("ArticleId", ""),
+                            "text": text,
+                            "source": "danew2.0",  # Fixed source value
+                            "added": added,
+                            "created": format_created_range(original.get("PublishDate", "2000-01-01T00:00:00Z")),
+                            "metadata": {
+                                "sub-source": sub_source,  # Moving original source to metadata
+                            }
+                        }
+                        
+                        # Add remaining metadata fields excluding specific ones already extracted
+                    for key, value in original.items():
+                        if key not in ["ArticleId", "BodyText", "Source", "PublishDate", "Heading", "SubHeading", "Lead", "Paragraph"]:
+                            transformed["metadata"][key] = value
                     json.dump(transformed, temp_file)
-                    temp_file.write(',')
+                    # Line break
+                    temp_file.write('\n')
     except Exception as e:
         print(f"Error processing file {filepath}: {e}")
         os.remove(temp_filename)  # Remove temporary file if error occurs
@@ -102,33 +124,30 @@ def init_file_paths(directory, max_files=-1):
             break
     return file_paths
 
-def merge_temp_files(temp_files, output_json_gz):
-    """Merge temporary files into a single .json.gz file."""
-    with gzip.open(output_json_gz, 'wt', encoding='utf-8') as gz_file:
-        gz_file.write('[')
-        last_index = len(temp_files) - 1  # Get the index of the last temp file
+def merge_temp_files(temp_files, output_jsonl_gz):
+    """Merge temporary files into a single .jsonl.gz file."""
+    with gzip.open(output_jsonl_gz, 'wt', encoding='utf-8') as gz_file:
         for i, temp_file in enumerate(temp_files):
             if temp_file:
                 with open(temp_file, 'r', encoding='utf-8') as f:
+                    # Just in case
                     content = f.read().rstrip('\n').rstrip(',')
                     gz_file.write(content)
-                    if i < last_index:
-                        gz_file.write(',')
-        gz_file.write(']')
+                    gz_file.write('\n')
 
-def main(directory, output_json_gz):
+def main(directory, output_jsonl_gz):
     """Multiprocessing to convert ndjson then merge all the processed files."""
     file_paths = init_file_paths(directory)
     with Pool(cpu_count()) as pool:
         temp_files = list(tqdm(pool.imap(process_file, file_paths), total=len(file_paths)))
     # Filter out None values in case some files failed to process
     temp_files = [f for f in temp_files if f is not None]
-    merge_temp_files(temp_files, output_json_gz)
+    merge_temp_files(temp_files, output_jsonl_gz)
     # Clean up temporary files
     for temp_file in temp_files:
         os.remove(temp_file)
 
 if __name__ == '__main__':
     directory = '/work/github/infomedia'
-    output_json_gz = '/work/dfm-data/pre-training/danews2.0/articles.json.gz'
-    main(directory, output_json_gz)
+    output_jsonl_gz = '/work/dfm-data/pre-training/danews2.0/documents/danews2.0.jsonl.gz'
+    main(directory, output_jsonl_gz)
