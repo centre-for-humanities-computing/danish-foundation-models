@@ -25,7 +25,7 @@ import os
 ###    "metadata": {...}        # OPTIONAL: source-specific metadata
 ###}
 
-timenow = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+timenow = datetime.datetime.now().strftime("%Y-%m-%d"),
 
 def process_single(filepath: Path, source_dir: Path, output_dir: Path):
     relname = filepath.relative_to(source_dir)
@@ -35,11 +35,13 @@ def process_single(filepath: Path, source_dir: Path, output_dir: Path):
     with gzip.open(filepath, "rt", encoding="UTF-8") as infile, gzip.open(output_file, "wt", encoding="UTF-8") as outfile:
         with jsonlines.Writer(outfile) as writer:
             for doc in jsonlines.Reader(infile):
+                created = datetime.datetime.strptime(doc["timestamp"], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d")
                 formatted_doc = {}
                 formatted_doc["id"] = str(relname).replace(os.path.sep, "--") + "_" + str(document_idx)
                 formatted_doc["text"] = doc["text"]
-                formatted_doc["source"] = "c4-da"
-                formatted_doc["created"] = doc["timestamp"]
+                # formatted_doc["source"] = "c4-da"
+                formatted_doc["source"] = "mC4"
+                formatted_doc["created"] = created + ", " + created
                 formatted_doc["added"] = timenow
                 formatted_doc["metadata"] = {key: doc[key] for key in doc.keys() if key not in ["text", "timestamp"]}
 
