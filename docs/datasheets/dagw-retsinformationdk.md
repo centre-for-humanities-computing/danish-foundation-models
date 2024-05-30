@@ -47,7 +47,7 @@ Stk. 2. Bestemmelsen i stk. 1 gælder ikke for værker, der fremtræder som selv
 - **created**": timestamp when original document was created (best-guess if not available)
 - **metadata**: source-specific metadata.
 
-## Lisence Information
+## License Information
 <details>
 <summary>Danish Copyright Law</summary>
 <p>

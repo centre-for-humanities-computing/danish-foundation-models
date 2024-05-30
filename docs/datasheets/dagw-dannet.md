@@ -80,7 +80,7 @@ DanNet 2.1 Copyright 2009-12 by University of Copenhagen and Society for Danish'
 - **created**": timestamp when original document was created (best-guess if not available)
 - **metadata**: source-specific metadata.
 
-## Lisence Information
+## License Information
 <details>
 <summary>DanNet 1.0 License</summary>
 <p>

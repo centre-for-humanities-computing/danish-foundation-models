@@ -366,7 +366,7 @@ subscribe to our email newsletter to hear about new eBooks.
 - **created**": timestamp when original document was created (best-guess if not available)
 - **metadata**: source-specific metadata.
 
-## Lisence Information
+## License Information
 <details>
 <summary>Gutenberg License</summary>
 <p>

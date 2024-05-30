@@ -44,7 +44,7 @@ CC0 1.0 Universal',
 - **created**": timestamp when original document was created (best-guess if not available)
 - **metadata**: source-specific metadata.
 
-## Lisence Information
+## License Information
 <details>
 <summary>Creative Commons Zero v1.0 Universal</summary>
 <p>
