@@ -9,31 +9,32 @@ downloads dataset and save it as jsonl.gz file with the format:
     "created": "..."         # OPTIONAL: timestamp when orig document was created (best-guess if not available)
     "metadata": {...}        # OPTIONAL: source-specific metadata
 }
+
+The dataset contains reference and summaries. As we use this dataset for pretraining we
+concatenate reference and summary
+
 """
 import datetime
 
-from datasets import Dataset, DatasetDict, load_dataset  # type: ignore
+from datasets import Dataset, DatasetDict, load_dataset # type: ignore
 
-reddit_time = "2005-12-01, 2022-11-01"
+eu_start_time = "1993-11-01"
 date_added = datetime.datetime.now().strftime("%Y-%m-%d")
+eu_time_span = ", ".join([eu_start_time, date_added])
 
 
 def reformat_dataset(ds: Dataset) -> Dataset:
-    # current keys: ['doc', 'subreddit', 'language', 'language_confidence']
+    # current keys: ['celex_id', 'reference', 'summary']
 
-    # rename doc to text
-    ds = ds.rename_column("doc", "text")
-
-    # add id column
-    id_column = [str(i) for i in range(len(ds))]  # dolma id must be a string
-    ds = ds.add_column("id", id_column)  # type: ignore
+    # rename celex_id to id
+    ds = ds.rename_column("celex_id", "id")
 
     # add source column
-    source_column = ["scandi-reddit"] * len(ds)  # type: ignore
+    source_column = ["eur-lex-sum-da"] * len(ds)  # type: ignore
     ds = ds.add_column("source", source_column)  # type: ignore
 
     # add created column
-    created_column = [reddit_time] * len(ds)  # type: ignore
+    created_column = [eu_time_span] * len(ds)  # type: ignore
     ds = ds.add_column("created", created_column)  # type: ignore
 
     # add added column
@@ -43,21 +44,21 @@ def reformat_dataset(ds: Dataset) -> Dataset:
     # add metadata
     ds = ds.map(  # type: ignore
         lambda x: {  # type: ignore
+            "text": x["reference"] + "\n" + x["summary"],
             "metadata": {
-                "language": x["language"],  # type: ignore
-                "language_confidence": x["language_confidence"],  # type: ignore
-                "subreddit": x["subreddit"],  # type: ignore
-            },
+                "summary_start": len(x["reference"] + "\n"),  # type: ignore
+            }
         },
     )  # type: ignore
-    ds = ds.remove_columns(["subreddit", "language", "language_confidence"])  # type: ignore
+    ds = ds.remove_columns(["reference", "summary"])  # type: ignore
 
     return ds  # type: ignore
 
 
 def main():
-    ds = load_dataset("alexandrainst/scandi-reddit")
+    ds = load_dataset("dennlinger/eur-lex-sum", "danish")
     assert isinstance(ds, DatasetDict)
+    # We take only the train dataset in case this dataset is used for model evaulation
     ds = ds["train"]
     assert isinstance(ds, Dataset)
 
@@ -65,20 +66,20 @@ def main():
     ds = reformat_dataset(ds)
 
     # save to jsonl.gz
-    ds.to_json("scandi-reddit.jsonl.gz", orient="records", lines=True, compression="gzip")  # type: ignore
+    ds.to_json("eur-lex-sum-da.jsonl.gz", orient="records", lines=True, compression="gzip")  # type: ignore
 
 
 if __name__ == "__main__":
     main()
 
     # # test that it load back in
-    ds = load_dataset("json", data_files="scandi-reddit.jsonl.gz", split="train")
+    ds = load_dataset("json", data_files="eur-lex-sum-da.jsonl.gz", split="train")
     assert isinstance(ds[0], dict)  # type: ignore
 
     # test that it can be streamed
     ds = load_dataset(
         "json",
-        data_files="scandi-reddit.jsonl.gz",
+        data_files="eur-lex-sum-da.jsonl.gz",
         split="train",
         streaming=True,
     )
