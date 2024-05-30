@@ -89,12 +89,13 @@ def process_one(output_dir: Path, root_path: Path, input_path: Path) -> None:
                     out_fh.close()
                 out_fh = gzip.open(output_path, "wt")
             obj = json.loads(line)
+            created = datetime.datetime.strptime(obj["warc_headers"]["warc-date"], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d")
             new_obj: dict[str, Union[dict[str, Any], str]] = {
                 "id": str(obj["warc_headers"]["warc-record-id"]), # Copy metadata id to root
                 "text": obj["content"],
-                "source": "colossal_oscar_1.0",
+                "source": "colossal_oscar_1_0", # Make source name consistent with the dataset name: colossal_oscar_1_0
                 "added": datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d"),
-                "created": obj["warc_headers"]["warc-date"], # Copy metadata to root
+                "created": created + ", " + created,
                 "metadata": obj["metadata"],
             }
             new_obj["metadata"]["warc_headers"] = obj["warc_headers"] # type: ignore
