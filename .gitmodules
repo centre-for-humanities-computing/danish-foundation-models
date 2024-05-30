@@ -1,4 +1,4 @@
-[submodule "llm-foundry"]
-	path = llm-foundry
+[submodule "training/llm-foundry"]
+	path = training/llm-foundry
 	url = https://github.com/rlrs/llm-foundry
 	branch = lumi

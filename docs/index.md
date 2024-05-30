@@ -23,8 +23,9 @@ Welcome to the Danish Foundation Models (DFM) project, a pioneering initiative i
 
 
 
+## Open-source
 
-##  Open-source Development with Privacy-Focused Data Handling
+###  Open-source Development with Privacy-Focused Data Handling
 
 In our commitment to advancing open-source development, we strongly emphasise the ethical handling of data, particularly when it involves personally sensitive information or material under copyright. This ensures that we share as much as possible while protecting privacy.
 
@@ -35,6 +36,33 @@ Additionally, we prioritise the security of the data during its processing and t
 
 ![](_static/structure.png)
 
+### Contributions
+
+Besides our [models](https://www.foundationmodels.dk/models/) DFM have led to a series of positive open-source contributions, the following table include some of these contributions:
+
+
+| Project                                                                                                                                                                                                                                                                            | Contribution                                                                                        |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| **Packages**                                                                                                                                                                                                                                                                       |                                                                                                     |
+| [NLPDedup](https://github.com/saattrupdan/NLPDedup)                                                                                                                                                                                                                                | A deduplication library derived from DFM's deduplication code                                       |
+| **Code contributions**                                                                                                                                                                                                                                                             |                                                                                                     |
+| [TextDescriptives](https://hlasse.github.io/TextDescriptives/)                                                                                                                                                                                                                     | Added heuristic quality measure for texts                                                           |
+| [dolma](https://github.com/allenai/dolma)                                                                                                                                                                                                                                          | Bugfixes and addition of taggers for filtering                                                      |
+| **Benchmarks**                                                                                                                                                                                                                                                                     |                                                                                                     |
+| [ScandEval](https://scandeval.com)                                                                                                                                                                                                                                                 | Co-contributors have significant contributions to developing NLU and NLG benchmarks for Scandinavian and Germanic languages |
+| [Scandinavian Embedding Benchmark](https://kennethenevoldsen.github.io/scandinavian-embedding-benchmark/)                                                                                                                                                                          | The benchmark for evaluating Scandinavian embedding has been created as a part of DFM               |
+| **Datasets**                                                                                                                                                                                                                                                                       |                                                                                                     |
+| [m_arc](https://huggingface.co/datasets/alexandrainst/m_arc), [m_mmlu](https://huggingface.co/datasets/alexandrainst/m_mmlu), [m_hellaswag](https://huggingface.co/datasets/alexandrainst/m_hellaswag), [m_truthfulqa](https://huggingface.co/datasets/alexandrainst/m_truthfulqa) | Translated versions of English datasets intended for model evaluation for these domains             |
+
+
+<!-- 
+temp. removed (see DDSC slack channel: NLP)
+
+| [dagw_reddit_filtered_v1.0.0](https://huggingface.co/datasets/DDSC/dagw_reddit_filtered_v1.0.0)                        | A filtered version of the Danish Gigaword, including reddit   | 
+| **Lexical Resources**                                                                                                  |                                                               |
+| [Detailed Word Frequencies](https://huggingface.co/collections/chcaa/danish-word-frequencies-65ba3f61875c73327d1691b2) | Detailed word frequencies across domain and pos-tags          |
+
+-->
 
 ## Improving the Danish Language Technology Landscape
 
@@ -51,6 +79,7 @@ From [the Center for Humanities Computing at Aarhus University](https://chc.au.d
   - Peter Vahlstrup ([imvpbv@cc.au.dk](imvpbv@cc.au.dk))
   - Per Møldrup Dalum ([per@cas.au.dk](per@cas.au.dk))
   - Kristoffer Laigaard Nielbo ([kln@cas.au.dk](kln@cas.au.dk))
+  - Tao Tang ([taotang@au.dk](taotang@au.dk))
 
 From [the Alexandra Institute](https://alexandra.dk/):
 
@@ -58,7 +87,7 @@ From [the Alexandra Institute](https://alexandra.dk/):
   - Rasmus Larsen ([rasmus.larsen@alexandra.dk](rasmus.larsen@alexandra.dk))
   - Dan Saattrup Nielsen ([dan.nielsen@alexandra.dk](dan.nielsen@alexandra.dk))
 
-From [the Center for AI Science and Applicaitons at the University of Southern Denmark](https://sdu.dk/casa):
+From [the Center for AI Science and Applications at the University of Southern Denmark](https://sdu.dk/casa):
 
   - Peter Schneider-Kamp ([petersk@imada.sdu.dk](petersk@imada.sdu.dk))
 
@@ -67,6 +96,9 @@ From [Alvenir](https://www.alvenir.ai/):
   - Martin Carsten Nielsen ([martin@alvenir.ai](martin@alvenir.ai))
   - Søren Vejlgaard Holm ([swh@alvenir.ai](swh@alvenir.ai))
 
+From [the Department of Computer Science at the University of Copenhagen](https://di.ku.dk/):
+
+  - Desmond Elliott
 
 ## Join Us
 

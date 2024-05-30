@@ -1,0 +1,131 @@
+# Continue-pretrain a Mistral-7b model
+# This is NOT a finetuning run
+max_seq_len: 4096
+global_seed: 17
+data_local: /scratch/project_465000670/da-gigaword-mds
+data_remote: # If blank, files must be present in data_local
+pretrained_model_name: mistralai/Mistral-7B-v0.1 #meta-llama/Llama-2-7b-hf
+tokenizer_name: mistralai/Mistral-7B-v0.1 #mistralai/Mistral-7B-v0.1
+
+# Run Name
+run_name: continue-mistral # If left blank, will be read from env var $RUN_NAME
+
+# HF
+model:
+ name: hf_causal_lm
+ pretrained: true
+ pretrained_model_name_or_path: ${pretrained_model_name}
+ token: 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
+ use_flash_attention_2: true
+
+# Tokenizer
+tokenizer:
+  name: ${tokenizer_name}
+  kwargs:
+    model_max_length: ${max_seq_len}
+
+
+# Dataloaders
+train_loader:
+  name: text
+  dataset:
+    local: ${data_local}
+    remote: ${data_remote}
+    #hf_name: mosaicml/dolly_hhrlhf
+    split: train
+    max_seq_len: ${max_seq_len}
+    # # Use packing_ratio: 'auto' to automatically profile and select the highest observed packing ratio with
+    # # zero waste. In practice, this may result in > 0 waste because profiling is done on only a portion
+    # # of the dataset.
+    # # Or use `python llmfoundry/scripts/misc/profile_packing.py --yaml-path /path/to/this/yaml/ ...`
+    # # to profile this run's optimal packing_ratio as it depends on GPU count,
+    # # batch size, sequence length
+    # packing_ratio:
+    shuffle: true
+  drop_last: true
+  num_workers: 8
+  pin_memory: false
+  prefetch_factor: 2
+  persistent_workers: true
+  timeout: 0
+
+eval_loader:
+  name: text
+  dataset:
+    local: ${data_local}
+    #remote: ${data_remote}
+    split: test
+    max_seq_len: ${max_seq_len}
+    # packing_ratio:
+    shuffle: false
+  drop_last: false
+  num_workers: 8
+  pin_memory: false
+  prefetch_factor: 2
+  persistent_workers: true
+  timeout: 0
+
+# Optimization
+scheduler:
+  name: cosine_with_warmup
+  t_warmup: 0ba
+  alpha_f: 0.1
+
+optimizer:
+  name: decoupled_adamw
+  lr: 1.0e-5
+  betas:
+  - 0.9
+  - 0.95
+  eps: 1.0e-8
+  weight_decay: 1.0e-6
+
+algorithms:
+  gradient_clipping:
+    clipping_type: norm
+    clipping_threshold: 1.0
+
+max_duration: 1ep
+eval_interval: 100ba
+# eval_subset_num_batches: -1
+eval_first: true
+global_train_batch_size: 576  # 12 * 8 * 6
+
+# System
+seed: ${global_seed}
+device_eval_batch_size: 16
+device_train_microbatch_size: 12
+# device_train_microbatch_size: auto
+precision: amp_bf16
+
+# FSDP
+fsdp_config:
+  sharding_strategy: HYBRID_SHARD
+  mixed_precision: PURE
+  activation_checkpointing: true
+  activation_checkpointing_reentrant: false
+  activation_cpu_offload: false
+  limit_all_gathers: true
+  verbose: false
+
+# Logging
+progress_bar: false
+log_to_console: true
+console_log_interval: 1ba
+
+callbacks:
+  speed_monitor:
+    window_size: 5
+    gpu_flops_available: 191.5e+12
+  lr_monitor: {}
+  memory_monitor: {}
+  runtime_estimator: {}
+
+loggers:
+  wandb: {}
+
+# Checkpoint to local filesystem or remote object store
+save_interval: 100ba # 2M tokens per batch = 200M tokens per checkpoint
+save_num_checkpoints_to_keep: 5  # cleans up checkpoints saved to DISK
+save_folder: ./{run_name}/checkpoints
+# save_folder: s3://my-bucket/my-folder/{run_name}/checkpoints
