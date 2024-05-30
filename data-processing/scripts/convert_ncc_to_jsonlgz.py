@@ -23,7 +23,7 @@ from datasets import load_dataset, Dataset, IterableDataset
 
 
 EXPORT_PATH = "ncc.jsonl.gz"
-date_added = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.000Z")
+date_added = datetime.datetime.now().strftime("%Y-%m-%d")
 
 
 def convert_from_iterable_to_ds(iterable_ds: IterableDataset) -> Dataset:
@@ -89,9 +89,9 @@ def _structure_records(obs: dict) -> dict:
     obs = {
         "id": obs["id"],
         "text": obs["text"],
-        "source": "NCC",
+        "source": "ncc",
         "added": date_added,
-        "created": f"{publish_year}-01-01T00:00:00.000Z",
+        "created": f"{publish_year}-01-01, {date_added}",
         "metadata": {
             "doc_type": obs["doc_type"],
             "lang_fasttext": obs["lang_fasttext"],
