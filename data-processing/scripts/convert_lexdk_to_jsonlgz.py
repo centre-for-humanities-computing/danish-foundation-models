@@ -27,12 +27,15 @@ def main():
                 "authors": obj["authors"],
                 "clarification": obj["clarification"],
             }
+
+            created = datetime.datetime.strptime(obj["date"], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d")
+
             new_obj: dict[str, Union[dict[str, str], str]] = {
                 "id": str(idx),
                 "text": obj["text"],
                 "source": "lexdk",
-                "added": datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.000Z"),
-                "created": obj["date"],
+                "added": datetime.datetime.now().strftime("%Y-%m-%d"),
+                "created": created + ", " + created,
                 "metadata": metadata,
             }
             json.dump(new_obj, outputfile)
