@@ -15,9 +15,9 @@ import datetime
 
 from datasets import Dataset, DatasetDict, load_dataset
 
-oldest_case = "1855-02-28T00:00:00.000Z"
-date_added = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.000Z")
-case_time_span = ",".join([oldest_case, date_added])
+oldest_case = "1855-02-28"
+date_added = datetime.datetime.now().strftime("%Y-%m-%d")
+case_time_span = ", ".join([oldest_case, date_added])
 
 
 def reformat_dataset(ds: Dataset) -> Dataset:
