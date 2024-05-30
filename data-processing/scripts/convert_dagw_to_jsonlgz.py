@@ -334,7 +334,7 @@ An example from the dataset looks as follows.
 - **created**": timestamp when original document was created (best-guess if not available)
 - **metadata**: source-specific metadata.
 
-## Lisence Information
+## License Information
 <details>
 <summary>{licenseName}</summary>
 <p>
@@ -399,6 +399,7 @@ def main():
         ds_stream = load_dataset("json", data_files=file_path, split="train", streaming=True)
         example = next(iter(ds_stream))
         assert isinstance(example, dict)
+    print("Datasheets created.")
     print("Dataset saved.")
 
 if __name__ == "__main__":

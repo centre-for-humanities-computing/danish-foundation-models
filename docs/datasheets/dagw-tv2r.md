@@ -45,7 +45,7 @@ Creative Commons Attribution 4.0 International',
 - **created**": timestamp when original document was created (best-guess if not available)
 - **metadata**: source-specific metadata.
 
-## Lisence Information
+## License Information
 <details>
 <summary>Creative Commons Attribution Share Alike 4.0</summary>
 <p>

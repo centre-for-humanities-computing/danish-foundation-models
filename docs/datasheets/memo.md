@@ -42,7 +42,8 @@ An example from the dataset looks as follows.
         'typeface': 'gothic',
         'publisher': 'Reitzel',
         'price': '2,25',
-        'file_status': 'Modtaget fra KB 7.4.2022 DEL2 sending 5', 'notes': "OBS! PDF'en er ren tekst i antikva, men den fysiske bog formentlig fraktur. Det kalder på separate kolonner: pdf-typeface eller file-typeface og book-typeface. /PD",
+        'file_status': 'Modtaget fra KB 7.4.2022 DEL2 sending 5',
+        'notes': "OBS! PDF'en er ren tekst i antikva, men den fysiske bog formentlig fraktur. Det kalder på separate kolonner: pdf-typeface eller file-typeface og book-typeface. /PD",
         'filepath': None,
         'fileformat': 'pdftxt',
         'txt_received': 'y',
@@ -72,7 +73,7 @@ An example from the dataset looks as follows.
 - **created**": timestamp when original document was created (best-guess if not available)
 - **metadata**: source-specific metadata.
 
-## Lisence Information
+## License Information
 <details>
 <summary>Creative Commons Attribution 4.0 International</summary>
 <p>
