@@ -31,8 +31,10 @@ def process_one(output_dir: Path, input_path: Path) -> None:
             new_obj: dict[str, Union[dict[str, str], str]] = {
                 "id": str(obj["id"]),
                 "text": obj["text"],
-                "source": "hplt1.2",
-                "added": datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+                # "source": "hplt1.2",
+                "source": "hplt",
+                "added": datetime.datetime.now().strftime("%Y-%m-%d"),
+                "created": "2000-01-01, 2024-05-30",
                 "metadata": {},
             }
             for key, val in obj.items():

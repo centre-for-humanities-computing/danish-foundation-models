@@ -14,8 +14,8 @@ import datetime
 
 from datasets import Dataset, DatasetDict, load_dataset  # type: ignore
 
-reddit_time = "2005-12-01T00:00:00.000Z, 2022-11-01T00:00:00.000Z"
-date_added = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.000Z")
+reddit_time = "2005-12-01, 2022-11-01"
+date_added = datetime.datetime.now().strftime("%Y-%m-%d")
 
 
 def reformat_dataset(ds: Dataset) -> Dataset:

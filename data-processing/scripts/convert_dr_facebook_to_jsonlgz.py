@@ -9,7 +9,7 @@ import sys
 from zoneinfo import ZoneInfo
 
 def convert_file(input_path: Path, output_dir: Path):
-    added_time = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+    added_time = datetime.datetime.now().strftime("%Y-%m-%d"),
     with tarfile.open(input_path, "r") as tarf:
         for member in tarf.getmembers():
             iobytes = tarf.extractfile(member)
@@ -19,9 +19,9 @@ def convert_file(input_path: Path, output_dir: Path):
                 reader = csv.DictReader(iotext)
                 for i, row in enumerate(reader):
                     tz = ZoneInfo("Europe/Copenhagen")
-                    created_date = datetime.datetime.strptime(row["date"], "%Y-%m-%d %H:%M:%S")
-                    tz_name = tz.tzname(created_date) or ""
-                    created_date_str = created_date.strftime("%Y-%m-%dT%H:%M:%S.000") + tz_name
+                    created_date = datetime.datetime.strptime(row["date"], "%Y-%m-%d")
+                    # tz_name = tz.tzname(created_date) or ""
+                    created_date_str = created_date.strftime("%Y-%m-%d") + ", " + added_time
                     new_obj = {
                         "id": str(i),
                         "text": row["text"],

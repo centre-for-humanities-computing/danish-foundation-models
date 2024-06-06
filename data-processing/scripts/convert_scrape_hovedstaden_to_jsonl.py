@@ -11,20 +11,22 @@ import tqdm
 
 def process_file(file_path):
     try:
-        added_timestamp = datetime.utcfromtimestamp(os.path.getctime(file_path)).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        # added_timestamp = datetime.utcfromtimestamp(os.path.getctime(file_path)).strftime('%Y-%m-%d')
+        added_timestamp = datetime.now().strftime('%Y-%m-%d')
         with open(file_path, 'r', encoding='utf-8') as file:
             text_content = file.read()
-        
+
         json_object = {
             "id": f"doc_hovedstaden_{os.path.splitext(os.path.basename(file_path))[0]}",
             "text": text_content,
-            "source": "University of Southern Denmark (SDU) & Capital Region",
+            "source": "scrape_hovedstaden",
             "added": added_timestamp,
-            "created": "2023-11-16T13:44:00+01:00, 2024-04-04T09:09:00+02:00",
+            "created": "2023-11-16, 2024-04-04",
             "metadata": {
                 "subject": "health",
                 "language": "danish",
                 "organization": "The Danish Agency for Digitalisation",
+                "source-pretty": "University of Southern Denmark (SDU) & Capital Region",
                 "URL": "https://sprogteknologi.dk/dataset/1076892a-14ee-4f14-a9db-32efb03c40c9"
             }
         }
@@ -58,7 +60,7 @@ def convert_txt_to_jsonl_gz(directory, output_file):
 
 def main():
     directory = '/work/github/capital_region/korpus/renset'
-    output_file = 'scrape_hovedstaden.jsonl.gz'
+    output_file = '/work/dfm-data/pre-training/scrape_hovedstaden/documents/scrape_hovedstaden.jsonl.gz'
     convert_txt_to_jsonl_gz(directory, output_file)
 
 if __name__ == '__main__':

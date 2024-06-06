@@ -1,6 +1,5 @@
 """
 downloads dataset and save it as jsonl.gz file with the format:
-
 {
     "id": "...",             # MANDATORY: source-specific identifier
     "text": "foo",           # MANDATORY: textual content of the document
@@ -9,54 +8,55 @@ downloads dataset and save it as jsonl.gz file with the format:
     "created": "..."         # OPTIONAL: timestamp when orig document was created (best-guess if not available)
     "metadata": {...}        # OPTIONAL: source-specific metadata
 }
-
 The dataset contains reference and summaries. As we use this dataset for pretraining we
 concatenate reference and summary
-
 """
 import datetime
 
-from datasets import Dataset, DatasetDict, load_dataset # type: ignore
+from datasets import Dataset, DatasetDict, load_dataset
 
-eu_start_time = "1993-11-01"
+oldest_case = "1855-02-28"
 date_added = datetime.datetime.now().strftime("%Y-%m-%d")
-eu_time_span = ", ".join([eu_start_time, date_added])
+case_time_span = ", ".join([oldest_case, date_added])
 
 
 def reformat_dataset(ds: Dataset) -> Dataset:
-    # current keys: ['celex_id', 'reference', 'summary']
+    # current keys:
+    # ['case_id', 'Overskrift', 'Afgørelsesstatus', 'Faggruppe', 'Ret', 'Rettens sagsnummer', 'Sagstype', 'Instans', 'Domsdatabasens sagsnummer', 'Sagsemner', 'Særlige retsskridt', 'Sagsdeltagere', 'Dørlukning', 'Løftet ud af småsagsprocessen', 'Anerkendelsespåstand', 'Politiets journalnummer', 'Påstandsbeløb', 'Sagskomplekser', 'text', 'text_anonymized', 'text_len', 'text_anon_len']
 
     # rename celex_id to id
-    ds = ds.rename_column("celex_id", "id")
+    ds = ds.rename_column("case_id", "id")
 
     # add source column
-    source_column = ["eur-lex-sum-da"] * len(ds)  # type: ignore
+    source_column = ["domsdatabasen"] * len(ds)  # type: ignore
     ds = ds.add_column("source", source_column)  # type: ignore
 
     # add created column
-    created_column = [eu_time_span] * len(ds)  # type: ignore
+    created_column = [case_time_span] * len(ds)  # type: ignore
     ds = ds.add_column("created", created_column)  # type: ignore
 
     # add added column
     added_column = [date_added] * len(ds)  # type: ignore
     ds = ds.add_column("added", added_column)  # type: ignore
 
+    metadata_keys = ['Overskrift', 'Afgørelsesstatus', 'Faggruppe', 'Ret', 'Rettens sagsnummer', 'Sagstype', 'Instans', 'Domsdatabasens sagsnummer', 'Sagsemner', 'Særlige retsskridt', 'Sagsdeltagere', 'Dørlukning', 'Løftet ud af småsagsprocessen', 'Anerkendelsespåstand', 'Politiets journalnummer', 'Påstandsbeløb', 'Sagskomplekser', 'text_len']
     # add metadata
     ds = ds.map(  # type: ignore
         lambda x: {  # type: ignore
-            "text": x["reference"] + "\n" + x["summary"],
+            "text": x["text"],
             "metadata": {
-                "summary_start": len(x["reference"] + "\n"),  # type: ignore
+                k: x[k] for k in metadata_keys  # type: ignore
             }
         },
     )  # type: ignore
-    ds = ds.remove_columns(["reference", "summary"])  # type: ignore
+    ds = ds.remove_columns(["text_anonymized", "text_anon_len"])  # type: ignore
+    ds = ds.remove_columns(metadata_keys)  # type: ignore
 
     return ds  # type: ignore
 
 
 def main():
-    ds = load_dataset("dennlinger/eur-lex-sum", "danish")
+    ds = load_dataset("alexandrainst/domsdatabasen")
     assert isinstance(ds, DatasetDict)
     # We take only the train dataset in case this dataset is used for model evaulation
     ds = ds["train"]
@@ -66,20 +66,20 @@ def main():
     ds = reformat_dataset(ds)
 
     # save to jsonl.gz
-    ds.to_json("eur-lex-sum-da.jsonl.gz", orient="records", lines=True, compression="gzip")  # type: ignore
+    ds.to_json("domsdatabasen.jsonl.gz", orient="records", lines=True, compression="gzip")  # type: ignore
 
 
 if __name__ == "__main__":
     main()
 
     # # test that it load back in
-    ds = load_dataset("json", data_files="eur-lex-sum-da.jsonl.gz", split="train")
+    ds = load_dataset("json", data_files="domsdatabasen.jsonl.gz", split="train")
     assert isinstance(ds[0], dict)  # type: ignore
 
     # test that it can be streamed
     ds = load_dataset(
         "json",
-        data_files="eur-lex-sum-da.jsonl.gz",
+        data_files="domsdatabasen.jsonl.gz",
         split="train",
         streaming=True,
     )
