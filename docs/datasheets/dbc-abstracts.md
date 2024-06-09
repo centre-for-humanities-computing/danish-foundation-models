@@ -1,4 +1,21 @@
-
+---
+pretty_name: dbc-abstracts
+language:
+  - da
+  - en
+  - "no"
+  - sv
+  - ty
+license: other
+license_name: agreement (public models, private data)
+size_categories:
+  - 10-100m
+task_categories:
+  - text-generation
+  - fill-mask
+task_ids:
+  - language-modeling
+---
 # dbc-abstracts: all abstract from DBC D1G1TAL
 
 *Version*: 1.0.0

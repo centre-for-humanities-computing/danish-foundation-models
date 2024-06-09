@@ -1,4 +1,21 @@
-
+---
+pretty_name: dbc-reviews
+language:
+  - da
+  - en
+  - "no"
+  - sv
+  - ty
+license: other
+license_name: agreement (public models, private data)
+size_categories:
+  - 0.1-1m
+task_categories:
+  - text-generation
+  - fill-mask
+task_ids:
+  - language-modeling
+---
 # dbc-reviews: all reviews from DBC D1G1TAL
 
 *Version*: 1.0.0

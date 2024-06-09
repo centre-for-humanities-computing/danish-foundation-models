@@ -1,4 +1,17 @@
-
+---
+pretty_name: dbc-forfatterweb
+language:
+  - da
+license: other
+license_name: agreement (public models, private data)
+size_categories:
+  - 1-10k
+task_categories:
+  - text-generation
+  - fill-mask
+task_ids:
+  - language-modeling
+---
 # dbc-forfatterweb: all forfatterweb articles from DBC D1G1TAL
 
 *Version*: 1.0.0

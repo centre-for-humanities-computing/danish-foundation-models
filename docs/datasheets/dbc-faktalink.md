@@ -1,4 +1,17 @@
-
+---
+pretty_name: dbc-faktalink
+language:
+  - da
+license: other
+license_name: agreement (public models, private data)
+size_categories:
+  - 0.1-1k
+task_categories:
+  - text-generation
+  - fill-mask
+task_ids:
+  - language-modeling
+---
 # dbc-faktalink: all faktalink articles from DBC D1G1TAL
 
 *Version*: 1.0.0
