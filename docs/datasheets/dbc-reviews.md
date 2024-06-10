@@ -5,7 +5,7 @@ language:
   - en
   - "no"
   - sv
-  - ty
+  - de
 license: other
 license_name: agreement (public models, private data)
 size_categories:
