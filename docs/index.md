@@ -86,8 +86,8 @@ From [the Alexandra Institute](https://alexandra.dk/):
   - Peter Bjørn Jørgensen ([peter.jorgensen@alexandra.dk](peter.jorgensen@alexandra.dk))
   - Rasmus Larsen ([rasmus.larsen@alexandra.dk](rasmus.larsen@alexandra.dk))
   - Dan Saattrup Nielsen ([dan.nielsen@alexandra.dk](dan.nielsen@alexandra.dk))
-  - Andreas Nugaard Holm
-  - Anders Jess Pedersen
+  - Andreas Nugaard Holm ([andreas.holm@alexandra.dk](andreas.holm@alexandra.dk))
+  - Anders Jess Pedersen ([anders.j.pedersen@alexandra.dk](anders.j.pedersen@alexandra.dk))
 
 From [the Center for AI Science and Applications at the University of Southern Denmark](https://sdu.dk/casa):
 
