@@ -1,0 +1,4 @@
+duckdb
+httpx
+aiofiles
+tqdm
