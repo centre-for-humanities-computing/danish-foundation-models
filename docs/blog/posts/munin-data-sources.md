@@ -6,7 +6,7 @@ auther: jens.benner@alexandra.dk
 
 
 # Datakilder
-De data som sprogmodeller trænes på er afgørende for hvad de kan bruges til. I Danish Foundation Models er tilgangen at vi skal have sikkerhed for at vi må benytte de data vi træner på fra data ejere, samt at vi har fokus på værdiskabende use-cases. Dette gør vi blandt andet gennem samarbejdet med [Dansk Sprogmodel Konsortium](https://alexandra.dk/dansk-sprogmodel-konsortium/).
+De data som sprogmodeller trænes på er afgørende for hvad de kan bruges til. I Danish Foundation Models (DFM) er tilgangen at vi skal have sikkerhed for at vi må benytte de data vi træner på fra data ejere, samt at vi har fokus på værdiskabende use-cases. Dette gør vi blandt andet gennem samarbejdet med [Dansk Sprogmodel Konsortium](https://alexandra.dk/dansk-sprogmodel-konsortium/).
 
 <!-- more -->
 ## Nuværende datakilder
