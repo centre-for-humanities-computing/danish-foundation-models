@@ -69,7 +69,7 @@ temp. removed (see DDSC slack channel: NLP)
 The Danish Foundations models collaborate with the [Danish Data Science Community](https://danskdatascience.dk/), [Centre for Humanities Computing Aarhus](https://chcaa.io/), [The Alexandra Institute](https://alexandra.dk), and [Center for AI Science and Applications](https://sdu.dk/casa) to promote the development of Danish language tools. We continually gather information about how to improve the Danish language technologies and how to best support the community. To this end we have created a [list of missing pieces for Danish NLP](https://github.com/centre-for-humanities-computing/danish-foundation-models/discussions/categories/missing-pieces-for-danish-nlp) and we invite any 1) to add to the list, 2) solve one of the problems or 3) upvote the problems you think are most important.
 
 
-## The Team
+## The Core Team
 
 From [the Center for Humanities Computing at Aarhus University](https://chc.au.dk/):
 
@@ -83,24 +83,27 @@ From [the Center for Humanities Computing at Aarhus University](https://chc.au.d
 
 From [the Alexandra Institute](https://alexandra.dk/):
 
-  - Peter Bjørn Jørgensen ([peter.jorgensen@alexandra.dk](peter.jorgensen@alexandra.dk))
   - Rasmus Larsen ([rasmus.larsen@alexandra.dk](rasmus.larsen@alexandra.dk))
   - Dan Saattrup Nielsen ([dan.nielsen@alexandra.dk](dan.nielsen@alexandra.dk))
   - Andreas Nugaard Holm ([andreas.holm@alexandra.dk](andreas.holm@alexandra.dk))
   - Anders Jess Pedersen ([anders.j.pedersen@alexandra.dk](anders.j.pedersen@alexandra.dk))
+  - Jens Kaas Benner([jens.benner@alexandra.dk](jens.benner@alexandra.dk))
 
 From [the Center for AI Science and Applications at the University of Southern Denmark](https://sdu.dk/casa):
 
   - Peter Schneider-Kamp ([petersk@imada.sdu.dk](petersk@imada.sdu.dk))
+
+From [the Department of Computer Science at the University of Copenhagen](https://di.ku.dk/):
+
+  - Desmond Elliott
+
+## Core Contributers
 
 From [Alvenir](https://www.alvenir.ai/):
 
   - Martin Carsten Nielsen ([martin@alvenir.ai](martin@alvenir.ai))
   - Søren Vejlgaard Holm ([swh@alvenir.ai](swh@alvenir.ai))
 
-From [the Department of Computer Science at the University of Copenhagen](https://di.ku.dk/):
-
-  - Desmond Elliott
 
 ## Join Us
 
