@@ -70,7 +70,7 @@ The Danish Foundations models collaborate with the [Danish Data Science Communit
 
 ## Contributors
 
-### Data-Access Contributors
+## The Core Team
 Those with data access, who contribute to the project, including data management, model development, project management, and more.
 
 From [the Center for Humanities Computing at Aarhus University](https://chc.au.dk/):
@@ -85,11 +85,11 @@ From [the Center for Humanities Computing at Aarhus University](https://chc.au.d
 
 From [the Alexandra Institute](https://alexandra.dk/):
 
-  - Peter Bjørn Jørgensen ([peter.jorgensen@alexandra.dk](peter.jorgensen@alexandra.dk))
   - Rasmus Larsen ([rasmus.larsen@alexandra.dk](rasmus.larsen@alexandra.dk))
   - Dan Saattrup Nielsen ([dan.nielsen@alexandra.dk](dan.nielsen@alexandra.dk))
   - Andreas Nugaard Holm ([andreas.holm@alexandra.dk](andreas.holm@alexandra.dk))
   - Anders Jess Pedersen ([anders.j.pedersen@alexandra.dk](anders.j.pedersen@alexandra.dk))
+  - Jens Kaas Benner([jens.benner@alexandra.dk](jens.benner@alexandra.dk))
 
 From [the Center for AI Science and Applications at the University of Southern Denmark](https://sdu.dk/casa):
 
@@ -99,7 +99,7 @@ From [the Department of Computer Science at the University of Copenhagen](https:
 
   - Desmond Elliott
 
-### Open-Source Contributors
+### Core Contributors
 Those without data access, but who have contributed substantially to the project including code contributions, model development, and experiment planning.
 
 From [Alvenir](https://www.alvenir.ai/):
