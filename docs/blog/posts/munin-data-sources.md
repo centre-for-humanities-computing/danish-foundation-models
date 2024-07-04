@@ -1,11 +1,12 @@
 ---
 draft: false
 date: 2024-07-04
+auther: jens.benner@alexandra.dk
 ---
 
 
 # Datakilder
-De data som sprogmodeller trænes på er afgørende for hvad de kan bruges til. I Danish Foundation Models er tilgangen at vi skal have sikkerhed for at vi må benytte de data vi træner på fra data ejere, samt at vi har fokus på værdiskabende use-cases. Dette gør vi blandt andet gennem samarbejdet med Dansk Sprogmodel Konsortium (https://alexandra.dk/dansk-sprogmodel-konsortium/).
+De data som sprogmodeller trænes på er afgørende for hvad de kan bruges til. I Danish Foundation Models er tilgangen at vi skal have sikkerhed for at vi må benytte de data vi træner på fra data ejere, samt at vi har fokus på værdiskabende use-cases. Dette gør vi blandt andet gennem samarbejdet med [Dansk Sprogmodel Konsortium](https://alexandra.dk/dansk-sprogmodel-konsortium/).
 
 <!-- more -->
 ## Nuværende datakilder
@@ -41,7 +42,7 @@ Vi arbejder kontinuerligt på at indsamle data fra flere kilder. Nedenstående t
 | DDT (*)	                | nutidig	  | Andet	                | CC-BY-SA 4.0	   | 546k      |
 | Sønderjysk (*)	        |nutidig	  | Sønderjysk	           |  CC0-1.0		       | 140k      |
 
-Listen vil løbende blive opdateret med flere datakilder. Data kommer bl.a. til at være fra samarbejdet med Dansk Sprogmodel Konsortium. Det skal bemærkes at nogle af datasættene kommer fra Danish Gigaword (https://gigaword.dk/), angivet i tabellen med (*).
+Listen vil løbende blive opdateret med flere datakilder. Data kommer bl.a. til at være fra samarbejdet med Dansk Sprogmodel Konsortium. Det skal bemærkes at nogle af datasættene kommer fra [Danish Gigaword](https://gigaword.dk/), angivet i tabellen med (*).
 
 ## Respekt for dataejere
 Vi har den største respekt for dem, der ejer data. Vi forstår, hvor vigtigt det er at beskytte og respektere dataejeres ønsker om hvad deres data må bruges til. Hvis du har nogen spørgsmål vedrørende de data vi bruger, er du altid velkommen til at kontakte os. Vi er meget åbne for dialog og sætter pris på input, da det hjælper os med at forbedre vores praksis og sikre, at vi lever op til dataejeres ønsker. Din feedback er vigtig for os, og vi ser frem til at høre fra dig.
