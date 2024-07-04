@@ -7,6 +7,7 @@ date: 2024-01-11
 # Datakilder
 De data som sprogmodeller trænes på er afgørende for hvad de kan bruges til. I Danish Foundation Models er tilgangen at vi skal have sikkerhed for at vi må benytte de data vi træner på fra data ejere, samt at vi har fokus på værdiskabende use-cases. Dette gør vi blandt andet gennem samarbejdet med Dansk Sprogmodel Konsortium (https://alexandra.dk/dansk-sprogmodel-konsortium/).
 
+<!-- more -->
 ## Nuværende datakilder
 Vi arbejder kontinuerligt på at indsamle data fra flere kilder. Nedenstående tabel indeholder kilder som lige nu, efter bedste overbevisning, kan anvendes til træning af en dansk sprogmodel. Mængden af data vi har nu, er ikke tilstrækkelig til at træne en dansk sprogmodel fra grunden. Størrelsen er angivet i antal tegn.
 
