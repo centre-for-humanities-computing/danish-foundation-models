@@ -6,7 +6,8 @@ date: 2024-07-08
 # Datahåndtering
 Alt dataklargørelse foregår på UCloud. Figuren viser den proces alt data skal igennem før det bruges til træning af sprogmodellen. Det rå data beholdes i sin oprindelige form på UCloud. Derefter annoteres de rå data med metadata.
 Dette datasæt overføres til en GPU-accelereret supercomputer igennem en sikker forbindelse, hvorefter selve træningen af modellen begyndes. Under træningen gemmes flere checkpoints med modelvægte. De gemte checkpoints med modelvægte publiceres sammen med modelkode og anvendes til at køre modellen. De tre processor er beskrevet i detalje nedenfor.
-![Data processing pipeline](../../_static/munin-data-pipeline-da-simplified.drawio.png "Munin data-processering")
+
+![](../../_static/munin-data-pipeline-da-simplified.drawio.png)
 
 ## Metadata og formatering
 Det rå data annoteres med to typer af metadata. Den første type er et datablad (i Markdown, som i HuggingFace dataset cards) der opsummerer hele datasættet og beskriver bl.a. proveniens og hvilken licens der er pålagt det givne datasæt. Et udsnit af et databladseksempel er vist nedenfor. Den første del af databladet er annoteret i et maskinvenligt format, som gør det muligt at automatisk udvælge datasættet blandt en større samling. Resten af databladet giver en dybere beskrivelse af datasættet i fritekst.
@@ -63,7 +64,7 @@ Det standardiserede format muliggør en ensartet processering af dokumenterne. D
 
 De enkelte trin er beskrevet i nedenstående afsnit. Efter filtreringstrinene bliver vores tekstdata tokenized, dvs. konverteret til et binært format der kan læses af modellen.
 
-![Data processerings pipeline](../../_static/munin-data-pipeline-da-simplified.drawio.png "Munin data-filtrering")
+![](../../_static/munin-data-pipeline-da-simplified.drawio.png)
 
 ### URL-filtrering
 
