@@ -3,14 +3,22 @@ draft: false
 date: 2024-07-08
 ---
 
-# Datahåndtering
-Alt dataklargørelse foregår på UCloud. Figuren viser den proces alt data skal igennem før det bruges til træning af sprogmodellen. Det rå data beholdes i sin oprindelige form på UCloud. Derefter annoteres de rå data med metadata.
+# Dataplatform og datahåndtering
+Her følger en overordnet beskrivelse af hvilken process rådata gennemgår for at kunne bruge data til træning af sprogmodeller (LLM'er).
+
+## Sikker håntering 
+[DeiC](https://www.deic.dk/da).
+Alle data gemmes på [UCloud](https://docs.cloud.sdu.dk/intro/security.html). som er en platform, der opretholder de anerkendte højeste standarder inden for informationssikkerhedsstyring. Platformem er ISO27001, som er en globalt anerkendt standard, der sikrer, at vores datahåndteringspraksis opfylder strenge internationale kriterier. For mere information om vores sikkerhedsforanstaltninger, besøg UClouds [sikkerhedsdokumentation](https://docs.cloud.sdu.dk/intro/security.html).
+
+## Dataklargørelse
+Alt dataklargørelse foregår på [UCloud](https://docs.cloud.sdu.dk/intro/security.html). Figuren viser den proces alt data skal igennem før det bruges til træning af sprogmodellen. Det rå data beholdes i sin oprindelige form på UCloud. Derefter annoteres de rå data med metadata.
+
 Dette datasæt overføres til en GPU-accelereret supercomputer igennem en sikker forbindelse, hvorefter selve træningen af modellen begyndes. Under træningen gemmes flere checkpoints med modelvægte. De gemte checkpoints med modelvægte publiceres sammen med modelkode og anvendes til at køre modellen. De tre processor er beskrevet i detalje nedenfor.
 
 ![](../../_static/munin-data-pipeline-da-simplified.drawio.png)
 
 ## Metadata og formatering
-Det rå data annoteres med to typer af metadata. Den første type er et datablad (i Markdown, som i HuggingFace dataset cards) der opsummerer hele datasættet og beskriver bl.a. proveniens og hvilken licens der er pålagt det givne datasæt. Et udsnit af et databladseksempel er vist nedenfor. Den første del af databladet er annoteret i et maskinvenligt format, som gør det muligt at automatisk udvælge datasættet blandt en større samling. Resten af databladet giver en dybere beskrivelse af datasættet i fritekst.
+Det rå data annoteres med to typer af metadata. Den første type er et datablad (i Markdown, som i [HuggingFace dataset cards](https://huggingface.co/docs/hub/en/datasets-cards) der opsummerer hele datasættet og beskriver bl.a. proveniens og hvilken licens der er pålagt det givne datasæt. Et udsnit af et databladseksempel er vist nedenfor. Den første del af databladet er annoteret i et maskinvenligt format, som gør det muligt at automatisk udvælge datasættet blandt en større samling. Resten af databladet giver en dybere beskrivelse af datasættet i fritekst.
 
 ```markdown
 ---
@@ -108,3 +116,7 @@ I dokument-deduplikering sammenlignes alle dokumenter på tværs af det rensede 
 Når en model trænes på data, som indeholder personhenførbar information, medfører det en risiko for at modellen reproducerer denne information under kørsler. Så vidt det er muligt detekteres disse kategorier og erstattes med generiske erstatninger af samme type. Eksempler på personhenførbar information kunne være: Navne, E-mail, Telefonnumre, CPR-numre.
 
 En udfordring er at hverken menneskelig eller maskinel fjernelse af personhenførbar information er 100% nøjagtigt, så datasæt uden disse er at foretrække. 
+
+## Dialog
+
+Hvis du har spørgsmål, er du altid velkommen til at skrive til os. Vi er altid åben for input, dialog og sprøgrmål.
