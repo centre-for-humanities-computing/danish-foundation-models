@@ -3,7 +3,7 @@ draft: false
 date: 2024-07-08
 ---
 
-# Dataplatform og datahåndtering
+# Datahåndtering
 Her følger en overordnet beskrivelse af hvilken process rådata gennemgår for at kunne bruge data til træning af sprogmodeller (LLM'er).
 
 ## Sikker håntering 
