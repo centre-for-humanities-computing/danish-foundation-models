@@ -35,7 +35,7 @@ task_ids:
 
 Den anden type af metadata er per-dokument metadata, der beskriver hvilket datasæt dokumentet hører til, hvornår det stammer fra, hvornår det er tilføjet, samt andre metadata f.eks. fra hvilken URL dokumentet kommer fra. Per dokument-metadata gemmes sammen med dokumentet i et standardiseret jsonl format. Et eksempel på et enkelt dokument inklusiv metadata fra "Scrape from Hovedstaden" datasættet er vist nedenfor. Disse metadata følger dokumentet igennem hele processeringen, så det er muligt at spore dokumenterne tilbage til kilden fra det endelige træningskorpus. For hvert rå datasæt vedligeholdes et script der kan bruges til konvertering af de rå data til det standardiserede format.
 
-```json
+```yaml
 {
     'id': 'doc_hovedstaden_Rigshospitalet_BedЫvelse og Intensiv Behandling (NEU)_Transkraniel Doppler - NIA 6021',
     'text': 'Transkraniel Doppler - NIA 6021\n\nMålgrupper og anv...',
@@ -64,7 +64,7 @@ Det standardiserede format muliggør en ensartet processering af dokumenterne. D
 
 De enkelte trin er beskrevet i nedenstående afsnit. Efter filtreringstrinene bliver vores tekstdata tokenized, dvs. konverteret til et binært format der kan læses af modellen.
 
-![](../../_static/munin-data-pipeline-da-simplified.drawio.png)
+![](../../_static/munin-data-pipeline-da.drawio.png)
 
 ### URL-filtrering
 
