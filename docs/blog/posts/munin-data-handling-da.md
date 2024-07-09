@@ -6,7 +6,7 @@ date: 2024-07-08
 # Datahåndtering
 Her følger en overordnet beskrivelse af hvilken process rådata gennemgår for at kunne bruge data til træning af sprogmodeller (LLM'er).
 
-## Sikker håntering 
+## Sikker håndtering 
 [DeiC](https://www.deic.dk/da).
 Alle data gemmes på [UCloud](https://docs.cloud.sdu.dk/intro/security.html). som er en platform, der opretholder de anerkendte højeste standarder inden for informationssikkerhedsstyring. Platformem er ISO27001, som er en globalt anerkendt standard, der sikrer, at vores datahåndteringspraksis opfylder strenge internationale kriterier. For mere information om vores sikkerhedsforanstaltninger, besøg UClouds [sikkerhedsdokumentation](https://docs.cloud.sdu.dk/intro/security.html).
 
@@ -41,7 +41,7 @@ task_ids:
 - **Languages:** Danish
 ```
 
-Den anden type af metadata er per-dokument metadata, der beskriver hvilket datasæt dokumentet hører til, hvornår det stammer fra, hvornår det er tilføjet, samt andre metadata f.eks. fra hvilken URL dokumentet kommer fra. Per dokument-metadata gemmes sammen med dokumentet i et standardiseret jsonl format. Et eksempel på et enkelt dokument inklusiv metadata fra "Scrape from Hovedstaden" datasættet er vist nedenfor. Disse metadata følger dokumentet igennem hele processeringen, så det er muligt at spore dokumenterne tilbage til kilden fra det endelige træningskorpus. For hvert rå datasæt vedligeholdes et script der kan bruges til konvertering af de rå data til det standardiserede format.
+Den anden type af metadata er per-dokument metadata, der beskriver hvilket datasæt dokumentet hører til, hvornår det stammer fra, hvornår det er tilføjet, samt andre metadata f.eks. fra hvilken URL dokumentet kommer fra. Per dokument-metadata gemmes sammen med dokumentet i et standardiseret jsonl format. Et eksempel på et enkelt dokument inklusiv metadata fra datasættet "Scrape from Hovedstaden" er vist nedenfor. Disse metadata følger dokumentet igennem hele processeringen, så det er muligt at spore dokumenterne tilbage til kilden fra det endelige træningskorpus. For hvert rå datasæt vedligeholdes et script der kan bruges til konvertering af de rå data til det standardiserede format.
 
 ```yaml
 {
@@ -65,10 +65,11 @@ Flere detaljer om formatet er beskrevet [her](https://github.com/centre-for-huma
 ## Filtrering
 
 Det standardiserede format muliggør en ensartet processering af dokumenterne. De enkelte filtreringstrin kan inddeles i følgende kategorier:
- - URL-filter
- - Deduplikering
+ - URL-filter (kun for web-data)
+ - Linje-deduplikering
  - Kvalitetsfilter
  - Fjernelse af personoplysninger
+ - Dokument-deduplikering
 
 De enkelte trin er beskrevet i nedenstående afsnit. Efter filtreringstrinene bliver vores tekstdata tokenized, dvs. konverteret til et binært format der kan læses af modellen.
 
@@ -76,7 +77,7 @@ De enkelte trin er beskrevet i nedenstående afsnit. Efter filtreringstrinene bl
 
 ### URL-filtrering
 
-Data som kommer fra offentlige hjemmesider og dermed har en URL som metadata, bliver først processeret af et URL-filter. 
+Data som kommer fra offentlige hjemmesider og dermed har en URL som metadata, bliver først processeret af et URL-filter.
 
 For alle domæner i datasættet hentes domænets robots.txt og ai.txt periodisk. Hvis disse ikke tillader CommonCrawl eller andre sprogmodel-crawlers tilføjes domænet til en blokeringsliste og dokumenter der stammer fra disse domæner filtreres væk, selv om de pågældende sider måtte være hentet på et tidspunkt, hvor robots.txt/ai.txt ikke blokerede for denne type for crawling.
 
@@ -99,10 +100,6 @@ Derudover anvendes blokeringslister fra forskellige offentligt tilgængelige dat
  - Vaping
  - Social Networks
 
-### Kvalitetsfilter
-
-Web-data kan indeholde meget støj i form a stumper af HTML eller andet kode og ufuldstændige sætninger. Der anvendes forskellige heuristikker, som er baseret på statistik for almindelig tekst, der fanger disse dokumenter af dårlig kvalitet. Vi bruger PT samme filtre som Gopher og C4, men der undersøges også mulighed for filtrering baseret på perpleksitet og andre metrikker.
-
 ### Deduplikering
 
 Deduplikering anvendes til at fjerne gentagelser. Gentagelser i træningsdata kan påvirke modellen i en uønsket retning. Der anvendes to typer af deduplikering linje-deduplikering og dokument-deduplikering
@@ -110,6 +107,10 @@ Deduplikering anvendes til at fjerne gentagelser. Gentagelser i træningsdata ka
 Linje-deduplikering er en proces hvor gentagne linjer fjernes på tværs af dokumenter. Dette er især anvendeligt på web-data, hvor f.eks. cookie notifikationer og menuer gentages på tværs af mange sider. Denne type af deduplikering implementeres effektivt vha. et såkaldt Bloom filter. Visse typer af datasæt kan med fordel fritages for linje-deduplikering. F.eks. vil der i juridiske dokumenter ofte indgå en række standard formuleringer og deduplikering af disse kan ødelægge dokumenternes betydningsindhold.
 
 I dokument-deduplikering sammenlignes alle dokumenter på tværs af det rensede dokumentkorpus og dokumenter der indholdsmæssigt er tilpas tæt på hinanden grupperes i en klynge. Fra hver klynge udtrækkes ét enkelt dokument. På den måde undgås at visse dokumenter bliver overrepræsenteret i det endelige datasæt. 
+
+### Kvalitetsfilter
+
+Web-data kan indeholde meget støj i form a stumper af HTML eller andet kode og ufuldstændige sætninger. Der anvendes forskellige heuristikker, som er baseret på statistik for almindelig tekst, der fanger disse dokumenter af dårlig kvalitet. Vi bruger PT samme filtre som Gopher og C4, men der undersøges også mulighed for filtrering baseret på perpleksitet og andre metrikker.
 
 ### Personhenførbar Information
 
@@ -119,4 +120,4 @@ En udfordring er at hverken menneskelig eller maskinel fjernelse af personhenfø
 
 ## Dialog
 
-Hvis du har spørgsmål, er du altid velkommen til at skrive til os. Vi er altid åben for input, dialog og sprøgrmål.
+Hvis du har spørgsmål, er du altid velkommen til at skrive til os. Vi er altid åben for input, dialog og spørgsmål.
