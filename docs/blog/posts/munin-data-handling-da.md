@@ -4,11 +4,13 @@ date: 2024-07-09
 ---
 
 # Datahåndtering
-Følgende er en overordnet beskrivelse af processen som rådata gennemgår, før det kan bruges til træning af sprogmodeller (LLM'er).
+For at kunne træne sprogmodeller (Large Language Models, LLM) skal der store mængder af data til. Fra vi modtager rådata til at de kan bruges til at træne sprogmodeller på, gennemgår de en transformationsprocess.
 
+Følgende er en overordnet beskrivelse af denne processen. Vi udvikler og forbedre løbende processen, for at sikre at vi bruger state-pf-the-art metoder og praksis.
+
+<!-- more -->
 ## Sikker håndtering 
-[DeiC](https://www.deic.dk/da).
-Alle data gemmes på [UCloud](https://docs.cloud.sdu.dk/intro/security.html), som er en platform, der opretholder de anerkendte højeste standarder inden for informationssikkerhedsstyring. Platformen er ISO27001, som er en globalt anerkendt standard, der sikrer at vores datahåndteringspraksis opfylder strenge internationale kriterier. For mere information om vores sikkerhedsforanstaltninger, besøg UClouds [sikkerhedsdokumentation](https://docs.cloud.sdu.dk/intro/security.html).
+I Danish Foundation Model bruger vi Danish e-infrastructure Consortium [DeiC](https://www.deic.dk/da/om-deic) og [UCloud](https://docs.cloud.sdu.dk/intro/security.html) til data håndtering. UCloud platformen er [ISO27001](https://www.iso.org/standard/27001) godkendt. Det er globalt anerkendt standard, der sikrer at vores datahåndteringspraksis opfylder strenge internationale kriterier. For mere information om vores sikkerhedsforanstaltninger, se UClouds [sikkerhedsdokumentation](https://docs.cloud.sdu.dk/intro/security.html).
 
 ## Dataklargørelse
 Alt dataklargørelse foregår på UCloud. Figuren viser den proces alt data skal igennem før det bruges til træning af sprogmodellen. Det rå data beholdes i sin oprindelige form på UCloud. Derefter annoteres de rå data med metadata.
@@ -118,6 +120,10 @@ Når en model trænes på data, som indeholder personhenførbar information, med
 
 En udfordring er at hverken menneskelig eller maskinel fjernelse af personhenførbar information er 100% nøjagtigt, så datasæt uden disse er at foretrække. 
 
-## Dialog
+## Dialog om data
 
-Hvis du har spørgsmål, er du velkommen til at kontakte os. Vi er altid åbne for input, dialog, eller spørgsmål.
+Vi har den største respekt for dem, der ejer data. Vi forstår, hvor vigtigt det er at beskytte og respektere dataejeres ønsker om hvad og hvordan deres data må bruges til. 
+
+Hvis du har nogen spørgsmål vedrørende de data vi bruger, er du altid velkommen til at kontakte os. Vi er meget åbne for dialog og sætter pris på input, da det hjælper os med at forbedre vores praksis og sikre, at vi lever op til dataejeres ønsker. 
+
+Din feedback er vigtig for os, og vi ser frem til at høre fra dig.
