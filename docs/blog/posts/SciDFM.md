@@ -7,6 +7,8 @@ date: 2024-07-21
 
 In recent years, the field of machine learning has experienced a transformative shift, primarily driven by the advent of foundation models. These models, pre-trained on vast amounts of data, can be finetuned for various downstream tasks, making them invaluable across multiple domains. However, the dominance of the English language in the development of these models poses significant challenges for smaller language communities. The Danish Foundation Models project emerges as a crucial initiative to ensure that the Danish language does not lag behind in this AI revolution.
 
+<!-- more -->
+
 ## The Case for Danish Foundation Models
 
 The global landscape of foundation models is heavily skewed towards English, with few models catering to other languages. Although multilingual models exist, they often fail to capture the unique linguistic and cultural nuances of smaller languages like Danish. This discrepancy is particularly evident in practical applications where cultural context matters, such as healthcare services or public administration. The Danish Foundation Models project aims to fill this gap by developing high-quality, open-source foundation models specifically for the Danish language.
