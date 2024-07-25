@@ -36,6 +36,7 @@ WITH combined_crawls AS (
 SELECT warc_filename, LIST(warc_record_offset), LIST(warc_record_length)
 FROM combined_crawls
 GROUP BY warc_filename
+ORDER BY warc_filename
 """
 
 result = duckdb.sql(query)
@@ -55,8 +56,11 @@ async def fetch_and_save(client: httpx.AsyncClient, row: tuple[str, list[int], l
     warc_record_offset_list = row[1]
     warc_record_length_list = row[2]
     path = make_path(warc_filename)
-    if (path in existing_files) and (os.path.getsize(path) == sum(warc_record_length_list)):
-        return
+    if path in existing_files:
+        if os.path.getsize(path) == sum(warc_record_length_list):
+            return
+        else:
+            print(f"Size mismatch {path}, redownloading")
     os.makedirs(os.path.dirname(path), exist_ok=True) # ensure directory exists
 
     async with aiofiles.open(path, 'wb') as output_file:
