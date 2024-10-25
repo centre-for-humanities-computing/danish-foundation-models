@@ -15,9 +15,9 @@ To this format:
 }
 """
 
+import gzip
 import json
 import re
-import gzip
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
@@ -136,7 +136,8 @@ def craw_directory(
     files = top_level_path.glob("**/*")
 
     parallel = Parallel(n_jobs=n_workers, return_as="generator_unordered")
-    with gzip.open(output_path / output_name) as out_file:
+    output_path.mkdir(parents=True, exist_ok=True)
+    with gzip.open(output_path / output_name, mode="wb") as out_file:
         # with (output_path / output_name).open("w+") as out_file:
         for doc in parallel(
             delayed(process_file)(file, dsk_client) for file in tqdm(files)
