@@ -22,7 +22,7 @@ dependencies = [
   "requests>=2.31.0",
   "polars>0.19.1",
   # Data cleaning dependencies:
-  "dolma[pii,code]@git+https://github.com/allenai/dolma.git@476629dc4d8d804dd2123509dc48b549e6b49dfb", # Install from git until a 1.0.2 package is released
+  "dolma[pii,code]", # @git+https://github.com/allenai/dolma.git@476629dc4d8d804dd2123509dc48b549e6b49dfb", # Install from git until a 1.0.2 package is released
   "kenlm>=0.2.0", # Used for perplexity tagging
   "blingfire>=0.1.8", # Used for perplexity tagging
   "mosaicml-streaming",
