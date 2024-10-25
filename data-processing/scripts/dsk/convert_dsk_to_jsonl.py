@@ -46,7 +46,7 @@ APP = Typer(name="2JSONL Converter")
 
 
 def create_JSONL(text: str, source: str, metadata: dict[str, Any]) -> JSONL:
-    id_ = f"{source}-{metadata.get("file_path", "")}".replace(" ", "-")
+    id_ = f"{source}-{metadata.get("filename", "")}".replace(" ", "-")
     jsonl = JSONL(
         id=id_,
         text=text,
