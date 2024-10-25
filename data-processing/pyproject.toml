@@ -32,6 +32,12 @@ dependencies = [
   "nlp_dedup",
   "datatrove>=0.2.0",
   "pyyaml",
+  "joblib", 
+  "pdfminer.six", 
+  "pypandoc-binary", 
+  "trafilatura", 
+  "typer", 
+  "loguru"
 ]
 
 [project.optional-dependencies]
