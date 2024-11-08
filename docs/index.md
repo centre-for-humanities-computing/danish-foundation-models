@@ -100,6 +100,10 @@ From [the Department of Computer Science at the University of Copenhagen](https:
 
   - Desmond Elliott
 
+From [Center for Sprogteknologi at the University of Copenhagen](https://cst.ku.dk):
+
+  - Bolette Sandford Pedersen
+
 ### Core Contributors
 Those without data access, but who have contributed substantially to the project including code contributions, model development, and experiment planning.
 
