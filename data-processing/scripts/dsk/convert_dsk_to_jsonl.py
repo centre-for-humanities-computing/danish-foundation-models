@@ -30,32 +30,9 @@ from pypandoc import convert_file
 from tqdm import tqdm
 from trafilatura import extract as extract_html_text
 from typer import Typer
-
-
-@dataclass
-class JSONL:
-    id: str
-    text: str
-    source: str
-    added: str
-    created: str
-    metadata: dict[str, Any]
-
+from utils import create_JSONL
 
 APP = Typer(name="2JSONL Converter")
-
-
-def create_JSONL(text: str, source: str, metadata: dict[str, Any]) -> JSONL:
-    id_ = f"{source}-{metadata.get("filename", "")}".replace(" ", "-")
-    jsonl = JSONL(
-        id=id_,
-        text=text,
-        source=source,
-        added=str(datetime.now()),
-        created=f"{datetime(2000, 1, 1)!s}, {datetime.now()!s}",
-        metadata=metadata,
-    )
-    return jsonl
 
 
 # @APP.command(name="PDF2JSONL", no_args_is_help=True, help="Convert PDF file to JSONL string", context_settings={"allow_extra_args": True, "ignore_unknown_options": True})
