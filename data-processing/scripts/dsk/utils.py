@@ -1,8 +1,53 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any
+from pathlib import Path
+from typing import Any, Union
 
 import pandas as pd
+from docling.backend.pypdfium2_backend import PyPdfiumDocumentBackend
+from docling.datamodel.base_models import InputFormat
+from docling.datamodel.document import InputDocument
+from docling.datamodel.pipeline_options import PdfPipelineOptions, TableFormerMode
+from docling.document_converter import (
+    DocumentConverter,
+    PdfFormatOption,
+    WordFormatOption,
+)
+from docling.pipeline.simple_pipeline import SimplePipeline
+
+pd.options.mode.chained_assignment = None
+
+
+def build_document_converter() -> DocumentConverter:
+    # previous `PipelineOptions` is now `PdfPipelineOptions`
+    pipeline_options = PdfPipelineOptions()
+    pipeline_options.do_ocr = False
+    pipeline_options.do_table_structure = True
+    pipeline_options.table_structure_options.do_cell_matching = False
+    pipeline_options.table_structure_options.mode = TableFormerMode.FAST
+    # ...
+
+    ## Custom options are now defined per format.
+    doc_converter = DocumentConverter(  # all of the below is optional, has internal defaults.
+        allowed_formats=[
+            InputFormat.PDF,
+            InputFormat.MD,
+            InputFormat.DOCX,
+            InputFormat.HTML,
+            InputFormat.PPTX,
+            InputFormat.ASCIIDOC,
+        ],  # whitelist formats, non-matching files are ignored.
+        format_options={
+            InputFormat.PDF: PdfFormatOption(
+                pipeline_options=pipeline_options,  # pipeline options go here.
+                backend=PyPdfiumDocumentBackend,  # optional: pick an alternative backend
+            ),
+            InputFormat.DOCX: WordFormatOption(
+                pipeline_cls=SimplePipeline,  # default for office formats and HTML
+            ),
+        },
+    )
+    return doc_converter
 
 
 @dataclass
@@ -26,6 +71,31 @@ def create_JSONL(text: str, source: str, metadata: dict[str, Any]) -> JSONL:
         metadata=metadata,
     )
     return jsonl
+
+
+def build_metadata(document: Union[InputDocument, Path]) -> dict:
+    if isinstance(document, InputDocument):
+        file_path = document.file
+        filename = document.file.name
+        filetype = document.format.name
+        filesize = document.filesize
+        page_count = document.page_count
+    else:  # TODO: build metadata from Path
+        file_path = document
+        filename = document.name
+        filetype = "".join(document.suffixes)
+        filesize = document.stat().st_size
+        page_count = 0
+
+    metadata = {
+        "filename": filename,
+        "filetype": filetype,
+        "filesize": filesize,
+        "page_count": page_count,
+        "file_path": str(file_path),
+    }
+
+    return metadata
 
 
 def find_near_duplicates(
@@ -113,9 +183,19 @@ def remove_newlines(df: pd.DataFrame) -> pd.DataFrame:
 
     # Identify string columns
     string_cols = df.select_dtypes(include=["object", "string"]).columns
-
     # Remove newlines from string columns
     for col in string_cols:
         df[col] = df[col].astype(str).str.replace("\n", "", regex=False)
 
     return df
+
+
+# Function to rename columns with unique suffixes
+def make_unique(column_name: str, column_counts: dict[str, int]) -> str:
+    if column_name in column_counts:
+        # Increment count and append the new suffix
+        column_counts[column_name] += 1
+        return f"{column_name}_{column_counts[column_name]}"
+    # Initialize count for the first occurrence
+    column_counts[column_name] = 0
+    return column_name
