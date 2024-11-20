@@ -5,6 +5,6 @@ This directory contains scripts for processing the DSK data. Mainly converting f
 Run the conversion on an entire repo:
 
 ```bash
-$ python conver_dsk_to_jsonl.py $PATH_TO_DSK_DIR $OUTPUT_PATH $DSK_CLIENT
+$ python convert_dsk_to_jsonl.py $PATH_TO_DSK_DIR $OUTPUT_PATH $DSK_CLIENT
 ```
 
