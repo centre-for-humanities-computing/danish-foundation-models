@@ -1,3 +1,5 @@
+"""This module contains processing methods for extracting text from various documents."""
+
 import json
 import re
 from dataclasses import asdict
@@ -129,6 +131,16 @@ def process_document(
 
 
 def process_file(file: Path, dsk_client: str, **kwargs: dict) -> str | None:
+    """Generic method for processing a file. Will find the file type and use the right processing method.
+
+    Args:
+        file: Path to the file to process
+        dsk_client: What DSK client have delivered the file
+        **kwargs: Extra arguments
+
+    Returns:
+        str | None: Returns a JSONL line if the file type is supported, else None.
+    """
     if file.is_dir():
         return None
 

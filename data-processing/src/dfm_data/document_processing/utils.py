@@ -1,3 +1,5 @@
+"""This module contains utilities for extracting text from documents."""
+
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -19,6 +21,11 @@ pd.options.mode.chained_assignment = None
 
 
 def build_document_converter() -> DocumentConverter:
+    """Create a Docling `DocumentConverter` instance. Used to convert PDF, DOCX and, PPTX.
+
+    Returns:
+        DocumentConverter: THe `DocumentConverter` instance
+    """
     # previous `PipelineOptions` is now `PdfPipelineOptions`
     pipeline_options = PdfPipelineOptions()
     pipeline_options.do_ocr = False
@@ -61,6 +68,16 @@ class JSONL:
 
 
 def create_JSONL(text: str, source: str, metadata: dict[str, Any]) -> JSONL:
+    """Helper method to create a JSONL dataclass instance.
+
+    Args:
+        text: The text that should be part of the object
+        source: The source of the text
+        metadata: Metadata surrounding the text (e.g. filename, filetype, etc.)
+
+    Returns:
+        JSONL: The JSONL dataclass instance.
+    """
     id_ = f"{source}-{metadata.get('filename', '')}".replace(" ", "-")
     jsonl = JSONL(
         id=id_,
@@ -74,13 +91,21 @@ def create_JSONL(text: str, source: str, metadata: dict[str, Any]) -> JSONL:
 
 
 def build_metadata(document: Union[InputDocument, Path]) -> dict:
+    """Helper function to build metadata from an input file.
+
+    Args:
+        document: The document/file to build metadata from.
+
+    Returns:
+        dict: A dictionary containing the metadata.
+    """
     if isinstance(document, InputDocument):
         file_path = document.file
         filename = document.file.name
         filetype = document.format.name
         filesize = document.filesize
         page_count = document.page_count
-    else:  # TODO: build metadata from Path
+    else:
         file_path = document
         filename = document.name
         filetype = "".join(document.suffixes)
@@ -192,6 +217,15 @@ def remove_newlines(df: pd.DataFrame) -> pd.DataFrame:
 
 # Function to rename columns with unique suffixes
 def make_unique(column_name: str, column_counts: dict[str, int]) -> str:
+    """Method to rename duplicate column name
+
+    Args:
+        column_name (str): Name of the column
+        column_counts (dict[str, int]): Number of times we have seen this column name
+
+    Returns:
+        str: The new column name
+    """
     if column_name in column_counts:
         # Increment count and append the new suffix
         column_counts[column_name] += 1
