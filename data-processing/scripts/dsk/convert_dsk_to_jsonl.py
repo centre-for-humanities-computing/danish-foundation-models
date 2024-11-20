@@ -46,22 +46,6 @@ if TYPE_CHECKING:
 APP = Typer(name="2JSONL Converter")
 
 
-# UNUSED - USING DOCLING INSTEAD
-def process_pdf(file_path: Path, source: str, **kwargs: dict[str, Any]) -> str:
-    text = extract_pdf_text(file_path)
-    text = re.sub(r"(\n\s)+", "\n", text)
-    metadata = {**kwargs, **build_metadata(file_path)}
-    return json.dumps(asdict(create_JSONL(text, source, metadata)), ensure_ascii=False)
-
-
-# UNUSED - USING DOCLING INSTEAD
-def process_docx(file_path: Path, source: str, **kwargs: dict[str, Any]) -> str:
-    text = convert_file(file_path, to="plain", format="docx")
-    text = re.sub(r"(\n\s)+", "\n", text)
-    metadata = {**kwargs, **build_metadata(file_path)}
-    return json.dumps(asdict(create_JSONL(text, source, metadata)), ensure_ascii=False)
-
-
 def process_html(file_path: Path, source: str, **kwargs: dict[str, Any]) -> str:  # noqa: ARG001
     """Read a single HTML file and build a JSONL object. Uses Trafilatura for the extraction.
 
