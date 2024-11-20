@@ -30,7 +30,8 @@ from pypandoc import convert_file
 from tqdm import tqdm
 from trafilatura import extract as extract_html_text
 from typer import Typer
-from utils import (
+
+from dfm_data.utils import (
     build_document_converter,
     build_metadata,
     create_JSONL,
