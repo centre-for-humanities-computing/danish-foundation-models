@@ -1,5 +1,6 @@
 """This module contains utilities for extracting text from documents."""
 
+import urllib.parse
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -59,7 +60,7 @@ def build_document_converter() -> DocumentConverter:
 
 @dataclass
 class JSONL:
-    id: str
+    id: str  # noqa: A003
     text: str
     source: str
     added: str
@@ -233,3 +234,33 @@ def make_unique(column_name: str, column_counts: dict[str, int]) -> str:
     # Initialize count for the first occurrence
     column_counts[column_name] = 0
     return column_name
+
+
+def generate_decode_url(link: str) -> Union[str, None]:
+    """Decode a SafeURL link, to extract original url.
+
+    Args:
+        link: The SafeURL to decode
+
+    Returns:
+        Union[str, None]: Returns the decoded url if possible else None
+    """
+    try:
+        if "?" in link:
+            url_parts = link.split("?", 1)[1]
+        else:
+            return None
+
+        if "&" in url_parts:
+            params = url_parts.split("&")
+        else:
+            return None
+
+        for param in params:
+            name, value = param.split("=")
+            if name == "url":
+                target_url = urllib.parse.unquote(value)
+                return target_url
+        return None
+    except ValueError:
+        return None

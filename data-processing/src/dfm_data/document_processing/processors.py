@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 from docling.datamodel.document import TableItem, TextItem
+from extract_msg import openMsg
 from loguru import logger
 from pypandoc import convert_file
 from trafilatura import extract as extract_html_text
@@ -16,12 +17,41 @@ from .utils import (
     build_metadata,
     create_JSONL,
     find_near_duplicates,
+    generate_decode_url,
     make_unique,
     remove_newlines,
 )
 
 if TYPE_CHECKING:
     import pandas as pd
+
+
+def process_msg(file_path: Path, source: str, **kwargs: dict[str, Any]) -> str:  # noqa: ARG001
+    """Read a single MSG file and build a JSONL object. Uses Trafilatura for the extraction.
+
+    Args:
+        file_path: Path to the HTML file
+        source: What is the data source (most likely DSK client)
+        **kwargs: Additional arguments
+
+    Returns:
+        str: JSONL line with the file content
+    """
+
+    def replace_url(match: re.Match) -> str:
+        url = match.group(0)
+        decoded_url = generate_decode_url(url)
+        if decoded_url:
+            return decoded_url
+        return url
+
+    text = openMsg(file_path).body
+    text = re.sub(r"(\n\s)+", "\n", text)
+    text = re.sub(r"\[.+?\]", "", text)
+    text = text.replace("\r", "")
+    text = re.sub(r"https?://[^>]+", replace_url, text)
+    metadata = build_metadata(file_path)
+    return json.dumps(asdict(create_JSONL(text, source, metadata)), ensure_ascii=False)
 
 
 def process_html(file_path: Path, source: str, **kwargs: dict[str, Any]) -> str:  # noqa: ARG001
@@ -153,6 +183,7 @@ def process_file(file: Path, dsk_client: str, **kwargs: dict) -> str | None:
         ".txt": process_txt,
         ".pptx": process_document,
         ".md": process_document,
+        ".msg": process_msg,
     }.get(suffix)
 
     if not method:
