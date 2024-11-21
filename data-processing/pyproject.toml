@@ -42,6 +42,7 @@ dependencies = [
   "trafilatura>=1.9.0",
   "typer>=0.12.5",
   "loguru>=0.7.2",
+  "extract-msg>=0.52.0",
 ]
 
 [project.optional-dependencies]
