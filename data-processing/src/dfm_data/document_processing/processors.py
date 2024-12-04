@@ -1,5 +1,6 @@
 """This module contains processing methods for extracting text from various documents."""
 
+import gzip
 import json
 import re
 from dataclasses import asdict
@@ -8,8 +9,10 @@ from typing import TYPE_CHECKING, Any
 
 from docling.datamodel.document import TableItem, TextItem
 from extract_msg import openMsg
+from joblib import Parallel, delayed
 from loguru import logger
 from pypandoc import convert_file
+from tqdm import tqdm
 from trafilatura import extract as extract_html_text
 
 from .utils import (
@@ -191,3 +194,28 @@ def process_file(file: Path, dsk_client: str, **kwargs: dict) -> str | None:
         return None
 
     return method(file, dsk_client, **kwargs)
+
+
+def process_files(
+    files: list[Path],
+    output_path: Path,
+    dsk_client: str,
+    output_suffix: str = ".jsonl.gz",
+    n_workers: int = 4,
+):
+    save_file = output_path
+    if "".join(output_path.suffixes) != ".jsonl.gz":
+        save_file = output_path / (dsk_client + output_suffix)
+
+    converter = build_document_converter()
+    parallel = Parallel(n_jobs=n_workers, return_as="generator_unordered")
+    save_file.parent.mkdir(parents=True, exist_ok=True)
+    with gzip.open(save_file, mode="wb") as out_file:
+        # with (output_path / output_name).open("w+") as out_file:
+        for doc in parallel(
+            delayed(process_file)(file, dsk_client, converter=converter)
+            for file in tqdm(files)
+        ):
+            if doc is None:
+                continue
+            out_file.write(f"{doc}\n".encode())
