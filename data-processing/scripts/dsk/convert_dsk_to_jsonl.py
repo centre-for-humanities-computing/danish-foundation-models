@@ -15,18 +15,14 @@ To this format:
 }
 """
 
-import gzip
+import logging
+import subprocess
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from joblib import Parallel, delayed
-from tqdm import tqdm
+import typer
+from dfm_data.document_processing.processors import process_files
 from typer import Typer
-
-from dfm_data.document_processing.processors import process_file
-from dfm_data.document_processing.utils import (
-    build_document_converter,
-)
 
 if TYPE_CHECKING:
     import pandas as pd
@@ -45,24 +41,78 @@ def crawl_directory(
     output_suffix: str = ".jsonl.gz",
     n_workers: int = 4,
 ):
+    """Process a set of data delivered from a DSK organisation.
+
+    Args:
+        top_level_path: Path to a directory with the data delivered by the DSK organization
+        output_path: Path to place the processed data
+        dsk_client: What DSK organizations pages have been crawled
+        output_suffix: What suffix to use. Defaults to ".jsonl.gz".
+        n_workers: How many process to run in parallel. Defaults to 4.
+    """
     files = list(top_level_path.glob("**/*.*"))
 
-    save_file = output_path
-    if "".join(output_path.suffixes) != ".jsonl.gz":
-        save_file = output_path / (dsk_client + output_suffix)
+    files = list(filter(lambda x: x.is_file(), files))
 
-    converter = build_document_converter()
-    parallel = Parallel(n_jobs=n_workers, return_as="generator_unordered")
-    save_file.parent.mkdir(parents=True, exist_ok=True)
-    with gzip.open(save_file, mode="wb") as out_file:
-        # with (output_path / output_name).open("w+") as out_file:
-        for doc in parallel(
-            delayed(process_file)(file, dsk_client, converter=converter)
-            for file in tqdm(files)
-        ):
-            if doc is None:
-                continue
-            out_file.write(f"{doc}\n".encode())
+    if len(files) == 0:
+        logging.error("Something went wrong. No files to process")
+        raise typer.Exit(code=1)
+
+    process_files(files, output_path, dsk_client, output_suffix, n_workers)
+
+
+@APP.command(
+    name="process_web_crawl",
+    help="Process output from a web crawl",
+)
+def process_web_crawl(
+    path_to_crawl_log: Path,
+    output_path: Path,
+    data_path: Path,
+    dsk_client: str,
+    output_suffix: str = ".jsonl.gz",
+    n_workers: int = 4,
+):
+    """Process a set of crawled data from a DSK organisation.
+
+    Args:
+        path_to_crawl_log: Path to a log file from the crawl
+        output_path: Path to place the processed data
+        data_path: Path where the crawled data is located
+        dsk_client: What DSK organizations pages have been crawled
+        output_suffix: What suffix to use. Defaults to ".jsonl.gz".
+        n_workers: How many process to run in parallel. Defaults to 4.
+    """
+    # Define the command as a list of strings
+    command = ["grep", "^--", path_to_crawl_log]
+    failed = False
+    # Run the command and capture the output
+    try:
+        result = subprocess.run(command, text=True, capture_output=True, check=True)
+        # Filter the third column using Python (equivalent to `awk '{print $3}'`)
+        main_folders = {
+            line.split()[2].split("/")[2] for line in result.stdout.splitlines()
+        }
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Command failed with error: {e}")
+        failed = True
+
+    if failed:
+        raise typer.Exit(code=1)
+
+    files: list[Path] = []
+    for main_folder in main_folders:
+        if not (data_path / main_folder).exists():
+            continue
+        files.extend(list((data_path / main_folder).glob("**/*.*")))
+
+    files = list(filter(lambda x: x.is_file(), files))
+
+    if len(files) == 0:
+        logging.error("Something went wrong. No files to process")
+        raise typer.Exit(code=1)
+
+    process_files(files, output_path, dsk_client, output_suffix, n_workers)
 
 
 if __name__ == "__main__":
