@@ -4,7 +4,7 @@ import urllib.parse
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Union
+from typing import IO, Any, Union
 
 import pandas as pd
 from docling.backend.pypdfium2_backend import PyPdfiumDocumentBackend
@@ -91,7 +91,7 @@ def create_JSONL(text: str, source: str, metadata: dict[str, Any]) -> JSONL:
     return jsonl
 
 
-def build_metadata(document: Union[InputDocument, Path]) -> dict:
+def build_metadata(document: Union[InputDocument, Path, IO[bytes]]) -> dict:
     """Helper function to build metadata from an input file.
 
     Args:
@@ -106,11 +106,18 @@ def build_metadata(document: Union[InputDocument, Path]) -> dict:
         filetype = document.format.name
         filesize = document.filesize
         page_count = document.page_count
-    else:
+    elif isinstance(document, Path):
         file_path = document
         filename = document.name
         filetype = "".join(document.suffixes)
         filesize = document.stat().st_size
+        page_count = 0
+    else:
+        file_path = document.name
+        filename = document.name
+        filetype = document.name.split(".")[-1]
+        document.seek(0)
+        filesize = len(document.read())
         page_count = 0
 
     metadata = {

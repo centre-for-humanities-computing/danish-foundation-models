@@ -1,17 +1,19 @@
 """This module contains processing methods for extracting text from various documents."""
 
 import gzip
+import io
 import json
 import re
 from dataclasses import asdict
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import IO, TYPE_CHECKING, Any
 
+from docling.datamodel.base_models import DocumentStream
 from docling.datamodel.document import TableItem, TextItem
 from extract_msg import openMsg
 from joblib import Parallel, delayed
 from loguru import logger
-from pypandoc import convert_file
+from pypandoc import convert_file, convert_text
 from tqdm import tqdm
 from trafilatura import extract as extract_html_text
 
@@ -57,7 +59,11 @@ def process_msg(file_path: Path, source: str, **kwargs: dict[str, Any]) -> str: 
     return json.dumps(asdict(create_JSONL(text, source, metadata)), ensure_ascii=False)
 
 
-def process_html(file_path: Path, source: str, **kwargs: dict[str, Any]) -> str:  # noqa: ARG001
+def process_html(
+    file_path: Path | IO[bytes],
+    source: str,
+    **kwargs: dict[str, Any],  # noqa: ARG001
+) -> str:
     """Read a single HTML file and build a JSONL object. Uses Trafilatura for the extraction.
 
     Args:
@@ -68,13 +74,22 @@ def process_html(file_path: Path, source: str, **kwargs: dict[str, Any]) -> str:
     Returns:
         str: JSONL line with the file content
     """
-    text = extract_html_text(file_path.read_text())
+    file_content = (
+        file_path.read_text()
+        if isinstance(file_path, Path)
+        else file_path.read().decode()
+    )
+    text = extract_html_text(file_content)
     text = re.sub(r"(\n\s)+", "\n", text)
     metadata = build_metadata(file_path)
     return json.dumps(asdict(create_JSONL(text, source, metadata)), ensure_ascii=False)
 
 
-def process_epub(file_path: Path, source: str, **kwargs: dict[str, Any]) -> str:  # noqa: ARG001
+def process_epub(
+    file_path: Path | IO[bytes],
+    source: str,
+    **kwargs: dict[str, Any],  # noqa: ARG001
+) -> str:
     """Read a single EPUB file and build a JSONL object. Uses Pypandoc for the extraction.
 
     Args:
@@ -85,13 +100,20 @@ def process_epub(file_path: Path, source: str, **kwargs: dict[str, Any]) -> str:
     Returns:
         str: JSONL line with the file content
     """
-    text = convert_file(file_path, to="plain", format="epub")
+    if isinstance(file_path, Path):
+        text = convert_file(file_path, to="plain", format="epub")
+    else:
+        text = convert_text(file_path.read().decode(), to="plain", format="epub")
     text = re.sub(r"(\n\s)+", "\n", text)
     metadata = build_metadata(file_path)
     return json.dumps(asdict(create_JSONL(text, source, metadata)), ensure_ascii=False)
 
 
-def process_txt(file_path: Path, source: str, **kwargs: dict[str, Any]) -> str:  # noqa: ARG001
+def process_txt(
+    file_path: Path | IO[bytes],
+    source: str,
+    **kwargs: dict[str, Any],  # noqa: ARG001
+) -> str:
     """Read a single TXT file and build a JSONL object
 
     Args:
@@ -102,14 +124,18 @@ def process_txt(file_path: Path, source: str, **kwargs: dict[str, Any]) -> str: 
     Returns:
         str: JSONL line with the file content
     """
-    text = file_path.read_text()
+    text = (
+        file_path.read_text()
+        if isinstance(file_path, Path)
+        else file_path.read().decode()
+    )
     text = re.sub(r"(\n\s)+", "\n", text)
     metadata = build_metadata(file_path)
     return json.dumps(asdict(create_JSONL(text, source, metadata)), ensure_ascii=False)
 
 
 def process_document(
-    file: Path,
+    file: Path | IO[bytes],
     source: str,
     **kwargs: dict[str, Any],
 ) -> str | None:
@@ -126,7 +152,12 @@ def process_document(
     """
     doc_converter = kwargs.get("converter", build_document_converter())
     try:
-        result = doc_converter.convert(file)
+        input_ = (
+            file
+            if isinstance(file, Path)
+            else DocumentStream(name=file.name, stream=io.BytesIO(file.read()))
+        )
+        result = doc_converter.convert(input_)
 
         metadata = build_metadata(result.input)
 
@@ -163,21 +194,18 @@ def process_document(
         return None
 
 
-def process_file(file: Path, dsk_client: str, **kwargs: dict) -> str | None:
+def process_file(file: Path | IO[bytes], source: str, **kwargs: dict) -> str | None:
     """Generic method for processing a file. Will find the file type and use the right processing method.
 
     Args:
         file: Path to the file to process
-        dsk_client: What DSK client have delivered the file
+        source: What DSK client have delivered the file
         **kwargs: Extra arguments
 
     Returns:
         str | None: Returns a JSONL line if the file type is supported, else None.
     """
-    if file.is_dir():
-        return None
-
-    suffix = file.suffix
+    suffix = file.suffix if isinstance(file, Path) else "." + file.name.split(".")[-1]
     method = {
         ".pdf": process_document,
         ".html": process_html,
@@ -193,7 +221,7 @@ def process_file(file: Path, dsk_client: str, **kwargs: dict) -> str | None:
         logger.warning(f"Unsupported file type: {suffix} - for file: {file!s}")
         return None
 
-    return method(file, dsk_client, **kwargs)
+    return method(file, source, **kwargs)
 
 
 def process_files(
