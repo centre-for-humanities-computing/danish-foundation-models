@@ -21,13 +21,13 @@ import itertools
 import json
 import logging
 import zipfile
-from collections.abc import Generator
 from datetime import date, datetime
 from pathlib import Path
 from typing import TextIO
 
 import requests
 from dfm_data.document_processing.processors import process_file
+from joblib import Parallel, delayed
 from typer import Typer
 
 APP = Typer(name="Cellar CLI")
@@ -137,7 +137,7 @@ def process_zip_content(gzfile: TextIO, name: str, z: zipfile.ZipFile):
 
 
 # Group documents by date
-def get_groups(infile: Path) -> Generator[tuple[tuple[str, date], itertools.groupby]]:
+def get_groups(infile: Path) -> list[tuple[tuple[str, date], itertools.groupby]]:
     """
     Generate groups of documents based on language and date.
 
@@ -154,34 +154,39 @@ def get_groups(infile: Path) -> Generator[tuple[tuple[str, date], itertools.grou
     with infile.open() as handle:
         docs = (json.loads(line) for line in handle)
         docs = sorted(docs, key=get_group)
-        yield from itertools.groupby(docs, get_group)
+        grouped = itertools.groupby(docs, get_group)
+    return [(key, list(group)) for key, group in grouped]
 
 
 @APP.command(
     name="process_cellar",
     help="Process documents and save the results in a compressed file.",
 )
-def main(infile: Path, outdir: Path):
+def main(infile: Path, outdir: Path, workers: int = 2):
     """
     Process documents from the given input file and save the results in compressed JSONL files.
 
     Args:
         infile: The path to the input file containing document metadata.
         outdir: The directory where the compressed JSONL files will be saved.
+        workers: Number of parallel workers. Defaults to 2.
     """
-    logging.basicConfig(level=logging.INFO)
 
-    for group in get_groups(infile):
+    def process_group(group: tuple[tuple[str, date], itertools.groupby]):
+        logging.basicConfig(level=logging.INFO)
         (lang, date), docs = group
         path = outdir / f"{lang}-{date.year}-{date.month}-{date.day}.jsonl.gz"
 
         if path.exists():
             logging.warning(f"{path} already exists! Skipping")
-            continue
+            return
 
         path.parent.mkdir(parents=True, exist_ok=True)
 
         process_documents(lang, list(docs), path)
+
+    groups = get_groups(infile)
+    Parallel(n_jobs=workers)(delayed(process_group)(group) for group in groups)
 
 
 # Main script execution
