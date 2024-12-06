@@ -68,6 +68,7 @@ def process_documents(lang: str, docs: list[dict], path: Path):
         docs: A list of dictionaries representing the documents to process. Each dictionary must contain at least a "work" key with the URI of the document, and a "type" key with a list of available formats.
         path: The path where the compressed file will be saved.
     """
+    logging.info(f"{path} - {len(docs)}")
     with gzip.open(
         path,
         "wt",
@@ -169,6 +170,7 @@ def main(infile: Path, outdir: Path):
         outdir: The directory where the compressed JSONL files will be saved.
     """
     logging.basicConfig(level=logging.INFO)
+
     for group in get_groups(infile):
         (lang, date), docs = group
         path = outdir / f"{lang}-{date.year}-{date.month}-{date.day}.jsonl.gz"
@@ -179,7 +181,7 @@ def main(infile: Path, outdir: Path):
 
         path.parent.mkdir(parents=True, exist_ok=True)
 
-        process_documents(lang, docs, path)
+        process_documents(lang, list(docs), path)
 
 
 # Main script execution
