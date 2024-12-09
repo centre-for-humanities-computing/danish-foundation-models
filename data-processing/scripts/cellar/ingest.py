@@ -20,12 +20,14 @@ import io
 import itertools
 import json
 import logging
+import time
 import zipfile
 from datetime import date, datetime
 from pathlib import Path
 from typing import TextIO
 
 import requests
+from requests.exceptions import ConnectionError
 from dfm_data.document_processing.processors import process_file
 from joblib import Parallel, delayed
 from typer import Typer
@@ -81,8 +83,11 @@ def process_documents(lang: str, docs: list[dict], path: Path):
             logging.info(f"Ingesting {uri}")
 
             # Fetch document content in the preferred format for each language
-            if not fetch_and_process_doc(lang, gzfile, session, uri, types, name):
-                logging.warning(f"No valid format for {uri} {lang}")
+            try:
+                if not fetch_and_process_doc(lang, gzfile, session, uri, types, name):
+                    logging.warning(f"No valid format for {uri} {lang}")
+            except ConnectionError:
+                logging.error(f"Connection error for {uri} - {lang}")
 
 
 def fetch_and_process_doc(
@@ -112,6 +117,7 @@ def fetch_and_process_doc(
             "accept": f"application/zip;mtype={mtype}",
             "accept-language": lang.lower(),
         }
+        time.sleep(1.0)
         response = session.get(uri, headers=header)
         if response.status_code == 200:
             with zipfile.ZipFile(io.BytesIO(response.content)) as z:
