@@ -19,7 +19,6 @@ import gzip
 import io
 import itertools
 import json
-import logging
 import time
 import zipfile
 from datetime import date, datetime
@@ -29,6 +28,7 @@ from typing import TextIO
 import requests
 from dfm_data.document_processing.processors import process_file
 from joblib import Parallel, delayed
+from loguru import logger
 from requests.exceptions import ConnectionError
 from typer import Typer
 
@@ -70,7 +70,7 @@ def process_documents(lang: str, docs: list[dict], path: Path):
         docs: A list of dictionaries representing the documents to process. Each dictionary must contain at least a "work" key with the URI of the document, and a "type" key with a list of available formats.
         path: The path where the compressed file will be saved.
     """
-    logging.info(f"{path} - {len(docs)}")
+    logger.info(f"{path} - {len(docs)}")
     with gzip.open(
         path,
         "wt",
@@ -80,14 +80,14 @@ def process_documents(lang: str, docs: list[dict], path: Path):
             uri = doc["work"]
             types = doc["type"]
             name = uri.split("/")[-1]
-            logging.info(f"Ingesting {uri}")
+            logger.info(f"Ingesting {uri}")
 
             # Fetch document content in the preferred format for each language
             try:
                 if not fetch_and_process_doc(lang, gzfile, session, uri, types, name):
-                    logging.warning(f"No valid format for {uri} {lang}")
+                    logger.warning(f"No valid format for {uri} {lang}")
             except ConnectionError:
-                logging.error(f"Connection error for {uri} - {lang}")
+                logger.error(f"Connection error for {uri} - {lang}")
 
 
 def fetch_and_process_doc(
@@ -179,12 +179,11 @@ def main(infile: Path, outdir: Path, workers: int = 2):
     """
 
     def process_group(group: tuple[tuple[str, date], itertools.groupby]):
-        logging.basicConfig(level=logging.INFO)
         (lang, date), docs = group
         path = outdir / f"{lang}-{date.year}-{date.month}-{date.day}.jsonl.gz"
 
         if path.exists():
-            logging.warning(f"{path} already exists! Skipping")
+            logger.warning(f"{path} already exists! Skipping")
             return
 
         path.parent.mkdir(parents=True, exist_ok=True)
