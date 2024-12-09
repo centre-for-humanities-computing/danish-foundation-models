@@ -80,6 +80,8 @@ def process_html(
         else file_path.read().decode()
     )
     text = extract_html_text(file_content)
+    if not text:
+        return None
     text = re.sub(r"(\n\s)+", "\n", text)
     metadata = build_metadata(file_path)
     return json.dumps(asdict(create_JSONL(text, source, metadata)), ensure_ascii=False)
@@ -103,7 +105,10 @@ def process_epub(
     if isinstance(file_path, Path):
         text = convert_file(file_path, to="plain", format="epub")
     else:
-        text = convert_text(file_path.read().decode(), to="plain", format="epub")
+        try:
+            text = convert_text(file_path.read().decode(), to="plain", format="epub")
+        except UnicodeDecodeError:
+            return None
     text = re.sub(r"(\n\s)+", "\n", text)
     metadata = build_metadata(file_path)
     return json.dumps(asdict(create_JSONL(text, source, metadata)), ensure_ascii=False)
