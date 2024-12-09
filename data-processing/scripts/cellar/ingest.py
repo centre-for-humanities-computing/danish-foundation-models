@@ -27,9 +27,9 @@ from pathlib import Path
 from typing import TextIO
 
 import requests
-from requests.exceptions import ConnectionError
 from dfm_data.document_processing.processors import process_file
 from joblib import Parallel, delayed
+from requests.exceptions import ConnectionError
 from typer import Typer
 
 APP = Typer(name="Cellar CLI")
@@ -38,7 +38,7 @@ APP = Typer(name="Cellar CLI")
 # Match available formats to the preference order
 def ordered_match(options: list[str]) -> list[str]:
     # Preferred file types order
-    preference = {
+    preference = [
         "txt",
         "html",
         "xhtml",
@@ -56,7 +56,7 @@ def ordered_match(options: list[str]) -> list[str]:
         "xml",
         "RDF/XML",
         "mobi",
-    }
+    ]
     opts = set(options)
     return [p for p in preference if p in opts]
 
