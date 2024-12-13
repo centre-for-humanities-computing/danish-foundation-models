@@ -1,10 +1,11 @@
 """This module contains utilities for extracting text from documents."""
 
+import time
 import urllib.parse
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import IO, Any, Union
+from typing import IO, Any, Callable, Union
 
 import pandas as pd
 from docling.backend.pypdfium2_backend import PyPdfiumDocumentBackend
@@ -17,6 +18,9 @@ from docling.document_converter import (
     WordFormatOption,
 )
 from docling.pipeline.simple_pipeline import SimplePipeline
+from joblib import Parallel, delayed
+from joblib.externals.loky.process_executor import TerminatedWorkerError
+from loguru import logger
 
 pd.options.mode.chained_assignment = None
 
@@ -271,3 +275,41 @@ def generate_decode_url(link: str) -> Union[str, None]:
         return None
     except ValueError:
         return None
+
+
+def parallel_process_with_retries(
+    task_function: Callable,
+    data: list,
+    retries: int = 3,
+    n_workers: int = 2,
+) -> Any:
+    """
+    Runs joblib Parallel processing with a retry mechanism.
+
+    Args:
+        task_function: Function to run in parallel
+        data: The input data to process.
+        retries: Number of retries if TerminatedWorkerError occurs.
+        n_workers: Number of parallel processes.
+
+    Returns:
+        List of results from the parallel computation.
+    """
+    attempt = 0
+    while attempt <= retries:
+        try:
+            logger.info(f"Attempt {attempt + 1}")
+            results = Parallel(n_jobs=n_workers)(
+                delayed(task_function)(x) for x in data
+            )
+            return results  # If successful, return results
+        except TerminatedWorkerError as e:
+            attempt += 1
+            logger.error(
+                f"Error occurred: {e}. Retrying {retries - attempt + 1} more times.",
+            )
+            time.sleep(1)  # Optional: Delay between retries
+        except Exception as e:
+            logger.error(f"Unexpected error: {e}")
+            break
+    raise RuntimeError(f"Failed after {retries} retries due to TerminatedWorkerError.")
