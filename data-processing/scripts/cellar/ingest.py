@@ -27,6 +27,7 @@ from typing import TextIO
 
 import requests
 from dfm_data.document_processing.processors import process_file
+from dfm_data.document_processing.utils import parallel_process_with_retries
 from joblib import Parallel, delayed
 from loguru import logger
 from requests.exceptions import ConnectionError
@@ -191,7 +192,7 @@ def main(infile: Path, outdir: Path, workers: int = 2):
         process_documents(lang, list(docs), path)
 
     groups = get_groups(infile)
-    Parallel(n_jobs=workers)(delayed(process_group)(group) for group in groups)
+    parallel_process_with_retries(process_group, groups, retries=10, n_workers=workers)
 
 
 # Main script execution
