@@ -28,9 +28,8 @@ from typing import TextIO
 import requests
 from dfm_data.document_processing.processors import process_file
 from dfm_data.document_processing.utils import parallel_process_with_retries
-from joblib import Parallel, delayed
 from loguru import logger
-from requests.exceptions import ConnectionError
+from requests.exceptions import ConnectionError, ReadTimeout
 from typer import Typer
 
 APP = Typer(name="Cellar CLI")
@@ -89,6 +88,8 @@ def process_documents(lang: str, docs: list[dict], path: Path):
                     logger.warning(f"No valid format for {uri} {lang}")
             except ConnectionError:
                 logger.error(f"Connection error for {uri} - {lang}")
+            except ReadTimeout:
+                logger.error(f"Read timeour for {uri} - {lang}")
 
 
 def fetch_and_process_doc(
