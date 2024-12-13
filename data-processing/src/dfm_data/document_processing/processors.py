@@ -74,11 +74,15 @@ def process_html(
     Returns:
         str: JSONL line with the file content
     """
-    file_content = (
-        file_path.read_text()
-        if isinstance(file_path, Path)
-        else file_path.read().decode()
-    )
+    try:
+        file_content = (
+            file_path.read_text()
+            if isinstance(file_path, Path)
+            else file_path.read().decode()
+        )
+    except UnicodeDecodeError:
+        logger.error(f"Unable to read {file_path}")
+        return None
     text = extract_html_text(file_content)
     if not text:
         return None
@@ -108,6 +112,7 @@ def process_epub(
         try:
             text = convert_text(file_path.read().decode(), to="plain", format="epub")
         except UnicodeDecodeError:
+            logger.error(f"Unable to read {file_path}")
             return None
     text = re.sub(r"(\n\s)+", "\n", text)
     metadata = build_metadata(file_path)
