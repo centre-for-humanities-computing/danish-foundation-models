@@ -40,6 +40,8 @@ def crawl_directory(
     dsk_client: str,
     output_suffix: str = ".jsonl.gz",
     n_workers: int = 4,
+    key_paths: str = "text",
+    text_format: str = "txt",
 ):
     """Process a set of data delivered from a DSK organisation.
 
@@ -49,6 +51,8 @@ def crawl_directory(
         dsk_client: What DSK organizations pages have been crawled
         output_suffix: What suffix to use. Defaults to ".jsonl.gz".
         n_workers: How many process to run in parallel. Defaults to 4.
+        key_paths: If JSON data, what is the path to the text (Can be nested keys represented as a comma separated list).
+        text_format: What format is the text, html or plain text.
     """
     files = list(top_level_path.glob("**/*.*"))
 
@@ -58,7 +62,15 @@ def crawl_directory(
         logging.error("Something went wrong. No files to process")
         raise typer.Exit(code=1)
 
-    process_files(files, output_path, dsk_client, output_suffix, n_workers)
+    process_files(
+        files,
+        output_path,
+        dsk_client,
+        output_suffix,
+        n_workers,
+        text_path=key_paths,
+        text_format=text_format,
+    )
 
 
 @APP.command(

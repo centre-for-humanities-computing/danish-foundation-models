@@ -6,7 +6,7 @@ import json
 import re
 from dataclasses import asdict
 from pathlib import Path
-from typing import IO, TYPE_CHECKING, Any
+from typing import IO, TYPE_CHECKING, Any, Callable
 
 from docling.datamodel.base_models import DocumentStream
 from docling.datamodel.document import TableItem, TextItem
@@ -29,6 +29,111 @@ from .utils import (
 
 if TYPE_CHECKING:
     import pandas as pd
+
+SCRIPT_TAG = "<script></script>"
+
+
+def process_json(file_path: Path, source: str, **kwargs: dict[str, Any]) -> list[str]:
+    """
+    Extracts and processes text from a JSON file based on a given path of keys and formatter.
+
+    Args:
+        file_path (Path): Path to the JSON file.
+        source (str): Source description for logging purposes.
+        **kwargs: Additional arguments:
+            - text_path (str): Comma-separated keys to traverse the JSON structure.
+            - text_format (str): Format of the text ('txt' or 'html').
+            - formatter (Callable): Custom function to format the extracted text.
+
+    Returns:
+        list[str]: A list of formatted text strings extracted from the JSON file.
+    """
+
+    def extract_text(data: Any, keys: list[str]) -> list[str]:
+        """
+        Recursively traverses the JSON structure to extract text at the given keys.
+
+        Args:
+            data (Any): The current level of the JSON object.
+            keys (list[str]): List of keys to traverse.
+
+        Returns:
+            list[str]: A list of extracted text strings.
+        """
+        if not keys:
+            # If keys are exhausted, handle the data
+            if isinstance(data, str):
+                return [data]
+            if isinstance(data, list):
+                # Collect strings from list elements
+                texts = []
+                for item in data:
+                    texts.extend(extract_text(item, keys))
+                return texts
+            if isinstance(data, dict):
+                return [json.dumps(data)]  # Convert objects to string representation
+
+            return [str(data)]  # Fallback for other data types
+
+        key = keys[0]
+        remaining_keys = keys[1:]
+
+        if isinstance(data, dict) and key in data:
+            return extract_text(data[key], remaining_keys)
+        if isinstance(data, list):
+            # If data is a list, attempt to extract text from each item
+            texts = []
+            for item in data:
+                texts.extend(extract_text(item, keys))
+            return texts
+
+        logger.warning(f"Key '{key}' not found in JSON document.")
+        return []
+
+    # Supported formatters (default options)
+    def default_formatter(text: str) -> str:
+        return text
+
+    # Setup
+    key_path = kwargs.get("text_path", "text").split(",")
+    text_format = kwargs.get("text_format", "txt")
+
+    # Choose the appropriate formatter
+    formatters = {
+        "txt": default_formatter,
+        "html": lambda text: extract_html_text(text + SCRIPT_TAG),
+    }
+    formatter: Callable[[str], str] = formatters.get(
+        text_format,
+        default_formatter,
+    )
+
+    if text_format not in formatters:
+        logger.warning(
+            f"Text format '{text_format}' is not supported. Defaulting to plain text.",
+        )
+
+    # Load and process the JSON file
+    try:
+        with file_path.open("r", encoding="utf-8") as f:
+            document = json.load(f)
+
+        extracted_texts = extract_text(document, key_path)
+        extracted_texts = [formatter(text) for text in extracted_texts]
+        metadata = build_metadata(file_path)
+        formatted_texts = [
+            json.dumps(
+                asdict(create_JSONL(text, source, metadata)),
+                ensure_ascii=False,
+            )
+            for text in extracted_texts
+        ]
+        return formatted_texts
+    except Exception as e:
+        logger.error(
+            f"Error processing JSON file '{file_path}' from source '{source}': {e}",
+        )
+        return None
 
 
 def process_msg(file_path: Path, source: str, **kwargs: dict[str, Any]) -> str:  # noqa: ARG001
@@ -204,7 +309,9 @@ def process_document(
         return None
 
 
-def process_file(file: Path | IO[bytes], source: str, **kwargs: dict) -> str | None:
+def process_file(
+    file: Path | IO[bytes], source: str, **kwargs: dict
+) -> str | list[str] | None:
     """Generic method for processing a file. Will find the file type and use the right processing method.
 
     Args:
@@ -225,6 +332,7 @@ def process_file(file: Path | IO[bytes], source: str, **kwargs: dict) -> str | N
         ".pptx": process_document,
         ".md": process_document,
         ".msg": process_msg,
+        ".json": process_json,
     }.get(suffix)
 
     if not method:
@@ -240,6 +348,7 @@ def process_files(
     dsk_client: str,
     output_suffix: str = ".jsonl.gz",
     n_workers: int = 4,
+    **kwargs: dict,
 ):
     save_file = output_path
     if "".join(output_path.suffixes) != ".jsonl.gz":
@@ -251,9 +360,17 @@ def process_files(
     with gzip.open(save_file, mode="wb") as out_file:
         # with (output_path / output_name).open("w+") as out_file:
         for doc in parallel(
-            delayed(process_file)(file, dsk_client, converter=converter)
+            delayed(process_file)(
+                file,
+                dsk_client,
+                converter=converter,
+                **kwargs,
+            )
             for file in tqdm(files)
         ):
             if doc is None:
                 continue
-            out_file.write(f"{doc}\n".encode())
+            if isinstance(doc, str):
+                out_file.write(f"{doc}\n".encode())
+            if isinstance(doc, list):
+                [out_file.write(f"{d}\n".encode()) for d in doc]
