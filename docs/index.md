@@ -87,9 +87,11 @@ From [the Alexandra Institute](https://alexandra.dk/):
   - Rasmus Larsen ([rasmus.larsen@alexandra.dk](rasmus.larsen@alexandra.dk))
   - Dan Saattrup Nielsen ([dan.nielsen@alexandra.dk](dan.nielsen@alexandra.dk))
 
-From [the Center for AI Science and Applications at the University of Southern Denmark](https://sdu.dk/casa):
+From [the Center for Machine Learning at the University of Southern Denmark](https://www.sdu.dk/en/forskning/machine-learning):
 
   - Peter Schneider-Kamp ([petersk@imada.sdu.dk](petersk@imada.sdu.dk))
+  - Lukas Galke ([galke@imada.sdu.dk](galke@imada.sdu.dk))
+  - Jacob Nielsen ([jacn@imada.sdu.dk](jacn@imada.sdu.dk)) / ([jnn@ordbogen.com](jnn@ordbogen.com))
 
 From [Alvenir](https://www.alvenir.ai/):
 
