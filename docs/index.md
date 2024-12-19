@@ -66,7 +66,7 @@ temp. removed (see DDSC slack channel: NLP)
 
 ## Improving the Danish Language Technology Landscape
 
-The Danish Foundations models collaborate with the [Danish Data Science Community](https://danskdatascience.dk/), [Centre for Humanities Computing Aarhus](https://chcaa.io/), [The Alexandra Institute](https://alexandra.dk), and [Center for AI Science and Applications](https://sdu.dk/casa) to promote the development of Danish language tools. We continually gather information about how to improve the Danish language technologies and how to best support the community. To this end we have created a [list of missing pieces for Danish NLP](https://github.com/centre-for-humanities-computing/danish-foundation-models/discussions/categories/missing-pieces-for-danish-nlp) and we invite any 1) to add to the list, 2) solve one of the problems or 3) upvote the problems you think are most important.
+The Danish Foundations models collaborate is a collaboration across Danish universities and research organizations. The project engage with data science communities and initiatives ([Danish Data Science Community](https://danskdatascience.dk/)), to promote the development of Danish language tools. We continually gather information about how to improve the Danish language technologies and how to best support the community. If you want to highlight missing pieces in Danish NLP we invite you to open thread on the [forum](https://github.com/centre-for-humanities-computing/danish-foundation-models/discussions/categories/missing-pieces-for-danish-nlp) stating the problems and potential solutions.
 
 ## Contributors
 
@@ -103,6 +103,7 @@ From [the Department of Computer Science at the University of Copenhagen](https:
 From [Center for Sprogteknologi at the University of Copenhagen](https://cst.ku.dk):
 
   - Bolette Sandford Pedersen
+  - Ali Basirat
 
 ### Core Contributors
 Those without data access, but who have contributed substantially to the project including code contributions, model development, and experiment planning.
