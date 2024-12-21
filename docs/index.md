@@ -89,9 +89,11 @@ From [the Alexandra Institute](https://alexandra.dk/):
   - Anders Jess Pedersen ([anders.j.pedersen@alexandra.dk]((mailto:anders.j.pedersen@alexandra.dk))
   - Jens Kaas Benner([jens.benner@alexandra.dk]((mailto:jens.benner@alexandra.dk))
 
-From [the Center for AI Science and Applications at the University of Southern Denmark](https://sdu.dk/casa):
+From [the Center for Machine Learning at the University of Southern Denmark](https://www.sdu.dk/en/forskning/machine-learning):
 
-  - Peter Schneider-Kamp ([petersk@imada.sdu.dk]((mailto:petersk@imada.sdu.dk))
+  - Peter Schneider-Kamp ([petersk@imada.sdu.dk](mailto:petersk@imada.sdu.dk))
+  - Lukas Galke ([galke@imada.sdu.dk](mailto:galke@imada.sdu.dk))
+  - Jacob Nielsen ([jacn@imada.sdu.dk](mailto:jacn@imada.sdu.dk))
 
 From [the Department of Computer Science at the University of Copenhagen](https://di.ku.dk/):
 
