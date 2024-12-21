@@ -76,25 +76,22 @@ Those with data access, who contribute to the project, including data management
 From [the Center for Humanities Computing at Aarhus University](https://chc.au.dk/):
 
   - Kenneth Enevoldsen ([kenneth.enevoldsen@cas.au.dk](mailto:kenneth.enevoldsen@cas.au.dk))
-  - Lasse Hansen ([lasse.hansen@clin.au.dk](lasse.hansen@clin.au.dk))
-  - Martin Bernstorff ([martinbernstorff@gmail.com](martinbernstorff@gmail.com))
-  - Peter Vahlstrup ([imvpbv@cc.au.dk](imvpbv@cc.au.dk))
-  - Per Møldrup Dalum ([per@cas.au.dk](per@cas.au.dk))
-  - Kristoffer Laigaard Nielbo ([kln@cas.au.dk](kln@cas.au.dk))
-  - Tao Tang ([taotang@au.dk](taotang@au.dk))
-  - Jan Kostkan ([jan.kostkan@cas.au.dk](jan.kostkan@cas.au.dk))
+  - Peter Vahlstrup ([imvpbv@cc.au.dk]((mailto:imvpbv@cc.au.dk))
+  - Per Møldrup Dalum ([per@cas.au.dk]((mailto:per@cas.au.dk))
+  - Kristoffer Laigaard Nielbo ([kln@cas.au.dk]((mailto:kln@cas.au.dk))
+  - Jan Kostkan ([jan.kostkan@cas.au.dk]((mailto:jan.kostkan@cas.au.dk))
 
 From [the Alexandra Institute](https://alexandra.dk/):
 
-  - Rasmus Larsen ([rasmus.larsen@alexandra.dk](rasmus.larsen@alexandra.dk))
-  - Dan Saattrup Nielsen ([dan.nielsen@alexandra.dk](dan.nielsen@alexandra.dk))
-  - Andreas Nugaard Holm ([andreas.holm@alexandra.dk](andreas.holm@alexandra.dk))
-  - Anders Jess Pedersen ([anders.j.pedersen@alexandra.dk](anders.j.pedersen@alexandra.dk))
-  - Jens Kaas Benner([jens.benner@alexandra.dk](jens.benner@alexandra.dk))
+  - Rasmus Larsen ([rasmus.larsen@alexandra.dk]((mailto:rasmus.larsen@alexandra.dk))
+  - Dan Saattrup Nielsen ([dan.nielsen@alexandra.dk]((mailto:dan.nielsen@alexandra.dk))
+  - Andreas Nugaard Holm ([andreas.holm@alexandra.dk]((mailto:andreas.holm@alexandra.dk))
+  - Anders Jess Pedersen ([anders.j.pedersen@alexandra.dk]((mailto:anders.j.pedersen@alexandra.dk))
+  - Jens Kaas Benner([jens.benner@alexandra.dk]((mailto:jens.benner@alexandra.dk))
 
 From [the Center for AI Science and Applications at the University of Southern Denmark](https://sdu.dk/casa):
 
-  - Peter Schneider-Kamp ([petersk@imada.sdu.dk](petersk@imada.sdu.dk))
+  - Peter Schneider-Kamp ([petersk@imada.sdu.dk]((mailto:petersk@imada.sdu.dk))
 
 From [the Department of Computer Science at the University of Copenhagen](https://di.ku.dk/):
 
@@ -102,8 +99,21 @@ From [the Department of Computer Science at the University of Copenhagen](https:
 
 From [Center for Sprogteknologi at the University of Copenhagen](https://cst.ku.dk):
 
-  - Bolette Sandford Pedersen
-  - Ali Basirat
+  - Bolette Sandford Pedersen ([bspedersen@hum.ku.dk]((mailto:bspedersen@hum.ku.dk))
+  - Ali Basirat ([alib@hum.ku.dk]((mailto:alib@hum.ku.dk))
+
+<details>
+<summary>Project Alumnis</summary>
+<br>
+
+### Project Alumnis
+
+  - Lasse Hansen ([lasse.hansen@clin.au.dk]((mailto:lasse.hansen@clin.au.dk))
+  - Martin Bernstorff
+  - Tao Tang
+
+</details>
+
 
 ### Core Contributors
 Those without data access, but who have contributed substantially to the project including code contributions, model development, and experiment planning.
