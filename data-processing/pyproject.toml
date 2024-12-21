@@ -30,6 +30,7 @@ dependencies = [
   "tqdm",
   "zstandard",
   "nlp_dedup",
+  "datatrove>=0.2.0",
   "pyyaml",
 ]
 

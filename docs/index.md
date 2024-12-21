@@ -66,41 +66,64 @@ temp. removed (see DDSC slack channel: NLP)
 
 ## Improving the Danish Language Technology Landscape
 
-The Danish Foundations models collaborate with the [Danish Data Science Community](https://danskdatascience.dk/), [Centre for Humanities Computing Aarhus](https://chcaa.io/), [The Alexandra Institute](https://alexandra.dk), and [Center for AI Science and Applications](https://sdu.dk/casa) to promote the development of Danish language tools. We continually gather information about how to improve the Danish language technologies and how to best support the community. To this end we have created a [list of missing pieces for Danish NLP](https://github.com/centre-for-humanities-computing/danish-foundation-models/discussions/categories/missing-pieces-for-danish-nlp) and we invite any 1) to add to the list, 2) solve one of the problems or 3) upvote the problems you think are most important.
+The Danish Foundations models collaborate is a collaboration across Danish universities and research organizations. The project engage with data science communities and initiatives ([Danish Data Science Community](https://danskdatascience.dk/)), to promote the development of Danish language tools. We continually gather information about how to improve the Danish language technologies and how to best support the community. If you want to highlight missing pieces in Danish NLP we invite you to open thread on the [forum](https://github.com/centre-for-humanities-computing/danish-foundation-models/discussions/categories/missing-pieces-for-danish-nlp) stating the problems and potential solutions.
 
+## Contributors
 
-## The Team
+## The Core Team
+Those with data access, who contribute to the project, including data management, model development, project management, and more.
 
 From [the Center for Humanities Computing at Aarhus University](https://chc.au.dk/):
 
   - Kenneth Enevoldsen ([kenneth.enevoldsen@cas.au.dk](mailto:kenneth.enevoldsen@cas.au.dk))
-  - Lasse Hansen ([lasse.hansen@clin.au.dk](lasse.hansen@clin.au.dk))
-  - Martin Bernstorff ([martinbernstorff@gmail.com](martinbernstorff@gmail.com))
-  - Peter Vahlstrup ([imvpbv@cc.au.dk](imvpbv@cc.au.dk))
-  - Per Møldrup Dalum ([per@cas.au.dk](per@cas.au.dk))
-  - Kristoffer Laigaard Nielbo ([kln@cas.au.dk](kln@cas.au.dk))
-  - Tao Tang ([taotang@au.dk](taotang@au.dk))
+  - Peter Vahlstrup ([imvpbv@cc.au.dk]((mailto:imvpbv@cc.au.dk))
+  - Per Møldrup Dalum ([per@cas.au.dk]((mailto:per@cas.au.dk))
+  - Kristoffer Laigaard Nielbo ([kln@cas.au.dk]((mailto:kln@cas.au.dk))
+  - Jan Kostkan ([jan.kostkan@cas.au.dk]((mailto:jan.kostkan@cas.au.dk))
 
 From [the Alexandra Institute](https://alexandra.dk/):
 
-  - Peter Bjørn Jørgensen ([peter.jorgensen@alexandra.dk](peter.jorgensen@alexandra.dk))
-  - Rasmus Larsen ([rasmus.larsen@alexandra.dk](rasmus.larsen@alexandra.dk))
-  - Dan Saattrup Nielsen ([dan.nielsen@alexandra.dk](dan.nielsen@alexandra.dk))
+  - Rasmus Larsen ([rasmus.larsen@alexandra.dk]((mailto:rasmus.larsen@alexandra.dk))
+  - Dan Saattrup Nielsen ([dan.nielsen@alexandra.dk]((mailto:dan.nielsen@alexandra.dk))
+  - Andreas Nugaard Holm ([andreas.holm@alexandra.dk]((mailto:andreas.holm@alexandra.dk))
+  - Anders Jess Pedersen ([anders.j.pedersen@alexandra.dk]((mailto:anders.j.pedersen@alexandra.dk))
+  - Jens Kaas Benner([jens.benner@alexandra.dk]((mailto:jens.benner@alexandra.dk))
 
 From [the Center for Machine Learning at the University of Southern Denmark](https://www.sdu.dk/en/forskning/machine-learning):
 
-  - Peter Schneider-Kamp ([petersk@imada.sdu.dk](petersk@imada.sdu.dk))
-  - Lukas Galke ([galke@imada.sdu.dk](galke@imada.sdu.dk))
-  - Jacob Nielsen ([jacn@imada.sdu.dk](jacn@imada.sdu.dk))
+  - Peter Schneider-Kamp ([petersk@imada.sdu.dk](mailto:petersk@imada.sdu.dk))
+  - Lukas Galke ([galke@imada.sdu.dk](mailto:galke@imada.sdu.dk))
+  - Jacob Nielsen ([jacn@imada.sdu.dk](mailto:jacn@imada.sdu.dk))
+
+From [the Department of Computer Science at the University of Copenhagen](https://di.ku.dk/):
+
+  - Desmond Elliott
+
+From [Center for Sprogteknologi at the University of Copenhagen](https://cst.ku.dk):
+
+  - Bolette Sandford Pedersen ([bspedersen@hum.ku.dk]((mailto:bspedersen@hum.ku.dk))
+  - Ali Basirat ([alib@hum.ku.dk]((mailto:alib@hum.ku.dk))
+
+<details>
+<summary>Project Alumnis</summary>
+<br>
+
+### Project Alumnis
+
+  - Lasse Hansen ([lasse.hansen@clin.au.dk]((mailto:lasse.hansen@clin.au.dk))
+  - Martin Bernstorff
+  - Tao Tang
+
+</details>
+
+
+### Core Contributors
+Those without data access, but who have contributed substantially to the project including code contributions, model development, and experiment planning.
 
 From [Alvenir](https://www.alvenir.ai/):
 
   - Martin Carsten Nielsen ([martin@alvenir.ai](martin@alvenir.ai))
   - Søren Vejlgaard Holm ([swh@alvenir.ai](swh@alvenir.ai))
-
-From [the Department of Computer Science at the University of Copenhagen](https://di.ku.dk/):
-
-  - Desmond Elliott
 
 ## Join Us
 
