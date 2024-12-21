@@ -91,7 +91,7 @@ From [the Center for Machine Learning at the University of Southern Denmark](htt
 
   - Peter Schneider-Kamp ([petersk@imada.sdu.dk](petersk@imada.sdu.dk))
   - Lukas Galke ([galke@imada.sdu.dk](galke@imada.sdu.dk))
-  - Jacob Nielsen ([jacn@imada.sdu.dk](jacn@imada.sdu.dk)) / ([jnn@ordbogen.com](jnn@ordbogen.com))
+  - Jacob Nielsen ([jacn@imada.sdu.dk](jacn@imada.sdu.dk))
 
 From [Alvenir](https://www.alvenir.ai/):
 
