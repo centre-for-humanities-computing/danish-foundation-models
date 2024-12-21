@@ -1,0 +1,1366 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../../_static/icon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.3">
+    
+    
+      
+        <title>Dataset Card for Gutenberg - Danish Foundation Models</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.50c56a3b.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#dataset-card-for-gutenberg" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Danish Foundation Models" class="md-header__button md-logo" aria-label="Danish Foundation Models" data-md-component="logo">
+      
+  <img src="../../_static/icon.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Danish Foundation Models
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Dataset Card for Gutenberg
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../models/" class="md-tabs__link">
+        
+  
+    
+  
+  Models
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../dcc/" class="md-tabs__link">
+          
+  
+    
+  
+  Datasets
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../blog" class="md-tabs__link">
+        
+  
+    
+  
+  Blog
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Danish Foundation Models" class="md-nav__button md-logo" aria-label="Danish Foundation Models" data-md-component="logo">
+      
+  <img src="../../_static/icon.png" alt="logo">
+
+    </a>
+    Danish Foundation Models
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    About
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../models/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Datasets
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Datasets
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dcc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DCC
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Datasheets
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Datasheets
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../danews/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DaNews
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hopetwitter/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    HopeTwitter
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../netarkivet_text/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NAT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../daradio/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DaRadio
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blog" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Blog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+    <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/docs/datasheets/dagw-gutenberg.md" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="dataset-card-for-gutenberg">Dataset Card for Gutenberg<a class="headerlink" href="#dataset-card-for-gutenberg" title="Permanent link">&para;</a></h1>
+<h2 id="dataset-description">Dataset Description<a class="headerlink" href="#dataset-description" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Number of records:</strong> 66</li>
+<li><strong>Languages:</strong> Danish</li>
+</ul>
+<h2 id="dataset-sturcture">Dataset Sturcture<a class="headerlink" href="#dataset-sturcture" title="Permanent link">&para;</a></h2>
+<p>An example from the dataset looks as follows.
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">{</span>
+<span class="w">    </span><span class="s">&#39;text&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&#39;Afskriverens</span><span class="nv"> </span><span class="s">bemærkninger:</span><span class="nv"> </span><span class="s">Åbenlyse</span><span class="nv"> </span><span class="s">trykfejl</span><span class="nv"> </span><span class="s">er</span><span class="nv"> </span><span class="s">re&#39;</span><span class="p p-Indicator">,</span>
+<span class="w">    </span><span class="s">&#39;source&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&#39;dagw-gutenberg&#39;</span><span class="p p-Indicator">,</span>
+<span class="w">    </span><span class="s">&#39;id&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&#39;gutenberg_43899&#39;</span><span class="p p-Indicator">,</span>
+<span class="w">    </span><span class="s">&#39;added&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&#39;2020-09-12&#39;</span><span class="p p-Indicator">,</span>
+<span class="w">    </span><span class="s">&#39;created&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&#39;1700-01-01,</span><span class="nv"> </span><span class="s">2022-01-01&#39;</span><span class="p p-Indicator">,</span>
+<span class="w">    </span><span class="s">&#39;metadata&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="p p-Indicator">{</span>
+<span class="w">        </span><span class="s">&#39;domain&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&#39;Wiki</span><span class="nv"> </span><span class="s">&amp;</span><span class="nv"> </span><span class="s">Books&#39;</span><span class="p p-Indicator">,</span>
+<span class="w">        </span><span class="s">&#39;license&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&#39;***</span><span class="nv"> </span><span class="s">START:</span><span class="nv"> </span><span class="s">FULL</span><span class="nv"> </span><span class="s">LICENSE</span><span class="nv"> </span><span class="s">***</span>
+
+<span class="s">THE</span><span class="nv"> </span><span class="s">FULL</span><span class="nv"> </span><span class="s">PROJECT</span><span class="nv"> </span><span class="s">GUTENBERG</span><span class="nv"> </span><span class="s">LICENSE</span>
+<span class="s">PLEASE</span><span class="nv"> </span><span class="s">READ</span><span class="nv"> </span><span class="s">THIS</span><span class="nv"> </span><span class="s">BEFORE</span><span class="nv"> </span><span class="s">YOU</span><span class="nv"> </span><span class="s">DISTRIBUTE</span><span class="nv"> </span><span class="s">OR</span><span class="nv"> </span><span class="s">USE</span><span class="nv"> </span><span class="s">THIS</span><span class="nv"> </span><span class="s">WORK</span>
+
+<span class="s">To</span><span class="nv"> </span><span class="s">protect</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">mission</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">promoting</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">free</span>
+<span class="s">distribution</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">electronic</span><span class="nv"> </span><span class="s">works,</span><span class="nv"> </span><span class="s">by</span><span class="nv"> </span><span class="s">using</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">distributing</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">work</span>
+<span class="s">(or</span><span class="nv"> </span><span class="s">any</span><span class="nv"> </span><span class="s">other</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">associated</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">any</span><span class="nv"> </span><span class="s">way</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">phrase</span><span class="nv"> </span><span class="s">&quot;Project</span>
+<span class="s">Gutenberg&quot;),</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">agree</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">comply</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">terms</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">Full</span><span class="nv"> </span><span class="s">Project</span>
+<span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">License</span><span class="nv"> </span><span class="s">available</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">file</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">online</span><span class="nv"> </span><span class="s">at</span>
+<span class="w">  </span><span class="s">www.gutenberg.org/license.</span>
+
+
+<span class="s">Section</span><span class="nv"> </span><span class="s">1.</span><span class="nv">  </span><span class="s">General</span><span class="nv"> </span><span class="s">Terms</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">Use</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">Redistributing</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span>
+<span class="s">electronic</span><span class="nv"> </span><span class="s">works</span>
+
+<span class="s">1.A.</span><span class="nv">  </span><span class="s">By</span><span class="nv"> </span><span class="s">reading</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">using</span><span class="nv"> </span><span class="s">any</span><span class="nv"> </span><span class="s">part</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span>
+<span class="s">electronic</span><span class="nv"> </span><span class="s">work,</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">indicate</span><span class="nv"> </span><span class="s">that</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">have</span><span class="nv"> </span><span class="s">read,</span><span class="nv"> </span><span class="s">understand,</span><span class="nv"> </span><span class="s">agree</span><span class="nv"> </span><span class="s">to</span>
+<span class="s">and</span><span class="nv"> </span><span class="s">accept</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">terms</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">license</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">intellectual</span><span class="nv"> </span><span class="s">property</span>
+<span class="s">(trademark/copyright)</span><span class="nv"> </span><span class="s">agreement.</span><span class="nv">  </span><span class="s">If</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">do</span><span class="nv"> </span><span class="s">not</span><span class="nv"> </span><span class="s">agree</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">abide</span><span class="nv"> </span><span class="s">by</span><span class="nv"> </span><span class="s">all</span>
+<span class="s">the</span><span class="nv"> </span><span class="s">terms</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">agreement,</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">must</span><span class="nv"> </span><span class="s">cease</span><span class="nv"> </span><span class="s">using</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">return</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">destroy</span>
+<span class="s">all</span><span class="nv"> </span><span class="s">copies</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">electronic</span><span class="nv"> </span><span class="s">works</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">your</span><span class="nv"> </span><span class="s">possession.</span>
+<span class="s">If</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">paid</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">fee</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">obtaining</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">copy</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">access</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">Project</span>
+<span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">electronic</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">do</span><span class="nv"> </span><span class="s">not</span><span class="nv"> </span><span class="s">agree</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">be</span><span class="nv"> </span><span class="s">bound</span><span class="nv"> </span><span class="s">by</span><span class="nv"> </span><span class="s">the</span>
+<span class="s">terms</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">agreement,</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">may</span><span class="nv"> </span><span class="s">obtain</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">refund</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">person</span><span class="nv"> </span><span class="s">or</span>
+<span class="s">entity</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">whom</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">paid</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">fee</span><span class="nv"> </span><span class="s">as</span><span class="nv"> </span><span class="s">set</span><span class="nv"> </span><span class="s">forth</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">paragraph</span><span class="nv"> </span><span class="s">1.E.8.</span>
+
+<span class="s">1.B.</span><span class="nv">  </span><span class="s">&quot;Project</span><span class="nv"> </span><span class="s">Gutenberg&quot;</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">registered</span><span class="nv"> </span><span class="s">trademark.</span><span class="nv">  </span><span class="s">It</span><span class="nv"> </span><span class="s">may</span><span class="nv"> </span><span class="s">only</span><span class="nv"> </span><span class="s">be</span>
+<span class="s">used</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">associated</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">any</span><span class="nv"> </span><span class="s">way</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">an</span><span class="nv"> </span><span class="s">electronic</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">by</span><span class="nv"> </span><span class="s">people</span><span class="nv"> </span><span class="s">who</span>
+<span class="s">agree</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">be</span><span class="nv"> </span><span class="s">bound</span><span class="nv"> </span><span class="s">by</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">terms</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">agreement.</span><span class="nv">  </span><span class="s">There</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">few</span>
+<span class="s">things</span><span class="nv"> </span><span class="s">that</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">can</span><span class="nv"> </span><span class="s">do</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">most</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">electronic</span><span class="nv"> </span><span class="s">works</span>
+<span class="s">even</span><span class="nv"> </span><span class="s">without</span><span class="nv"> </span><span class="s">complying</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">full</span><span class="nv"> </span><span class="s">terms</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">agreement.</span><span class="nv">  </span><span class="s">See</span>
+<span class="s">paragraph</span><span class="nv"> </span><span class="s">1.C</span><span class="nv"> </span><span class="s">below.</span><span class="nv">  </span><span class="s">There</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">lot</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">things</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">can</span><span class="nv"> </span><span class="s">do</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">Project</span>
+<span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">electronic</span><span class="nv"> </span><span class="s">works</span><span class="nv"> </span><span class="s">if</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">follow</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">terms</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">agreement</span>
+<span class="s">and</span><span class="nv"> </span><span class="s">help</span><span class="nv"> </span><span class="s">preserve</span><span class="nv"> </span><span class="s">free</span><span class="nv"> </span><span class="s">future</span><span class="nv"> </span><span class="s">access</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">electronic</span>
+<span class="s">works.</span><span class="nv">  </span><span class="s">See</span><span class="nv"> </span><span class="s">paragraph</span><span class="nv"> </span><span class="s">1.E</span><span class="nv"> </span><span class="s">below.</span>
+
+<span class="s">1.C.</span><span class="nv">  </span><span class="s">The</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg</span><span class="nv"> </span><span class="s">Literary</span><span class="nv"> </span><span class="s">Archive</span><span class="nv"> </span><span class="s">Foundation</span><span class="nv"> </span><span class="s">(&quot;the</span><span class="nv"> </span><span class="s">Foundation&quot;</span>
+<span class="s">or</span><span class="nv"> </span><span class="s">PGLAF),</span><span class="nv"> </span><span class="s">owns</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">compilation</span><span class="nv"> </span><span class="s">copyright</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">collection</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">Project</span>
+<span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">electronic</span><span class="nv"> </span><span class="s">works.</span><span class="nv">  </span><span class="s">Nearly</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">individual</span><span class="nv"> </span><span class="s">works</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">the</span>
+<span class="s">collection</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">public</span><span class="nv"> </span><span class="s">domain</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">United</span><span class="nv"> </span><span class="s">States.</span><span class="nv">  </span><span class="s">If</span><span class="nv"> </span><span class="s">an</span>
+<span class="s">individual</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">public</span><span class="nv"> </span><span class="s">domain</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">United</span><span class="nv"> </span><span class="s">States</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">are</span>
+<span class="s">located</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">United</span><span class="nv"> </span><span class="s">States,</span><span class="nv"> </span><span class="s">we</span><span class="nv"> </span><span class="s">do</span><span class="nv"> </span><span class="s">not</span><span class="nv"> </span><span class="s">claim</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">right</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">prevent</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">from</span>
+<span class="s">copying,</span><span class="nv"> </span><span class="s">distributing,</span><span class="nv"> </span><span class="s">performing,</span><span class="nv"> </span><span class="s">displaying</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">creating</span><span class="nv"> </span><span class="s">derivative</span>
+<span class="s">works</span><span class="nv"> </span><span class="s">based</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">as</span><span class="nv"> </span><span class="s">long</span><span class="nv"> </span><span class="s">as</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">references</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg</span>
+<span class="s">are</span><span class="nv"> </span><span class="s">removed.</span><span class="nv">  </span><span class="s">Of</span><span class="nv"> </span><span class="s">course,</span><span class="nv"> </span><span class="s">we</span><span class="nv"> </span><span class="s">hope</span><span class="nv"> </span><span class="s">that</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">will</span><span class="nv"> </span><span class="s">support</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">Project</span>
+<span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">mission</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">promoting</span><span class="nv"> </span><span class="s">free</span><span class="nv"> </span><span class="s">access</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">electronic</span><span class="nv"> </span><span class="s">works</span><span class="nv"> </span><span class="s">by</span>
+<span class="s">freely</span><span class="nv"> </span><span class="s">sharing</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">works</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">compliance</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">terms</span><span class="nv"> </span><span class="s">of</span>
+<span class="s">this</span><span class="nv"> </span><span class="s">agreement</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">keeping</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">name</span><span class="nv"> </span><span class="s">associated</span><span class="nv"> </span><span class="s">with</span>
+<span class="s">the</span><span class="nv"> </span><span class="s">work.</span><span class="nv">  </span><span class="s">You</span><span class="nv"> </span><span class="s">can</span><span class="nv"> </span><span class="s">easily</span><span class="nv"> </span><span class="s">comply</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">terms</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">agreement</span><span class="nv"> </span><span class="s">by</span>
+<span class="s">keeping</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">same</span><span class="nv"> </span><span class="s">format</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">its</span><span class="nv"> </span><span class="s">attached</span><span class="nv"> </span><span class="s">full</span><span class="nv"> </span><span class="s">Project</span>
+<span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">License</span><span class="nv"> </span><span class="s">when</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">share</span><span class="nv"> </span><span class="s">it</span><span class="nv"> </span><span class="s">without</span><span class="nv"> </span><span class="s">charge</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">others.</span>
+
+<span class="s">1.D.</span><span class="nv">  </span><span class="s">The</span><span class="nv"> </span><span class="s">copyright</span><span class="nv"> </span><span class="s">laws</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">place</span><span class="nv"> </span><span class="s">where</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">located</span><span class="nv"> </span><span class="s">also</span><span class="nv"> </span><span class="s">govern</span>
+<span class="s">what</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">can</span><span class="nv"> </span><span class="s">do</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">work.</span><span class="nv">  </span><span class="s">Copyright</span><span class="nv"> </span><span class="s">laws</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">most</span><span class="nv"> </span><span class="s">countries</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">in</span>
+<span class="s">a</span><span class="nv"> </span><span class="s">constant</span><span class="nv"> </span><span class="s">state</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">change.</span><span class="nv">  </span><span class="s">If</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">outside</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">United</span><span class="nv"> </span><span class="s">States,</span><span class="nv"> </span><span class="s">check</span>
+<span class="s">the</span><span class="nv"> </span><span class="s">laws</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">your</span><span class="nv"> </span><span class="s">country</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">addition</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">terms</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">agreement</span>
+<span class="s">before</span><span class="nv"> </span><span class="s">downloading,</span><span class="nv"> </span><span class="s">copying,</span><span class="nv"> </span><span class="s">displaying,</span><span class="nv"> </span><span class="s">performing,</span><span class="nv"> </span><span class="s">distributing</span><span class="nv"> </span><span class="s">or</span>
+<span class="s">creating</span><span class="nv"> </span><span class="s">derivative</span><span class="nv"> </span><span class="s">works</span><span class="nv"> </span><span class="s">based</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">any</span><span class="nv"> </span><span class="s">other</span><span class="nv"> </span><span class="s">Project</span>
+<span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">work.</span><span class="nv">  </span><span class="s">The</span><span class="nv"> </span><span class="s">Foundation</span><span class="nv"> </span><span class="s">makes</span><span class="nv"> </span><span class="s">no</span><span class="nv"> </span><span class="s">representations</span><span class="nv"> </span><span class="s">concerning</span>
+<span class="s">the</span><span class="nv"> </span><span class="s">copyright</span><span class="nv"> </span><span class="s">status</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">any</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">any</span><span class="nv"> </span><span class="s">country</span><span class="nv"> </span><span class="s">outside</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">United</span>
+<span class="s">States.</span>
+
+<span class="s">1.E.</span><span class="nv">  </span><span class="s">Unless</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">have</span><span class="nv"> </span><span class="s">removed</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">references</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg:</span>
+
+<span class="s">1.E.1.</span><span class="nv">  </span><span class="s">The</span><span class="nv"> </span><span class="s">following</span><span class="nv"> </span><span class="s">sentence,</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">active</span><span class="nv"> </span><span class="s">links</span><span class="nv"> </span><span class="s">to,</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">other</span><span class="nv"> </span><span class="s">immediate</span>
+<span class="s">access</span><span class="nv"> </span><span class="s">to,</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">full</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">License</span><span class="nv"> </span><span class="s">must</span><span class="nv"> </span><span class="s">appear</span><span class="nv"> </span><span class="s">prominently</span>
+<span class="s">whenever</span><span class="nv"> </span><span class="s">any</span><span class="nv"> </span><span class="s">copy</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">(any</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">which</span><span class="nv"> </span><span class="s">the</span>
+<span class="s">phrase</span><span class="nv"> </span><span class="s">&quot;Project</span><span class="nv"> </span><span class="s">Gutenberg&quot;</span><span class="nv"> </span><span class="s">appears,</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">which</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">phrase</span><span class="nv"> </span><span class="s">&quot;Project</span>
+<span class="s">Gutenberg&quot;</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">associated)</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">accessed,</span><span class="nv"> </span><span class="s">displayed,</span><span class="nv"> </span><span class="s">performed,</span><span class="nv"> </span><span class="s">viewed,</span>
+<span class="s">copied</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">distributed:</span>
+
+<span class="s">This</span><span class="nv"> </span><span class="s">eBook</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">use</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">anyone</span><span class="nv"> </span><span class="s">anywhere</span><span class="nv"> </span><span class="s">at</span><span class="nv"> </span><span class="s">no</span><span class="nv"> </span><span class="s">cost</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">with</span>
+<span class="s">almost</span><span class="nv"> </span><span class="s">no</span><span class="nv"> </span><span class="s">restrictions</span><span class="nv"> </span><span class="s">whatsoever.</span><span class="nv">  </span><span class="s">You</span><span class="nv"> </span><span class="s">may</span><span class="nv"> </span><span class="s">copy</span><span class="nv"> </span><span class="s">it,</span><span class="nv"> </span><span class="s">give</span><span class="nv"> </span><span class="s">it</span><span class="nv"> </span><span class="s">away</span><span class="nv"> </span><span class="s">or</span>
+<span class="s">re-use</span><span class="nv"> </span><span class="s">it</span><span class="nv"> </span><span class="s">under</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">terms</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg</span><span class="nv"> </span><span class="s">License</span><span class="nv"> </span><span class="s">included</span>
+<span class="s">with</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">eBook</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">online</span><span class="nv"> </span><span class="s">at</span><span class="nv"> </span><span class="s">www.gutenberg.org</span>
+
+<span class="s">1.E.2.</span><span class="nv">  </span><span class="s">If</span><span class="nv"> </span><span class="s">an</span><span class="nv"> </span><span class="s">individual</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">electronic</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">derived</span>
+<span class="s">from</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">public</span><span class="nv"> </span><span class="s">domain</span><span class="nv"> </span><span class="s">(does</span><span class="nv"> </span><span class="s">not</span><span class="nv"> </span><span class="s">contain</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">notice</span><span class="nv"> </span><span class="s">indicating</span><span class="nv"> </span><span class="s">that</span><span class="nv"> </span><span class="s">it</span><span class="nv"> </span><span class="s">is</span>
+<span class="s">posted</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">permission</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">copyright</span><span class="nv"> </span><span class="s">holder),</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">can</span><span class="nv"> </span><span class="s">be</span><span class="nv"> </span><span class="s">copied</span>
+<span class="s">and</span><span class="nv"> </span><span class="s">distributed</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">anyone</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">United</span><span class="nv"> </span><span class="s">States</span><span class="nv"> </span><span class="s">without</span><span class="nv"> </span><span class="s">paying</span><span class="nv"> </span><span class="s">any</span><span class="nv"> </span><span class="s">fees</span>
+<span class="s">or</span><span class="nv"> </span><span class="s">charges.</span><span class="nv">  </span><span class="s">If</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">redistributing</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">providing</span><span class="nv"> </span><span class="s">access</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">work</span>
+<span class="s">with</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">phrase</span><span class="nv"> </span><span class="s">&quot;Project</span><span class="nv"> </span><span class="s">Gutenberg&quot;</span><span class="nv"> </span><span class="s">associated</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">appearing</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">the</span>
+<span class="s">work,</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">must</span><span class="nv"> </span><span class="s">comply</span><span class="nv"> </span><span class="s">either</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">requirements</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">paragraphs</span><span class="nv"> </span><span class="s">1.E.1</span>
+<span class="s">through</span><span class="nv"> </span><span class="s">1.E.7</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">obtain</span><span class="nv"> </span><span class="s">permission</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">use</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">the</span>
+<span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">trademark</span><span class="nv"> </span><span class="s">as</span><span class="nv"> </span><span class="s">set</span><span class="nv"> </span><span class="s">forth</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">paragraphs</span><span class="nv"> </span><span class="s">1.E.8</span><span class="nv"> </span><span class="s">or</span>
+<span class="s">1.E.9.</span>
+
+<span class="s">1.E.3.</span><span class="nv">  </span><span class="s">If</span><span class="nv"> </span><span class="s">an</span><span class="nv"> </span><span class="s">individual</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">electronic</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">posted</span>
+<span class="s">with</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">permission</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">copyright</span><span class="nv"> </span><span class="s">holder,</span><span class="nv"> </span><span class="s">your</span><span class="nv"> </span><span class="s">use</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">distribution</span>
+<span class="s">must</span><span class="nv"> </span><span class="s">comply</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">both</span><span class="nv"> </span><span class="s">paragraphs</span><span class="nv"> </span><span class="s">1.E.1</span><span class="nv"> </span><span class="s">through</span><span class="nv"> </span><span class="s">1.E.7</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">any</span><span class="nv"> </span><span class="s">additional</span>
+<span class="s">terms</span><span class="nv"> </span><span class="s">imposed</span><span class="nv"> </span><span class="s">by</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">copyright</span><span class="nv"> </span><span class="s">holder.</span><span class="nv">  </span><span class="s">Additional</span><span class="nv"> </span><span class="s">terms</span><span class="nv"> </span><span class="s">will</span><span class="nv"> </span><span class="s">be</span><span class="nv"> </span><span class="s">linked</span>
+<span class="s">to</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">License</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">works</span><span class="nv"> </span><span class="s">posted</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">the</span>
+<span class="s">permission</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">copyright</span><span class="nv"> </span><span class="s">holder</span><span class="nv"> </span><span class="s">found</span><span class="nv"> </span><span class="s">at</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">beginning</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">work.</span>
+
+<span class="s">1.E.4.</span><span class="nv">  </span><span class="s">Do</span><span class="nv"> </span><span class="s">not</span><span class="nv"> </span><span class="s">unlink</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">detach</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">remove</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">full</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span>
+<span class="s">License</span><span class="nv"> </span><span class="s">terms</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">work,</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">any</span><span class="nv"> </span><span class="s">files</span><span class="nv"> </span><span class="s">containing</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">part</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">this</span>
+<span class="s">work</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">any</span><span class="nv"> </span><span class="s">other</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">associated</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm.</span>
+
+<span class="s">1.E.5.</span><span class="nv">  </span><span class="s">Do</span><span class="nv"> </span><span class="s">not</span><span class="nv"> </span><span class="s">copy,</span><span class="nv"> </span><span class="s">display,</span><span class="nv"> </span><span class="s">perform,</span><span class="nv"> </span><span class="s">distribute</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">redistribute</span><span class="nv"> </span><span class="s">this</span>
+<span class="s">electronic</span><span class="nv"> </span><span class="s">work,</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">any</span><span class="nv"> </span><span class="s">part</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">electronic</span><span class="nv"> </span><span class="s">work,</span><span class="nv"> </span><span class="s">without</span>
+<span class="s">prominently</span><span class="nv"> </span><span class="s">displaying</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">sentence</span><span class="nv"> </span><span class="s">set</span><span class="nv"> </span><span class="s">forth</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">paragraph</span><span class="nv"> </span><span class="s">1.E.1</span><span class="nv"> </span><span class="s">with</span>
+<span class="s">active</span><span class="nv"> </span><span class="s">links</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">immediate</span><span class="nv"> </span><span class="s">access</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">full</span><span class="nv"> </span><span class="s">terms</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">Project</span>
+<span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">License.</span>
+
+<span class="s">1.E.6.</span><span class="nv">  </span><span class="s">You</span><span class="nv"> </span><span class="s">may</span><span class="nv"> </span><span class="s">convert</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">distribute</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">any</span><span class="nv"> </span><span class="s">binary,</span>
+<span class="s">compressed,</span><span class="nv"> </span><span class="s">marked</span><span class="nv"> </span><span class="s">up,</span><span class="nv"> </span><span class="s">nonproprietary</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">proprietary</span><span class="nv"> </span><span class="s">form,</span><span class="nv"> </span><span class="s">including</span><span class="nv"> </span><span class="s">any</span>
+<span class="s">word</span><span class="nv"> </span><span class="s">processing</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">hypertext</span><span class="nv"> </span><span class="s">form.</span><span class="nv">  </span><span class="s">However,</span><span class="nv"> </span><span class="s">if</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">provide</span><span class="nv"> </span><span class="s">access</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">or</span>
+<span class="s">distribute</span><span class="nv"> </span><span class="s">copies</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">format</span><span class="nv"> </span><span class="s">other</span><span class="nv"> </span><span class="s">than</span>
+<span class="s">&quot;Plain</span><span class="nv"> </span><span class="s">Vanilla</span><span class="nv"> </span><span class="s">ASCII&quot;</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">other</span><span class="nv"> </span><span class="s">format</span><span class="nv"> </span><span class="s">used</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">official</span><span class="nv"> </span><span class="s">version</span>
+<span class="s">posted</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">official</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">web</span><span class="nv"> </span><span class="s">site</span><span class="nv"> </span><span class="s">(www.gutenberg.org),</span>
+<span class="s">you</span><span class="nv"> </span><span class="s">must,</span><span class="nv"> </span><span class="s">at</span><span class="nv"> </span><span class="s">no</span><span class="nv"> </span><span class="s">additional</span><span class="nv"> </span><span class="s">cost,</span><span class="nv"> </span><span class="s">fee</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">expense</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">user,</span><span class="nv"> </span><span class="s">provide</span><span class="nv"> </span><span class="s">a</span>
+<span class="s">copy,</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">means</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">exporting</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">copy,</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">means</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">obtaining</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">copy</span><span class="nv"> </span><span class="s">upon</span>
+<span class="s">request,</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">its</span><span class="nv"> </span><span class="s">original</span><span class="nv"> </span><span class="s">&quot;Plain</span><span class="nv"> </span><span class="s">Vanilla</span><span class="nv"> </span><span class="s">ASCII&quot;</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">other</span>
+<span class="s">form.</span><span class="nv">  </span><span class="s">Any</span><span class="nv"> </span><span class="s">alternate</span><span class="nv"> </span><span class="s">format</span><span class="nv"> </span><span class="s">must</span><span class="nv"> </span><span class="s">include</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">full</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span>
+<span class="s">License</span><span class="nv"> </span><span class="s">as</span><span class="nv"> </span><span class="s">specified</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">paragraph</span><span class="nv"> </span><span class="s">1.E.1.</span>
+
+<span class="s">1.E.7.</span><span class="nv">  </span><span class="s">Do</span><span class="nv"> </span><span class="s">not</span><span class="nv"> </span><span class="s">charge</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">fee</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">access</span><span class="nv"> </span><span class="s">to,</span><span class="nv"> </span><span class="s">viewing,</span><span class="nv"> </span><span class="s">displaying,</span>
+<span class="s">performing,</span><span class="nv"> </span><span class="s">copying</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">distributing</span><span class="nv"> </span><span class="s">any</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">works</span>
+<span class="s">unless</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">comply</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">paragraph</span><span class="nv"> </span><span class="s">1.E.8</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">1.E.9.</span>
+
+<span class="s">1.E.8.</span><span class="nv">  </span><span class="s">You</span><span class="nv"> </span><span class="s">may</span><span class="nv"> </span><span class="s">charge</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">reasonable</span><span class="nv"> </span><span class="s">fee</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">copies</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">providing</span>
+<span class="s">access</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">distributing</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">electronic</span><span class="nv"> </span><span class="s">works</span><span class="nv"> </span><span class="s">provided</span>
+<span class="s">that</span>
+
+<span class="s">-</span><span class="nv"> </span><span class="s">You</span><span class="nv"> </span><span class="s">pay</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">royalty</span><span class="nv"> </span><span class="s">fee</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">20%</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">gross</span><span class="nv"> </span><span class="s">profits</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">derive</span><span class="nv"> </span><span class="s">from</span>
+<span class="w">     </span><span class="s">the</span><span class="nv"> </span><span class="s">use</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">works</span><span class="nv"> </span><span class="s">calculated</span><span class="nv"> </span><span class="s">using</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">method</span>
+<span class="w">     </span><span class="s">you</span><span class="nv"> </span><span class="s">already</span><span class="nv"> </span><span class="s">use</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">calculate</span><span class="nv"> </span><span class="s">your</span><span class="nv"> </span><span class="s">applicable</span><span class="nv"> </span><span class="s">taxes.</span><span class="nv">  </span><span class="s">The</span><span class="nv"> </span><span class="s">fee</span><span class="nv"> </span><span class="s">is</span>
+<span class="w">     </span><span class="s">owed</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">owner</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">trademark,</span><span class="nv"> </span><span class="s">but</span><span class="nv"> </span><span class="s">he</span>
+<span class="w">     </span><span class="s">has</span><span class="nv"> </span><span class="s">agreed</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">donate</span><span class="nv"> </span><span class="s">royalties</span><span class="nv"> </span><span class="s">under</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">paragraph</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">the</span>
+<span class="w">     </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg</span><span class="nv"> </span><span class="s">Literary</span><span class="nv"> </span><span class="s">Archive</span><span class="nv"> </span><span class="s">Foundation.</span><span class="nv">  </span><span class="s">Royalty</span><span class="nv"> </span><span class="s">payments</span>
+<span class="w">     </span><span class="s">must</span><span class="nv"> </span><span class="s">be</span><span class="nv"> </span><span class="s">paid</span><span class="nv"> </span><span class="s">within</span><span class="nv"> </span><span class="s">60</span><span class="nv"> </span><span class="s">days</span><span class="nv"> </span><span class="s">following</span><span class="nv"> </span><span class="s">each</span><span class="nv"> </span><span class="s">date</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">which</span><span class="nv"> </span><span class="s">you</span>
+<span class="w">     </span><span class="s">prepare</span><span class="nv"> </span><span class="s">(or</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">legally</span><span class="nv"> </span><span class="s">required</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">prepare)</span><span class="nv"> </span><span class="s">your</span><span class="nv"> </span><span class="s">periodic</span><span class="nv"> </span><span class="s">tax</span>
+<span class="w">     </span><span class="s">returns.</span><span class="nv">  </span><span class="s">Royalty</span><span class="nv"> </span><span class="s">payments</span><span class="nv"> </span><span class="s">should</span><span class="nv"> </span><span class="s">be</span><span class="nv"> </span><span class="s">clearly</span><span class="nv"> </span><span class="s">marked</span><span class="nv"> </span><span class="s">as</span><span class="nv"> </span><span class="s">such</span><span class="nv"> </span><span class="s">and</span>
+<span class="w">     </span><span class="s">sent</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg</span><span class="nv"> </span><span class="s">Literary</span><span class="nv"> </span><span class="s">Archive</span><span class="nv"> </span><span class="s">Foundation</span><span class="nv"> </span><span class="s">at</span><span class="nv"> </span><span class="s">the</span>
+<span class="w">     </span><span class="s">address</span><span class="nv"> </span><span class="s">specified</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">Section</span><span class="nv"> </span><span class="s">4,</span><span class="nv"> </span><span class="s">&quot;Information</span><span class="nv"> </span><span class="s">about</span><span class="nv"> </span><span class="s">donations</span><span class="nv"> </span><span class="s">to</span>
+<span class="w">     </span><span class="s">the</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg</span><span class="nv"> </span><span class="s">Literary</span><span class="nv"> </span><span class="s">Archive</span><span class="nv"> </span><span class="s">Foundation.&quot;</span>
+
+<span class="s">-</span><span class="nv"> </span><span class="s">You</span><span class="nv"> </span><span class="s">provide</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">full</span><span class="nv"> </span><span class="s">refund</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">any</span><span class="nv"> </span><span class="s">money</span><span class="nv"> </span><span class="s">paid</span><span class="nv"> </span><span class="s">by</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">user</span><span class="nv"> </span><span class="s">who</span><span class="nv"> </span><span class="s">notifies</span>
+<span class="w">     </span><span class="s">you</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">writing</span><span class="nv"> </span><span class="s">(or</span><span class="nv"> </span><span class="s">by</span><span class="nv"> </span><span class="s">e-mail)</span><span class="nv"> </span><span class="s">within</span><span class="nv"> </span><span class="s">30</span><span class="nv"> </span><span class="s">days</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">receipt</span><span class="nv"> </span><span class="s">that</span><span class="nv"> </span><span class="s">s/he</span>
+<span class="w">     </span><span class="s">does</span><span class="nv"> </span><span class="s">not</span><span class="nv"> </span><span class="s">agree</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">terms</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">full</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span>
+<span class="w">     </span><span class="s">License.</span><span class="nv">  </span><span class="s">You</span><span class="nv"> </span><span class="s">must</span><span class="nv"> </span><span class="s">require</span><span class="nv"> </span><span class="s">such</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">user</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">return</span><span class="nv"> </span><span class="s">or</span>
+<span class="w">     </span><span class="s">destroy</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">copies</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">works</span><span class="nv"> </span><span class="s">possessed</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">physical</span><span class="nv"> </span><span class="s">medium</span>
+<span class="w">     </span><span class="s">and</span><span class="nv"> </span><span class="s">discontinue</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">use</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">access</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">other</span><span class="nv"> </span><span class="s">copies</span><span class="nv"> </span><span class="s">of</span>
+<span class="w">     </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">works.</span>
+
+<span class="s">-</span><span class="nv"> </span><span class="s">You</span><span class="nv"> </span><span class="s">provide,</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">accordance</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">paragraph</span><span class="nv"> </span><span class="s">1.F.3,</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">full</span><span class="nv"> </span><span class="s">refund</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">any</span>
+<span class="w">     </span><span class="s">money</span><span class="nv"> </span><span class="s">paid</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">replacement</span><span class="nv"> </span><span class="s">copy,</span><span class="nv"> </span><span class="s">if</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">defect</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">the</span>
+<span class="w">     </span><span class="s">electronic</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">discovered</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">reported</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">within</span><span class="nv"> </span><span class="s">90</span><span class="nv"> </span><span class="s">days</span>
+<span class="w">     </span><span class="s">of</span><span class="nv"> </span><span class="s">receipt</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">work.</span>
+
+<span class="s">-</span><span class="nv"> </span><span class="s">You</span><span class="nv"> </span><span class="s">comply</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">other</span><span class="nv"> </span><span class="s">terms</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">agreement</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">free</span>
+<span class="w">     </span><span class="s">distribution</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">works.</span>
+
+<span class="s">1.E.9.</span><span class="nv">  </span><span class="s">If</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">wish</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">charge</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">fee</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">distribute</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span>
+<span class="s">electronic</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">group</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">works</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">different</span><span class="nv"> </span><span class="s">terms</span><span class="nv"> </span><span class="s">than</span><span class="nv"> </span><span class="s">are</span><span class="nv"> </span><span class="s">set</span>
+<span class="s">forth</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">agreement,</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">must</span><span class="nv"> </span><span class="s">obtain</span><span class="nv"> </span><span class="s">permission</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">writing</span><span class="nv"> </span><span class="s">from</span>
+<span class="s">both</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg</span><span class="nv"> </span><span class="s">Literary</span><span class="nv"> </span><span class="s">Archive</span><span class="nv"> </span><span class="s">Foundation</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">Michael</span>
+<span class="s">Hart,</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">owner</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">trademark.</span><span class="nv">  </span><span class="s">Contact</span><span class="nv"> </span><span class="s">the</span>
+<span class="s">Foundation</span><span class="nv"> </span><span class="s">as</span><span class="nv"> </span><span class="s">set</span><span class="nv"> </span><span class="s">forth</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">Section</span><span class="nv"> </span><span class="s">3</span><span class="nv"> </span><span class="s">below.</span>
+
+<span class="s">1.F.</span>
+
+<span class="s">1.F.1.</span><span class="nv">  </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg</span><span class="nv"> </span><span class="s">volunteers</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">employees</span><span class="nv"> </span><span class="s">expend</span><span class="nv"> </span><span class="s">considerable</span>
+<span class="s">effort</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">identify,</span><span class="nv"> </span><span class="s">do</span><span class="nv"> </span><span class="s">copyright</span><span class="nv"> </span><span class="s">research</span><span class="nv"> </span><span class="s">on,</span><span class="nv"> </span><span class="s">transcribe</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">proofread</span>
+<span class="s">public</span><span class="nv"> </span><span class="s">domain</span><span class="nv"> </span><span class="s">works</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">creating</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span>
+<span class="s">collection.</span><span class="nv">  </span><span class="s">Despite</span><span class="nv"> </span><span class="s">these</span><span class="nv"> </span><span class="s">efforts,</span><span class="nv"> </span><span class="s">Project</span><span class="nv"> </span><span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">electronic</span>
+<span class="s">works,</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">medium</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">which</span><span class="nv"> </span><span class="s">they</span><span class="nv"> </span><span class="s">may</span><span class="nv"> </span><span class="s">be</span><span class="nv"> </span><span class="s">stored,</span><span class="nv"> </span><span class="s">may</span><span class="nv"> </span><span class="s">contain</span>
+<span class="s">&quot;Defects,&quot;</span><span class="nv"> </span><span class="s">such</span><span class="nv"> </span><span class="s">as,</span><span class="nv"> </span><span class="s">but</span><span class="nv"> </span><span class="s">not</span><span class="nv"> </span><span class="s">limited</span><span class="nv"> </span><span class="s">to,</span><span class="nv"> </span><span class="s">incomplete,</span><span class="nv"> </span><span class="s">inaccurate</span><span class="nv"> </span><span class="s">or</span>
+<span class="s">corrupt</span><span class="nv"> </span><span class="s">data,</span><span class="nv"> </span><span class="s">transcription</span><span class="nv"> </span><span class="s">errors,</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">copyright</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">other</span><span class="nv"> </span><span class="s">intellectual</span>
+<span class="s">property</span><span class="nv"> </span><span class="s">infringement,</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">defective</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">damaged</span><span class="nv"> </span><span class="s">disk</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">other</span><span class="nv"> </span><span class="s">medium,</span><span class="nv"> </span><span class="s">a</span>
+<span class="s">computer</span><span class="nv"> </span><span class="s">virus,</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">computer</span><span class="nv"> </span><span class="s">codes</span><span class="nv"> </span><span class="s">that</span><span class="nv"> </span><span class="s">damage</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">cannot</span><span class="nv"> </span><span class="s">be</span><span class="nv"> </span><span class="s">read</span><span class="nv"> </span><span class="s">by</span>
+<span class="s">your</span><span class="nv"> </span><span class="s">equipment.</span>
+
+<span class="s">1.F.2.</span><span class="nv">  </span><span class="s">LIMITED</span><span class="nv"> </span><span class="s">WARRANTY,</span><span class="nv"> </span><span class="s">DISCLAIMER</span><span class="nv"> </span><span class="s">OF</span><span class="nv"> </span><span class="s">DAMAGES</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">Except</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">&quot;Right</span>
+<span class="s">of</span><span class="nv"> </span><span class="s">Replacement</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">Refund&quot;</span><span class="nv"> </span><span class="s">described</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">paragraph</span><span class="nv"> </span><span class="s">1.F.3,</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">Project</span>
+<span class="s">Gutenberg</span><span class="nv"> </span><span class="s">Literary</span><span class="nv"> </span><span class="s">Archive</span><span class="nv"> </span><span class="s">Foundation,</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">owner</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">Project</span>
+<span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">trademark,</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">any</span><span class="nv"> </span><span class="s">other</span><span class="nv"> </span><span class="s">party</span><span class="nv"> </span><span class="s">distributing</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">Project</span>
+<span class="s">Gutenberg-tm</span><span class="nv"> </span><span class="s">electronic</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">under</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">agreement,</span><span class="nv"> </span><span class="s">disclaim</span><span class="nv"> </span><span class="s">all</span>
+<span class="s">liability</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">damages,</span><span class="nv"> </span><span class="s">costs</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">expenses,</span><span class="nv"> </span><span class="s">including</span><span class="nv"> </span><span class="s">legal</span>
+<span class="s">fees.</span><span class="nv">  </span><span class="s">YOU</span><span class="nv"> </span><span class="s">AGREE</span><span class="nv"> </span><span class="s">THAT</span><span class="nv"> </span><span class="s">YOU</span><span class="nv"> </span><span class="s">HAVE</span><span class="nv"> </span><span class="s">NO</span><span class="nv"> </span><span class="s">REMEDIES</span><span class="nv"> </span><span class="s">FOR</span><span class="nv"> </span><span class="s">NEGLIGENCE,</span><span class="nv"> </span><span class="s">STRICT</span>
+<span class="s">LIABILITY,</span><span class="nv"> </span><span class="s">BREACH</span><span class="nv"> </span><span class="s">OF</span><span class="nv"> </span><span class="s">WARRANTY</span><span class="nv"> </span><span class="s">OR</span><span class="nv"> </span><span class="s">BREACH</span><span class="nv"> </span><span class="s">OF</span><span class="nv"> </span><span class="s">CONTRACT</span><span class="nv"> </span><span class="s">EXCEPT</span><span class="nv"> </span><span class="s">THOSE</span>
+<span class="s">PROVIDED</span><span class="nv"> </span><span class="s">IN</span><span class="nv"> </span><span class="s">PARAGRAPH</span><span class="nv"> </span><span class="s">1.F.3.</span><span class="nv">  </span><span class="s">YOU</span><span class="nv"> </span><span class="s">AGREE</span><span class="nv"> </span><span class="s">THAT</span><span class="nv"> </span><span class="s">THE</span><span class="nv"> </span><span class="s">FOUNDATION,</span><span class="nv"> </span><span class="s">THE</span>
+<span class="s">TRADEMARK</span><span class="nv"> </span><span class="s">OWNER,</span><span class="nv"> </span><span class="s">AND</span><span class="nv"> </span><span class="s">ANY</span><span class="nv"> </span><span class="s">DISTRIBUTOR</span><span class="nv"> </span><span class="s">UNDER</span><span class="nv"> </span><span class="s">THIS</span><span class="nv"> </span><span class="s">AGREEMENT</span><span class="nv"> </span><span class="s">WILL</span><span class="nv"> </span><span class="s">NOT</span><span class="nv"> </span><span class="s">BE</span>
+<span class="s">LIABLE</span><span class="nv"> </span><span class="s">TO</span><span class="nv"> </span><span class="s">YOU</span><span class="nv"> </span><span class="s">FOR</span><span class="nv"> </span><span class="s">ACTUAL,</span><span class="nv"> </span><span class="s">DIRECT,</span><span class="nv"> </span><span class="s">INDIRECT,</span><span class="nv"> </span><span class="s">CONSEQUENTIAL,</span><span class="nv"> </span><span class="s">PUNITIVE</span><span class="nv"> </span><span class="s">OR</span>
+<span class="s">INCIDENTAL</span><span class="nv"> </span><span class="s">DAMAGES</span><span class="nv"> </span><span class="s">EVEN</span><span class="nv"> </span><span class="s">IF</span><span class="nv"> </span><span class="s">YOU</span><span class="nv"> </span><span class="s">GIVE</span><span class="nv"> </span><span class="s">NOTICE</span><span class="nv"> </span><span class="s">OF</span><span class="nv"> </span><span class="s">THE</span><span class="nv"> </span><span class="s">POSSIBILITY</span><span class="nv"> </span><span class="s">OF</span><span class="nv"> </span><span class="s">SUCH</span>
+<span class="s">DAMAGE.</span>
+
+<span class="s">1.F.3.</span><span class="nv">  </span><span class="s">LIMITED</span><span class="nv"> </span><span class="s">RIGHT</span><span class="nv"> </span><span class="s">OF</span><span class="nv"> </span><span class="s">REPLACEMENT</span><span class="nv"> </span><span class="s">OR</span><span class="nv"> </span><span class="s">REFUND</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">If</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">discover</span><span class="nv"> </span><span class="s">a</span>
+<span class="s">defect</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">electronic</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">within</span><span class="nv"> </span><span class="s">90</span><span class="nv"> </span><span class="s">days</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">receiving</span><span class="nv"> </span><span class="s">it,</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">can</span>
+<span class="s">receive</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">refund</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">money</span><span class="nv"> </span><span class="s">(if</span><span class="nv"> </span><span class="s">any)</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">paid</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">it</span><span class="nv"> </span><span class="s">by</span><span class="nv"> </span><span class="s">sending</span><span class="nv"> </span><span class="s">a</span>
+<span class="s">written</span><span class="nv"> </span><span class="s">explanation</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">person</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">received</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">from.</span><span class="nv">  </span><span class="s">If</span><span class="nv"> </span><span class="s">you</span>
+<span class="s">received</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">physical</span><span class="nv"> </span><span class="s">medium,</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">must</span><span class="nv"> </span><span class="s">return</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">medium</span><span class="nv"> </span><span class="s">with</span>
+<span class="s">your</span><span class="nv"> </span><span class="s">written</span><span class="nv"> </span><span class="s">explanation.</span><span class="nv">  </span><span class="s">The</span><span class="nv"> </span><span class="s">person</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">entity</span><span class="nv"> </span><span class="s">that</span><span class="nv"> </span><span class="s">provided</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">with</span>
+<span class="s">the</span><span class="nv"> </span><span class="s">defective</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">may</span><span class="nv"> </span><span class="s">elect</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">provide</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">replacement</span><span class="nv"> </span><span class="s">copy</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">lieu</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">a</span>
+<span class="s">refund.</span><span class="nv">  </span><span class="s">If</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">received</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">electronically,</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">person</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">entity</span>
+<span class="s">providing</span><span class="nv"> </span><span class="s">it</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">may</span><span class="nv"> </span><span class="s">choose</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">give</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">second</span><span class="nv"> </span><span class="s">opportunity</span><span class="nv"> </span><span class="s">to</span>
+<span class="s">receive</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">electronically</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">lieu</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">refund.</span><span class="nv">  </span><span class="s">If</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">second</span><span class="nv"> </span><span class="s">copy</span>
+<span class="s">is</span><span class="nv"> </span><span class="s">also</span><span class="nv"> </span><span class="s">defective,</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">may</span><span class="nv"> </span><span class="s">demand</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">refund</span><span class="nv"> </span><span class="s">in</span><span class="nv"> </span><span class="s">writing</span><span class="nv"> </span><span class="s">without</span><span class="nv"> </span><span class="s">further</span>
+<span class="s">opportunities</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">fix</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">problem.</span>
+
+<span class="s">1.F.4.</span><span class="nv">  </span><span class="s">Except</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">limited</span><span class="nv"> </span><span class="s">right</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">replacement</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">refund</span><span class="nv"> </span><span class="s">set</span><span class="nv"> </span><span class="s">forth</span>
+<span class="s">in</span><span class="nv"> </span><span class="s">paragraph</span><span class="nv"> </span><span class="s">1.F.3,</span><span class="nv"> </span><span class="s">this</span><span class="nv"> </span><span class="s">work</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">provided</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">you</span><span class="nv"> </span><span class="s">&#39;</span><span class="nv">AS-IS&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">WITH NO OTHER</span>
+<span class="nv">WARRANTIES OF ANY KIND</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">EXPRESS OR IMPLIED</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">INCLUDING BUT NOT LIMITED TO</span>
+<span class="nv">WARRANTIES OF MERCHANTABILITY OR FITNESS FOR ANY PURPOSE.</span>
+
+<span class="nv">1.F.5.  Some states do not allow disclaimers of certain implied</span>
+<span class="nv">warranties or the exclusion or limitation of certain types of damages.</span>
+<span class="nv">If any disclaimer or limitation set forth in this agreement violates the</span>
+<span class="nv">law of the state applicable to this agreement</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">the agreement shall be</span>
+<span class="nv">interpreted to make the maximum disclaimer or limitation permitted by</span>
+<span class="nv">the applicable state law.  The invalidity or unenforceability of any</span>
+<span class="nv">provision of this agreement shall not void the remaining provisions.</span>
+
+<span class="nv">1.F.6.  INDEMNITY - You agree to indemnify and hold the Foundation</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">the</span>
+<span class="nv">trademark owner</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">any agent or employee of the Foundation</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">anyone</span>
+<span class="nv">providing copies of Project Gutenberg-tm electronic works in accordance</span>
+<span class="nv">with this agreement</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">and any volunteers associated with the production</span><span class="p p-Indicator">,</span>
+<span class="nv">promotion and distribution of Project Gutenberg-tm electronic works</span><span class="p p-Indicator">,</span>
+<span class="nv">harmless from all liability</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">costs and expenses</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">including legal fees</span><span class="p p-Indicator">,</span>
+<span class="nv">that arise directly or indirectly from any of the following which you do</span>
+<span class="nv">or cause to occur</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="nv">(a) distribution of this or any Project Gutenberg-tm</span>
+<span class="nv">work</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">(b) alteration</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">modification</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">or additions or deletions to any</span>
+<span class="nv">Project Gutenberg-tm work</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">and (c) any Defect you cause.</span>
+
+
+<span class="nv">Section  2.  Information about the Mission of Project Gutenberg-tm</span>
+
+<span class="nv">Project Gutenberg-tm is synonymous with the free distribution of</span>
+<span class="nv">electronic works in formats readable by the widest variety of computers</span>
+<span class="nv">including obsolete</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">old</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">middle-aged and new computers.  It exists</span>
+<span class="nv">because of the efforts of hundreds of volunteers and donations from</span>
+<span class="nv">people in all walks of life.</span>
+
+<span class="nv">Volunteers and financial support to provide volunteers with the</span>
+<span class="nv">assistance they need are critical to reaching Project Gutenberg-tm&#39;s</span>
+<span class="nv">goals and ensuring that the Project Gutenberg-tm collection will</span>
+<span class="nv">remain freely available for generations to come.  In 2001</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">the Project</span>
+<span class="nv">Gutenberg Literary Archive Foundation was created to provide a secure</span>
+<span class="nv">and permanent future for Project Gutenberg-tm and future generations.</span>
+<span class="nv">To learn more about the Project Gutenberg Literary Archive Foundation</span>
+<span class="nv">and how your efforts and donations can help</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">see Sections 3 and 4</span>
+<span class="nv">and the Foundation information page at www.gutenberg.org</span>
+
+
+<span class="nv">Section 3.  Information about the Project Gutenberg Literary Archive</span>
+<span class="nv">Foundation</span>
+
+<span class="nv">The Project Gutenberg Literary Archive Foundation is a non profit</span>
+<span class="nv">501(c)(3) educational corporation organized under the laws of the</span>
+<span class="nv">state of Mississippi and granted tax exempt status by the Internal</span>
+<span class="nv">Revenue Service.  The Foundation&#39;s EIN or federal tax identification</span>
+<span class="nv">number is 64-6221541.  Contributions to the Project Gutenberg</span>
+<span class="nv">Literary Archive Foundation are tax deductible to the full extent</span>
+<span class="nv">permitted by U.S. federal laws and your state&#39;s laws.</span>
+
+<span class="nv">The Foundation&#39;s principal office is located at 4557 Melan Dr. S.</span>
+<span class="nv">Fairbanks</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">AK</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">99712.</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">but its volunteers and employees are scattered</span>
+<span class="nv">throughout numerous locations.  Its business office is located at 809</span>
+<span class="nv">North 1500 West</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">Salt Lake City</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">UT 84116</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">(801) 596-1887.  Email</span>
+<span class="nv">contact links and up to date contact information can be found at the</span>
+<span class="nv">Foundation&#39;s web site and official page at www.gutenberg.org/contact</span>
+
+<span class="nv">For additional contact information</span><span class="p p-Indicator">:</span>
+<span class="w">     </span><span class="nv">Dr. Gregory B. Newby</span>
+<span class="w">     </span><span class="nv">Chief Executive and Director</span>
+<span class="w">     </span><span class="nv">gbnewby@pglaf.org</span>
+
+<span class="nv">Section 4.  Information about Donations to the Project Gutenberg</span>
+<span class="nv">Literary Archive Foundation</span>
+
+<span class="nv">Project Gutenberg-tm depends upon and cannot survive without wide</span>
+<span class="nv">spread public support and donations to carry out its mission of</span>
+<span class="nv">increasing the number of public domain and licensed works that can be</span>
+<span class="nv">freely distributed in machine readable form accessible by the widest</span>
+<span class="nv">array of equipment including outdated equipment.  Many small donations</span>
+<span class="nv">($1 to $5</span><span class="p p-Indicator">,</span><span class="nv">000) are particularly important to maintaining tax exempt</span>
+<span class="nv">status with the IRS.</span>
+
+<span class="nv">The Foundation is committed to complying with the laws regulating</span>
+<span class="nv">charities and charitable donations in all 50 states of the United</span>
+<span class="nv">States.  Compliance requirements are not uniform and it takes a</span>
+<span class="nv">considerable effort</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">much paperwork and many fees to meet and keep up</span>
+<span class="nv">with these requirements.  We do not solicit donations in locations</span>
+<span class="nv">where we have not received written confirmation of compliance.  To</span>
+<span class="nv">SEND DONATIONS or determine the status of compliance for any</span>
+<span class="nv">particular state visit www.gutenberg.org/donate</span>
+
+<span class="nv">While we cannot and do not solicit contributions from states where we</span>
+<span class="nv">have not met the solicitation requirements</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">we know of no prohibition</span>
+<span class="nv">against accepting unsolicited donations from donors in such states who</span>
+<span class="nv">approach us with offers to donate.</span>
+
+<span class="nv">International donations are gratefully accepted</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">but we cannot make</span>
+<span class="nv">any statements concerning tax treatment of donations received from</span>
+<span class="nv">outside the United States.  U.S. laws alone swamp our small staff.</span>
+
+<span class="nv">Please check the Project Gutenberg Web pages for current donation</span>
+<span class="nv">methods and addresses.  Donations are accepted in a number of other</span>
+<span class="nv">ways including checks</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">online payments and credit card donations.</span>
+<span class="nv">To donate</span><span class="p p-Indicator">,</span><span class="nt"> please visit</span><span class="p">:</span><span class="w">  </span><span class="nv">www.gutenberg.org/donate</span>
+
+
+<span class="nv">Section 5.  General Information About Project Gutenberg-tm electronic</span>
+<span class="nv">works.</span>
+
+<span class="nv">Professor Michael S. Hart was the originator of the Project Gutenberg-tm</span>
+<span class="nv">concept of a library of electronic works that could be freely shared</span>
+<span class="nv">with anyone.  For forty years</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">he produced and distributed Project</span>
+<span class="nv">Gutenberg-tm eBooks with only a loose network of volunteer support.</span>
+
+<span class="nv">Project Gutenberg-tm eBooks are often created from several printed</span>
+<span class="nv">editions</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">all of which are confirmed as Public Domain in the U.S.</span>
+<span class="nv">unless a copyright notice is included.  Thus</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">we do not necessarily</span>
+<span class="nv">keep eBooks in compliance with any particular paper edition.</span>
+
+<span class="nv">Most people start at our Web site which has the main PG search facility</span><span class="p p-Indicator">:</span>
+
+<span class="w">     </span><span class="nv">www.gutenberg.org</span>
+
+<span class="nv">This Web site includes information about Project Gutenberg-tm</span><span class="p p-Indicator">,</span>
+<span class="nv">including how to make donations to the Project Gutenberg Literary</span>
+<span class="nv">Archive Foundation</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">how to help produce our new eBooks</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">and how to</span>
+<span class="nv">subscribe to our email newsletter to hear about new eBooks.</span>
+<span class="nv">&#39;</span><span class="p p-Indicator">,</span>
+<span class="w">        </span><span class="s">&#39;source-pretty&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&#39;Gutenberg&#39;</span>
+<span class="w">        </span><span class="p p-Indicator">}</span>
+<span class="p p-Indicator">}</span>
+</code></pre></div></p>
+<h2 id="data-fields">Data Fields<a class="headerlink" href="#data-fields" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>id</strong>: source-specific identifier.</li>
+<li><strong>text</strong>: textual content of the document.</li>
+<li><strong>source</strong>: source of the data.</li>
+<li><strong>added</strong>: timestamp ai2 acquired this data.</li>
+<li><strong>created</strong>": timestamp when original document was created (best-guess if not available)</li>
+<li><strong>metadata</strong>: source-specific metadata.</li>
+</ul>
+<h2 id="license-information">License Information<a class="headerlink" href="#license-information" title="Permanent link">&para;</a></h2>
+<details>
+<summary>Gutenberg License</summary>
+<p>
+*** START: FULL LICENSE ***
+
+THE FULL PROJECT GUTENBERG LICENSE
+PLEASE READ THIS BEFORE YOU DISTRIBUTE OR USE THIS WORK
+
+To protect the Project Gutenberg-tm mission of promoting the free
+distribution of electronic works, by using or distributing this work
+(or any other work associated in any way with the phrase "Project
+Gutenberg"), you agree to comply with all the terms of the Full Project
+Gutenberg-tm License available with this file or online at
+  www.gutenberg.org/license.
+
+
+Section 1.  General Terms of Use and Redistributing Project Gutenberg-tm
+electronic works
+
+1.A.  By reading or using any part of this Project Gutenberg-tm
+electronic work, you indicate that you have read, understand, agree to
+and accept all the terms of this license and intellectual property
+(trademark/copyright) agreement.  If you do not agree to abide by all
+the terms of this agreement, you must cease using and return or destroy
+all copies of Project Gutenberg-tm electronic works in your possession.
+If you paid a fee for obtaining a copy of or access to a Project
+Gutenberg-tm electronic work and you do not agree to be bound by the
+terms of this agreement, you may obtain a refund from the person or
+entity to whom you paid the fee as set forth in paragraph 1.E.8.
+
+1.B.  "Project Gutenberg" is a registered trademark.  It may only be
+used on or associated in any way with an electronic work by people who
+agree to be bound by the terms of this agreement.  There are a few
+things that you can do with most Project Gutenberg-tm electronic works
+even without complying with the full terms of this agreement.  See
+paragraph 1.C below.  There are a lot of things you can do with Project
+Gutenberg-tm electronic works if you follow the terms of this agreement
+and help preserve free future access to Project Gutenberg-tm electronic
+works.  See paragraph 1.E below.
+
+1.C.  The Project Gutenberg Literary Archive Foundation ("the Foundation"
+or PGLAF), owns a compilation copyright in the collection of Project
+Gutenberg-tm electronic works.  Nearly all the individual works in the
+collection are in the public domain in the United States.  If an
+individual work is in the public domain in the United States and you are
+located in the United States, we do not claim a right to prevent you from
+copying, distributing, performing, displaying or creating derivative
+works based on the work as long as all references to Project Gutenberg
+are removed.  Of course, we hope that you will support the Project
+Gutenberg-tm mission of promoting free access to electronic works by
+freely sharing Project Gutenberg-tm works in compliance with the terms of
+this agreement for keeping the Project Gutenberg-tm name associated with
+the work.  You can easily comply with the terms of this agreement by
+keeping this work in the same format with its attached full Project
+Gutenberg-tm License when you share it without charge with others.
+
+1.D.  The copyright laws of the place where you are located also govern
+what you can do with this work.  Copyright laws in most countries are in
+a constant state of change.  If you are outside the United States, check
+the laws of your country in addition to the terms of this agreement
+before downloading, copying, displaying, performing, distributing or
+creating derivative works based on this work or any other Project
+Gutenberg-tm work.  The Foundation makes no representations concerning
+the copyright status of any work in any country outside the United
+States.
+
+1.E.  Unless you have removed all references to Project Gutenberg:
+
+1.E.1.  The following sentence, with active links to, or other immediate
+access to, the full Project Gutenberg-tm License must appear prominently
+whenever any copy of a Project Gutenberg-tm work (any work on which the
+phrase "Project Gutenberg" appears, or with which the phrase "Project
+Gutenberg" is associated) is accessed, displayed, performed, viewed,
+copied or distributed:
+
+This eBook is for the use of anyone anywhere at no cost and with
+almost no restrictions whatsoever.  You may copy it, give it away or
+re-use it under the terms of the Project Gutenberg License included
+with this eBook or online at www.gutenberg.org
+
+1.E.2.  If an individual Project Gutenberg-tm electronic work is derived
+from the public domain (does not contain a notice indicating that it is
+posted with permission of the copyright holder), the work can be copied
+and distributed to anyone in the United States without paying any fees
+or charges.  If you are redistributing or providing access to a work
+with the phrase "Project Gutenberg" associated with or appearing on the
+work, you must comply either with the requirements of paragraphs 1.E.1
+through 1.E.7 or obtain permission for the use of the work and the
+Project Gutenberg-tm trademark as set forth in paragraphs 1.E.8 or
+1.E.9.
+
+1.E.3.  If an individual Project Gutenberg-tm electronic work is posted
+with the permission of the copyright holder, your use and distribution
+must comply with both paragraphs 1.E.1 through 1.E.7 and any additional
+terms imposed by the copyright holder.  Additional terms will be linked
+to the Project Gutenberg-tm License for all works posted with the
+permission of the copyright holder found at the beginning of this work.
+
+1.E.4.  Do not unlink or detach or remove the full Project Gutenberg-tm
+License terms from this work, or any files containing a part of this
+work or any other work associated with Project Gutenberg-tm.
+
+1.E.5.  Do not copy, display, perform, distribute or redistribute this
+electronic work, or any part of this electronic work, without
+prominently displaying the sentence set forth in paragraph 1.E.1 with
+active links or immediate access to the full terms of the Project
+Gutenberg-tm License.
+
+1.E.6.  You may convert to and distribute this work in any binary,
+compressed, marked up, nonproprietary or proprietary form, including any
+word processing or hypertext form.  However, if you provide access to or
+distribute copies of a Project Gutenberg-tm work in a format other than
+"Plain Vanilla ASCII" or other format used in the official version
+posted on the official Project Gutenberg-tm web site (www.gutenberg.org),
+you must, at no additional cost, fee or expense to the user, provide a
+copy, a means of exporting a copy, or a means of obtaining a copy upon
+request, of the work in its original "Plain Vanilla ASCII" or other
+form.  Any alternate format must include the full Project Gutenberg-tm
+License as specified in paragraph 1.E.1.
+
+1.E.7.  Do not charge a fee for access to, viewing, displaying,
+performing, copying or distributing any Project Gutenberg-tm works
+unless you comply with paragraph 1.E.8 or 1.E.9.
+
+1.E.8.  You may charge a reasonable fee for copies of or providing
+access to or distributing Project Gutenberg-tm electronic works provided
+that
+
+- You pay a royalty fee of 20% of the gross profits you derive from
+     the use of Project Gutenberg-tm works calculated using the method
+     you already use to calculate your applicable taxes.  The fee is
+     owed to the owner of the Project Gutenberg-tm trademark, but he
+     has agreed to donate royalties under this paragraph to the
+     Project Gutenberg Literary Archive Foundation.  Royalty payments
+     must be paid within 60 days following each date on which you
+     prepare (or are legally required to prepare) your periodic tax
+     returns.  Royalty payments should be clearly marked as such and
+     sent to the Project Gutenberg Literary Archive Foundation at the
+     address specified in Section 4, "Information about donations to
+     the Project Gutenberg Literary Archive Foundation."
+
+- You provide a full refund of any money paid by a user who notifies
+     you in writing (or by e-mail) within 30 days of receipt that s/he
+     does not agree to the terms of the full Project Gutenberg-tm
+     License.  You must require such a user to return or
+     destroy all copies of the works possessed in a physical medium
+     and discontinue all use of and all access to other copies of
+     Project Gutenberg-tm works.
+
+- You provide, in accordance with paragraph 1.F.3, a full refund of any
+     money paid for a work or a replacement copy, if a defect in the
+     electronic work is discovered and reported to you within 90 days
+     of receipt of the work.
+
+- You comply with all other terms of this agreement for free
+     distribution of Project Gutenberg-tm works.
+
+1.E.9.  If you wish to charge a fee or distribute a Project Gutenberg-tm
+electronic work or group of works on different terms than are set
+forth in this agreement, you must obtain permission in writing from
+both the Project Gutenberg Literary Archive Foundation and Michael
+Hart, the owner of the Project Gutenberg-tm trademark.  Contact the
+Foundation as set forth in Section 3 below.
+
+1.F.
+
+1.F.1.  Project Gutenberg volunteers and employees expend considerable
+effort to identify, do copyright research on, transcribe and proofread
+public domain works in creating the Project Gutenberg-tm
+collection.  Despite these efforts, Project Gutenberg-tm electronic
+works, and the medium on which they may be stored, may contain
+"Defects," such as, but not limited to, incomplete, inaccurate or
+corrupt data, transcription errors, a copyright or other intellectual
+property infringement, a defective or damaged disk or other medium, a
+computer virus, or computer codes that damage or cannot be read by
+your equipment.
+
+1.F.2.  LIMITED WARRANTY, DISCLAIMER OF DAMAGES - Except for the "Right
+of Replacement or Refund" described in paragraph 1.F.3, the Project
+Gutenberg Literary Archive Foundation, the owner of the Project
+Gutenberg-tm trademark, and any other party distributing a Project
+Gutenberg-tm electronic work under this agreement, disclaim all
+liability to you for damages, costs and expenses, including legal
+fees.  YOU AGREE THAT YOU HAVE NO REMEDIES FOR NEGLIGENCE, STRICT
+LIABILITY, BREACH OF WARRANTY OR BREACH OF CONTRACT EXCEPT THOSE
+PROVIDED IN PARAGRAPH 1.F.3.  YOU AGREE THAT THE FOUNDATION, THE
+TRADEMARK OWNER, AND ANY DISTRIBUTOR UNDER THIS AGREEMENT WILL NOT BE
+LIABLE TO YOU FOR ACTUAL, DIRECT, INDIRECT, CONSEQUENTIAL, PUNITIVE OR
+INCIDENTAL DAMAGES EVEN IF YOU GIVE NOTICE OF THE POSSIBILITY OF SUCH
+DAMAGE.
+
+1.F.3.  LIMITED RIGHT OF REPLACEMENT OR REFUND - If you discover a
+defect in this electronic work within 90 days of receiving it, you can
+receive a refund of the money (if any) you paid for it by sending a
+written explanation to the person you received the work from.  If you
+received the work on a physical medium, you must return the medium with
+your written explanation.  The person or entity that provided you with
+the defective work may elect to provide a replacement copy in lieu of a
+refund.  If you received the work electronically, the person or entity
+providing it to you may choose to give you a second opportunity to
+receive the work electronically in lieu of a refund.  If the second copy
+is also defective, you may demand a refund in writing without further
+opportunities to fix the problem.
+
+1.F.4.  Except for the limited right of replacement or refund set forth
+in paragraph 1.F.3, this work is provided to you 'AS-IS', WITH NO OTHER
+WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+WARRANTIES OF MERCHANTABILITY OR FITNESS FOR ANY PURPOSE.
+
+1.F.5.  Some states do not allow disclaimers of certain implied
+warranties or the exclusion or limitation of certain types of damages.
+If any disclaimer or limitation set forth in this agreement violates the
+law of the state applicable to this agreement, the agreement shall be
+interpreted to make the maximum disclaimer or limitation permitted by
+the applicable state law.  The invalidity or unenforceability of any
+provision of this agreement shall not void the remaining provisions.
+
+1.F.6.  INDEMNITY - You agree to indemnify and hold the Foundation, the
+trademark owner, any agent or employee of the Foundation, anyone
+providing copies of Project Gutenberg-tm electronic works in accordance
+with this agreement, and any volunteers associated with the production,
+promotion and distribution of Project Gutenberg-tm electronic works,
+harmless from all liability, costs and expenses, including legal fees,
+that arise directly or indirectly from any of the following which you do
+or cause to occur: (a) distribution of this or any Project Gutenberg-tm
+work, (b) alteration, modification, or additions or deletions to any
+Project Gutenberg-tm work, and (c) any Defect you cause.
+
+
+Section  2.  Information about the Mission of Project Gutenberg-tm
+
+Project Gutenberg-tm is synonymous with the free distribution of
+electronic works in formats readable by the widest variety of computers
+including obsolete, old, middle-aged and new computers.  It exists
+because of the efforts of hundreds of volunteers and donations from
+people in all walks of life.
+
+Volunteers and financial support to provide volunteers with the
+assistance they need are critical to reaching Project Gutenberg-tm's
+goals and ensuring that the Project Gutenberg-tm collection will
+remain freely available for generations to come.  In 2001, the Project
+Gutenberg Literary Archive Foundation was created to provide a secure
+and permanent future for Project Gutenberg-tm and future generations.
+To learn more about the Project Gutenberg Literary Archive Foundation
+and how your efforts and donations can help, see Sections 3 and 4
+and the Foundation information page at www.gutenberg.org
+
+
+Section 3.  Information about the Project Gutenberg Literary Archive
+Foundation
+
+The Project Gutenberg Literary Archive Foundation is a non profit
+501(c)(3) educational corporation organized under the laws of the
+state of Mississippi and granted tax exempt status by the Internal
+Revenue Service.  The Foundation's EIN or federal tax identification
+number is 64-6221541.  Contributions to the Project Gutenberg
+Literary Archive Foundation are tax deductible to the full extent
+permitted by U.S. federal laws and your state's laws.
+
+The Foundation's principal office is located at 4557 Melan Dr. S.
+Fairbanks, AK, 99712., but its volunteers and employees are scattered
+throughout numerous locations.  Its business office is located at 809
+North 1500 West, Salt Lake City, UT 84116, (801) 596-1887.  Email
+contact links and up to date contact information can be found at the
+Foundation's web site and official page at www.gutenberg.org/contact
+
+For additional contact information:
+     Dr. Gregory B. Newby
+     Chief Executive and Director
+     gbnewby@pglaf.org
+
+Section 4.  Information about Donations to the Project Gutenberg
+Literary Archive Foundation
+
+Project Gutenberg-tm depends upon and cannot survive without wide
+spread public support and donations to carry out its mission of
+increasing the number of public domain and licensed works that can be
+freely distributed in machine readable form accessible by the widest
+array of equipment including outdated equipment.  Many small donations
+($1 to $5,000) are particularly important to maintaining tax exempt
+status with the IRS.
+
+The Foundation is committed to complying with the laws regulating
+charities and charitable donations in all 50 states of the United
+States.  Compliance requirements are not uniform and it takes a
+considerable effort, much paperwork and many fees to meet and keep up
+with these requirements.  We do not solicit donations in locations
+where we have not received written confirmation of compliance.  To
+SEND DONATIONS or determine the status of compliance for any
+particular state visit www.gutenberg.org/donate
+
+While we cannot and do not solicit contributions from states where we
+have not met the solicitation requirements, we know of no prohibition
+against accepting unsolicited donations from donors in such states who
+approach us with offers to donate.
+
+International donations are gratefully accepted, but we cannot make
+any statements concerning tax treatment of donations received from
+outside the United States.  U.S. laws alone swamp our small staff.
+
+Please check the Project Gutenberg Web pages for current donation
+methods and addresses.  Donations are accepted in a number of other
+ways including checks, online payments and credit card donations.
+To donate, please visit:  www.gutenberg.org/donate
+
+
+Section 5.  General Information About Project Gutenberg-tm electronic
+works.
+
+Professor Michael S. Hart was the originator of the Project Gutenberg-tm
+concept of a library of electronic works that could be freely shared
+with anyone.  For forty years, he produced and distributed Project
+Gutenberg-tm eBooks with only a loose network of volunteer support.
+
+Project Gutenberg-tm eBooks are often created from several printed
+editions, all of which are confirmed as Public Domain in the U.S.
+unless a copyright notice is included.  Thus, we do not necessarily
+keep eBooks in compliance with any particular paper edition.
+
+Most people start at our Web site which has the main PG search facility:
+
+     www.gutenberg.org
+
+This Web site includes information about Project Gutenberg-tm,
+including how to make donations to the Project Gutenberg Literary
+Archive Foundation, how to help produce our new eBooks, and how to
+subscribe to our email newsletter to hear about new eBooks.
+
+</p>
+</details>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2023 Danish Foundation Models Project
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tracking", "navigation.tabs", "navigation.sections", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.tooltips", "navigation.footer", "navigation.indexes", "toc.follow", "pymdownx.caret", "pymdownx.tilde", "content.action.edit"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+      
+    
+  </body>
+</html>
