@@ -22,9 +22,12 @@ dependencies = [
   "requests>=2.31.0",
   "polars>0.19.1",
   # Data cleaning dependencies:
-  "dolma[pii,code]@git+https://github.com/allenai/dolma.git@476629dc4d8d804dd2123509dc48b549e6b49dfb", # Install from git until a 1.0.2 package is released
-  "kenlm>=0.2.0", # Used for perplexity tagging
-  "blingfire>=0.1.8", # Used for perplexity tagging
+  "dolma[pii,code]",
+  # @git+https://github.com/allenai/dolma.git@476629dc4d8d804dd2123509dc48b549e6b49dfb", # Install from git until a 1.0.2 package is released
+  "kenlm>=0.2.0",
+  # Used for perplexity tagging
+  "blingfire>=0.1.8",
+  # Used for perplexity tagging
   "mosaicml-streaming",
   "orjsonl",
   "tqdm",
@@ -32,6 +35,14 @@ dependencies = [
   "nlp_dedup",
   "datatrove>=0.2.0",
   "pyyaml",
+  "docling>=1.20.0",
+  "joblib>=1.4.2",
+  "pdfminer-six>=20240706",
+  "pypandoc-binary>=1.14",
+  "trafilatura>=1.9.0",
+  "typer>=0.12.5",
+  "loguru>=0.7.2",
+  "extract-msg>=0.52.0",
 ]
 
 [project.optional-dependencies]
