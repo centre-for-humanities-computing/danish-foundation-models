@@ -102,17 +102,13 @@ From [the Department of Computer Science at the University of Copenhagen](https:
 From [Center for Sprogteknologi at the University of Copenhagen](https://cst.ku.dk):
 
   - Bolette Sandford Pedersen ([bspedersen@hum.ku.dk]((mailto:bspedersen@hum.ku.dk))
-  - Ali Basirat ([alib@hum.ku.dk]((mailto:alib@hum.ku.dk))
+  - Ali Basirat ([alib@hum.ku.dk](mailto:alib@hum.ku.dk))
 
 <details>
 <summary>Project Alumnis</summary>
 <br>
 
-### Project Alumnis
-
-  - Lasse Hansen ([lasse.hansen@clin.au.dk]((mailto:lasse.hansen@clin.au.dk))
-  - Martin Bernstorff
-  - Tao Tang
+Lasse Hansen, Martin Bernstorff, Tao Tang
 
 </details>
 
