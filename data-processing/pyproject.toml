@@ -35,7 +35,7 @@ dependencies = [
   "nlp_dedup",
   "datatrove>=0.2.0",
   "pyyaml",
-  "docling>=1.20.0",
+  "docling>=2.7.1",
   "joblib>=1.4.2",
   "pdfminer-six>=20240706",
   "pypandoc-binary>=1.14",
