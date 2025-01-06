@@ -23,7 +23,7 @@ def catalog(path: Path) -> bool:
         path: Path to save results.
 
     Returns:
-        bool: If the pull was succesful or not.
+       If the pull was succesful or not.
     """
     url = "https://eahub.miljoeportal.dk/api/assessments/search"
 
