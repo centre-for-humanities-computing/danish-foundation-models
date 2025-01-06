@@ -54,7 +54,7 @@ def download_files(file_path: Path, id_: str) -> list[str]:
 
     Args:
         file_path (Path): Path to where to save raw files
-        id_ (str): Assess
+        id_ (str): ID of the assessment to download
 
     Returns:
         list[str]: _description_
@@ -81,6 +81,13 @@ def download_files(file_path: Path, id_: str) -> list[str]:
 
 @APP.command()
 def download(raw_data: Path, cleaned: Path, workers: int = 2):
+    """Command to download documents from miljoeportalen.
+
+    Args:
+        raw_data: Path to save the raw results, i.e. list of assessments that can be downloaded.
+        cleaned: Path to save the downloaded and extracted results.
+        workers: Number of parallel calls. Defaults to 2.
+    """
     raw_data.mkdir(parents=True, exist_ok=True)
     cleaned.mkdir(parents=True, exist_ok=True)
 
