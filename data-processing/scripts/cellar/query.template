@@ -1,0 +1,41 @@
+PREFIX cdm:<http://publications.europa.eu/ontology/cdm#>
+PREFIX skos:<http://www.w3.org/2004/02/skos/core#>
+PREFIX cmr:<http://publications.europa.eu/ontology/cdm/cmr#>
+PREFIX dc:<http://purl.org/dc/elements/1.1/>
+PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>
+SELECT
+?work
+?timestamp
+(group_concat(distinct ?lang; separator=";") as ?langs)
+(group_concat(distinct ?lang_type; separator=";") as ?types)
+(group_concat(distinct ?lang_title; separator=";") as ?titles)
+(group_concat(distinct ?subject; separator=";") as ?subjects)
+WHERE
+{
+    VALUES ?lang {"ENG" "SWE" "DAN" "NOR" "NOB" "NNO" "ISL" "FAO"}
+
+    ?work
+        cmr:creationDate ?timestamp .
+
+    FILTER (?timestamp < "${stop}Z"^^xsd:dateTime)
+    FILTER (?timestamp >= "${start}Z"^^xsd:dateTime)
+    FILTER NOT EXISTS {?work cdm:work_part_of_work ?parent}
+
+    OPTIONAL { ?work cdm:work_is_about_concept_eurovoc/skos:prefLabel ?subject . FILTER (lang(?subject)="en") }
+
+    ?exp 
+        cdm:expression_belongs_to_work ?work ;
+        cdm:expression_uses_language/dc:identifier ?lang ;
+        cdm:expression_title ?title .
+
+    ?manif 
+        cdm:manifestation_manifests_expression ?exp ;
+        cdm:manifestation_type ?mtype .
+
+    FILTER (REGEX(?mtype, "(txt)|(doc)|(pdf)|(epub)|(fmx4)|(html)|(xml)", "i"))
+    
+    BIND (CONCAT(?lang, ":", ?title) AS ?lang_title)
+    BIND (CONCAT(?lang, ":", ?mtype) AS ?lang_type)
+}
+GROUP BY ?work ?timestamp
+ORDER BY ?timestamp
