@@ -56,8 +56,6 @@ def download_files(file_path: Path, id_: str) -> list[str]:
         file_path (Path): Path to where to save raw files
         id_ (str): Assess
 
-    Returns:
-        list[str]: _description_
     """
     url = "https://eahub.miljoeportal.dk/api/assessments/{assessment}/download"
     res: Response = requests.get(url.format(assessment=id_))
