@@ -103,8 +103,12 @@ def process_web_crawl(
         result = subprocess.run(command, text=True, capture_output=True, check=True)
         # Filter the third column using Python (equivalent to `awk '{print $3}'`)
         main_folders = {
-            line.split()[2].split("/")[2] for line in result.stdout.splitlines()
+            line.split()[2].split("/")[2]
+            if len(line.split()[2].split("/")) >= 3
+            else ""
+            for line in result.stdout.splitlines()
         }
+        main_folders = set(filter(lambda x: x != "", main_folders))
     except subprocess.CalledProcessError as e:
         logging.error(f"Command failed with error: {e}")
         failed = True
