@@ -3,9 +3,11 @@
 import gzip
 import io
 import json
+import os
 import re
 from dataclasses import asdict
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 from typing import IO, TYPE_CHECKING, Any, Callable
 
 from docling.datamodel.base_models import DocumentStream
@@ -14,6 +16,7 @@ from extract_msg import openMsg
 from joblib import Parallel, delayed
 from loguru import logger
 from pypandoc import convert_file, convert_text
+from textract.parsers import process as process_doc
 from tqdm import tqdm
 from trafilatura import extract as extract_html_text
 
@@ -249,6 +252,28 @@ def process_txt(
     return json.dumps(asdict(create_JSONL(text, source, metadata)), ensure_ascii=False)
 
 
+def process_word_old(
+    file_path: Path | IO[bytes],
+    source: str,
+    **kwargs: dict[str, Any],  # noqa: ARG001
+) -> str:
+    """Process an older version word document, specifically a .doc file.
+
+    Args:
+        file_path: Path to the .doc file
+        source: What is the data source (most likely DSK client)
+        **kwargs: Additional arguments
+
+    Returns:
+        str: JSONL line with the file content
+    """
+    text: bytes = process_doc(file_path)
+    text = text.decode("utf-8")
+    text = re.sub(r"(\n\s)+", "\n", text)
+    metadata = build_metadata(file_path)
+    return json.dumps(asdict(create_JSONL(text, source, metadata)), ensure_ascii=False)
+
+
 def process_document(
     file: Path | IO[bytes],
     source: str,
@@ -333,6 +358,7 @@ def process_file(
         ".md": process_document,
         ".msg": process_msg,
         ".json": process_json,
+        ".doc": process_word_old,
     }.get(suffix)
 
     if not method:
