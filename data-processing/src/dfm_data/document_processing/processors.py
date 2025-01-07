@@ -7,7 +7,6 @@ import os
 import re
 from dataclasses import asdict
 from pathlib import Path
-from tempfile import NamedTemporaryFile
 from typing import IO, TYPE_CHECKING, Any, Callable
 
 from docling.datamodel.base_models import DocumentStream
