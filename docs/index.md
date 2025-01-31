@@ -77,7 +77,7 @@ From [the Center for Humanities Computing at Aarhus University](https://chc.au.d
 
   - Kenneth Enevoldsen ([kenneth.enevoldsen@cas.au.dk](mailto:kenneth.enevoldsen@cas.au.dk))
   - Peter Vahlstrup ([imvpbv@cc.au.dk]((mailto:imvpbv@cc.au.dk))
-  - Per Møldrup Dalum ([per@cas.au.dk]((mailto:per@cas.au.dk))
+  - Per Møldrup-Dalum ([per@cas.au.dk]((mailto:per@cas.au.dk))
   - Kristoffer Laigaard Nielbo ([kln@cas.au.dk]((mailto:kln@cas.au.dk))
   - Jan Kostkan ([jan.kostkan@cas.au.dk]((mailto:jan.kostkan@cas.au.dk))
 
