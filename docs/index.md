@@ -30,7 +30,7 @@ Welcome to the Danish Foundation Models (DFM) project, a pioneering initiative i
 In our commitment to advancing open-source development, we strongly emphasise the ethical handling of data, particularly when it involves personally sensitive information or material under copyright. This ensures that we share as much as possible while protecting privacy.
 
 To achieve this, our project is structured to differentiate between data that can be shared openly and that which cannot. 
-This demarcation is documented through detailed datasheets and training logs, hereby ensuring transparency in our processes.
+This demarcation is documented through detailed datasheets and training logs, thereby ensuring transparency in our processes.
 
 Additionally, we prioritise the security of the data during its processing and training phases. All data is stored on UCloud, a platform that upholds the recognised highest standards in information security management. This commitment to data security is exemplified by UCloud's adherence to ISO27001, a globally recognised standard, ensuring that our data handling practices meet rigorous international criteria. For more information on our security measures, please visit UCloud's security [documentation](https://docs.cloud.sdu.dk/intro/security.html).
 
@@ -38,7 +38,7 @@ Additionally, we prioritise the security of the data during its processing and t
 
 ### Contributions
 
-Besides our [models](https://www.foundationmodels.dk/models/) DFM have led to a series of positive open-source contributions, the following table include some of these contributions:
+Besides our [models](https://www.foundationmodels.dk/models/) DFM has led to a series of positive open-source contributions, the following table include some of these contributions:
 
 
 | Project                                                                                                                                                                                                                                                                            | Contribution                                                                                        |
@@ -66,7 +66,7 @@ temp. removed (see DDSC slack channel: NLP)
 
 ## Improving the Danish Language Technology Landscape
 
-The Danish Foundations models collaborate is a collaboration across Danish universities and research organizations. The project engage with data science communities and initiatives ([Danish Data Science Community](https://danskdatascience.dk/)), to promote the development of Danish language tools. We continually gather information about how to improve the Danish language technologies and how to best support the community. If you want to highlight missing pieces in Danish NLP we invite you to open thread on the [forum](https://github.com/centre-for-humanities-computing/danish-foundation-models/discussions/categories/missing-pieces-for-danish-nlp) stating the problems and potential solutions.
+The Danish Foundations models is a collaboration across Danish universities and research organizations. The project engages with data science communities and initiatives ([Danish Data Science Community](https://danskdatascience.dk/)), to promote the development of Danish language tools. We continually gather information about how to improve the Danish language technologies and how to best support the community. If you want to highlight missing pieces in Danish NLP we invite you to open a thread on the [forum](https://github.com/centre-for-humanities-computing/danish-foundation-models/discussions/categories/missing-pieces-for-danish-nlp) stating the problems and potential solutions.
 
 ## Contributors
 
@@ -76,19 +76,20 @@ Those with data access, who contribute to the project, including data management
 From [the Center for Humanities Computing at Aarhus University](https://chc.au.dk/):
 
   - Kenneth Enevoldsen ([kenneth.enevoldsen@cas.au.dk](mailto:kenneth.enevoldsen@cas.au.dk))
-  - Peter Vahlstrup ([imvpbv@cc.au.dk]((mailto:imvpbv@cc.au.dk))
-  - Per Møldrup-Dalum ([per@cas.au.dk]((mailto:per@cas.au.dk))
-  - Kristoffer Laigaard Nielbo ([kln@cas.au.dk]((mailto:kln@cas.au.dk))
-  - Jan Kostkan ([jan.kostkan@cas.au.dk]((mailto:jan.kostkan@cas.au.dk))
+  - Marton Kardos
+  - Jan Kostkan ([jan.kostkan@cas.au.dk](mailto:jan.kostkan@cas.au.dk))
+  - Peter Vahlstrup ([imvpbv@cc.au.dk](mailto:imvpbv@cc.au.dk))
+  - Per Møldrup-Dalum ([per@cas.au.dk](mailto:per@cas.au.dk))
+  - Kristoffer Laigaard Nielbo ([kln@cas.au.dk](mailto:kln@cas.au.dk))
 
 From [the Alexandra Institute](https://alexandra.dk/):
 
-  - Rasmus Larsen ([rasmus.larsen@alexandra.dk]((mailto:rasmus.larsen@alexandra.dk))
-  - Dan Saattrup Nielsen ([dan.nielsen@alexandra.dk]((mailto:dan.nielsen@alexandra.dk))
-  - Andreas Nugaard Holm ([andreas.holm@alexandra.dk]((mailto:andreas.holm@alexandra.dk))
+  - Rasmus Larsen ([rasmus.larsen@alexandra.dk](mailto:rasmus.larsen@alexandra.dk))
+  - Dan Saattrup Nielsen ([dan.nielsen@alexandra.dk](mailto:dan.nielsen@alexandra.dk))
+  - Andreas Nugaard Holm ([andreas.holm@alexandra.dk](mailto:andreas.holm@alexandra.dk))
   - Kristian Nørgaaard Jensen ([kristian.n.jensen@alexandra.dk](mailto:kristian.n.jensen@alexandra.dk))
   - Torben Blach ([torben.blach@alexandra.dk](mailto:torben.blach@alexandra.dk))
-  - Jens Kaas Benner([jens.benner@alexandra.dk]((mailto:jens.benner@alexandra.dk))
+  - Jens Kaas Benner([jens.benner@alexandra.dk](mailto:jens.benner@alexandra.dk))
 
 From [the Center for Machine Learning at the University of Southern Denmark](https://www.sdu.dk/en/forskning/machine-learning):
 
