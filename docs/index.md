@@ -86,7 +86,8 @@ From [the Alexandra Institute](https://alexandra.dk/):
   - Rasmus Larsen ([rasmus.larsen@alexandra.dk]((mailto:rasmus.larsen@alexandra.dk))
   - Dan Saattrup Nielsen ([dan.nielsen@alexandra.dk]((mailto:dan.nielsen@alexandra.dk))
   - Andreas Nugaard Holm ([andreas.holm@alexandra.dk]((mailto:andreas.holm@alexandra.dk))
-  - Anders Jess Pedersen ([anders.j.pedersen@alexandra.dk]((mailto:anders.j.pedersen@alexandra.dk))
+  - Kristian Nørgaaard Jensen ([kristian.n.jensen@alexandra.dk](mailto:kristian.n.jensen@alexandra.dk))
+  - Torben Blach ([torben.blach@alexandra.dk](mailto:torben.blach@alexandra.dk))
   - Jens Kaas Benner([jens.benner@alexandra.dk]((mailto:jens.benner@alexandra.dk))
 
 From [the Center for Machine Learning at the University of Southern Denmark](https://www.sdu.dk/en/forskning/machine-learning):
@@ -97,7 +98,7 @@ From [the Center for Machine Learning at the University of Southern Denmark](htt
 
 From [the Department of Computer Science at the University of Copenhagen](https://di.ku.dk/):
 
-  - Desmond Elliott
+  - Desmond Elliott ([de@di.ku.dk](mailto:de@di.ku.dk))
 
 From [Center for Sprogteknologi at the University of Copenhagen](https://cst.ku.dk):
 
