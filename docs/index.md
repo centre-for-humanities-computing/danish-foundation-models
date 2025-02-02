@@ -76,7 +76,7 @@ Those with data access, who contribute to the project, including data management
 From [the Center for Humanities Computing at Aarhus University](https://chc.au.dk/):
 
   - Kenneth Enevoldsen ([kenneth.enevoldsen@cas.au.dk](mailto:kenneth.enevoldsen@cas.au.dk))
-  - Marton Kardos
+ - Marton Kardos ([martonkardos@cas.au.dk](mailto:martonkardos@cas.au.dk))
   - Jan Kostkan ([jan.kostkan@cas.au.dk](mailto:jan.kostkan@cas.au.dk))
   - Peter Vahlstrup ([imvpbv@cc.au.dk](mailto:imvpbv@cc.au.dk))
   - Per Møldrup-Dalum ([per@cas.au.dk](mailto:per@cas.au.dk))
