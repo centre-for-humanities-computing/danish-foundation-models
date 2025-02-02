@@ -89,7 +89,7 @@ From [the Alexandra Institute](https://alexandra.dk/):
   - Andreas Nugaard Holm ([andreas.holm@alexandra.dk](mailto:andreas.holm@alexandra.dk))
   - Kristian Nørgaaard Jensen ([kristian.n.jensen@alexandra.dk](mailto:kristian.n.jensen@alexandra.dk))
   - Torben Blach ([torben.blach@alexandra.dk](mailto:torben.blach@alexandra.dk))
-  - Jens Kaas Benner([jens.benner@alexandra.dk](mailto:jens.benner@alexandra.dk))
+  - Jens Kaas Benner ([jens.benner@alexandra.dk](mailto:jens.benner@alexandra.dk))
 
 From [the Center for Machine Learning at the University of Southern Denmark](https://www.sdu.dk/en/forskning/machine-learning):
 
