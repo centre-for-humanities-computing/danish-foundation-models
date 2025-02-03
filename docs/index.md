@@ -96,6 +96,7 @@ From [the Center for Machine Learning at the University of Southern Denmark](htt
   - Peter Schneider-Kamp ([petersk@imada.sdu.dk](mailto:petersk@imada.sdu.dk))
   - Lukas Galke ([galke@imada.sdu.dk](mailto:galke@imada.sdu.dk))
   - Jacob Nielsen ([jacn@imada.sdu.dk](mailto:jacn@imada.sdu.dk))
+  - Mogens Henrik From ([from@imada.sdu.dk](mailto:from@imada.sdu.dk))
 
 From [the Department of Computer Science at the University of Copenhagen](https://di.ku.dk/):
 
