@@ -2,7 +2,7 @@ wandb~=0.12.9
 
 # models
 transformers>=4.20.1,<4.49.0
-torch>=1.6.0,<1.13.0
+torch>=1.6.0,<2.7.0
 
 # data
 # datasets>=2.3.2,<2.4.0
