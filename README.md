@@ -42,8 +42,3 @@ You can contribute both:
 -  Pre-training datasets you wish to include in the model training
 -  Validation tasks can even be private benchmarks where you only wish to share the performance metrics.
 - And probably in many other ways
-
-# For Contributors
-|                                                      |                                     |
-| ---------------------------------------------------- | ----------------------------------- |
-| 🗣 [**Adding a dataset**](/docs/Adding_a_new_dataset) | A guide on how to add a new dataset |
