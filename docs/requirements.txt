@@ -1,3 +1,0 @@
-mkdocs-jupyter==0.24.6
-mkdocs-material==9.5.3
-mkdocstrings[python]==0.24.0

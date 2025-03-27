@@ -2,9 +2,11 @@
 name: Documentation
 
 on:
+  pull_request:
+    branches: [main]
   push:
-    branches:
-      - main
+    branches: [main]
+
 
 permissions:
   contents: write
@@ -13,22 +15,25 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
         with:
+          enable-cache: true
           python-version: "3.10"
-      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV 
-      - uses: actions/cache@v3
+
+      - uses: actions/setup-python@v5
         with:
-          key: mkdocs-material-${{ env.cache_id }}
-          path: .cache
-          restore-keys: |
-            mkdocs-material-
+          python-version: '3.10'
       
       - name: Dependencies
-        run: |
-          pip install -r docs/requirements.txt
+        run: uv sync
 
+      - name: Build and Deploy
+        if: github.event_name == 'push'
+        run: uv run mkdocs gh-deploy --force
+      
       - name: Build
-        run: mkdocs gh-deploy --force
-          
+        if: github.event_name == 'pull_request'
+        run: make build-docs
