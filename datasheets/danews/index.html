@@ -1,0 +1,1027 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../../dcc/">
+      
+      
+        <link rel="next" href="../hopetwitter/">
+      
+      
+      <link rel="icon" href="../../_static/icon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.3">
+    
+    
+      
+        <title>DaNews - Danish Foundation Models</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.50c56a3b.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#danews" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Danish Foundation Models" class="md-header__button md-logo" aria-label="Danish Foundation Models" data-md-component="logo">
+      
+  <img src="../../_static/icon.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Danish Foundation Models
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              DaNews
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../models/" class="md-tabs__link">
+        
+  
+    
+  
+  Models
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../dcc/" class="md-tabs__link">
+          
+  
+    
+  
+  Datasets
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../blog" class="md-tabs__link">
+        
+  
+    
+  
+  Blog
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Danish Foundation Models" class="md-nav__button md-logo" aria-label="Danish Foundation Models" data-md-component="logo">
+      
+  <img src="../../_static/icon.png" alt="logo">
+
+    </a>
+    Danish Foundation Models
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    About
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../models/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Datasets
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Datasets
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dcc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DCC
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Datasheets
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Datasheets
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    DaNews
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    DaNews
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#datasheet" class="md-nav__link">
+    <span class="md-ellipsis">
+      Datasheet
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Datasheet">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#motivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Motivation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#composition" class="md-nav__link">
+    <span class="md-ellipsis">
+      Composition
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#collection-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      Collection Process
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#preprocessingcleaninglabeling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Preprocessing/cleaning/labeling
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uses" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uses
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Distribution
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Distribution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#citation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Citation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hopetwitter/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    HopeTwitter
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../netarkivet_text/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NAT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../daradio/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DaRadio
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blog" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Blog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+    <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/docs/datasheets/danews.md" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="danews">DaNews<a class="headerlink" href="#danews" title="Permanent link">&para;</a></h1>
+<p><em>Version</em>: 1.0.0</p>
+<p><em>Homepage</em>: https://github.com/centre-for-humanities-computing/danish-foundation-models</p>
+<p><em>license</em>: Not publicly available.</p>
+<hr />
+<p>DaNews consists of articles from Danish news and tabloid media from 1 December 2019 to 
+30 April 2021. The articles stem from multiple news sources, including both online of physical newspapers.</p>
+<p>DaNews consists of 403 million tokens 93% were left after
+ quality filtering and deduplication.</p>
+<h2 id="datasheet">Datasheet<a class="headerlink" href="#datasheet" title="Permanent link">&para;</a></h2>
+<p>Following the recommendation and framework of [5] we add the following datasheet. </p>
+<h3 id="motivation">Motivation<a class="headerlink" href="#motivation" title="Permanent link">&para;</a></h3>
+<p><strong>For what purpose was the dataset created? Who created the dataset? Who funded the
+creation of the dataset?</strong></p>
+<p>DANews was collected as a part of the HOPE project, examining news coverage during the COVID-19 pandemic. The purpose was to train a model to understand how the novelty and resonance imprint of COVID-19 as a case of crisis compared to non-crises news imprints.</p>
+<p><strong>Any other comments?</strong></p>
+<p>No.</p>
+<h2 id="composition">Composition<a class="headerlink" href="#composition" title="Permanent link">&para;</a></h2>
+<p><strong>How many instances are there in total (of each type, if appropriate)?</strong></p>
+<p>The unfiltered dataset consists of 713 429 documents including a total of 403 089 625 tokens.</p>
+<p><strong>What do the instances that comprise the dataset represent (e.g., documents, photos,
+people, countries)?</strong></p>
+<p>Instances of the dataset are Danish articles derived from Danish tabloids or news media. </p>
+<p><strong>Does the dataset contain all possible instances or is it a sample (not necessarily
+random) of instances from a larger set?</strong></p>
+<p>Prior to filtering DaNews dataset contains all digitized news articles from the given
+period across the sources.</p>
+<p><strong>What data does each instance consist of? “Raw” data (e.g., unprocessed text or images)
+or features? In either case, please provide a description.</strong></p>
+<p>Each instance consists of the following columns
+<div class="highlight"><pre><span></span><code>&#39;ArticleUrl&#39;, &#39;Heading&#39;, &#39;SubHeading&#39;, &#39;Lead&#39;, &#39;Paragraph&#39;, &#39;PublishDate&#39;, &#39;BodyText&#39;, 
+&#39;Captions&#39;, &#39;Authors&#39;, &#39;Source&#39;, &#39;WordCount&#39;, &#39;ArticleId&#39;, &#39;PageIds&#39;, &#39;Section&#39;, &#39;text&#39;
+</code></pre></div></p>
+<p>Where we constructed the columns <code>text</code> column by joining the <code>Heading</code>, <code>SubHeading</code>
+using newline. If the text field is empty it is ignored and no newline is added. The we
+join the resulting string with the <code>BodyText</code> using two newlines.</p>
+<p>During the quality filtering, we add the following indicator columns:
+<div class="highlight"><pre><span></span><code>&#39;passed_quality_filter&#39;, &#39;filtered_by_max_chr_length&#39;, &#39;filtered_by_doc_length&#39;, 
+&#39;filtered_by_mean_word_length&#39;, &#39;filtered_by_alpha_ratio&#39;, &#39;filtered_by_stop_word&#39;, 
+&#39;filtered_by_symbol_2_word_hashtag&#39;, &#39;filtered_by_symbol_2_word_ellipsis&#39;,
+&#39;filtered_by_line_bullets_or_ellipsis&#39;, &#39;filtered_by_duplicate_lines_chr_fraction&#39;,
+&#39;filtered_by_duplicate_paragraph_chr_fraction&#39;, &#39;filtered_by_top_ngram_chr_fraction&#39;,
+&#39;filtered_by_duplicate_ngram_chr_fraction&#39;, &#39;is_duplicate&#39;
+</code></pre></div></p>
+<p><strong>Is there a label or target associated with each instance? If so, please provide a
+description.</strong></p>
+<p>No.</p>
+<p><strong>Is any information missing from individual instances? If so, please provide a
+description, explaining why this information is missing (e.g., because it was
+unavailable). This does not include intentionally removed information but might
+include, e.g., redacted text.</strong></p>
+<p>The team of researchers at the Humanities Computing Aarhus (CHCAA) have not
+removed any information from the instances.</p>
+<p><strong>Are relationships between individual instances made explicit (e.g., users’ movie
+ratings, and social network links)? If so, please describe how these relationships are made
+explicit.</strong></p>
+<p>The metadata columns denote the relationship between articles including the date of
+publication, sections, and authors.</p>
+<p><strong>Are there recommended data splits (e.g., training, development/validation, testing)?
+If so, please provide a description of these splits, explaining the rationale behind
+them.</strong></p>
+<p>There are not splits performed on this dataset.</p>
+<p><strong>Are there any errors, sources of noise, or redundancies in the dataset? If so, please
+provide a description.</strong></p>
+<p>News sources can publish their content both in an online and printed format which would
+lead to similar instances in the dataset. To alleviate this redundancy by removing
+near-duplicates (see Preprocessing/cleaning/labeling).</p>
+<p><strong>Is the dataset self-contained, or does it link to or otherwise rely on external
+resources (e.g., websites, tweets, other datasets)?</strong></p>
+<p>Articles are intended to tell a self-contained story but can include external
+references such as tweets or website URLs.</p>
+<p><strong>Does the dataset contain data that, if viewed directly, might be offensive, insulting,
+threatening, or might otherwise cause anxiety?</strong></p>
+<p>Articles often describe content that is considered offensive, insulting, or threatening. </p>
+<h2 id="collection-process">Collection Process<a class="headerlink" href="#collection-process" title="Permanent link">&para;</a></h2>
+<p><strong>What mechanisms or procedures were used to collect the data (e.g., hardware
+ apparatuses or sensors, manual human curation, software programs, software APIs)?</strong></p>
+<p>A team of researchers at the Center for Humanities Computing Aarhus (CHCAA) obtained this
+ dataset using a third-party API as well as a manual transfer from one of the parties. The API was limited
+ to only a subset of articles agreed upon within the agreements.</p>
+<p><strong>If the dataset is a sample from a larger set, what was the sampling strategy?</strong></p>
+<p>The dataset is not a sample, but <em>is</em> a filtered version of the full dataset, see
+Preprocessing/cleaning/labeling for more on this.</p>
+<p><strong>Who was involved in the data collection process?</strong>
+A team of researchers at the Center for Humanities Computing Aarhus (CHCAA) obtained this
+dataset using a third party API as well as a manual transfer from some of the parties and would like to thank the dataset owners for
+ access to their articles.</p>
+<p><strong>Over what timeframe was the data collected?</strong></p>
+<p>The dataset includes articles from 1 December 2019 to 
+30 April 2021.</p>
+<p><strong>Were any ethical review processes conducted?</strong></p>
+<p>No.</p>
+<h2 id="preprocessingcleaninglabeling">Preprocessing/cleaning/labeling<a class="headerlink" href="#preprocessingcleaninglabeling" title="Permanent link">&para;</a></h2>
+<p><strong>Was any preprocessing/Cleaning/Labeling of the data done 
+(e.g., discretization or bucketing, tokenization, part-of-speech tagging, 
+SIFT feature extraction, removal of instances, processing of missing values)?</strong></p>
+<p>DaNews has been filtered using a series of heuristic filters as well as removing
+repetitious texts. Following the filtering, DaNews is deduplicated to remove exact and
+near-duplicates.</p>
+<p>Of all documents, 9% were filtered based due to low-quality and 4% because they were near-duplicates.</p>
+<p>For quality filtering, DaNews applies a filter akin to [2] which contains text
+that:</p>
+<ul>
+<li>Contain at least 2 Danish stopwords. For the stopword list we use the one used in
+SpaCy v.3.1.4.</li>
+<li>Have a mean word length between 3 and 10.</li>
+<li>Have a token length between 50 and 100,000.</li>
+<li>Have less than 5,000,000 characters.</li>
+<li>Have less than 60% of words containing an alphabetic character.</li>
+<li>Have a symbol-to-word ratio lower than 10% for hashtags and ellipsis.</li>
+<li>Have less than 90% of lines starting with a bullet point.</li>
+<li>
+<p>have less than 30% of lines ending with an ellipsis.</p>
+</li>
+<li>
+<p>Have a low high degree of repetitious text:</p>
+</li>
+<li>Have less than 20% of characters contained within duplicate lines.</li>
+<li>Have less than 20% of characters contained within duplicate paragraphs.</li>
+<li>Where the top 2-4 grams constitute less than 20%, 18%, 16%, respectively, of the text. </li>
+<li>Where the duplicate 5-10 grams constitute less than 25%, 24%, 23%, 22%, 21%, 20%
+of the text, respectively.</li>
+</ul>
+<p>The deduplication removed all documents with a 13-gram Jaccard similarity higher than 80%
+following the MinHash algorithm [1] using 128 permutations. The MinHash algorithm is a
+probabilistic data structure for approximating the Jaccard similarity between two sets.</p>
+<p><strong>Is the software used to preprocess/clean/label the instances available?</strong></p>
+<p>Yes, the scripts are available
+<a href="https://github.com/centre-for-humanities-computing/danish-foundation-models/tree/main/src/application/danews">here</a>. 
+the scripts use version 0.0.2 of the
+<a href="https://github.com/centre-for-humanities-computing/danish-foundation-models">dfm package</a>. </p>
+<h2 id="uses">Uses<a class="headerlink" href="#uses" title="Permanent link">&para;</a></h2>
+<p><strong>Has the dataset been used for any tasks already?</strong></p>
+<p>Yes, the dataset has been used to pre-train Danish language models.
+Parts of the dataset have also been used in [3] and [4]</p>
+<p><strong>Is there a repository that links to any or all papers or systems that use the dataset?</strong></p>
+<p>No.</p>
+<p><strong>What (other) tasks could the dataset be used for?</strong></p>
+<p>The scale of the dataset makes it suitable for NLP tasks such as language modeling.
+Similarly, the structure of the articles makes it a suitable dataset for training text
+summarisation models.</p>
+<p><strong>Is there anything about the composition of the dataset or the way it was collected and
+preprocessed/cleaned/labeled that might impact future uses?</strong></p>
+<p>This dataset is static and thus does not evolve over time with the language. 
+A consequence of this is that it will become increasingly outdated over time.</p>
+<p><strong>Are there tasks for which the dataset should not be used?</strong></p>
+<p>This dataset contains Danish articles and thus should not be used for non-Danish
+language tasks.</p>
+<p>As the writers of the content are predominantly journalists, it reflects a certain
+writing style which is unlikely to reflect the Danish language as a whole.</p>
+<h2 id="distribution">Distribution<a class="headerlink" href="#distribution" title="Permanent link">&para;</a></h2>
+<p><strong>Will the dataset be distributed to third parties outside of the entity (e.g., company, institution, organization) on behalf of which the dataset was created?</strong></p>
+<p>Data will only be available at the entity during the project. If you wish access to the dataset you will have to come to an agreement with the individuals
+Danish newspapers.</p>
+<h3 id="citation">Citation<a class="headerlink" href="#citation" title="Permanent link">&para;</a></h3>
+<p>If you wish to cite this work please see our GitHub page for an up-to-date citation:
+https://github.com/centre-for-humanities-computing/danish-foundation-models</p>
+<h1 id="references">References:<a class="headerlink" href="#references" title="Permanent link">&para;</a></h1>
+<ul>
+<li>[1] Broder, Andrei Z. "On the resemblance and containment of documents."
+        Proceedings. Compression and Complexity of SEQUENCES 1997
+        (Cat. No. 97TB100171). IEEE, 1997.</li>
+<li>[2] Rae, J. W., Borgeaud, S., Cai, T., Millican, K., Hoffmann, J., Song, F.,
+        Aslanides, J., Henderson, S., Ring, R., Young, S., Rutherford, E., Hennigan,
+        T., Menick, J., Cassirer, A., Powell, R., Driessche, G. van den, Hendricks,
+        L. A., Rauh, M., Huang, P.-S., … Irving, G. (2021).
+        Scaling Language Models: Methods, Analysis &amp; Insights from Training Gopher.
+        https://arxiv.org/abs/2112.11446v2</li>
+<li>[3] Baglini, R. B., Nielbo, K. L., Hæstrup, F., Enevoldsen, K., Vahlstrup, P. B., &amp; 
+        Roepstorff, A. (2021, June 2). When no news is bad news: Detection of negative
+        events from news media content. https://2021.dhbenelux.org/</li>
+<li>[4] Nielbo, K. L., Baglini, R. B., Vahlstrup, P. B., Enevoldsen, K. C., Bechmann, A.,
+        &amp; Roepstorff, A. (2021, January). News information decoupling: An information
+        signature of catastrophes in legacy news media. https://eadh2020-2021.org/</li>
+<li>[5] T. Gebru, J. Morgenstern, B. Vecchione, J. W. Vaughan, H. Wallach, H. Daumé III,
+        and K. Crawford. Datasheets for datasets. arXiv preprint arXiv:1803.09010, 2018.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../dcc/" class="md-footer__link md-footer__link--prev" aria-label="Previous: DCC">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                DCC
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../hopetwitter/" class="md-footer__link md-footer__link--next" aria-label="Next: HopeTwitter">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                HopeTwitter
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2023 Danish Foundation Models Project
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tracking", "navigation.tabs", "navigation.sections", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.tooltips", "navigation.footer", "navigation.indexes", "toc.follow", "pymdownx.caret", "pymdownx.tilde", "content.action.edit"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+      
+    
+  </body>
+</html>

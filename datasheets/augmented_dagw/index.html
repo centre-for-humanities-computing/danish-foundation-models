@@ -1,0 +1,764 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../../_static/icon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.3">
+    
+    
+      
+        <title>Augmented dagw - Danish Foundation Models</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.50c56a3b.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#augmented-dagw" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Danish Foundation Models" class="md-header__button md-logo" aria-label="Danish Foundation Models" data-md-component="logo">
+      
+  <img src="../../_static/icon.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Danish Foundation Models
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Augmented dagw
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../models/" class="md-tabs__link">
+        
+  
+    
+  
+  Models
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../dcc/" class="md-tabs__link">
+          
+  
+    
+  
+  Datasets
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../blog" class="md-tabs__link">
+        
+  
+    
+  
+  Blog
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Danish Foundation Models" class="md-nav__button md-logo" aria-label="Danish Foundation Models" data-md-component="logo">
+      
+  <img src="../../_static/icon.png" alt="logo">
+
+    </a>
+    Danish Foundation Models
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    About
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../models/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Datasets
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Datasets
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dcc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DCC
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Datasheets
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Datasheets
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../danews/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DaNews
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hopetwitter/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    HopeTwitter
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../netarkivet_text/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NAT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../daradio/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DaRadio
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blog" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Blog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+    <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/docs/datasheets/augmented_dagw.md" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
+    </a>
+  
+  
+
+
+<div class="highlight"><pre><span></span><code><span class="nt">pretty_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Augmented_DAGW</span>
+<span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
+<span class="w">  </span><span class="no">This is an augmented version of the Danish Gigaword Dataset, which includes texts from several domains and forms. It integrates data from multiple sources, including Danish novels, Reddit comments, and news articles. Texts have undergone cleaning processes such as deduplication and URL filtering.</span>
+<span class="nt">languages</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">da</span>
+<span class="nt">license</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cc-by-4.0</span>
+<span class="nt">multilinguality</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">multilingual</span>
+<span class="nt">size_categories</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10M&lt;n&lt;100M</span>
+<span class="nt">task_categories</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text-generation</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fill-mask</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">summarization</span>
+<span class="nt">task_ids</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">language-modeling</span>
+<span class="nt">configs</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dagw</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Filtered</span><span class="nv"> </span><span class="s">Danish</span><span class="nv"> </span><span class="s">Gigaword</span><span class="nv"> </span><span class="s">Corpus</span><span class="nv"> </span><span class="s">excluding</span><span class="nv"> </span><span class="s">Twitter</span><span class="nv"> </span><span class="s">data.&quot;</span>
+<span class="w">    </span><span class="nt">homepage</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://huggingface.co/datasets/DDSC/partial-danish-gigaword-no-twitter&quot;</span>
+<span class="w">    </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;511160</span><span class="nv"> </span><span class="s">records&quot;</span>
+<span class="w">    </span><span class="nt">license</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cc-by-4.0&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">memo</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Data</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">MeMo</span><span class="nv"> </span><span class="s">corpus,</span><span class="nv"> </span><span class="s">includes</span><span class="nv"> </span><span class="s">normalized</span><span class="nv"> </span><span class="s">Danish</span><span class="nv"> </span><span class="s">novels</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">1870-1899.&quot;</span>
+<span class="w">    </span><span class="nt">homepage</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://huggingface.co/datasets/MiMe-MeMo/Corpus-v1.1&quot;</span>
+<span class="w">    </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;858</span><span class="nv"> </span><span class="s">records&quot;</span>
+<span class="w">    </span><span class="nt">license</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cc-by-4.0&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">scandi-reddit</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Post-processed</span><span class="nv"> </span><span class="s">corpus</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">Reddit</span><span class="nv"> </span><span class="s">comments.&quot;</span>
+<span class="w">    </span><span class="nt">homepage</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://huggingface.co/datasets/alexandrainst/scandi-reddit&quot;</span>
+<span class="w">    </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;13479774</span><span class="nv"> </span><span class="s">records&quot;</span>
+<span class="w">    </span><span class="nt">license</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cc-by-4.0&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nordjylland-news</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Dataset</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">text-summary</span><span class="nv"> </span><span class="s">pairs</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">Danish</span><span class="nv"> </span><span class="s">TV2</span><span class="nv"> </span><span class="s">Nord</span><span class="nv"> </span><span class="s">news</span><span class="nv"> </span><span class="s">articles.&quot;</span>
+<span class="w">    </span><span class="nt">homepage</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://huggingface.co/datasets/alexandrainst/nordjylland-news-summarization&quot;</span>
+<span class="w">    </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;75219</span><span class="nv"> </span><span class="s">records&quot;</span>
+<span class="w">    </span><span class="nt">license</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cc-by-4.0&quot;</span>
+</code></pre></div>
+<h1 id="augmented-dagw">Augmented DAGW<a class="headerlink" href="#augmented-dagw" title="Permanent link">&para;</a></h1>
+<p>This is a quick introduction and summarization of an augmented Danish Gigaword Dataset. Here we will describe the different components and how we did the simple cleaning.</p>
+<h2 id="components">Components<a class="headerlink" href="#components" title="Permanent link">&para;</a></h2>
+<p>Currently, the augmented DAGW consists of four components, each a smaller dataset on its own:
+1. <a href="https://huggingface.co/datasets/DDSC/partial-danish-gigaword-no-twitter">DAGW (Danish Gigaword)</a>: The Danish Gigaword Corpus contains text spanning several domains and forms. This version does not include the sections containing Tweets. <strong><em>511160 records</em></strong> in total (after filtering)
+2. <a href="https://huggingface.co/datasets/MiMe-MeMo/Corpus-v1.1">MeMo</a>: This is data release version 1.1 of the MeMo corpus comprising almost all Danish novels from the period 1870-1899, known as the Modern Breakthrough. Note that we only included the <a href="https://huggingface.co/datasets/MiMe-MeMo/Corpus-v1.1/tree/main/normalized">normalised corpus</a> in the huggingface repository. <strong><em>858 records</em></strong> in total.
+3. <a href="https://huggingface.co/datasets/alexandrainst/scandi-reddit/blob/main/README.md">Scandi-Reddit</a>: ScandiReddit is a filtered and post-processed corpus consisting of comments from Reddit. <strong><em>13479774 records</em></strong> in total.
+4. <a href="https://huggingface.co/datasets/alexandrainst/nordjylland-news-summarization">Nordjylland-News</a>: This dataset consists of pairs containing text and corresponding summaries extracted from the Danish newspaper TV2 Nord. Note that here we only included <a href="https://huggingface.co/datasets/alexandrainst/nordjylland-news-summarization/blob/main/data/train-00000-of-00001-4fb110c0f6314175.parquet">the training dataset</a>. <strong><em>75219 records</em></strong> in total.</p>
+<h2 id="columnskeys">Columns/Keys<a class="headerlink" href="#columnskeys" title="Permanent link">&para;</a></h2>
+<p>All the records in the dataset have the following unified columns/keys:</p>
+<div class="highlight"><pre><span></span><code>{
+    &quot;id&quot;: &quot;...&quot;,             # MANDATORY: source-specific identifier
+    &quot;text&quot;: &quot;...&quot;,           # MANDATORY: textual content of the document
+    &quot;source&quot;: &quot;...&quot;,         # MANDATORY: source of the data, such as peS2o, common-crawl, etc.
+    &quot;added&quot;: &quot;...&quot;,          # OPTIONAL: timestamp ai2 acquired this data
+    &quot;created&quot;: &quot;...&quot;         # OPTIONAL: timestamp when orig document was created (best-guess if not available)
+    &quot;metadata&quot;: {...}        # OPTIONAL: source-specific metadata
+}
+</code></pre></div>
+<p>Moreover, each component has its own metadata which you can find in the following samples or the section: <strong>Metadata</strong>.</p>
+<h3 id="samples-from-components">Samples from components<a class="headerlink" href="#samples-from-components" title="Permanent link">&para;</a></h3>
+<p>Here are samples from each components (only the first 50 characters in <code>'text'</code> were printed out):
+- A sample from DAGW:
+<div class="highlight"><pre><span></span><code>{&#39;text&#39;: &quot;JØRGINE JØRGINE KØBENHAVN HAGE &amp; CLAUSENS FORLAG (J. FR. CLAUSEN) 1926...&quot;, &#39;id&#39;: &#39;jvj_Jørgine&#39;, &#39;added&#39;: &#39;Fri Jun 26 13:06:11 2020 CEST +0200&#39;, &#39;created&#39;: &#39;1873-01-01T00:00:00.000Z, 1951-01-01T00:00:00.000Z&#39;, &#39;metadata&#39;: {&#39;domain&#39;: &#39;Wiki &amp; Books&#39;, &#39;license&#39;: &#39;Attribution-ShareAlike 4.0 International&#39;, &#39;sub-source&#39;: &#39;Johannes V. Jensen (Danish poet)&#39;}, &#39;source&#39;: &#39;dagw&#39;}
+</code></pre></div>
+- A sample from MeMo:
+<div class="highlight"><pre><span></span><code>{&#39;id&#39;: &#39;130024227090&#39;, &#39;text&#39;: &#39;I . \nI den fornemste gade lå en prægtig , \ngammeld...&#39;, &#39;source&#39;: &#39;KB&#39;, &#39;added&#39;: &#39;2024-03-28T12:46:27.000Z&#39;, &#39;created&#39;: &#39;1870-01-01T00:00:00.000Z, 1970-01-01T00:00:00.000Z&#39;, &#39;metadata&#39;: {&#39;file_received&#39;: &#39;y&#39;, &#39;filename&#39;: &#39;1870_AndersenHC_LykkePeer.pdf&#39;, &#39;firstname&#39;: &#39;H.C.&#39;, &#39;surname&#39;: &#39;Andersen&#39;, &#39;pseudonym&#39;: None, &#39;gender&#39;: &#39;m&#39;, &#39;nationality&#39;: &#39;dk&#39;, &#39;title&#39;: &#39;Lykke-Peer&#39;, &#39;subtitle&#39;: None, &#39;volume&#39;: None, &#39;year&#39;: 1870, &#39;pages&#39;: &#39;183&#39;, &#39;illustrations&#39;: &#39;n&#39;, &#39;typeface&#39;: &#39;gothic&#39;, &#39;publisher&#39;: &#39;Reitzel&#39;, &#39;price&#39;: &#39;2,25&#39;, &#39;file_status&#39;: &#39;Modtaget fra KB 7.4.2022 DEL2 sending 5&#39;, &#39;notes&#39;: &quot;OBS! PDF&#39;en er ren tekst i antikva, men den fysiske bog formentlig fraktur. Det kalder på separate kolonner: pdf-typeface eller file-typeface og book-typeface. /PD&quot;, &#39;filepath&#39;: None, &#39;fileformat&#39;: &#39;pdftxt&#39;, &#39;txt_received&#39;: &#39;y&#39;, &#39;readable&#39;: &#39;y&#39;, &#39;historical&#39;: &#39;n&#39;, &#39;period&#39;: None, &#39;period_notes&#39;: None, &#39;novel_start&#39;: &#39;10&#39;, &#39;novel_end&#39;: &#39;190&#39;, &#39;novelstart_rescan&#39;: None, &#39;novelend_rescan&#39;: None, &#39;start_end_page_notes&#39;: None, &#39;serialno&#39;: 12.0, &#39;quarantine&#39;: None, &#39;discard&#39;: None}}
+</code></pre></div>
+- A sample from Scandi-Reddit:
+<div class="highlight"><pre><span></span><code>{&#39;text&#39;: &#39;Bergen er ødelagt. Det er ikke moro mer....&#39;, &#39;id&#39;: &#39;0&#39;, &#39;source&#39;: &#39;scandi-reddit&#39;, &#39;created&#39;: &#39;2005-12-01T00:00:00.000Z, 2022-11-01T00:00:00.000Z&#39;, &#39;added&#39;: &#39;2024-04-17T12:50:03.000Z&#39;, &#39;metadata&#39;: {&#39;language&#39;: &#39;da&#39;, &#39;language_confidence&#39;: 0.7472341657, &#39;subreddit&#39;: &#39;Norway&#39;}}
+</code></pre></div>
+- A sample from Nordjylland-News:
+<div class="highlight"><pre><span></span><code>{&#39;id&#39;: &#39;nordjylland-news0&#39;, &#39;text&#39;: &#39;Opdatering: Manden er nu fundet af Nordjyllands Po...&#39;, &#39;source&#39;: &#39;TV2 Nord&#39;, &#39;added&#39;: &#39;2024-03-15T14:35:19.000Z&#39;, &#39;created&#39;: &#39;2024-03-15T14:35:19.000Z, 2025-03-15T14:35:19.000Z&#39;, &#39;metadata&#39;: {&#39;summary&#39;: &#39;Nye oplysninger i sagen om en forsvunden mand har endnu en gang fået politiet til at henvende sig til borgerne.&#39;, &#39;text_len&#39;: 1739, &#39;summary_len&#39;: 111}}
+</code></pre></div></p>
+<h2 id="data-collection">Data Collection<a class="headerlink" href="#data-collection" title="Permanent link">&para;</a></h2>
+<p>Here we list the python scripts for collecting, converting and compressing each sub-dataset.</p>
+<ul>
+<li>DAGW: https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/data-processing/scripts/convert_dagw_to_jsonlgz.py</li>
+<li>MeMo: https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/data-processing/scripts/memo/convert_memo_to_jsonlgz.py</li>
+<li>Scandi-Reddit: https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/data-processing/scripts/convert_scandi_reddit_to_jsonlgz.py</li>
+<li>Nordjylland-News: https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/data-processing/scripts/convert_nordjyllandnews_to_jsonlgz.py</li>
+</ul>
+<h2 id="data-cleaning">Data Cleaning<a class="headerlink" href="#data-cleaning" title="Permanent link">&para;</a></h2>
+<ol>
+<li>First, we filtered out all the empty documents (based on <code>"text"</code>: either <em>empty</em> or totally <em>white space</em>) in DAGW: 162051 out of 673211 empty docs found in total.</li>
+<li>After combining all 4 components, we applied deduplication and URL block list to the augmented DAGW following this <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/data-processing/configs/2024-v1/README.md">filtering pipeline</a> with <a href="https://github.com/allenai/dolma">Dolma</a>.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2023 Danish Foundation Models Project
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tracking", "navigation.tabs", "navigation.sections", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.tooltips", "navigation.footer", "navigation.indexes", "toc.follow", "pymdownx.caret", "pymdownx.tilde", "content.action.edit"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+      
+    
+  </body>
+</html>

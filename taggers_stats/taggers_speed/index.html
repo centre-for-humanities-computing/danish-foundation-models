@@ -1,0 +1,878 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../../_static/icon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.3">
+    
+    
+      
+        <title>Statistics on Dolma and Scandi taggers - Danish Foundation Models</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.50c56a3b.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#statistics-on-dolma-and-scandi-taggers" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Danish Foundation Models" class="md-header__button md-logo" aria-label="Danish Foundation Models" data-md-component="logo">
+      
+  <img src="../../_static/icon.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Danish Foundation Models
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Statistics on Dolma and Scandi taggers
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../models/" class="md-tabs__link">
+        
+  
+    
+  
+  Models
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../dcc/" class="md-tabs__link">
+          
+  
+    
+  
+  Datasets
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../blog" class="md-tabs__link">
+        
+  
+    
+  
+  Blog
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Danish Foundation Models" class="md-nav__button md-logo" aria-label="Danish Foundation Models" data-md-component="logo">
+      
+  <img src="../../_static/icon.png" alt="logo">
+
+    </a>
+    Danish Foundation Models
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    About
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../models/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Datasets
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Datasets
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dcc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DCC
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Datasheets
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Datasheets
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../datasheets/danews/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DaNews
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../datasheets/hopetwitter/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    HopeTwitter
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../datasheets/netarkivet_text/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NAT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../datasheets/daradio/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DaRadio
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blog" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Blog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+    <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/docs/taggers_stats/taggers_speed.md" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="statistics-on-dolma-and-scandi-taggers">Statistics on Dolma and Scandi taggers<a class="headerlink" href="#statistics-on-dolma-and-scandi-taggers" title="Permanent link">&para;</a></h1>
+<p>The dataset for testing is a subset of <a href="https://huggingface.co/datasets/DDSC/partial-danish-gigaword-no-twitter">DAGW</a>, which is only consist of documents from domain <code>Wiki &amp; Books</code> (430837 in total). However, during testing, 161915 documents that only contains white space(s) were found out due to the <code>ZeroDivisionErro</code> in tagger <code>pii_regex_v1</code> when there is no empty documents.</p>
+<p>Finally, the test on taggers performed on cleaned <code>Wiki &amp; Books</code> section of DAGW (268922 in total), each following tagger was tested only once using one proccess.</p>
+<p>Here is an example of how to use a tagger (<a href="https://github.com/allenai/dolma/blob/main/docs/taggers.md">Detailed documentation</a>):</p>
+<p><div class="highlight"><pre><span></span><code>dolma<span class="w"> </span>tag<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--documents<span class="w"> </span><span class="s2">&quot;/work/github/test_on_dagw_wiki/documents/dagw_only_wiki.json.gz&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--experiment<span class="w"> </span>char_length_v1<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--taggers<span class="w"> </span>char_length_v1<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--processes<span class="w"> </span><span class="m">1</span>
+</code></pre></div>
+<em>Remark:</em>
+<code>pii_presidio_v1</code> has a maximum text of length 1000000: 
+<div class="highlight"><pre><span></span><code>dolma.core.errors.DolmaFatalError:<span class="w"> </span>Failed<span class="w"> </span>to<span class="w"> </span>process<span class="w"> </span>/work/github/test_on_dagw_wiki/documents/dagw_only_wiki.json.gz<span class="w"> </span>due<span class="w"> </span>to<span class="w"> </span>ValueError:<span class="w"> </span><span class="o">[</span>E088<span class="o">]</span><span class="w"> </span>Text<span class="w"> </span>of<span class="w"> </span>length<span class="w"> </span><span class="m">1215638</span><span class="w"> </span>exceeds<span class="w"> </span>maximum<span class="w"> </span>of<span class="w"> </span><span class="m">1000000</span>.<span class="w"> </span>The<span class="w"> </span>parser<span class="w"> </span>and<span class="w"> </span>NER<span class="w"> </span>models<span class="w"> </span>require<span class="w"> </span>roughly<span class="w"> </span>1GB<span class="w"> </span>of<span class="w"> </span>temporary<span class="w"> </span>memory<span class="w"> </span>per<span class="w"> </span><span class="m">100</span>,000<span class="w"> </span>characters<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>input.<span class="w"> </span>This<span class="w"> </span>means<span class="w"> </span>long<span class="w"> </span>texts<span class="w"> </span>may<span class="w"> </span>cause<span class="w"> </span>memory<span class="w"> </span>allocation<span class="w"> </span>errors.<span class="w"> </span>If<span class="w"> </span>you<span class="s1">&#39;re not using the parser or NER, it&#39;</span>s<span class="w"> </span>probably<span class="w"> </span>safe<span class="w"> </span>to<span class="w"> </span>increase<span class="w"> </span>the<span class="w"> </span><span class="sb">`</span>nlp.max_length<span class="sb">`</span><span class="w"> </span>limit.<span class="w"> </span>The<span class="w"> </span>limit<span class="w"> </span>is<span class="w"> </span><span class="k">in</span><span class="w"> </span>number<span class="w"> </span>of<span class="w"> </span>characters,<span class="w"> </span>so<span class="w"> </span>you<span class="w"> </span>can<span class="w"> </span>check<span class="w"> </span>whether<span class="w"> </span>your<span class="w"> </span>inputs<span class="w"> </span>are<span class="w"> </span>too<span class="w"> </span>long<span class="w"> </span>by<span class="w"> </span>checking<span class="w"> </span><span class="sb">`</span>len<span class="o">(</span>text<span class="o">)</span><span class="sb">`</span>.
+</code></pre></div></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Dolma Tagger</th>
+<th>Description</th>
+<th>Process Time (In total, Speed)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>char_length_v1</td>
+<td>Computes document length in characters</td>
+<td>16s, 16.2kd/s</td>
+</tr>
+<tr>
+<td>2</td>
+<td>char_length_with_paragraphs_v1</td>
+<td>Computes document and paragraph length in characters</td>
+<td>49s, 5.40kd/s</td>
+</tr>
+<tr>
+<td>3</td>
+<td>cld2_en_doc_v2</td>
+<td>Detects document language using cld2</td>
+<td>56s, 4.76kd/s</td>
+</tr>
+<tr>
+<td>4</td>
+<td>olmo_pretokenizer_v1</td>
+<td>Counts number of tokens using OLMo v1 pre-tokenizer</td>
+<td>6m57s, 645d/s</td>
+</tr>
+<tr>
+<td>5</td>
+<td>olmo_pretokenizer_with_paragraphs_v1</td>
+<td>Counts tokens in document and paragraphs using OLMo v1 pre-tokenizer</td>
+<td>7m02s, 636d/s</td>
+</tr>
+<tr>
+<td>6</td>
+<td>whitespace_tokenizer_v1</td>
+<td>Counts whitespace-separated tokens in document</td>
+<td>1m00s, 4.47kd/s</td>
+</tr>
+<tr>
+<td>7</td>
+<td>whitespace_tokenizer_with_paragraphs_v1</td>
+<td>Counts whitespace-separated tokens in document and paragraphs</td>
+<td>1m39s, 2.70kd/s</td>
+</tr>
+<tr>
+<td>8</td>
+<td>random_number_v1</td>
+<td>Assigns a random number to each document</td>
+<td>17s, 15.6kd/s</td>
+</tr>
+<tr>
+<td>9</td>
+<td>ft_lang_id_en_doc_v2</td>
+<td>Uses fastText to detect the language of the document</td>
+<td>2m28s, 1.82kd/s</td>
+</tr>
+<tr>
+<td>10</td>
+<td>ft_lang_id_en_paragraph_v2</td>
+<td>Uses fastText to detect the language of each paragraph</td>
+<td>6m21s, 705d/s</td>
+</tr>
+<tr>
+<td>11</td>
+<td>ft_lang_id_en_paragraph_with_doc_score_v2</td>
+<td>Uses fastText to detect the language of each paragraph and assigns a score based on the fraction of English paragraphs</td>
+<td>6m16s, 715d/s</td>
+</tr>
+<tr>
+<td>12</td>
+<td>gopher_v1</td>
+<td>Tags spans of documents matching <a href="https://arxiv.org/abs/2112.11446">Deepmind's Gopher</a> removal rules</td>
+<td>15m49s, 283d/s</td>
+</tr>
+<tr>
+<td>13</td>
+<td>c4_v1</td>
+<td>Implements taggers used to generate the <a href="https://arxiv.org/abs/1910.10683">C4</a> dataset</td>
+<td>3m50s, 1.17kd/s</td>
+</tr>
+<tr>
+<td>14</td>
+<td>c4_v2</td>
+<td>Faster implementation of the C4 taggers</td>
+<td>2m08s, 2.10kd/s</td>
+</tr>
+<tr>
+<td>15</td>
+<td>pii_presidio_v1</td>
+<td>Tags spans of documents that contain personally identifiable information (PII) using the <a href="https://microsoft.github.io/presidio/analyzer/">Presidio Analyzer</a> library</td>
+<td>way to slow: about 7s per document. However <code>analyzer_results</code> in pii.py defines the language as English if . See line 110 in <a href="https://github.com/allenai/dolma/blob/main/python/dolma/taggers/pii.py#L108">here</a></td>
+</tr>
+<tr>
+<td>16</td>
+<td>pii_regex_v1</td>
+<td>Tags spans of documents that contain personally identifiable information (PII) using a set of regular expressions</td>
+<td>2m55s, 1.53kd/s</td>
+</tr>
+<tr>
+<td>17</td>
+<td>pii_regex_v2</td>
+<td>Faster implementation of <code>pii_regex_v1</code></td>
+<td>2m51s, 1.57kd/s</td>
+</tr>
+<tr>
+<td>18</td>
+<td>pii_regex_with_counts_v2</td>
+<td>Tags spans of documents that contain personally identifiable information (PII) using a set of regular expressions. It also counts the number of matches for each regular expression</td>
+<td>2m43s, 1.65kd/s</td>
+</tr>
+<tr>
+<td>19</td>
+<td>pii_regex_with_counts_fast_v2</td>
+<td>Faster implementation of <code>pii_regex_with_counts_v2</code></td>
+<td>1m01s, 4.36kd/s</td>
+</tr>
+<tr>
+<td>20</td>
+<td>cld2_scandi_doc</td>
+<td>Language Detection using cld2</td>
+<td>1m11s, 3.79kd/s</td>
+</tr>
+<tr>
+<td>21</td>
+<td>cld2_scandi_paragraph</td>
+<td>Language Detection on paragraph level using cld2</td>
+<td>5m59s, 748d/s</td>
+</tr>
+<tr>
+<td>22</td>
+<td>ft_lang_id_scandi_doc</td>
+<td>FastText Language Detection</td>
+<td>3m14s, 1.38kd/s</td>
+</tr>
+<tr>
+<td>23</td>
+<td>ft_lang_id_scandi_paragraph</td>
+<td>FastText Language Detection on paragraph level</td>
+<td>14m06s, 318d/s</td>
+</tr>
+<tr>
+<td>24</td>
+<td>cld2_scandi_paragraph_with_doc_score</td>
+<td>Language Detection on paragraph level with a total score using cld2</td>
+<td>8m04s, 556d/s</td>
+</tr>
+<tr>
+<td>25</td>
+<td>ft_lang_id_scandi_paragraph_with_doc_score</td>
+<td>FastText Language Detection on paragraph level with a total score</td>
+<td>14m37s, 306d/s</td>
+</tr>
+<tr>
+<td>26</td>
+<td>jigsaw_hatespeech_document_v2</td>
+<td>Tags documents as containing hate speech or not using a FastText classifier trained on the <a href="https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification">Jigsaw</a> hate speech dataset.</td>
+<td>1m38s, 2.74kd/s</td>
+</tr>
+<tr>
+<td>27</td>
+<td>jigsaw_hatespeech_sentence_v2</td>
+<td>Tags spans of documents as containing hate speech or not using a FastText classifier trained on the <a href="https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification">Jigsaw</a> hate speech dataset.</td>
+<td>9m45s, 460d/s</td>
+</tr>
+<tr>
+<td>28</td>
+<td>jigsaw_nsfw_document_v1</td>
+<td>Tags documents as containing NSFW content or not using a FastText classifier trained on the <a href="https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification">Jigsaw</a> NSFW dataset.</td>
+<td>6m40s, 671d/s</td>
+</tr>
+<tr>
+<td>29</td>
+<td>jigsaw_nsfw_sentence_v2</td>
+<td>Tags spans of documents as containing NSFW content or not using a FastText classifier trained on the <a href="https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification">Jigsaw</a> NSFW dataset.</td>
+<td>9m02s, 496d/s</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2023 Danish Foundation Models Project
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tracking", "navigation.tabs", "navigation.sections", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.tooltips", "navigation.footer", "navigation.indexes", "toc.follow", "pymdownx.caret", "pymdownx.tilde", "content.action.edit"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7c377c4.min.js"></script>
+      
+    
+  </body>
+</html>

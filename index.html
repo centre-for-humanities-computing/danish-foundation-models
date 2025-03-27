@@ -1,0 +1,1035 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+        <link rel="next" href="models/">
+      
+      
+      <link rel="icon" href="_static/icon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.3">
+    
+    
+      
+        <title>Danish Foundation Models</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.50c56a3b.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#empowering-the-danish-language-in-the-digital-age" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="." title="Danish Foundation Models" class="md-header__button md-logo" aria-label="Danish Foundation Models" data-md-component="logo">
+      
+  <img src="_static/icon.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Danish Foundation Models
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              About
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="." class="md-tabs__link">
+        
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="models/" class="md-tabs__link">
+        
+  
+    
+  
+  Models
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="dcc/" class="md-tabs__link">
+          
+  
+    
+  
+  Datasets
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="blog" class="md-tabs__link">
+        
+  
+    
+  
+  Blog
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="Danish Foundation Models" class="md-nav__button md-logo" aria-label="Danish Foundation Models" data-md-component="logo">
+      
+  <img src="_static/icon.png" alt="logo">
+
+    </a>
+    Danish Foundation Models
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    About
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="." class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    About
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#why-danish-foundation-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why Danish Foundation Models?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Why Danish Foundation Models?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bridging-the-digital-language-divide" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bridging the Digital Language Divide
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#our-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Our Objectives
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#open-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      Open-source
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Open-source">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#open-source-development-with-privacy-focused-data-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Open-source Development with Privacy-Focused Data Handling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#contributions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contributions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#improving-the-danish-language-technology-landscape" class="md-nav__link">
+    <span class="md-ellipsis">
+      Improving the Danish Language Technology Landscape
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#contributors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contributors
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-core-team" class="md-nav__link">
+    <span class="md-ellipsis">
+      The Core Team
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Core Team">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#core-contributors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Core Contributors
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#join-us" class="md-nav__link">
+    <span class="md-ellipsis">
+      Join Us
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="models/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Datasets
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Datasets
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="dcc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DCC
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Datasheets
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Datasheets
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="datasheets/danews/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DaNews
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="datasheets/hopetwitter/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    HopeTwitter
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="datasheets/netarkivet_text/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NAT
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="datasheets/daradio/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DaRadio
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="blog" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Blog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+    <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/docs/index.md" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="empowering-the-danish-language-in-the-digital-age">Empowering the Danish Language in the Digital Age<a class="headerlink" href="#empowering-the-danish-language-in-the-digital-age" title="Permanent link">&para;</a></h1>
+<p>Welcome to the Danish Foundation Models (DFM) project, a pioneering initiative in the field of machine learning and natural language processing (NLP) dedicated to the Danish language. Our mission is to develop, maintain, and provide open access to high-quality foundation models tailored for Danish, promoting innovation and inclusivity in language technologies.</p>
+<div class="admonition abstract">
+<p class="admonition-title">Read the paper</p>
+<p>You can read more about the argument for Danish Language models in our <a href="https://arxiv.org/abs/2311.07264">publication</a>.</p>
+</div>
+<h2 id="why-danish-foundation-models">Why Danish Foundation Models?<a class="headerlink" href="#why-danish-foundation-models" title="Permanent link">&para;</a></h2>
+<h3 id="bridging-the-digital-language-divide">Bridging the Digital Language Divide<a class="headerlink" href="#bridging-the-digital-language-divide" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Global Gap</strong>: The rise of large language models has transformed research and technology, but smaller languages like Danish risk falling behind both in development, evaluation and application.</li>
+<li><strong>Local Focus</strong>: We combat this by focusing on the Danish language, ensuring that it is well-represented in the digital landscape.</li>
+<li><strong>Broad Collaboration</strong>: Our project unites public and private institutions, ensuring high data quality and practical applicability of our models.</li>
+</ul>
+<h2 id="our-objectives">Our Objectives<a class="headerlink" href="#our-objectives" title="Permanent link">&para;</a></h2>
+<ol>
+<li>To develop and maintain <strong>state-of-the-art language models for Danish</strong> for applications within both text and speech.</li>
+<li>To extensively <strong>validate</strong> foundation models for Danish in a representative set of tasks.</li>
+<li>To maintain a high standard of <strong>documentation</strong> of models such as model cards [<a href="https://arxiv.org/abs/1810.03993">Mitchell et al., 2019</a>] and datasheets [<a href="https://cacm.acm.org/magazines/2021/12/256932-datasheets-for-datasets/abstract">Gebru et al., 2021</a>].</li>
+<li>To <strong>open-source</strong> not only the models but also all components required for reproducibility such as pre-processing, training, and validation code.</li>
+</ol>
+<h2 id="open-source">Open-source<a class="headerlink" href="#open-source" title="Permanent link">&para;</a></h2>
+<h3 id="open-source-development-with-privacy-focused-data-handling">Open-source Development with Privacy-Focused Data Handling<a class="headerlink" href="#open-source-development-with-privacy-focused-data-handling" title="Permanent link">&para;</a></h3>
+<p>In our commitment to advancing open-source development, we strongly emphasise the ethical handling of data, particularly when it involves personally sensitive information or material under copyright. This ensures that we share as much as possible while protecting privacy.</p>
+<p>To achieve this, our project is structured to differentiate between data that can be shared openly and that which cannot. 
+This demarcation is documented through detailed datasheets and training logs, thereby ensuring transparency in our processes.</p>
+<p>Additionally, we prioritise the security of the data during its processing and training phases. All data is stored on UCloud, a platform that upholds the recognised highest standards in information security management. This commitment to data security is exemplified by UCloud's adherence to ISO27001, a globally recognised standard, ensuring that our data handling practices meet rigorous international criteria. For more information on our security measures, please visit UCloud's security <a href="https://docs.cloud.sdu.dk/intro/security.html">documentation</a>.</p>
+<p><img alt="" src="_static/structure.png" /></p>
+<h3 id="contributions">Contributions<a class="headerlink" href="#contributions" title="Permanent link">&para;</a></h3>
+<p>Besides our <a href="https://www.foundationmodels.dk/models/">models</a> DFM has led to a series of positive open-source contributions, the following table include some of these contributions:</p>
+<table>
+<thead>
+<tr>
+<th>Project</th>
+<th>Contribution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Packages</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/saattrupdan/NLPDedup">NLPDedup</a></td>
+<td>A deduplication library derived from DFM's deduplication code</td>
+</tr>
+<tr>
+<td><strong>Code contributions</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://hlasse.github.io/TextDescriptives/">TextDescriptives</a></td>
+<td>Added heuristic quality measure for texts</td>
+</tr>
+<tr>
+<td><a href="https://github.com/allenai/dolma">dolma</a></td>
+<td>Bugfixes and addition of taggers for filtering</td>
+</tr>
+<tr>
+<td><strong>Benchmarks</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://scandeval.com">ScandEval</a></td>
+<td>Co-contributors have significant contributions to developing NLU and NLG benchmarks for Scandinavian and Germanic languages</td>
+</tr>
+<tr>
+<td><a href="https://kennethenevoldsen.github.io/scandinavian-embedding-benchmark/">Scandinavian Embedding Benchmark</a></td>
+<td>The benchmark for evaluating Scandinavian embedding has been created as a part of DFM</td>
+</tr>
+<tr>
+<td><strong>Datasets</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://huggingface.co/datasets/alexandrainst/m_arc">m_arc</a>, <a href="https://huggingface.co/datasets/alexandrainst/m_mmlu">m_mmlu</a>, <a href="https://huggingface.co/datasets/alexandrainst/m_hellaswag">m_hellaswag</a>, <a href="https://huggingface.co/datasets/alexandrainst/m_truthfulqa">m_truthfulqa</a></td>
+<td>Translated versions of English datasets intended for model evaluation for these domains</td>
+</tr>
+</tbody>
+</table>
+<!-- 
+temp. removed (see DDSC slack channel: NLP)
+
+| [dagw_reddit_filtered_v1.0.0](https://huggingface.co/datasets/DDSC/dagw_reddit_filtered_v1.0.0)                        | A filtered version of the Danish Gigaword, including reddit   | 
+| **Lexical Resources**                                                                                                  |                                                               |
+| [Detailed Word Frequencies](https://huggingface.co/collections/chcaa/danish-word-frequencies-65ba3f61875c73327d1691b2) | Detailed word frequencies across domain and pos-tags          |
+
+-->
+
+<h2 id="improving-the-danish-language-technology-landscape">Improving the Danish Language Technology Landscape<a class="headerlink" href="#improving-the-danish-language-technology-landscape" title="Permanent link">&para;</a></h2>
+<p>The Danish Foundations models is a collaboration across Danish universities and research organizations. The project engages with data science communities and initiatives (<a href="https://danskdatascience.dk/">Danish Data Science Community</a>), to promote the development of Danish language tools. We continually gather information about how to improve the Danish language technologies and how to best support the community. If you want to highlight missing pieces in Danish NLP we invite you to open a thread on the <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models/discussions/categories/missing-pieces-for-danish-nlp">forum</a> stating the problems and potential solutions.</p>
+<h2 id="contributors">Contributors<a class="headerlink" href="#contributors" title="Permanent link">&para;</a></h2>
+<h2 id="the-core-team">The Core Team<a class="headerlink" href="#the-core-team" title="Permanent link">&para;</a></h2>
+<p>Those with data access, who contribute to the project, including data management, model development, project management, and more.</p>
+<p>From <a href="https://chc.au.dk/">the Center for Humanities Computing at Aarhus University</a>:</p>
+<ul>
+<li>Kenneth Enevoldsen (<a href="mailto:kenneth.enevoldsen@cas.au.dk">kenneth.enevoldsen@cas.au.dk</a>)</li>
+<li>Marton Kardos (<a href="mailto:martonkardos@cas.au.dk">martonkardos@cas.au.dk</a>)</li>
+<li>Jan Kostkan (<a href="mailto:jan.kostkan@cas.au.dk">jan.kostkan@cas.au.dk</a>)</li>
+<li>Peter Vahlstrup (<a href="mailto:imvpbv@cc.au.dk">imvpbv@cc.au.dk</a>)</li>
+<li>Per Møldrup-Dalum (<a href="mailto:per@cas.au.dk">per@cas.au.dk</a>)</li>
+<li>Kristoffer Laigaard Nielbo (<a href="mailto:kln@cas.au.dk">kln@cas.au.dk</a>)</li>
+</ul>
+<p>From <a href="https://alexandra.dk/">the Alexandra Institute</a>:</p>
+<ul>
+<li>Rasmus Larsen (<a href="mailto:rasmus.larsen@alexandra.dk">rasmus.larsen@alexandra.dk</a>)</li>
+<li>Dan Saattrup Nielsen (<a href="mailto:dan.nielsen@alexandra.dk">dan.nielsen@alexandra.dk</a>)</li>
+<li>Andreas Nugaard Holm (<a href="mailto:andreas.holm@alexandra.dk">andreas.holm@alexandra.dk</a>)</li>
+<li>Kristian Nørgaaard Jensen (<a href="mailto:kristian.n.jensen@alexandra.dk">kristian.n.jensen@alexandra.dk</a>)</li>
+<li>Torben Blach (<a href="mailto:torben.blach@alexandra.dk">torben.blach@alexandra.dk</a>)</li>
+<li>Jens Kaas Benner (<a href="mailto:jens.benner@alexandra.dk">jens.benner@alexandra.dk</a>)</li>
+</ul>
+<p>From <a href="https://www.sdu.dk/en/forskning/machine-learning">the Center for Machine Learning at the University of Southern Denmark</a>:</p>
+<ul>
+<li>Peter Schneider-Kamp (<a href="mailto:petersk@imada.sdu.dk">petersk@imada.sdu.dk</a>)</li>
+<li>Lukas Galke (<a href="mailto:galke@imada.sdu.dk">galke@imada.sdu.dk</a>)</li>
+<li>Andrea Blasi Núñez (<a href="mailto:abln@mmmi.sdu.dk">abln@mmmi.sdu.dk</a>)</li>
+<li>Gianluca Barmina (<a href="mailto:gbarmina@imada.sdu.dk">gbarmina@imada.sdu.dk</a>)</li>
+<li>Jacob Nielsen (<a href="mailto:jacn@imada.sdu.dk">jacn@imada.sdu.dk</a>)</li>
+<li>Mogens Henrik From (<a href="mailto:from@imada.sdu.dk">from@imada.sdu.dk</a>)</li>
+<li>Stine Lyngsø Beltoft (<a href="mailto:stinelb@imada.sdu.dk">stinelb@imada.sdu.dk</a>)</li>
+</ul>
+<p>From <a href="https://di.ku.dk/">the Department of Computer Science at the University of Copenhagen</a>:</p>
+<ul>
+<li>Desmond Elliott (<a href="mailto:de@di.ku.dk">de@di.ku.dk</a>)</li>
+</ul>
+<p>From <a href="https://cst.ku.dk">Center for Sprogteknologi at the University of Copenhagen</a>:</p>
+<ul>
+<li>Bolette Sandford Pedersen (<a href="(mailto:bspedersen@hum.ku.dk)">bspedersen@hum.ku.dk</a></li>
+<li>Ali Basirat (<a href="mailto:alib@hum.ku.dk">alib@hum.ku.dk</a>)</li>
+</ul>
+<details>
+<summary>Project Alumnis</summary>
+<br>
+
+Lasse Hansen, Martin Bernstorff, Tao Tang
+
+</details>
+
+<h3 id="core-contributors">Core Contributors<a class="headerlink" href="#core-contributors" title="Permanent link">&para;</a></h3>
+<p>Those without data access, but who have contributed substantially to the project including code contributions, model development, and experiment planning.</p>
+<p>From <a href="https://www.alvenir.ai/">Alvenir</a>:</p>
+<ul>
+<li>Martin Carsten Nielsen (<a href="martin@alvenir.ai">martin@alvenir.ai</a>)</li>
+<li>Søren Vejlgaard Holm (<a href="swh@alvenir.ai">swh@alvenir.ai</a>)</li>
+</ul>
+<h2 id="join-us">Join Us<a class="headerlink" href="#join-us" title="Permanent link">&para;</a></h2>
+<p>We invite collaboration and contributions from industry professionals, researchers, and the open-source community. Together, we can advance the field of Danish NLP and create a more inclusive digital future. You can reach out to us using the following channels:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3.5 8a5.5 5.5 0 1 1 8.596 4.547 9.005 9.005 0 0 1 5.9 8.18.751.751 0 0 1-1.5.045 7.5 7.5 0 0 0-14.993 0 .75.75 0 0 1-1.499-.044 9.005 9.005 0 0 1 5.9-8.181A5.496 5.496 0 0 1 3.5 8ZM9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm8.29 4c-.148 0-.292.01-.434.03a.75.75 0 1 1-.212-1.484 4.53 4.53 0 0 1 3.38 8.097 6.69 6.69 0 0 1 3.956 6.107.75.75 0 0 1-1.5 0 5.193 5.193 0 0 0-3.696-4.972l-.534-.16v-1.676l.41-.209A3.03 3.03 0 0 0 17.29 8Z"/></svg></span> - <a href="https://join.slack.com/t/danskdatascie-o8m9638/shared_invite/zt-1jh2dwmj4-D_mjywfXERvVP75n9O0ykg"><strong>DDSC Slack</strong></a></td>
+<td>Join the discussion in the "danish-foundation-models-text"-channel</td>
+</tr>
+<tr>
+<td><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M1.75 1h12.5c.966 0 1.75.784 1.75 1.75v9.5A1.75 1.75 0 0 1 14.25 14H8.061l-2.574 2.573A1.458 1.458 0 0 1 3 15.543V14H1.75A1.75 1.75 0 0 1 0 12.25v-9.5C0 1.784.784 1 1.75 1ZM1.5 2.75v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25Z"/><path d="M22.5 8.75a.25.25 0 0 0-.25-.25h-3.5a.75.75 0 0 1 0-1.5h3.5c.966 0 1.75.784 1.75 1.75v9.5A1.75 1.75 0 0 1 22.25 20H21v1.543a1.457 1.457 0 0 1-2.487 1.03L15.939 20H10.75A1.75 1.75 0 0 1 9 18.25v-1.465a.75.75 0 0 1 1.5 0v1.465c0 .138.112.25.25.25h5.5a.75.75 0 0 1 .53.22l2.72 2.72v-2.19a.75.75 0 0 1 .75-.75h2a.25.25 0 0 0 .25-.25v-9.5Z"/></svg></span> -  <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models/discussions"><strong>GitHub Discussion</strong></a></td>
+<td>Ask questions or start a discussion</td>
+</tr>
+<tr>
+<td><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2.5 12a9.5 9.5 0 1 1 19 0 .75.75 0 0 0 1.5 0c0-6.075-4.925-11-11-11S1 5.925 1 12s4.925 11 11 11a.75.75 0 0 0 0-1.5A9.5 9.5 0 0 1 2.5 12Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm2.5 2.75a.75.75 0 0 1 .75-.75h7a.75.75 0 0 1 0 1.5h-7a.75.75 0 0 1-.75-.75Zm3.75 2.75a.75.75 0 0 0 0 1.5h4a.75.75 0 0 0 0-1.5h-4Z"/></svg></span> - <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models/issues"><strong>GitHub Issues</strong></a></td>
+<td>Noticed a bug in the code? Please create an issue</td>
+</tr>
+<tr>
+<td><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 1 8 0a8 8 0 0 1 0 16Zm3.031-12a4.38 4.38 0 0 0-3.097 1.283l-.23.229c-.156.157-.308.32-.452.49H5.65a.876.876 0 0 0-.746.417l-.856 1.388a.377.377 0 0 0 .21.556l1.552.477 1.35 1.35.478 1.553a.374.374 0 0 0 .555.21l1.389-.855a.876.876 0 0 0 .416-.746V8.747c.17-.144.333-.295.49-.452l.23-.23A4.379 4.379 0 0 0 12 4.969v-.093A.876.876 0 0 0 11.124 4Zm-5.107 7.144h-.001a.809.809 0 0 0-1.33-.881c-.395.394-.564 1.258-.62 1.62a.12.12 0 0 0 .035.108.12.12 0 0 0 .108.035c.362-.056 1.226-.225 1.62-.619a.803.803 0 0 0 .188-.263Z"/></svg></span> - <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models/discussions/categories/using-our-models"><strong>Using the model?</strong></a></td>
+<td>If you use the model, let us know it makes it easier for us to apply for funding and justify the devopment of the project.</td>
+</tr>
+</tbody>
+</table>
+<p><a class="md-button" href="mailto:kenneth.enevoldsen@cas.au.dk">Contact us <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480v-83.6c0-4 1.5-7.8 4.2-10.7l167.6-182.9c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8l-88.3-44.2C7.1 311.3.3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z"/></svg></span></a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+        
+          
+          <a href="models/" class="md-footer__link md-footer__link--next" aria-label="Next: Models">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Models
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2023 Danish Foundation Models Project
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/centre-for-humanities-computing/danish-foundation-models" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.tracking", "navigation.tabs", "navigation.sections", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.tooltips", "navigation.footer", "navigation.indexes", "toc.follow", "pymdownx.caret", "pymdownx.tilde", "content.action.edit"], "search": "assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="assets/javascripts/bundle.d7c377c4.min.js"></script>
+      
+    
+  </body>
+</html>

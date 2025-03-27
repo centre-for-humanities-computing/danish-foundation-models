@@ -1,0 +1,42 @@
+# Adding a new dataset
+
+This guide is intended for internal collaborators. If you want to add a new dataset to the DFM, but are not a collaborator, please open an issue in this repository or contact us at using the contact form on the [website](https://www.foundationmodels.dk/#join-us).
+
+1) Add a datasheet to the `docs/datasheets` folder, e.g. [`nordjylland_news.md`](https://github.com/centre-for-humanities-computing/danish-foundation-models/blob/main/docs/datasheets/nordjylland_news.md). The datasheet should be named `<dataset_name>.md`. The datasheet should be written in markdown format and should have a front matter following the [Huggingface dataset card template](https://huggingface.co/docs/datasets/en/upload_dataset#create-a-dataset-card). It should have the following attributes:
+   1) a license (if the license is not a standard once allowed by Huggingface, please use "other" and specify the license in the datasheet)
+   2) Languages (e.g. "da" for Danish)
+2) Add a dataset of the same name to the `/danish-foundation-models (193701)/dfm-data/pre-training/` on UCloud. Using the following folder structure:
+
+```
+pre-training
+│
+└── dataset_name
+    │
+    ├── documents
+    │   ├──part1.jsonl.gz
+    │   ├──part2.jsonl.gz
+    │   └── ...
+    │
+    └── attributes   # OPTIONAL: folder containing annotations from dataset cleaning
+```
+
+1) Validate the dataset using the `data-processing/scripts/dataset_validator.py` script. The script will check if the datasets is in the correct format and if the metadata in the datasheet matches the dataset. See the docstring in the script for more information on how to use it.
+
+## JSONL Schema
+
+An entry in the dataset should adhere to the Document schema (defined below).
+
+```
+{
+    "id": "...",                      # MANDATORY: source-specific identifier
+    "text": "foo",                    # MANDATORY: textual content of the document
+    "source": "...",                  # MANDATORY: source of the data, such as peS2o, common-crawl, etc.
+    "added": "...",                   # MANDATORY: timestamp we acquired this data (time file was created), specified as
+                                        # YYYY-MM-DD e.g 2021-04-13
+    "created": "..."                  # MANDATORY: timestamp when orig document was created (best-guess if not available),
+                                         # should be specified as a range;
+                                         # "YYYY-MM-DD, YYYY-MM-DD"
+    "metadata": {                     # OPTIONAL: source-specific metadata
+         ...
+     }
+}
