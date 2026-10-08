@@ -10,7 +10,7 @@ hide:
   <div class="home-hero__inner">
     <div class="home-hero__text">
       <h1>Vi bygger fundamentet for <em>dansk AI</em></h1>
-      <p>Sprogmodeller er blevet kritisk infrastruktur — men mindre sprog som dansk risikerer at blive efterladt. Danish Foundation Models er et samarbejde på tværs af danske universiteter og forskningsinstitutioner om at udvikle, evaluere og tilpasse sprog-AI til gavn for det danske samfund.</p>
+      <p>Sprogmodeller er nu kritisk infrastruktur — men mindre sprog som dansk risikerer at sakke bagud. Danske Grundmodeller (Danish Foundation Models, DFM) er et samarbejde på tværs af danske universiteter og forskningsinstitutioner om at udvikle, evaluere og tilpasse sprogbaseret AI til gavn for det danske samfund.</p>
       <div class="home-hero__actions">
         <a class="home-btn home-btn--primary" href="https://huggingface.co/danish-foundation-models/models">Udforsk modeller →</a>
         <a class="home-btn home-btn--ghost" href="https://huggingface.co/danish-foundation-models/datasets">Se datasæt</a>
@@ -76,7 +76,7 @@ hide:
         <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
       </svg>
     </span>
-    <span class="pillar-title">Nationalt initiativ, global rækkevidde</span>
+    <span class="pillar-title">Nationalt initiativ med global rækkevidde</span>
     <span class="pillar-desc">Vores modeller, benchmarks og værktøjer bidrager til det danske, europæiske og globale open source AI-fællesskab.</span>
   </div>
   <div class="pillar">
@@ -90,8 +90,8 @@ hide:
         <rect x="16" y="12" width="6" height="6" rx="1"/>
       </svg>
     </span>
-    <span class="pillar-title">Hele AI-stakken</span>
-    <span class="pillar-desc">Fra træningsdata og modeludvikling til evaluering og tilpasning i praksis er vi med i hvert trin af processen.</span>
+    <span class="pillar-title">AI fra start til slut</span>
+    <span class="pillar-desc"> Vi er med i hvert trin af processen — fra træningsdata og modeludvikling til evaluering og tilpasning i praksis.</span>
   </div>
   <div class="pillar">
     <span class="pillar-icon">
@@ -101,8 +101,8 @@ hide:
         <line x1="10" y1="18" x2="14" y2="18"/>
       </svg>
     </span>
-    <span class="pillar-title">Bygget med industrien</span>
-    <span class="pillar-desc">Udviklet i tæt samarbejde med danske virksomheder og offentlige institutioner, så infrastrukturen er relevant, hvor det betyder noget.</span>
+    <span class="pillar-title">Bygget sammen med industrien</span>
+    <span class="pillar-desc">Udviklet i tæt samarbejde med danske virksomheder og offentlige institutioner. Derfor er infrastrukturen relevant, der hvor det batter.</span>
   </div>
   <div class="pillar">
     <span class="pillar-icon">
@@ -118,7 +118,7 @@ hide:
 
 ## Vores netværk
 
-DFM er et konsortium af fire danske institutioner, der samarbejder med partnere i Danmark, Norden og Europa — fra offentlige institutioner og virksomheder til forskningsprojekter, der bygger åbne sprogmodeller til deres egne sprog. Deres involvering former det, vi bygger, og sikrer, at det er relevant, hvor det tæller.
+DFM er et konsortium af fire danske institutioner, der samarbejder med partnere i Danmark, Norden og Europa — fra offentlige institutioner og virksomheder til forskningsprojekter, der bygger åbne sprogmodeller til deres egne sprog. Samarbejdspartnernes interesser former vores forskning og udviklingsprojekter og sikrer, at vores arbejde er relevant for alle parter. 
 
 <figure class="home-map">
   <div class="home-map__stage">
